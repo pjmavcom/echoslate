@@ -1,0 +1,70 @@
+﻿<Window x:Class="TODOList.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TODOList"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <DockPanel >
+		<Menu DockPanel.Dock="Top" >
+			<MenuItem x:Name="mnuOne" Header="One" />
+			<MenuItem x:Name="mnuTwo" Header="Two" />
+		</Menu >
+		<TabControl >
+			<!-- To do Tab -->
+			<TabItem x:Name="TODO" Header="TODO" >
+				<Grid >
+					<Grid.RowDefinitions >
+						<RowDefinition Height="*" />
+						<RowDefinition Height="50"/>
+					</Grid.RowDefinitions >
+					
+					<!-- The list of todos -->
+					<ListBox Name="lbT1Todos" HorizontalContentAlignment="Stretch" Grid.Row="0" >
+						<ListBox.ItemTemplate >
+							<DataTemplate >
+								<Grid Margin="0,2" >
+									<Grid.ColumnDefinitions >
+										<ColumnDefinition Width="200" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="100" />
+									</Grid.ColumnDefinitions >
+									<TextBlock Grid.Column="0" Text="{Binding Time}" />
+									<TextBlock Grid.Column="1" Text="{Binding Todo}" />
+									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" />
+								</Grid >
+							</DataTemplate >
+						</ListBox.ItemTemplate >
+					</ListBox >
+
+					<!-- The add, radio buttons, and input field -->
+					<Grid Grid.Row="1" >
+						<Grid.ColumnDefinitions >
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="60" />
+						</Grid.ColumnDefinitions >
+						
+						<TextBox x:Name="txtT1NewTodo" Grid.Column="0" />
+						
+						<StackPanel Grid.Column="1" >
+							<GroupBox >
+								<StackPanel Orientation="Horizontal">
+									<RadioButton x:Name="rdoT1Sev1" GroupName="rdoSev" Command="{Binding RdoSeverity}" CommandParameter="1" />
+									<RadioButton x:Name="rdoT1Sev2" GroupName="rdoSev" Command="{Binding RdoSeverity}" CommandParameter="2" />
+									<RadioButton x:Name="rdoT1Sev3" GroupName="rdoSev" Command="{Binding RdoSeverity}" CommandParameter="3" />
+								</StackPanel >
+							</GroupBox >
+							<Button x:Name="btnT1Add" Content="Add" />
+						</StackPanel >
+					</Grid >
+				</Grid >
+			</TabItem >
+			
+			<!-- VCS History tab -->
+			<TabItem x:Name="History" Header="History" >
+				
+			</TabItem >
+		</TabControl >
+    </DockPanel >
+</Window>
