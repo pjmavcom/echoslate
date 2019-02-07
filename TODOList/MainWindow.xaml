@@ -50,9 +50,9 @@
 						<StackPanel Grid.Column="1" >
 							<GroupBox >
 								<StackPanel Orientation="Horizontal">
-									<RadioButton x:Name="rdoT1Sev1" GroupName="rdoSev" Command="{Binding RdoSeverity}" CommandParameter="1" />
-									<RadioButton x:Name="rdoT1Sev2" GroupName="rdoSev" Command="{Binding RdoSeverity}" CommandParameter="2" />
-									<RadioButton x:Name="rdoT1Sev3" GroupName="rdoSev" Command="{Binding RdoSeverity}" CommandParameter="3" />
+									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="1" />
+									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="2" />
+									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="3" />
 								</StackPanel >
 							</GroupBox >
 							<Button x:Name="btnT1Add" Content="Add" />

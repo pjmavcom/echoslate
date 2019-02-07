@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace TODOList
@@ -19,6 +20,7 @@ namespace TODOList
 	{
 		private List<TodoItem> todoList;
 		private int currentSeverity;
+		
 			
 		public MainWindow()
 		{
@@ -48,9 +50,10 @@ namespace TODOList
 			todoList.Add(new TodoItem() { Time = DateTime.Now.ToString(), Todo = txtT1NewTodo.Text, Severity = currentSeverity });
 			lbT1Todos.Items.Refresh();
 		}
-		private void RdoSeverity(object sender, ExecutedRoutedEventArgs e)
+		private void RdoSeverity(object sender, EventArgs e)
 		{
-			currentSeverity = Convert.ToInt16(e);
+			RadioButton rb = sender as RadioButton;
+			currentSeverity = Convert.ToInt16(rb.CommandParameter.ToString());
 		}
 	}
 }
