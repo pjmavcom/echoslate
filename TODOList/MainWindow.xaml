@@ -5,64 +5,78 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="1080">
     <DockPanel >
 		<Menu DockPanel.Dock="Top" >
-			<MenuItem x:Name="mnuOne" Header="One" />
-			<MenuItem x:Name="mnuTwo" Header="Two" />
+			<MenuItem x:Name="mnuSave" Header="Save" KeyboardNavigation.IsTabStop="False" />
+			<MenuItem x:Name="mnuLoad" Header="Load" KeyboardNavigation.IsTabStop="False" />
 		</Menu >
 		<TabControl >
 			<!-- To do Tab -->
-			<TabItem x:Name="TODO" Header="TODO" >
+			<TabItem x:Name="TODO" Header="TODO" KeyboardNavigation.IsTabStop="False" >
 				<Grid >
 					<Grid.RowDefinitions >
+						<RowDefinition Height="25" />
 						<RowDefinition Height="*" />
 						<RowDefinition Height="50"/>
 					</Grid.RowDefinitions >
 					
+					<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" >
+						<Button Name="SortBySev" Content="Severity" Click="SortBySeverity_Click" />
+						<Button Name="SortByDate" Content="Date" Click="SortByDate_Click" />
+					</StackPanel >
+					
 					<!-- The list of todos -->
-					<ListBox Name="lbT1Todos" HorizontalContentAlignment="Stretch" Grid.Row="0" >
+					<ListBox Name="lbT1Todos" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None">
 						<ListBox.ItemTemplate >
 							<DataTemplate >
 								<Grid Margin="0,2" >
 									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="200" />
-										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="100" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="150" />
+										<ColumnDefinition Width="100" />
+										<ColumnDefinition Width="25" />
+										<ColumnDefinition Width="25" />
+										<ColumnDefinition Width="25" />
 									</Grid.ColumnDefinitions >
 									<TextBlock Grid.Column="0" Text="{Binding Time}" />
-									<TextBlock Grid.Column="1" Text="{Binding Todo}" />
-									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" />
+									<Border Name="PlaceHolderBorder" Grid.Column="1" Margin="7"/>
+									<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="{Binding ElementName=PlaceHolderBorder, Path=ActualWidth}" />
+									
+									<TextBlock Grid.Column="2" Text="{Binding CompletedTime}" />
+									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" MouseUp="pbSeverity_OnMouseUp" MouseLeave="pbSeverity_OnMouseLeave" MouseEnter="pbSeverity_OnMouseEnter" Value="{Binding Severity}" />
+									<Button Grid.Column="4" Name="btnT1MoveUp" FontFamily="Marlett" FontSize="20" Content="5" Click="btnT1MoveUp_Click" />
+									<Button Grid.Column="5" Name="btnT1MoveDown" FontFamily="Marlett" FontSize="20" Content="6" Click="btnT1MoveDown_Click" />
+									<Button Grid.Column="6" Name="btnT1Complete" FontFamily="Marlett" FontSize="20" Content="a" Click="btnT1Complete_Click" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
 					</ListBox >
 
 					<!-- The add, radio buttons, and input field -->
-					<Grid Grid.Row="1" >
+					<Grid Grid.Row="2" >
 						<Grid.ColumnDefinitions >
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="60" />
 						</Grid.ColumnDefinitions >
-						
-						<TextBox x:Name="txtT1NewTodo" Grid.Column="0" />
-						
+						<TextBox x:Name="txtT1NewTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="0" />
 						<StackPanel Grid.Column="1" >
 							<GroupBox >
-								<StackPanel Orientation="Horizontal">
-									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="1" />
-									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="2" />
-									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="3" />
+								<StackPanel Orientation="Horizontal" KeyboardNavigation.DirectionalNavigation="Cycle" >
+									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="1"  KeyboardNavigation.TabIndex="1" IsChecked="True" />
+									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="2"  KeyboardNavigation.TabIndex="2" />
+									<RadioButton GroupName="rdoSev" Checked="RdoSeverity" CommandParameter="3"  KeyboardNavigation.TabIndex="3" />
 								</StackPanel >
 							</GroupBox >
-							<Button x:Name="btnT1Add" Content="Add" />
+							<Button x:Name="btnT1Add" Content="Add" KeyboardNavigation.TabIndex="4" IsDefault="True" />
 						</StackPanel >
 					</Grid >
 				</Grid >
 			</TabItem >
 			
 			<!-- VCS History tab -->
-			<TabItem x:Name="History" Header="History" >
+			<TabItem x:Name="History" Header="History" KeyboardNavigation.IsTabStop="False" >
 				
 			</TabItem >
 		</TabControl >

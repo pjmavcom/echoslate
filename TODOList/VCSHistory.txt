@@ -1,2 +1,21 @@
 TODOList
 
+2019-02-07 
+-Add Completed field to TodoItem
+-TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!?
+-TodoItem.ToString()
+-Fix the rdo buttons
+-Default severity selected
+-Hotkeys for Add
+-Button for move up and down list
+-Show multiple lines of text when selected? Or always show all of todo?
+-Sorting by date/time
+-Sorting by severity
+-Sorting by date completed for completed todos
+-Sorting by severity for active todos
+-Button for complete or delete todos
+-Buttons for sorting type, by severity or date, and only active todos
+-Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize
+-Add completed time to list view
+-Empty textbox when new added
+-Button for uncomplete or reactivate todo

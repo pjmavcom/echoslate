@@ -2,9 +2,49 @@ TODO List
 
 
 2019-02-06 Design interface for history tab
-2019-02-06 Fix the rdo buttons
 2019-02-06 Need file input and output
-2019-02-06 Implement it!
+2019-02-07 Save to txt file, or make file easily readable
+2019-02-07 When a todo is completed, copy to VCS History as something done today
+
+2019-02-07 Extract # hashtags to sort by what to change
+
+2019-02-07 Sorting by those hashtags
+
+2019-02-07 Colors for severity
+2019-02-07 Colors for text
+
+2019-02-07 Hotkeys for severity
+2019-02-07 Hotkeys for global new todo text box?
+
+2019-02-07 Dark mode
+2019-02-07 Reopen last open files
+2019-02-07 Multiline input
+
+2019-02-07 Edit severity, or entire TodoItem- Not working correctly. Only updates sorting when moving onto another severity bar. You can move laterally and not resort it
+
+
+
+
+
 
 
 // 2019-02-06 Design interface for todo tab
+
+// 2019-02-07 Add Completed field to TodoItem
+// 2019-02-07 TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!?
+// 2019-02-07 TodoItem.ToString()
+// 2019-02-06 Fix the rdo buttons
+// 2019-02-07 Default severity selected
+// 2019-02-07 Hotkeys for Add
+// 2019-02-07 Show multiple lines of text when selected? Or always show all of todo?
+// 2019-02-07 Button for move up and down list
+// 2019-02-07 Sorting by date/time
+// 2019-02-07 Sorting by severity
+// 2019-02-07 Sorting by severity for active todos
+// 2019-02-07 Sorting by date completed for completed todos
+// 2019-02-07 Button for complete or delete todos
+// 2019-02-07 Buttons for sorting type, by severity or date, and only active todos
+// 2019-02-07 Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize
+// 2019-02-07 Add completed time to list view
+// 2019-02-07 Empty textbox when new added
+// 2019-02-07 Button for uncomplete or reactivate todo
