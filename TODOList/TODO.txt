@@ -1,15 +1,8 @@
 TODO List
 
 
-2019-02-06 Design interface for history tab
-2019-02-06 Need file input and output
-2019-02-07 Save to txt file, or make file easily readable
+
 2019-02-07 When a todo is completed, copy to VCS History as something done today
-
-2019-02-07 Extract # hashtags to sort by what to change
-
-2019-02-07 Sorting by those hashtags
-
 2019-02-07 Colors for severity
 2019-02-07 Colors for text
 
@@ -18,9 +11,15 @@ TODO List
 
 2019-02-07 Dark mode
 2019-02-07 Reopen last open files
-2019-02-07 Multiline input
 
-2019-02-07 Edit severity, or entire TodoItem- Not working correctly. Only updates sorting when moving onto another severity bar. You can move laterally and not resort it
+2019-02-08 Change font size
+2019-02-08 History tab- add buttons for add and delete new history items
+2019-02-08 Create new history item
+2019-02-08 Refresh and sort history items
+
+
+
+
 
 
 
@@ -48,3 +47,21 @@ TODO List
 // 2019-02-07 Add completed time to list view
 // 2019-02-07 Empty textbox when new added
 // 2019-02-07 Button for uncomplete or reactivate todo
+
+// 2019-02-07 Save to txt file, or make file easily readable
+// 2019-02-06 Need file input and output
+// 2019-02-08 Reorder fields in the text file
+// 2019-02-08 Remove up/down buttons
+// 2019-02-07 Multiline input
+// 2019-02-08 Separate Lists of complete and incomplete.
+// 2019-02-08 Separate them at sorting so they can be inserted as one list
+// 2019-02-08 Separate the text file too
+// 2019-02-07 Edit entire TodoItem- Made new window pop up for it
+// 2019-02-07 Extract # hashtags to sort by what to change
+// 2019-02-07 Sorting by those hashtags
+// 2019-02-08 Edit complete items not working
+// 2019-02-08 Redesigned TodoItem- added separate date and time fields
+
+// 2019-02-06 Design interface for history tab
+// 2019-02-08 Colored date and time by start and finished
+// 2019-02-08 Added time to date and time items

@@ -1,0 +1,35 @@
+<Window x:Class="TODOList.TodoItemEditor"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:local="clr-namespace:TODOList"
+		mc:Ignorable="d"
+		Title="TodoItemEditor" Height="450" Width="800" >
+	<Grid>
+		<Grid.ColumnDefinitions >
+			<ColumnDefinition Width="60" />
+			<ColumnDefinition Width="500" />
+		</Grid.ColumnDefinitions >
+		<Grid.RowDefinitions >
+			<RowDefinition Height="100" />
+			<RowDefinition Height="50" />
+		</Grid.RowDefinitions >
+		<StackPanel >
+			<Label Content="Severity:" HorizontalAlignment="Right" />
+			<Label Content="TODO:" HorizontalAlignment="Right" />
+		</StackPanel >
+		<StackPanel Grid.Column="1">
+			<StackPanel Orientation="Horizontal" Height="25" Margin="3" >
+				<RadioButton Name="rdoSev1" GroupName="rdoSev" Checked="RdoSeverity_Checked" CommandParameter="1"  KeyboardNavigation.TabIndex="1" IsChecked="True" />
+				<RadioButton Name="rdoSev2" GroupName="rdoSev" Checked="RdoSeverity_Checked" CommandParameter="2"  KeyboardNavigation.TabIndex="2" />
+				<RadioButton Name="rdoSev3" GroupName="rdoSev" Checked="RdoSeverity_Checked" CommandParameter="3"  KeyboardNavigation.TabIndex="3" />
+			</StackPanel >
+			<TextBox x:Name="tbTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="0" Height="50" />
+		</StackPanel >
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" >
+			<Button Content="OK" Click="btnOK_Click" Width="150" />
+			<Button Content="Cancel" Click="btnCancel_Click" Width="150" />
+		</StackPanel >
+	</Grid>
+</Window>
