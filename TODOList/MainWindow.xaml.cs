@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Button = System.Windows.Controls.Button;
+using ComboBox = System.Windows.Controls.ComboBox;
+using ListBox = System.Windows.Controls.ListBox;
 using MenuItem = System.Windows.Controls.MenuItem;
 using RadioButton = System.Windows.Controls.RadioButton;
 
@@ -38,34 +40,39 @@ namespace TODOList
 		private HistoryItem _hCurrentHistoryItem;
 		
 
-		private string basePath = "";
-			
+		private const string basePath = @"C:\MyBinaries\";
+		private List<string> recentFiles;
+
+		public List<string> RecentFiles
+		{
+			get => recentFiles;
+			set => recentFiles = value;
+		}
+
 		public MainWindow()
 		{
 			InitializeComponent();
+			LoadSettings();
+			
 			_tIncompleteTodoList = new List<TodoItem>();
 			_tCompleteTodoList = new List<TodoItem>();
 			_hHistoryList = new List<HistoryItem>();
 			_tHashTags = new List<string>();
-
+			
 			_hCurrentHistoryItem = new HistoryItem("", "");
-
-
-			_tIncompleteTodoList.Add(new TodoItem(DateTime.Now, "Test1", 1));
-			_tIncompleteTodoList.Add(new TodoItem(new DateTime(1994,1,2,15,55,42), "Test2", 1));
-			_tIncompleteTodoList.Add(new TodoItem(new DateTime(1990,1,2,15,55,42), "Test3", 1));
 			
-			_tIncompleteTodoList.Add(new TodoItem(new DateTime(1999,1,2,15,55,42), "Test4", 1));
-			_tIncompleteTodoList.Add(new TodoItem(new DateTime(1999,1,2,15,55,43), "Test5", 2));
-			_tIncompleteTodoList.Add(new TodoItem(new DateTime(1999,1,2,15,55,44), "Test6", 3));
-
-			
+			cbSaveFiles.ItemsSource = recentFiles;
+			cbLoadFiles.ItemsSource = recentFiles;
+			cbSaveFiles.Items.Refresh();
+			cbLoadFiles.Items.Refresh();
 			
 			lbTIncompleteTodos.ItemsSource = _tIncompleteTodoList;
 			lbTCompleteTodos.ItemsSource = _tCompleteTodoList;
 			
 			lbHHistory.ItemsSource = _hHistoryList;
 			ResortTodoList();
+			
+			Load(recentFiles[0]);
 		}
 		
 		
@@ -369,20 +376,42 @@ namespace TODOList
 		}
 		
 		// METHOD  ///////////////////////////////////// Save() //
-		private void mnuSave_Click(object sender, EventArgs e)
+		private void cbSaveFiles_SelectionChanged(object sender, EventArgs e)
 		{
-			SaveFileDialog fileDialog = new SaveFileDialog
+			var lb = sender as ComboBox;
+			int index = lb.SelectedIndex;
+
+			if (MessageBox.Show("Save over " + recentFiles[index], "Are you sure you want to save?", MessageBoxButtons.YesNo) ==
+				System.Windows.Forms.DialogResult.No)
+				return;
+			Save(recentFiles[index]);
+		}
+		private void mnuSaveAs_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog sfd = new SaveFileDialog
 			{
 				Title  = "Select folder to save game in.",
-				FileName = basePath == "" ? AppDomain.CurrentDomain.BaseDirectory : basePath
+				FileName = basePath
 			};
 
-			DialogResult folderResult = fileDialog.ShowDialog();
+			DialogResult dr = sfd.ShowDialog();
 
-			if (folderResult != System.Windows.Forms.DialogResult.OK)
+			if (dr != System.Windows.Forms.DialogResult.OK)
 				return;
+			Save(sfd.FileName);
+
+		}
+		private void mnuSave_Click(object sender, EventArgs e)
+		{
+			Save(recentFiles[0]);
+
+		}
+		private void Save(string path)
+		{
+			SortRecentFiles(path);
+			SaveSettings();
 			
-			StreamWriter stream   = new StreamWriter(File.Open(fileDialog.FileName, FileMode.Create));
+			StreamWriter stream   = new StreamWriter(File.Open(path, FileMode.Create));
 
 			foreach (TodoItem td in _tIncompleteTodoList)
 			{
@@ -401,25 +430,40 @@ namespace TODOList
 			}
 			stream.Close();
 		}
-		
 		// METHOD  ///////////////////////////////////// Load() //
+		public void cbLoadFiles_SelectionChanged(object sender, EventArgs e)
+		{
+			var lb = sender as ComboBox;
+			int index = lb.SelectedIndex;
+			if (MessageBox.Show("Load " + recentFiles[index], "Are you sure you want to load?", MessageBoxButtons.YesNo) ==
+				System.Windows.Forms.DialogResult.No)
+				return;
+			Load(recentFiles[index]);
+		}
 		private void mnuLoad_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog
 			{
 				Title = "Open file: ",
-				FileName = basePath == "" ? AppDomain.CurrentDomain.BaseDirectory : basePath
+				FileName = basePath
 			};
 
-			DialogResult ofdResult = ofd.ShowDialog();
+			DialogResult dr = ofd.ShowDialog();
 			
-			if (ofdResult != System.Windows.Forms.DialogResult.OK)
+			if (dr != System.Windows.Forms.DialogResult.OK)
 				return;
-
-			StreamReader stream = new StreamReader(File.Open(ofd.FileName, FileMode.Open));
+			Load(ofd.FileName);
+		}
+		private void Load(string path)
+		{
+			SortRecentFiles(path);
+			SaveSettings();
+			
+			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open));
 
 			_tIncompleteTodoList.Clear();
 			_tCompleteTodoList.Clear();
+			_hHistoryList.Clear();
 			
 			string line = stream.ReadLine();
 
@@ -458,11 +502,49 @@ namespace TODOList
 				history.Add(line);
 				line = stream.ReadLine();
 			}
-
 			stream.Close();
 			
 			ResortTodoList();
 			RefreshHistory();
+		}
+
+		// METHOD  ///////////////////////////////////// Settings() //
+		private void LoadSettings()
+		{
+			recentFiles = new List<string>();
+			StreamReader stream = new StreamReader(File.Open(basePath + "TDHistory.settings", FileMode.Open));
+			string line = stream.ReadLine();
+			recentFiles.Clear();
+			while (line != null)
+			{
+				recentFiles.Add(line);
+				line = stream.ReadLine();
+			}
+			stream.Close();
+			cbSaveFiles.Items.Refresh();
+			cbLoadFiles.Items.Refresh();
+		}
+		private void SaveSettings()
+		{
+			StreamWriter stream = new StreamWriter(File.Open(basePath + "TDHistory.settings", FileMode.Create));
+			foreach (string s in recentFiles)
+				stream.WriteLine(s);
+			stream.Close();
+			cbSaveFiles.Items.Refresh();
+			cbLoadFiles.Items.Refresh();
+		}
+		// METHOD  ///////////////////////////////////// SortRecentFiles() //
+		private void SortRecentFiles(string recent)
+		{
+			if (recentFiles.Contains(recent))
+				recentFiles.Remove(recent);
+				
+			recentFiles.Insert(0, recent);
+				
+			while (recentFiles.Count >= 10)
+			{
+				recentFiles.RemoveAt(recentFiles.Count - 1);
+			}
 		}
 	}
 }

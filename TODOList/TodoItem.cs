@@ -105,7 +105,7 @@ namespace TODOList
 			foreach(string s in pieces)
 			{
 				if (s.Contains('#'))
-					_tags.Add(s);
+					_tags.Add(s.ToUpper());
 			}
 		}
 

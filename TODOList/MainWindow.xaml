@@ -5,11 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1920" Width="1080">
+        Title="TodoList v1.0" Height="1920" Width="1080">
     <DockPanel TextElement.FontSize="20" >
 		<Menu DockPanel.Dock="Top" >
-			<MenuItem x:Name="mnuSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
-			<MenuItem x:Name="mnuLoad" Header="Load" Click="mnuLoad_Click" KeyboardNavigation.IsTabStop="False" />
+			<MenuItem Name="mnuSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
+			<MenuItem Name="mnuSaveAs" Header="SaveAs" Click="mnuSaveAs_Click" KeyboardNavigation.IsTabStop="False" />
+
+			<ComboBox Name="cbSaveFiles" DockPanel.Dock="Top" SelectionChanged="cbSaveFiles_SelectionChanged" />
+			<MenuItem Name="mnuLoad" Header="Load" Click="mnuLoad_Click" KeyboardNavigation.IsTabStop="False" />
+			<ComboBox Name="cbLoadFiles" DockPanel.Dock="Top" SelectionChanged="cbLoadFiles_SelectionChanged" />
+				<!-- <MenuItem.ItemContainerStyle > -->
+				<!-- 	<Style TargetType="{x:Type MenuItem}" > -->
+				<!-- 		<Setter Property="Command" Value="{Binding Path=DataContext.ExampleCommand , RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" /> -->
+				<!-- 		<Setter Property="CommandParameter" Value="{Binding}" /> -->
+				<!-- 	</Style > -->
+				<!-- </MenuItem.ItemContainerStyle > -->
+			
+
 		</Menu >
 		<TabControl >
 			

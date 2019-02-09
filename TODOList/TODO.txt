@@ -1,66 +1,125 @@
-TODO List
-2019-02-07 Colors for severity
-2019-02-07 Colors for text
-
-2019-02-07 Hotkeys for severity
-2019-02-07 Hotkeys for global new todo text box?
-
-2019-02-07 Dark mode
-2019-02-07 Reopen last open files
-
-2019-02-08 Change font size
-
-
-
-
-
-20190206|112215|20190209|112231|True|1|Fix the rdo buttons
-20190206|112215|20190209|112231|True|1|Need file input and output
-20190206|112215|20190209|112231|True|1|Design interface for history tab
-20190206|112215|20190209|112231|True|1|Design interface for todo tab
-
-20190207|112215|20190209|112231|True|1|Add Completed field to TodoItem
-20190207|112215|20190209|112231|True|1|TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!?
-20190207|112215|20190209|112231|True|1|TodoItem.ToString()
-20190207|112215|20190209|112231|True|1|Default severity selected
-20190207|112215|20190209|112231|True|1|Hotkeys for Add
-20190207|112215|20190209|112231|True|1|Show multiple lines of text when selected? Or always show all of todo?
-20190207|112215|20190209|112231|True|1|Button for move up and down list
-20190207|112215|20190209|112231|True|1|Sorting by date/time
-20190207|112215|20190209|112231|True|1|Sorting by severity
-20190207|112215|20190209|112231|True|1|Sorting by severity for active todos
-20190207|112215|20190209|112231|True|1|Sorting by date completed for completed todos
-20190207|112215|20190209|112231|True|1|Button for complete or delete todos
-20190207|112215|20190209|112231|True|1|Buttons for sorting type, by severity or date, and only active todos
-20190207|112215|20190209|112231|True|1|Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize
-20190207|112215|20190209|112231|True|1|Add completed time to list view
-20190207|112215|20190209|112231|True|1|Empty textbox when new added
-20190207|112215|20190209|112231|True|1|Button for uncomplete or reactivate todo
-20190207|112215|20190209|112231|True|1|Save to txt file, or make file easily readable
-20190207|112215|20190209|112231|True|1|Multiline input
-20190207|112215|20190209|112231|True|1|Edit entire TodoItem- Made new window pop up for it
-20190207|112215|20190209|112231|True|1|Extract # hashtags to sort by what to change
-20190207|112215|20190209|112231|True|1|Sorting by those hashtags
-20190207|112215|20190209|112231|True|1|When a todo is completed, copy to VCS History as something done to most recent history item
-
-20190208|112215|20190209|112231|True|1|Redesigned TodoItem- added separate date and time fields
-20190208|112215|20190209|112231|True|1|Reorder fields in the text file
-20190208|112215|20190209|112231|True|1|Remove up/down buttons
-20190208|112215|20190209|112231|True|1|Edit complete items not working
-20190208|112215|20190209|112231|True|1|Separate Lists of complete and incomplete.
-20190208|112215|20190209|112231|True|1|Separate them at sorting so they can be inserted as one list
-20190208|112215|20190209|112231|True|1|Separate the text file too
-20190208|112215|20190209|112231|True|1|Colored date and time by start and finished
+20190209|151943|-|-|False|1|Colors for severity
+20190209|152000|-|-|False|1|Colors for text, #hashtags|#HASHTAGS
+20190209|152017|-|-|False|1|#Hotkeys for #severity|#HOTKEYS|#SEVERITY
+20190209|152030|-|-|False|1|#Hotkeys for global new todo text box|#HOTKEYS
+20190209|152035|-|-|False|1|Dark mode
+20190209|152048|-|-|False|1|Change font size
+20190209|152109|-|-|False|1|Sort by bugs, or have a bugs list window #Sorting #Interface|#SORTING|#INTERFACE
+20190209|152920|-|-|False|1|Still a right click context menu on the history items todos #Interface #bug|#INTERFACE|#BUG
+====================================
+20190206|112215|20190209|112231|True|1|Fix the rdo buttons #Severity|#SEVERITY
+20190206|112215|20190209|112231|True|1|Need file input and output #FileIO|#FILEIO
+20190206|112215|20190209|112231|True|1|Design interface for history tab #Interface|#INTERFACE
+20190206|112215|20190209|112231|True|1|Design interface for todo tab #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Add Completed field to TodoItem #TodoItem|#TODOITEM
+20190207|112215|20190209|112231|True|1|TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!? #TodoItem|#TODOITEM
+20190207|112215|20190209|112231|True|1|TodoItem.ToString() #TodoItem|#TODOITEM
+20190207|112215|20190209|112231|True|1|Default severity selected #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Hotkeys for Add #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Show multiple lines of text when selected? Or always show all of todo? #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Button for move up and down list #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Sorting by date/time #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Sorting by severity #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Sorting by severity for active todos #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Sorting by date completed for completed todos #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Button for complete or delete todos #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Buttons for sorting type, by severity or date, and only active todos #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize #Interface #Bug|#INTERFACE|#BUG
+20190207|112215|20190209|112231|True|1|Add completed time to list view #Interface #Bug|#INTERFACE|#BUG
+20190207|112215|20190209|112231|True|1|Empty textbox when new added #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Button for uncomplete or reactivate todo #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Save to txt file, or make file easily readable #FileIO|#FILEIO
+20190207|112215|20190209|112231|True|1|Multiline input #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Edit entire TodoItem- Made new window pop up for it #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Extract hashtags for sorting #Sorting #HashTags|#SORTING|#HASHTAGS
+20190207|112215|20190209|112231|True|1|Sorting by those hashtags #Sorting #HashTags|#SORTING|#HASHTAGS
+20190207|112215|20190209|112231|True|1|When a todo is completed, copy to VCS History as something done to most recent history item #Interface #History|#INTERFACE|#HISTORY
+20190208|112215|20190209|112231|True|1|Redesigned TodoItem- added separate date and time fields #TodoItem|#TODOITEM
+20190208|112215|20190209|112231|True|1|Reorder fields in the text file #Interface #FileIO|#INTERFACE|#FILEIO
+20190208|112215|20190209|112231|True|1|Remove up/down buttons #Interface|#INTERFACE
+20190208|112215|20190209|112231|True|1|Edit complete items not working #Interface #Bug|#INTERFACE|#BUG
+20190208|112215|20190209|112231|True|1|Separate Lists of complete and incomplete. #Interface|#INTERFACE
+20190208|112215|20190209|112231|True|1|Separate incomplete and complete at sorting so they can be inserted as one list #FileIO #Interface #Sorting|#FILEIO|#INTERFACE|#SORTING
+20190208|112215|20190209|112231|True|1|Separate the text file too #FileIO|#FILEIO
+20190208|112215|20190209|112231|True|1|Colored date and time by start and finished #Interface|#INTERFACE
 20190208|112215|20190209|112231|True|1|Added time to date and time items
 20190208|112215|20190209|112231|True|1|Add pointer to most recent history list
-20190208|112215|20190209|112231|True|1|Create new history item
-20190208|112215|20190209|112231|True|1|Refresh and sort history items
-20190208|112215|20190209|112231|True|1|Change visible history item in listbox
-20190208|112215|20190209|112231|True|1|History tab- add buttons for add and delete new history items
+20190208|112215|20190209|112231|True|1|Create new history item #HistoryItem|#HISTORYITEM
+20190208|112215|20190209|112231|True|1|Refresh and sort history items #HistoryItem #Sorting|#HISTORYITEM|#SORTING
+20190208|112215|20190209|112231|True|1|Change visible history item in listbox #Interface #HistoryItem|#INTERFACE|#HISTORYITEM
+20190208|112215|20190209|112231|True|1|History tab- add buttons for add and delete new history items #Interface|#INTERFACE
+20190209|112215|20190209|112231|True|1|Save text in notes #Bug|#BUG
+20190209|112215|20190209|112231|True|1|Export to text file #FileIO|#FILEIO
+20190209|112215|20190209|112231|True|1|Import from text #FileIO|#FILEIO
+20190209|112215|20190209|112231|True|1|Delete todo from history item #Interface|#INTERFACE
+20190209|112215|20190209|112231|True|1|Only add to most recent History Item #Interface #HistoryItem|#INTERFACE|#HISTORYITEM
+20190209|112215|20190209|112231|True|1|Copy button #Interface|#INTERFACE
+20190209|152541|20190209|152832|True|1|#Bug Loading files doesnt clear previous #HistoryItems|#BUG|#HISTORYITEMS
+20190209|152503|20190209|173546|True|1|Quick buttons for recent loaded files #Interface|#INTERFACE
+20190209|152128|20190209|173549|True|1|Change #hashtags to all caps for case insenstivity|#HASHTAGS
+20190209|152043|20190209|173551|True|1|Reopen last files #FileIO|#FILEIO
+====================================VCS
+NewVCS
+20190209|152143|Working on ease of use items now
+VCSTodos
+20190209|152541|20190209|152832|True|1|#Bug Loading files doesnt clear previous #HistoryItems|#BUG|#HISTORYITEMS
+20190209|152503|20190209|173546|True|1|Quick buttons for recent loaded files #Interface|#INTERFACE
+20190209|152128|20190209|173549|True|1|Change #hashtags to all caps for case insenstivity|#HASHTAGS
+20190209|152043|20190209|173551|True|1|Reopen last files #FileIO|#FILEIO
+EndVCS
+NewVCS
+20190206|112229|Definitely not the order I did these all in...But it works now.VCS History and sorting and copying to clipboardTODO sorting, severityFile saving and loadingHashtags
 
-20190209|112215|20190209|112231|True|1|Save text in notes
-20190209|112215|20190209|112231|True|1|Export to text file
-20190209|112215|20190209|112231|True|1|Import from text
-20190209|112215|20190209|112231|True|1|Delete todo from history item
-20190209|112215|20190209|112231|True|1|Only add to most recent History Item
-20190209|112215|20190209|112231|True|1|Copy button
+
+
+
+
+VCSTodos
+20190206|112215|20190209|112231|True|1|Fix the rdo buttons #Severity|#SEVERITY
+20190206|112215|20190209|112231|True|1|Need file input and output #FileIO|#FILEIO
+20190206|112215|20190209|112231|True|1|Design interface for history tab #Interface|#INTERFACE
+20190206|112215|20190209|112231|True|1|Design interface for todo tab #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Add Completed field to TodoItem #TodoItem|#TODOITEM
+20190207|112215|20190209|112231|True|1|TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!? #TodoItem|#TODOITEM
+20190207|112215|20190209|112231|True|1|TodoItem.ToString() #TodoItem|#TODOITEM
+20190207|112215|20190209|112231|True|1|Default severity selected #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Hotkeys for Add #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Show multiple lines of text when selected? Or always show all of todo? #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Button for move up and down list #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Sorting by date/time #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Sorting by severity #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Sorting by severity for active todos #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Sorting by date completed for completed todos #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Button for complete or delete todos #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Buttons for sorting type, by severity or date, and only active todos #Interface #Sorting|#INTERFACE|#SORTING
+20190207|112215|20190209|112231|True|1|Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize #Interface #Bug|#INTERFACE|#BUG
+20190207|112215|20190209|112231|True|1|Add completed time to list view #Interface #Bug|#INTERFACE|#BUG
+20190207|112215|20190209|112231|True|1|Empty textbox when new added #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Button for uncomplete or reactivate todo #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Save to txt file, or make file easily readable #FileIO|#FILEIO
+20190207|112215|20190209|112231|True|1|Multiline input #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Edit entire TodoItem- Made new window pop up for it #Interface|#INTERFACE
+20190207|112215|20190209|112231|True|1|Extract hashtags for sorting #Sorting #HashTags|#SORTING|#HASHTAGS
+20190207|112215|20190209|112231|True|1|Sorting by those hashtags #Sorting #HashTags|#SORTING|#HASHTAGS
+20190207|112215|20190209|112231|True|1|When a todo is completed, copy to VCS History as something done to most recent history item #Interface #History|#INTERFACE|#HISTORY
+20190208|112215|20190209|112231|True|1|Redesigned TodoItem- added separate date and time fields #TodoItem|#TODOITEM
+20190208|112215|20190209|112231|True|1|Reorder fields in the text file #Interface #FileIO|#INTERFACE|#FILEIO
+20190208|112215|20190209|112231|True|1|Remove up/down buttons #Interface|#INTERFACE
+20190208|112215|20190209|112231|True|1|Edit complete items not working #Interface #Bug|#INTERFACE|#BUG
+20190208|112215|20190209|112231|True|1|Separate Lists of complete and incomplete. #Interface|#INTERFACE
+20190208|112215|20190209|112231|True|1|Separate incomplete and complete at sorting so they can be inserted as one list #FileIO #Interface #Sorting|#FILEIO|#INTERFACE|#SORTING
+20190208|112215|20190209|112231|True|1|Separate the text file too #FileIO|#FILEIO
+20190208|112215|20190209|112231|True|1|Colored date and time by start and finished #Interface|#INTERFACE
+20190208|112215|20190209|112231|True|1|Added time to date and time items
+20190208|112215|20190209|112231|True|1|Add pointer to most recent history list
+20190208|112215|20190209|112231|True|1|Create new history item #HistoryItem|#HISTORYITEM
+20190208|112215|20190209|112231|True|1|Refresh and sort history items #HistoryItem #Sorting|#HISTORYITEM|#SORTING
+20190208|112215|20190209|112231|True|1|Change visible history item in listbox #Interface #HistoryItem|#INTERFACE|#HISTORYITEM
+20190208|112215|20190209|112231|True|1|History tab- add buttons for add and delete new history items #Interface|#INTERFACE
+20190209|112215|20190209|112231|True|1|Save text in notes #Bug|#BUG
+20190209|112215|20190209|112231|True|1|Export to text file #FileIO|#FILEIO
+20190209|112215|20190209|112231|True|1|Import from text #FileIO|#FILEIO
+20190209|112215|20190209|112231|True|1|Delete todo from history item #Interface|#INTERFACE
+20190209|112215|20190209|112231|True|1|Only add to most recent History Item #Interface #HistoryItem|#INTERFACE|#HISTORYITEM
+20190209|112215|20190209|112231|True|1|Copy button #Interface|#INTERFACE
+EndVCS
