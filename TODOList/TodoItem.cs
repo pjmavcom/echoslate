@@ -16,13 +16,13 @@ namespace TODOList
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private string _todo;
-		private string _dateStarted;
-		private string _timeStarted;
+		private readonly string _dateStarted;
+		private readonly string _timeStarted;
 		private string _dateCompleted;
 		private string _timeCompleted;
 		private bool _isComplete;
 		private int _severity;
-		private List<string> _tags;
+		private readonly List<string> _tags;
 		
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
@@ -41,19 +41,11 @@ namespace TODOList
 			}
 		}
 
-		public string StartDateTime => _dateStarted + "-" + _timeStarted;
-		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
+//		public string StartDateTime => _dateStarted + "-" + _timeStarted;
+//		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
 		
-		public string DateStarted
-		{
-			get => _dateStarted;
-			set => _dateStarted = value;
-		}
-		public string TimeStarted
-		{
-			get => _timeStarted;
-			set => _timeStarted = value;
-		}
+		public string DateStarted => _dateStarted;
+		public string TimeStarted => _timeStarted;
 		public int Severity
 		{
 			get => _severity;
@@ -74,11 +66,7 @@ namespace TODOList
 			get => _isComplete;
 			set => _isComplete = value;
 		}
-		public List<string> Tags
-		{
-			get => _tags;
-			set => _tags = value;
-		}
+		public List<string> Tags => _tags;
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem()
@@ -112,9 +100,12 @@ namespace TODOList
 			_isComplete = Convert.ToBoolean(pieces[4]); 
 			_severity = Convert.ToInt16(pieces[5]);
 			_todo = pieces[6].Trim();
-			for (int i = 7; i < pieces.Count(); i++)
+
+			pieces = _todo.Split(' ');
+			foreach(string s in pieces)
 			{
-				_tags.Add(pieces[i]);
+				if (s.Contains('#'))
+					_tags.Add(s);
 			}
 		}
 
@@ -131,6 +122,11 @@ namespace TODOList
 			{
 				result += "|" + s;
 			}
+			return result;
+		}
+		public string ToClipboard()
+		{
+			string result = _dateCompleted + "-" + _timeCompleted + " | " + _todo;
 			return result;
 		}
 	}

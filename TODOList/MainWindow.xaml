@@ -8,57 +8,11 @@
         Title="MainWindow" Height="1920" Width="1080">
     <DockPanel TextElement.FontSize="20" >
 		<Menu DockPanel.Dock="Top" >
-			<MenuItem x:Name="mnuSave" Header="Save" KeyboardNavigation.IsTabStop="False" />
-			<MenuItem x:Name="mnuLoad" Header="Load" KeyboardNavigation.IsTabStop="False" />
+			<MenuItem x:Name="mnuSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
+			<MenuItem x:Name="mnuLoad" Header="Load" Click="mnuLoad_Click" KeyboardNavigation.IsTabStop="False" />
 		</Menu >
 		<TabControl >
-			<!-- VCS History tab -->
-			<TabItem x:Name="History" Header="History" KeyboardNavigation.IsTabStop="False" >
-				<Grid >
-					<Grid.ColumnDefinitions >
-						<ColumnDefinition Width="180" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions >
-					<StackPanel Grid.Column="0" >
-						<StackPanel Orientation="Horizontal" >
-							<Button Content="New" Click="btnHNewHistory_Click" Width="90" />
-							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" />
-						</StackPanel >
-						<ListBox Name="lbHHistory" >
-							<ListBox.ItemTemplate >
-								<DataTemplate >
-									<TextBlock Text="{Binding DateTimeAdded}" />
-								</DataTemplate >
-							</ListBox.ItemTemplate >
-						</ListBox >
-					</StackPanel >
-						
-					<StackPanel Grid.Column="1" >
-						<TextBox Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" Height="200"/>
-						<ListBox Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None">
-							<ListBox.ContextMenu >
-								<ContextMenu >
-									<!-- <MenuItem Header="Edit" Click="mnuEdit_Click" CommandParameter="incomplete" /> -->
-									<!-- <MenuItem Header="Delete" Click="mnuDelete_Click" CommandParameter="incomplete" /> -->
-								</ContextMenu >
-							</ListBox.ContextMenu >
-							<ListBox.ItemTemplate >
-								<DataTemplate >
-									<Grid Margin="0,2" >
-										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="*" />
-											<ColumnDefinition Width="25" />
-										</Grid.ColumnDefinitions >
-										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
-										<TextBlock Grid.Column="0" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="{Binding ElementName=PlaceHolderBorder, Path=ActualWidth}" />
-										<Button Grid.Column="1" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" />
-									</Grid >
-								</DataTemplate >
-							</ListBox.ItemTemplate >
-						</ListBox >
-					</StackPanel >
-				</Grid >
-			</TabItem >
+			
 			
 			<!-- To do Tab -->
 			<TabItem x:Name="TODO" Header="TODO" KeyboardNavigation.IsTabStop="False" >
@@ -163,6 +117,64 @@
 				</Grid >
 			</TabItem >
 			
+			
+			<!-- VCS History tab -->
+			<TabItem x:Name="History" Header="History" KeyboardNavigation.IsTabStop="False" >
+				<Grid >
+					<Grid.ColumnDefinitions >
+						<ColumnDefinition Width="220" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions >
+					<StackPanel Grid.Column="0" >
+						<StackPanel Orientation="Horizontal" >
+							<Button Content="New" Click="btnHNewHistory_Click" Width="90" />
+							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" />
+						</StackPanel >
+						<ListBox Name="lbHHistory" SelectionChanged="lbHHistory_SelectionChanged" >
+							<ListBox.ItemTemplate >
+								<DataTemplate >
+									<Grid Margin="0,2" >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="25" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions >
+										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" />
+										<TextBlock Grid.Column="1" Text="{Binding DateTimeAdded}" />
+									</Grid >
+								</DataTemplate >
+							</ListBox.ItemTemplate >
+						</ListBox >
+					</StackPanel >
+						
+					<StackPanel Grid.Column="1" >
+						<TextBox Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" Height="200" LostFocus="tbHNotes_LoseFocus" />
+						<ListBox Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None">
+							<ListBox.ContextMenu >
+								<ContextMenu >
+									<!-- <MenuItem Header="Edit" Click="mnuEdit_Click" CommandParameter="incomplete" /> -->
+									<!-- <MenuItem Header="Delete" Click="mnuDelete_Click" CommandParameter="incomplete" /> -->
+								</ContextMenu >
+							</ListBox.ContextMenu >
+							<ListBox.ItemTemplate >
+								<DataTemplate >
+									<Grid Margin="0,2" >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="25" />
+										</Grid.ColumnDefinitions >
+										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
+										<TextBlock Grid.Column="0" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="{Binding ElementName=PlaceHolderBorder, Path=ActualWidth}" />
+										<Button Grid.Column="1" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" />
+									</Grid >
+								</DataTemplate >
+							</ListBox.ItemTemplate >
+						</ListBox >
+					</StackPanel >
+				</Grid >
+			</TabItem >
+			
+
 			
 		</TabControl >
     </DockPanel >

@@ -1,8 +1,4 @@
 TODO List
-
-
-
-2019-02-07 When a todo is completed, copy to VCS History as something done today
 2019-02-07 Colors for severity
 2019-02-07 Colors for text
 
@@ -13,55 +9,58 @@ TODO List
 2019-02-07 Reopen last open files
 
 2019-02-08 Change font size
-2019-02-08 History tab- add buttons for add and delete new history items
-2019-02-08 Create new history item
-2019-02-08 Refresh and sort history items
 
 
 
 
 
+20190206|112215|20190209|112231|True|1|Fix the rdo buttons
+20190206|112215|20190209|112231|True|1|Need file input and output
+20190206|112215|20190209|112231|True|1|Design interface for history tab
+20190206|112215|20190209|112231|True|1|Design interface for todo tab
 
+20190207|112215|20190209|112231|True|1|Add Completed field to TodoItem
+20190207|112215|20190209|112231|True|1|TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!?
+20190207|112215|20190209|112231|True|1|TodoItem.ToString()
+20190207|112215|20190209|112231|True|1|Default severity selected
+20190207|112215|20190209|112231|True|1|Hotkeys for Add
+20190207|112215|20190209|112231|True|1|Show multiple lines of text when selected? Or always show all of todo?
+20190207|112215|20190209|112231|True|1|Button for move up and down list
+20190207|112215|20190209|112231|True|1|Sorting by date/time
+20190207|112215|20190209|112231|True|1|Sorting by severity
+20190207|112215|20190209|112231|True|1|Sorting by severity for active todos
+20190207|112215|20190209|112231|True|1|Sorting by date completed for completed todos
+20190207|112215|20190209|112231|True|1|Button for complete or delete todos
+20190207|112215|20190209|112231|True|1|Buttons for sorting type, by severity or date, and only active todos
+20190207|112215|20190209|112231|True|1|Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize
+20190207|112215|20190209|112231|True|1|Add completed time to list view
+20190207|112215|20190209|112231|True|1|Empty textbox when new added
+20190207|112215|20190209|112231|True|1|Button for uncomplete or reactivate todo
+20190207|112215|20190209|112231|True|1|Save to txt file, or make file easily readable
+20190207|112215|20190209|112231|True|1|Multiline input
+20190207|112215|20190209|112231|True|1|Edit entire TodoItem- Made new window pop up for it
+20190207|112215|20190209|112231|True|1|Extract # hashtags to sort by what to change
+20190207|112215|20190209|112231|True|1|Sorting by those hashtags
+20190207|112215|20190209|112231|True|1|When a todo is completed, copy to VCS History as something done to most recent history item
 
+20190208|112215|20190209|112231|True|1|Redesigned TodoItem- added separate date and time fields
+20190208|112215|20190209|112231|True|1|Reorder fields in the text file
+20190208|112215|20190209|112231|True|1|Remove up/down buttons
+20190208|112215|20190209|112231|True|1|Edit complete items not working
+20190208|112215|20190209|112231|True|1|Separate Lists of complete and incomplete.
+20190208|112215|20190209|112231|True|1|Separate them at sorting so they can be inserted as one list
+20190208|112215|20190209|112231|True|1|Separate the text file too
+20190208|112215|20190209|112231|True|1|Colored date and time by start and finished
+20190208|112215|20190209|112231|True|1|Added time to date and time items
+20190208|112215|20190209|112231|True|1|Add pointer to most recent history list
+20190208|112215|20190209|112231|True|1|Create new history item
+20190208|112215|20190209|112231|True|1|Refresh and sort history items
+20190208|112215|20190209|112231|True|1|Change visible history item in listbox
+20190208|112215|20190209|112231|True|1|History tab- add buttons for add and delete new history items
 
-
-
-
-// 2019-02-06 Design interface for todo tab
-
-// 2019-02-07 Add Completed field to TodoItem
-// 2019-02-07 TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!?
-// 2019-02-07 TodoItem.ToString()
-// 2019-02-06 Fix the rdo buttons
-// 2019-02-07 Default severity selected
-// 2019-02-07 Hotkeys for Add
-// 2019-02-07 Show multiple lines of text when selected? Or always show all of todo?
-// 2019-02-07 Button for move up and down list
-// 2019-02-07 Sorting by date/time
-// 2019-02-07 Sorting by severity
-// 2019-02-07 Sorting by severity for active todos
-// 2019-02-07 Sorting by date completed for completed todos
-// 2019-02-07 Button for complete or delete todos
-// 2019-02-07 Buttons for sorting type, by severity or date, and only active todos
-// 2019-02-07 Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize
-// 2019-02-07 Add completed time to list view
-// 2019-02-07 Empty textbox when new added
-// 2019-02-07 Button for uncomplete or reactivate todo
-
-// 2019-02-07 Save to txt file, or make file easily readable
-// 2019-02-06 Need file input and output
-// 2019-02-08 Reorder fields in the text file
-// 2019-02-08 Remove up/down buttons
-// 2019-02-07 Multiline input
-// 2019-02-08 Separate Lists of complete and incomplete.
-// 2019-02-08 Separate them at sorting so they can be inserted as one list
-// 2019-02-08 Separate the text file too
-// 2019-02-07 Edit entire TodoItem- Made new window pop up for it
-// 2019-02-07 Extract # hashtags to sort by what to change
-// 2019-02-07 Sorting by those hashtags
-// 2019-02-08 Edit complete items not working
-// 2019-02-08 Redesigned TodoItem- added separate date and time fields
-
-// 2019-02-06 Design interface for history tab
-// 2019-02-08 Colored date and time by start and finished
-// 2019-02-08 Added time to date and time items
+20190209|112215|20190209|112231|True|1|Save text in notes
+20190209|112215|20190209|112231|True|1|Export to text file
+20190209|112215|20190209|112231|True|1|Import from text
+20190209|112215|20190209|112231|True|1|Delete todo from history item
+20190209|112215|20190209|112231|True|1|Only add to most recent History Item
+20190209|112215|20190209|112231|True|1|Copy button
