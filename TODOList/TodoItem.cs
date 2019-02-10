@@ -41,8 +41,8 @@ namespace TODOList
 			}
 		}
 
-//		public string StartDateTime => _dateStarted + "-" + _timeStarted;
-//		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
+		public string StartDateTime => _dateStarted + "-" + _timeStarted;
+		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
 		
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;

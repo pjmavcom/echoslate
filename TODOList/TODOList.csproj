@@ -52,6 +52,7 @@
 			<SubType>Designer</SubType>
 		</ApplicationDefinition>
 		<Compile Include="HistoryItem.cs" />
+		<Compile Include="ProgressBarForegroundConverter.cs" />
 		<Compile Include="TodoItem.cs" />
 		<Compile Include="TodoItemEditor.xaml.cs">
 		  <DependentUpon>TodoItemEditor.xaml</DependentUpon>
@@ -88,6 +89,9 @@
 		<None Include="App.config" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Content Include="Monotone.Brushes.xaml" />
+	  <Content Include="Monotone.Colors.xaml" />
+	  <Content Include="Monotone.xaml" />
 	  <Content Include="TODO.txt" />
 	  <Content Include="VCSHistory.txt" />
 	</ItemGroup>

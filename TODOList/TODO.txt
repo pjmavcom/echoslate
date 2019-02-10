@@ -1,11 +1,7 @@
-20190209|151943|-|-|False|1|Colors for severity
-20190209|152000|-|-|False|1|Colors for text, #hashtags|#HASHTAGS
 20190209|152017|-|-|False|1|#Hotkeys for #severity|#HOTKEYS|#SEVERITY
-20190209|152030|-|-|False|1|#Hotkeys for global new todo text box|#HOTKEYS
-20190209|152035|-|-|False|1|Dark mode
+20190209|152000|-|-|False|1|Colors for text, #hashtags|#HASHTAGS
 20190209|152048|-|-|False|1|Change font size
-20190209|152109|-|-|False|1|Sort by bugs, or have a bugs list window #Sorting #Interface|#SORTING|#INTERFACE
-20190209|152920|-|-|False|1|Still a right click context menu on the history items todos #Interface #bug|#INTERFACE|#BUG
+20190209|174200|-|-|False|1|History items that havent been copied need to be highlighted?
 ====================================
 20190206|112215|20190209|112231|True|1|Fix the rdo buttons #Severity|#SEVERITY
 20190206|112215|20190209|112231|True|1|Need file input and output #FileIO|#FILEIO
@@ -58,7 +54,47 @@
 20190209|152503|20190209|173546|True|1|Quick buttons for recent loaded files #Interface|#INTERFACE
 20190209|152128|20190209|173549|True|1|Change #hashtags to all caps for case insenstivity|#HASHTAGS
 20190209|152043|20190209|173551|True|1|Reopen last files #FileIO|#FILEIO
+20190209|152035|20190210|110129|True|1|Dark mode
+20190209|152920|20190210|110142|True|1|Still a right click context menu on the history items todos #Interface #bug|#INTERFACE|#BUG
+20190209|174001|20190210|114615|True|3|Add title of current file open
+20190210|110915|20190210|114631|True|1|Dates not showing because rider said I wasnt using those properties #Code|#CODE
+20190210|110541|20190210|114643|True|1|Make textbox for new todo taller #interface|#INTERFACE
+20190209|174340|20190210|120429|True|3|New Todolist button!!! Wtf....
+20190210|065844|20190210|120522|True|2|Default to #sorting by severity|#SORTING
+20190210|110951|20190210|120543|True|1|Default sort order is backwards? Need to sort by highest severity first #Code|#CODE
+20190209|152030|20190210|140203|True|3|#Hotkeys for global new todo text box|#HOTKEYS
+20190209|152109|20190210|140238|True|2|Sort by bugs, or have a bugs list window #Sorting #Interface|#SORTING|#INTERFACE
+20190209|174057|20190210|142611|True|2|Add popup to save before closing
+20190210|110549|20190210|142653|True|1|Make severity a dropdown list #interface|#INTERFACE
+20190209|151943|20190210|142707|True|2|Colors for severity. This works if its not in dark mode...
+20190210|110625|20190210|143557|True|1|Edit todo box is not good sizing...#interface #TodoItem|SIZING...#INTERFACE|#TODOITEM
+20190210|110648|20190210|143558|True|1|TodoEdit box default ok button
+20190210|065758|20190210|151458|True|2|Add dropdown for #hashtags sorting #Interface|#HASHTAGS|#INTERFACE
+20190209|174253|20190210|151517|True|1|Show hashtags to side of todo and which one it is sorting by
+20190210|070028|20190210|153035|True|1|Window remember position when closing?
 ====================================VCS
+NewVCS
+20190210|110129|
+VCSTodos
+20190209|152035|20190210|110129|True|1|Dark mode
+20190209|152920|20190210|110142|True|1|Still a right click context menu on the history items todos #Interface #bug|#INTERFACE|#BUG
+20190209|174001|20190210|114615|True|3|Add title of current file open
+20190210|110915|20190210|114631|True|1|Dates not showing because rider said I wasnt using those properties #Code|#CODE
+20190210|110541|20190210|114643|True|1|Make textbox for new todo taller #interface|#INTERFACE
+20190209|174340|20190210|120429|True|3|New Todolist button!!! Wtf....
+20190210|065844|20190210|120522|True|2|Default to #sorting by severity|#SORTING
+20190210|110951|20190210|120543|True|1|Default sort order is backwards? Need to sort by highest severity first #Code|#CODE
+20190209|152030|20190210|140203|True|3|#Hotkeys for global new todo text box|#HOTKEYS
+20190209|152109|20190210|140238|True|2|Sort by bugs, or have a bugs list window #Sorting #Interface|#SORTING|#INTERFACE
+20190209|174057|20190210|142611|True|2|Add popup to save before closing
+20190210|110549|20190210|142653|True|1|Make severity a dropdown list #interface|#INTERFACE
+20190209|151943|20190210|142707|True|2|Colors for severity. This works if its not in dark mode...
+20190210|110625|20190210|143557|True|1|Edit todo box is not good sizing...#interface #TodoItem|SIZING...#INTERFACE|#TODOITEM
+20190210|110648|20190210|143558|True|1|TodoEdit box default ok button
+20190210|065758|20190210|151458|True|2|Add dropdown for #hashtags sorting #Interface|#HASHTAGS|#INTERFACE
+20190209|174253|20190210|151517|True|1|Show hashtags to side of todo and which one it is sorting by
+20190210|070028|20190210|153035|True|1|Window remember position when closing?
+EndVCS
 NewVCS
 20190209|152143|Working on ease of use items now
 VCSTodos

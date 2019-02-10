@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Threading;
 using Button = System.Windows.Controls.Button;
+using Clipboard = System.Windows.Forms.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using ListBox = System.Windows.Controls.ListBox;
 using MenuItem = System.Windows.Controls.MenuItem;
+using MessageBox = System.Windows.Forms.MessageBox;
 using RadioButton = System.Windows.Controls.RadioButton;
 
 
@@ -21,6 +29,18 @@ namespace TODOList
 	{
 		private const string DATE = "yyyMMdd";
 		private const string TIME = "HHmmss";
+
+		private bool _isChanged = false;
+		
+		// Hotkey stuff
+		private const int HOTKEY_ID = 9000;
+		private const uint MOD_NONE = 0x0000; //[NONE]
+		private const uint MOD_ALT = 0x0001; //ALT
+		private const uint MOD_CONTROL = 0x0002; //CTRL
+		private const uint MOD_SHIFT = 0x0004; //SHIFT
+		private const uint MOD_WIN = 0x0008; //WINDOWS
+		private const uint VK_CAPITAL = 0x14;
+		private HwndSource source;
 		
 		// TODO TAB ITEMS
 		private List<TodoItem> _tIncompleteTodoList;
@@ -29,20 +49,35 @@ namespace TODOList
 		
 		private int _tCurrentSeverity;
 
-		private bool _tReverseSort;
+		private bool _tReverseSort = true;
 		private string _tCurrentSort = "sev";
 		private int _tCurrentHashTagSortIndex = -1;
 		private bool _tDidHashChange;
-		
+		private string _hashToSortBy = "";
+		private bool _hashSortSelected;
 		
 		// HISTORY TAB ITEMS
 		private readonly List<HistoryItem> _hHistoryList;
 		private HistoryItem _hCurrentHistoryItem;
 		
-
+		// FILE IO
 		private const string basePath = @"C:\MyBinaries\";
 		private List<string> recentFiles;
+		private string currentOpenFile;
 
+		private double top = 0;
+		private double left = 0;
+		private double width = 1080;
+		private double height = 1920;
+		private bool maximized = false;
+
+		public string WindowTitle => "TodoList v1.1 " + currentOpenFile;
+
+		[DllImport("user32.dll")]
+		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+		[DllImport("user32.dll")]
+		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+		
 		public List<string> RecentFiles
 		{
 			get => recentFiles;
@@ -51,8 +86,14 @@ namespace TODOList
 
 		public MainWindow()
 		{
+			Closing += Window_Closed;
 			InitializeComponent();
 			LoadSettings();
+
+			Top = top;
+			Left = left;
+			Height = height;
+			Width = width;
 			
 			_tIncompleteTodoList = new List<TodoItem>();
 			_tCompleteTodoList = new List<TodoItem>();
@@ -60,12 +101,15 @@ namespace TODOList
 			_tHashTags = new List<string>();
 			
 			_hCurrentHistoryItem = new HistoryItem("", "");
+
+			
 			
 			cbSaveFiles.ItemsSource = recentFiles;
 			cbLoadFiles.ItemsSource = recentFiles;
 			cbSaveFiles.Items.Refresh();
 			cbLoadFiles.Items.Refresh();
-			
+
+			cbHashtags.ItemsSource = _tHashTags;
 			lbTIncompleteTodos.ItemsSource = _tIncompleteTodoList;
 			lbTCompleteTodos.ItemsSource = _tCompleteTodoList;
 			
@@ -73,6 +117,43 @@ namespace TODOList
 			ResortTodoList();
 			
 			Load(recentFiles[0]);
+
+			ProgressBar pb = new ProgressBar();
+			
+		}
+
+		protected override void OnSourceInitialized(EventArgs e)
+		{
+			base.OnSourceInitialized(e);
+
+			IntPtr handle = new WindowInteropHelper(this).Handle;
+			source = HwndSource.FromHwnd(handle);
+			source.AddHook(HwndHook);
+			RegisterHotKey(handle, HOTKEY_ID, MOD_CONTROL, VK_CAPITAL);
+		}
+		private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+		{
+			const int WM_HOTKEY = 0x0312;
+			switch (msg)
+			{
+				case WM_HOTKEY:
+					switch (wParam.ToInt32())
+					{
+						case HOTKEY_ID:
+							int vkey = (((int) lParam >> 16) & 0xFFFF);
+							if (vkey == VK_CAPITAL)
+							{
+								Activate();
+								FocusManager.SetFocusedElement(FocusManager.GetFocusScope(tbHNotes), tbHNotes);
+								txtT1NewTodo.Focus();
+								Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(delegate() { txtT1NewTodo.Focus(); }));
+							}
+							handled = true;
+							break;
+					}
+					break;
+			}
+			return IntPtr.Zero;
 		}
 		
 		
@@ -86,6 +167,7 @@ namespace TODOList
 			_hCurrentHistoryItem = _hHistoryList[0];
 			_hCurrentHistoryItem.AddCompletedTodo(td);
 			RefreshHistory();
+			_isChanged = true;
 		}
 
 		// METHOD  ///////////////////////////////////// Notes() //
@@ -122,12 +204,15 @@ namespace TODOList
 			_hHistoryList.Clear();
 			foreach (HistoryItem hi in sorted)
 				_hHistoryList.Add(hi);
-			
+
+			if (_hHistoryList.Count > 0 && _hCurrentHistoryItem.DateAdded == "")
+				lbHHistory.SelectedIndex = 0;
 			tbHNotes.Text = _hCurrentHistoryItem.Notes;
 			lbHCompletedTodos.ItemsSource = _hCurrentHistoryItem.CompletedTodos;
 			lbHCompletedTodos.Items.Refresh();
 			
 			lbHHistory.Items.Refresh();
+			_isChanged = true;
 		}
 
 		// METHOD  ///////////////////////////////////// DeleteTodo() //
@@ -174,6 +259,11 @@ namespace TODOList
 				Clipboard.SetText(item.ToClipboard());
 		}
 		// METHOD  ///////////////////////////////////// TODO TAB() //
+		// METHOD  ///////////////////////////////////// ProgressBar() //
+		private void ProgressBar()
+		{
+			
+		}
 		// METHOD  ///////////////////////////////////// btnT1Add() //
 		private void btnTAdd_Click(object sender, EventArgs e)
 		{
@@ -227,10 +317,11 @@ namespace TODOList
 		}
 		
 		// METHOD  ///////////////////////////////////// Severity() //
-		private void rdoTSeverity_Checked(object sender, EventArgs e)
+		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
-			RadioButton rb = sender as RadioButton;
-			_tCurrentSeverity = Convert.ToInt16(rb?.CommandParameter.ToString());
+			ComboBox rb = sender as ComboBox;
+
+			_tCurrentSeverity = rb.SelectedIndex + 1;
 		}
 		
 		// METHOD  ///////////////////////////////////// btnT1Complete() //
@@ -264,6 +355,17 @@ namespace TODOList
 		}
 		
 		// METHOD  ///////////////////////////////////// Sort() //
+		private void cbTHashtags_SelectionChanged(object sender, EventArgs e)
+		{
+			ComboBox cb = sender as ComboBox;
+			if (cb == null)
+				return;
+			_hashToSortBy = cb.SelectedItem.ToString();
+			_hashSortSelected = true;
+			_tCurrentSort = "hash";
+			ResortTodoList();
+
+		}
 		private void btnTSort_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
@@ -290,7 +392,17 @@ namespace TODOList
 			
 			List<TodoItem> incompleteItems = new List<TodoItem>();
 			List<string> sortedHashTags = new List<string>();
-
+			if (_hashSortSelected)
+			{
+				_tCurrentHashTagSortIndex = 0;
+				foreach (string s in _tHashTags)
+				{
+					if (s.Equals(_hashToSortBy))
+						break;
+					_tCurrentHashTagSortIndex++;
+				}
+			}
+				
 			for (int i = 0 + _tCurrentHashTagSortIndex; i < _tHashTags.Count; i++)
 			{
 				sortedHashTags.Add(_tHashTags[i]);
@@ -299,6 +411,7 @@ namespace TODOList
 			{
 				sortedHashTags.Add(_tHashTags[i]);
 			}
+
 
 			foreach (string s in sortedHashTags)
 			{
@@ -373,6 +486,27 @@ namespace TODOList
 			lbTIncompleteTodos.Items.Refresh();
 			lbTCompleteTodos.ItemsSource = _tCompleteTodoList;
 			lbTCompleteTodos.Items.Refresh();
+			cbHashtags.ItemsSource = _tHashTags;
+			cbHashtags.Items.Refresh();
+			_isChanged = true;
+		}
+
+		// METHOD  ///////////////////////////////////// NewFile() //
+		private void mnuNew_Click(object sender, EventArgs e)
+		{
+			if (MessageBox.Show("Are you sure?", "New File", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
+				return;
+			_hHistoryList.Clear();
+			_tIncompleteTodoList.Clear();
+			_tCompleteTodoList.Clear();
+
+			_hCurrentHistoryItem = new HistoryItem("", ""); 
+			RefreshHistory();
+			ResortTodoList();
+
+			MessageBox.Show("If you dont save as a new file, clicking save will overwrite the previous file. Dont feel like fixing that now");
+			_isChanged = true;
+			SaveAs();
 		}
 		
 		// METHOD  ///////////////////////////////////// Save() //
@@ -388,6 +522,14 @@ namespace TODOList
 		}
 		private void mnuSaveAs_Click(object sender, EventArgs e)
 		{
+			SaveAs();
+		}
+		private void mnuSave_Click(object sender, EventArgs e)
+		{
+			Save(recentFiles[0]);
+		}
+		private void SaveAs()
+		{
 			SaveFileDialog sfd = new SaveFileDialog
 			{
 				Title  = "Select folder to save game in.",
@@ -399,12 +541,6 @@ namespace TODOList
 			if (dr != System.Windows.Forms.DialogResult.OK)
 				return;
 			Save(sfd.FileName);
-
-		}
-		private void mnuSave_Click(object sender, EventArgs e)
-		{
-			Save(recentFiles[0]);
-
 		}
 		private void Save(string path)
 		{
@@ -429,6 +565,9 @@ namespace TODOList
 				stream.Write(hi.ToString());
 			}
 			stream.Close();
+			currentOpenFile = path;
+			Title = WindowTitle;
+			_isChanged = false;
 		}
 		// METHOD  ///////////////////////////////////// Load() //
 		public void cbLoadFiles_SelectionChanged(object sender, EventArgs e)
@@ -506,6 +645,10 @@ namespace TODOList
 			
 			ResortTodoList();
 			RefreshHistory();
+			currentOpenFile = path;
+			Title = WindowTitle;
+			
+			_isChanged = false;
 		}
 
 		// METHOD  ///////////////////////////////////// Settings() //
@@ -519,7 +662,15 @@ namespace TODOList
 			{
 				recentFiles.Add(line);
 				line = stream.ReadLine();
+				if (line == "WINDOWPOSITION")
+					break;
 			}
+
+			top = Convert.ToDouble(stream.ReadLine());
+			left = Convert.ToDouble(stream.ReadLine());
+			height = Convert.ToDouble(stream.ReadLine());
+			width = Convert.ToDouble(stream.ReadLine());
+			
 			stream.Close();
 			cbSaveFiles.Items.Refresh();
 			cbLoadFiles.Items.Refresh();
@@ -529,6 +680,11 @@ namespace TODOList
 			StreamWriter stream = new StreamWriter(File.Open(basePath + "TDHistory.settings", FileMode.Create));
 			foreach (string s in recentFiles)
 				stream.WriteLine(s);
+			stream.WriteLine("WINDOWPOSITION");
+			stream.WriteLine(Top);
+			stream.WriteLine(Left);
+			stream.WriteLine(Height);
+			stream.WriteLine(Width);
 			stream.Close();
 			cbSaveFiles.Items.Refresh();
 			cbLoadFiles.Items.Refresh();
@@ -546,5 +702,15 @@ namespace TODOList
 				recentFiles.RemoveAt(recentFiles.Count - 1);
 			}
 		}
+
+		// METHOD  ///////////////////////////////////// OnExit() //
+		public void Window_Closed(object sender, CancelEventArgs e)
+		{
+			SaveSettings();
+			if(_isChanged)
+				if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+					e.Cancel = true;
+		}
 	}
+	
 }

@@ -3,29 +3,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:Converters="clr-namespace:TODOList"
         xmlns:local="clr-namespace:TODOList"
-        mc:Ignorable="d"
-        Title="TodoList v1.0" Height="1920" Width="1080">
-    <DockPanel TextElement.FontSize="20" >
-		<Menu DockPanel.Dock="Top" >
-			<MenuItem Name="mnuSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
-			<MenuItem Name="mnuSaveAs" Header="SaveAs" Click="mnuSaveAs_Click" KeyboardNavigation.IsTabStop="False" />
-
-			<ComboBox Name="cbSaveFiles" DockPanel.Dock="Top" SelectionChanged="cbSaveFiles_SelectionChanged" />
-			<MenuItem Name="mnuLoad" Header="Load" Click="mnuLoad_Click" KeyboardNavigation.IsTabStop="False" />
-			<ComboBox Name="cbLoadFiles" DockPanel.Dock="Top" SelectionChanged="cbLoadFiles_SelectionChanged" />
-				<!-- <MenuItem.ItemContainerStyle > -->
-				<!-- 	<Style TargetType="{x:Type MenuItem}" > -->
-				<!-- 		<Setter Property="Command" Value="{Binding Path=DataContext.ExampleCommand , RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" /> -->
-				<!-- 		<Setter Property="CommandParameter" Value="{Binding}" /> -->
-				<!-- 	</Style > -->
-				<!-- </MenuItem.ItemContainerStyle > -->
-			
-
+		mc:Ignorable="d"
+        Title="{Binding WindowTitle}" Height="1080" Width="1920" >
+	<Window.Resources>
+		<local:ProgressBarForegroundConverter x:Key="pbfg" />
+		<!-- <ProgressBarForegoundConverter x:Key="ProgressBarForegoundConverter" /> -->
+	</Window.Resources >
+	<DockPanel TextElement.FontSize="16" >
+		<Menu DockPanel.Dock="Top" KeyboardNavigation.IsTabStop="False" >
+			<MenuItem Name="mnuFile" Header="_File" KeyboardNavigation.IsTabStop="False" >
+				<MenuItem Name="mnuNew" Header="New" Click="mnuNew_Click" /> 				
+				<Separator />
+				<MenuItem Name="mnuSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
+				<MenuItem Name="mnuSaveAs" Header="SaveAs" Click="mnuSaveAs_Click" KeyboardNavigation.IsTabStop="False" />
+				<Separator />
+				<MenuItem Name="mnuLoad" Header="Load" Click="mnuLoad_Click" KeyboardNavigation.IsTabStop="False" />
+			</MenuItem >
+			<MenuItem Name="mnuQuickSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
+			<MenuItem Header="Recent Saves: " KeyboardNavigation.IsTabStop="False" />
+			<ComboBox Name="cbSaveFiles" SelectionChanged="cbSaveFiles_SelectionChanged" Focusable="False" IsTabStop="False" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" />
+			<MenuItem Header="Recent Loads: " KeyboardNavigation.IsTabStop="False"  />
+			<ComboBox Name="cbLoadFiles" SelectionChanged="cbLoadFiles_SelectionChanged" Focusable="False" IsTabStop="False" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" />
 		</Menu >
+			
 		<TabControl >
-			
-			
 			<!-- To do Tab -->
 			<TabItem x:Name="TODO" Header="TODO" KeyboardNavigation.IsTabStop="False" >
 				<Grid >
@@ -33,17 +36,18 @@
 						<RowDefinition Height="30" />
 						<RowDefinition Height="*" />
 						<RowDefinition Height="*" />
-						<RowDefinition Height="50" />
+						<RowDefinition Height="100" />
 					</Grid.RowDefinitions >
 					
 					<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-						<Button Content="Severity" Click="btnTSort_Click" CommandParameter="sev" />
-						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" />
-						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" />
+						<ComboBox Name="cbHashtags" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
+						<Button Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
+						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" KeyboardNavigation.IsTabStop="False" />
 					</StackPanel >
 					
 					<!-- The list of incomplete todos -->
-					<ListBox Name="lbTIncompleteTodos" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None">
+					<ListBox Name="lbTIncompleteTodos" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" >
 						<ListBox.ContextMenu >
 							<ContextMenu >
 								<MenuItem Header="Edit" Click="mnuTEdit_Click" CommandParameter="incomplete" />
@@ -54,21 +58,15 @@
 							<DataTemplate >
 								<Grid Margin="0,2" >
 									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="180" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="100" />
 										<ColumnDefinition Width="25" />
-										<!-- <ColumnDefinition Width="25" /> -->
-										<!-- <ColumnDefinition Width="25" /> -->
+										<ColumnDefinition Width="180" />
+										<ColumnDefinition Width="100" />
+										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions >
-									<TextBlock Grid.Column="0" Text="{Binding StartDateTime}" Foreground="Red" />
-									<Border Name="TPlaceHolderBorder" Grid.Column="1" Margin="7"/>
-									<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="{Binding ElementName=TPlaceHolderBorder, Path=ActualWidth}" />
-									
-									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" />
-									<!-- <Button Grid.Column="4" Name="btnT1MoveUp" FontFamily="Marlett" FontSize="20" Content="5" Click="btnT1MoveUp_Click" /> -->
-									<!-- <Button Grid.Column="5" Name="btnT1Delete" FontFamily="Marlett" FontSize="20" Content="r" Click="btnT1MoveDown_Click" /> -->
-									<Button Grid.Column="3" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" CommandParameter="incomplete" />
+									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" CommandParameter="incomplete" />
+									<TextBlock Grid.Column="1" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" />
+									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" />
+									<TextBlock Grid.Column="3" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Width="1500" Margin="4" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
@@ -86,50 +84,41 @@
 							<DataTemplate >
 								<Grid Margin="0,2" >
 									<Grid.ColumnDefinitions >
-										<!-- <ColumnDefinition Width="180" /> -->
-										<ColumnDefinition Width="180" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="100" />
-										<!-- <ColumnDefinition Width="25" /> -->
-										<!-- <ColumnDefinition Width="25" /> -->
 										<ColumnDefinition Width="25" />
+										<ColumnDefinition Width="180" />
+										<ColumnDefinition Width="100" />
+										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions >
-									<!-- <TextBlock Grid.Column="0" Text="{Binding Time}" Foreground="Red" /> -->
-									<TextBlock Grid.Column="0" Text="{Binding CompletedDateTime}" Foreground="Green" />
-									<Border Name="TPlaceHolderBorder2" Grid.Column="1" Margin="7"/>
-									<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="{Binding ElementName=TPlaceHolderBorder2, Path=ActualWidth}" />
-									
+									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" CommandParameter="complete" />
+									<TextBlock Grid.Column="1" Text="{Binding CompletedDateTime}" Foreground="Green" Margin="4" />
 									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" />
-									<!-- <Button Grid.Column="4" Name="btnT1MoveUp" FontFamily="Marlett" FontSize="20" Content="5" Click="btnT1MoveUp_Click" /> -->
-									<!-- <Button Grid.Column="5" Name="btnT1MoveDown" FontFamily="Marlett" FontSize="20" Content="6" Click="btnT1MoveDown_Click" /> -->
-									<Button Grid.Column="3" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" CommandParameter="complete" />
+									<TextBlock Grid.Column="3" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Height="25" Width="1500" Margin="4" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
 					</ListBox >
 
+					
+					
 					<!-- The add, radio buttons, and input field -->
 					<Grid Grid.Row="3" >
 						<Grid.ColumnDefinitions >
 							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="60" />
+							<ColumnDefinition Width="100" />
 						</Grid.ColumnDefinitions >
 						<TextBox x:Name="txtT1NewTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="0" />
 						<StackPanel Grid.Column="1" >
-							<GroupBox >
-								<StackPanel Orientation="Horizontal" KeyboardNavigation.DirectionalNavigation="Cycle" >
-									<RadioButton GroupName="rdoTSev" Checked="rdoTSeverity_Checked" CommandParameter="1"  KeyboardNavigation.TabIndex="1" IsChecked="True" />
-									<RadioButton GroupName="rdoTSev" Checked="rdoTSeverity_Checked" CommandParameter="2"  KeyboardNavigation.TabIndex="2" />
-									<RadioButton GroupName="rdoTSev" Checked="rdoTSeverity_Checked" CommandParameter="3"  KeyboardNavigation.TabIndex="3" />
-								</StackPanel >
-							</GroupBox >
-							<Button Content="Add" Click="btnTAdd_Click" KeyboardNavigation.TabIndex="4" IsDefault="True" />
+							<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" >
+								<ComboBoxItem Content="Low" IsSelected="True" />
+								<ComboBoxItem Content="Med" />
+								<ComboBoxItem Content="High" />
+							</ComboBox >
+							<Button Content="Add" Click="btnTAdd_Click" KeyboardNavigation.TabIndex="2" IsDefault="True" />
 						</StackPanel >
 					</Grid >
 				</Grid >
 			</TabItem >
-			
-			
+
 			<!-- VCS History tab -->
 			<TabItem x:Name="History" Header="History" KeyboardNavigation.IsTabStop="False" >
 				<Grid >
@@ -162,22 +151,15 @@
 					<StackPanel Grid.Column="1" >
 						<TextBox Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" Height="200" LostFocus="tbHNotes_LoseFocus" />
 						<ListBox Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None">
-							<ListBox.ContextMenu >
-								<ContextMenu >
-									<!-- <MenuItem Header="Edit" Click="mnuEdit_Click" CommandParameter="incomplete" /> -->
-									<!-- <MenuItem Header="Delete" Click="mnuDelete_Click" CommandParameter="incomplete" /> -->
-								</ContextMenu >
-							</ListBox.ContextMenu >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >
 										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="*" />
 											<ColumnDefinition Width="25" />
+											<ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions >
-										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
-										<TextBlock Grid.Column="0" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="{Binding ElementName=PlaceHolderBorder, Path=ActualWidth}" />
-										<Button Grid.Column="1" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" />
+										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" />
+										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="1600" Margin="4" />
 									</Grid >
 								</DataTemplate >
 							</ListBox.ItemTemplate >
@@ -185,9 +167,6 @@
 					</StackPanel >
 				</Grid >
 			</TabItem >
-			
-
-			
 		</TabControl >
     </DockPanel >
-</Window>
+</Window >

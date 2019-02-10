@@ -5,7 +5,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
-		Title="TodoItemEditor" Height="450" Width="800" >
+		Title="TodoItemEditor" Height="200" Width="580" >
 	<Grid>
 		<Grid.ColumnDefinitions >
 			<ColumnDefinition Width="60" />
@@ -20,15 +20,14 @@
 			<Label Content="TODO:" HorizontalAlignment="Right" />
 		</StackPanel >
 		<StackPanel Grid.Column="1">
-			<StackPanel Orientation="Horizontal" Height="25" Margin="3" >
-				<RadioButton Name="rdoSev1" GroupName="rdoSev" Checked="RdoSeverity_Checked" CommandParameter="1"  KeyboardNavigation.TabIndex="1" IsChecked="True" />
-				<RadioButton Name="rdoSev2" GroupName="rdoSev" Checked="RdoSeverity_Checked" CommandParameter="2"  KeyboardNavigation.TabIndex="2" />
-				<RadioButton Name="rdoSev3" GroupName="rdoSev" Checked="RdoSeverity_Checked" CommandParameter="3"  KeyboardNavigation.TabIndex="3" />
-			</StackPanel >
-			<TextBox x:Name="tbTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="0" Height="50" />
+			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" >
+				<ComboBoxItem Content="Low" IsSelected="True" />
+				<ComboBoxItem Content="Med" />
+				<ComboBoxItem Content="High" />
+			</ComboBox ><TextBox x:Name="tbTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="0" Height="50" />
 		</StackPanel >
-		<StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2" >
-			<Button Content="OK" Click="btnOK_Click" Width="150" />
+		<StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Grid.ColumnSpan="2" >
+			<Button Content="OK" Click="btnOK_Click" Width="150" IsDefault="True" />
 			<Button Content="Cancel" Click="btnCancel_Click" Width="150" />
 		</StackPanel >
 	</Grid>

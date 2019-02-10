@@ -17,29 +17,16 @@ namespace TODOList
 			this.td = new TodoItem(td.ToString());
 			currentSeverity = this.td.Severity;
 
-			switch (td.Severity)
-			{
-				case 1:
-					rdoSev1.IsChecked = true;
-					currentSeverity = 1;
-					break;
-				case 2:
-					rdoSev2.IsChecked = true;
-					currentSeverity = 2;
-					break;
-				case 3:
-					rdoSev3.IsChecked = true;
-					currentSeverity = 3;
-					break;
-			}
+			cbSev.SelectedIndex = currentSeverity - 1;
 			tbTodo.Text = td.Todo;
 		}
 		
 		// METHOD  ///////////////////////////////////// Severity() //
-		private void RdoSeverity_Checked(object sender, EventArgs e)
+		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
-			RadioButton rb = sender as RadioButton;
-			currentSeverity = Convert.ToInt16(rb.CommandParameter.ToString());
+			ComboBox rb = sender as ComboBox;
+
+			currentSeverity = rb.SelectedIndex + 1;
 		}
 
 		// METHOD  ///////////////////////////////////// btnOK() //
