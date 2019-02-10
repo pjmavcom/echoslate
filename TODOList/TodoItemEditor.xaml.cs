@@ -33,6 +33,7 @@ namespace TODOList
 		private void btnOK_Click(object sender, EventArgs e)
 		{
 			td.Todo = tbTodo.Text;
+			td.ParseTags();
 			td.Severity = currentSeverity;
 			Close();
 		}

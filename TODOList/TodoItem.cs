@@ -22,7 +22,7 @@ namespace TODOList
 		private string _timeCompleted;
 		private bool _isComplete;
 		private int _severity;
-		private readonly List<string> _tags;
+		private List<string> _tags;
 		
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
@@ -36,7 +36,7 @@ namespace TODOList
 				foreach (string s in pieces)
 				{
 					if (s.Contains("#"))
-						_tags.Add(s);
+						_tags.Add(s.ToUpper());
 				}
 			}
 		}
@@ -77,7 +77,7 @@ namespace TODOList
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = 0;
-			_tags = new List<string>();
+			ParseTags();
 		}
 		public TodoItem(DateTime dateTime, string todo, int sev)
 		{
@@ -87,11 +87,10 @@ namespace TODOList
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = sev;
-			_tags = new List<string>();
+			ParseTags();
 		}
 		public TodoItem(string newItem)
 		{
-			_tags = new List<string>();
 			string[] pieces = newItem.Split('|');
 			_dateStarted = pieces[0].Trim();
 			_timeStarted = pieces[1].Trim();
@@ -101,18 +100,24 @@ namespace TODOList
 			_severity = Convert.ToInt16(pieces[5]);
 			_todo = pieces[6].Trim();
 
-			pieces = _todo.Split(' ');
-			foreach(string s in pieces)
-			{
-				if (s.Contains('#'))
-					_tags.Add(s.ToUpper());
-			}
+			ParseTags();
 		}
 
 		// MONOGAME METHODS //////////////////////////////////////////////////////////////////////////////////////////////////////////////// MONOGAME METHODS //
 
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
+		// METHOD  ///////////////////////////////////// ParseTags() //
+		public void ParseTags()
+		{
+			_tags = new List<string>();
+			string[] pieces = _todo.Split(' ');
+			foreach(string s in pieces)
+			{
+				if (s.Contains('#'))
+					_tags.Add(s.ToUpper());
+			}
+		}
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{

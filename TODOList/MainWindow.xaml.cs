@@ -360,7 +360,10 @@ namespace TODOList
 			ComboBox cb = sender as ComboBox;
 			if (cb == null)
 				return;
-			_hashToSortBy = cb.SelectedItem.ToString();
+
+			_hashToSortBy = _tHashTags[0];
+			if (cb.SelectedItem != null)
+				_hashToSortBy = cb.SelectedItem.ToString();
 			_hashSortSelected = true;
 			_tCurrentSort = "hash";
 			ResortTodoList();
