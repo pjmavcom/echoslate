@@ -129,7 +129,7 @@ namespace TODOList
 			IntPtr handle = new WindowInteropHelper(this).Handle;
 			source = HwndSource.FromHwnd(handle);
 			source.AddHook(HwndHook);
-			RegisterHotKey(handle, HOTKEY_ID, MOD_CONTROL, VK_CAPITAL);
+			RegisterHotKey(handle, HOTKEY_ID, MOD_WIN, 0x73);
 		}
 		private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
 		{
@@ -141,7 +141,7 @@ namespace TODOList
 					{
 						case HOTKEY_ID:
 							int vkey = (((int) lParam >> 16) & 0xFFFF);
-							if (vkey == VK_CAPITAL)
+							if (vkey == 0x73)
 							{
 								Activate();
 								FocusManager.SetFocusedElement(FocusManager.GetFocusScope(tbHNotes), tbHNotes);

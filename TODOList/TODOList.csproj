@@ -34,6 +34,7 @@
 		<WarningLevel>4</WarningLevel>
 	</PropertyGroup>
 	<ItemGroup>
+		<Reference Include="PresentationFramework.Aero" />
 		<Reference Include="System" />
 		<Reference Include="System.Core" />
 		<Reference Include="System.Data" />
@@ -89,9 +90,6 @@
 		<None Include="App.config" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Include="Monotone.Brushes.xaml" />
-	  <Content Include="Monotone.Colors.xaml" />
-	  <Content Include="Monotone.xaml" />
 	  <Content Include="TODO.txt" />
 	  <Content Include="VCSHistory.txt" />
 	</ItemGroup>

@@ -9,6 +9,7 @@
         Title="{Binding WindowTitle}" Height="1080" Width="1920" >
 	<Window.Resources>
 		<local:ProgressBarForegroundConverter x:Key="pbfg" />
+		
 		<!-- <ProgressBarForegoundConverter x:Key="ProgressBarForegoundConverter" /> -->
 	</Window.Resources >
 	<DockPanel TextElement.FontSize="16" >
@@ -170,3 +171,5 @@
 		</TabControl >
     </DockPanel >
 </Window >
+
+

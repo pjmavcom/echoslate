@@ -72,7 +72,15 @@
 20190210|065758|20190210|151458|True|2|Add dropdown for #hashtags sorting #Interface|#HASHTAGS|#INTERFACE
 20190209|174253|20190210|151517|True|1|Show hashtags to side of todo and which one it is sorting by
 20190210|070028|20190210|153035|True|1|Window remember position when closing?
+20190210|153346|20190210|155930|True|3|Make this not rely on Monotone.XML
+20190210|153402|20190210|155932|True|3|Change the global hotkey from CTRL+CAPSLOCK
 ====================================VCS
+NewVCS
+20190210|153413|
+VCSTodos
+20190210|153346|20190210|155930|True|3|Make this not rely on Monotone.XML
+20190210|153402|20190210|155932|True|3|Change the global hotkey from CTRL+CAPSLOCK
+EndVCS
 NewVCS
 20190210|110129|
 VCSTodos
