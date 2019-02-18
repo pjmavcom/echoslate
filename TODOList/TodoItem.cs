@@ -16,6 +16,7 @@ namespace TODOList
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private string _todo;
+		private string _notes;
 		private readonly string _dateStarted;
 		private readonly string _timeStarted;
 		private string _dateCompleted;
@@ -41,6 +42,11 @@ namespace TODOList
 			}
 		}
 
+		public string Notes
+		{
+			get => _notes;
+			set => _notes = value;
+		}
 		public string StartDateTime => _dateStarted + "-" + _timeStarted;
 		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
 		
@@ -64,7 +70,12 @@ namespace TODOList
 		public bool IsComplete
 		{
 			get => _isComplete;
-			set => _isComplete = value;
+			set
+			{
+				_isComplete = value;
+				DateCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.DATE) : "-";
+				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME) : "-";
+			}
 		}
 		public List<string> Tags => _tags;
 
@@ -72,6 +83,7 @@ namespace TODOList
 		public TodoItem()
 		{
 			_todo = "";
+			_notes = "";
 			_dateStarted = DateTime.Now.ToString("yyyyMMdd");
 			_timeStarted = DateTime.Now.ToString("HHmmss");
 			_dateCompleted = "-";
@@ -79,9 +91,10 @@ namespace TODOList
 			_severity = 0;
 			ParseTags();
 		}
-		public TodoItem(DateTime dateTime, string todo, int sev)
+		public TodoItem(DateTime dateTime, string todo, string notes, int sev)
 		{
 			_todo = todo;
+			_notes = notes;
 			_dateStarted = dateTime.ToString("yyyyMMdd");
 			_timeStarted = dateTime.ToString("HHmmss");
 			_dateCompleted = "-";
@@ -99,6 +112,9 @@ namespace TODOList
 			_isComplete = Convert.ToBoolean(pieces[4]); 
 			_severity = Convert.ToInt16(pieces[5]);
 			_todo = pieces[6].Trim();
+			
+			if(pieces.Length > 7)
+				_notes = pieces[7].Trim();
 
 			ParseTags();
 		}
@@ -121,7 +137,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _isComplete + "|" + _severity + "|" + _todo;
+			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _isComplete + "|" + _severity + "|" + _todo + "|" + _notes;
 
 			foreach (string s in _tags)
 			{
@@ -131,7 +147,7 @@ namespace TODOList
 		}
 		public string ToClipboard()
 		{
-			string result = _dateCompleted + "-" + _timeCompleted + " | " + _todo;
+			string result = _dateCompleted + "-" + _timeCompleted + " | " + _todo + Environment.NewLine + "\t\tNotes: " + _notes;
 			return result;
 		}
 	}

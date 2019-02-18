@@ -32,11 +32,11 @@
 		<TabControl >
 			<!-- To do Tab -->
 			<TabItem x:Name="TODO" Header="TODO" KeyboardNavigation.IsTabStop="False" >
-				<Grid >
+				<Grid  >
 					<Grid.RowDefinitions >
 						<RowDefinition Height="30" />
 						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
+						<!-- <RowDefinition Height="*" /> -->
 						<RowDefinition Height="100" />
 					</Grid.RowDefinitions >
 					
@@ -46,13 +46,14 @@
 						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" KeyboardNavigation.IsTabStop="False" />
 					</StackPanel >
+					 
 					
 					<!-- The list of incomplete todos -->
-					<ListBox Name="lbTIncompleteTodos" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" >
+					<ListBox Name="lbTIncompleteTodos" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
 						<ListBox.ContextMenu >
 							<ContextMenu >
-								<MenuItem Header="Edit" Click="mnuTEdit_Click" CommandParameter="incomplete" />
-								<MenuItem Header="Delete" Click="mnuTDelete_Click" CommandParameter="incomplete" />
+								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
+								<MenuItem Header="Delete" Click="mnuTDelete_Click" />
 							</ContextMenu >
 						</ListBox.ContextMenu >
 						<ListBox.ItemTemplate >
@@ -64,42 +65,14 @@
 										<ColumnDefinition Width="100" />
 										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions >
-									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" CommandParameter="incomplete" />
+									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" />
 									<TextBlock Grid.Column="1" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" />
 									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" />
-									<TextBlock Grid.Column="3" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Width="1500" Margin="4" />
+									<TextBlock Grid.Column="3" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
 					</ListBox >
-
-					<!-- The list of complete todos -->
-					<ListBox Name="lbTCompleteTodos" HorizontalContentAlignment="Stretch" Grid.Row="2" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" >
-						<ListBox.ContextMenu >
-							<ContextMenu >
-								<MenuItem Header="Edit" Click="mnuTEdit_Click" CommandParameter="complete" />
-								<MenuItem Header="Delete" Click="mnuTDelete_Click" CommandParameter="complete" />
-							</ContextMenu >
-						</ListBox.ContextMenu >
-						<ListBox.ItemTemplate >
-							<DataTemplate >
-								<Grid Margin="0,2" >
-									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="180" />
-										<ColumnDefinition Width="100" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions >
-									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" CommandParameter="complete" />
-									<TextBlock Grid.Column="1" Text="{Binding CompletedDateTime}" Foreground="Green" Margin="4" />
-									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" />
-									<TextBlock Grid.Column="3" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Height="25" Width="1500" Margin="4" />
-								</Grid >
-							</DataTemplate >
-						</ListBox.ItemTemplate >
-					</ListBox >
-
-					
 					
 					<!-- The add, radio buttons, and input field -->
 					<Grid Grid.Row="3" >
@@ -124,48 +97,56 @@
 			<TabItem x:Name="History" Header="History" KeyboardNavigation.IsTabStop="False" >
 				<Grid >
 					<Grid.ColumnDefinitions >
-						<ColumnDefinition Width="220" />
-						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="300" />
+						<ColumnDefinition />
 					</Grid.ColumnDefinitions >
-					<StackPanel Grid.Column="0" >
-						<StackPanel Orientation="Horizontal" >
+					<Grid Grid.Column="0" >
+						<Grid.RowDefinitions >
+							<RowDefinition Height="35" />
+							<RowDefinition />
+						</Grid.RowDefinitions >
+						<StackPanel Grid.Row="0" Orientation="Horizontal" >
 							<Button Content="New" Click="btnHNewHistory_Click" Width="90" />
 							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" />
 						</StackPanel >
-						<ListBox Name="lbHHistory" SelectionChanged="lbHHistory_SelectionChanged" >
+						<ListBox Grid.Row="1" Name="lbHHistory" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >
 										<Grid.ColumnDefinitions >
 											<ColumnDefinition Width="25" />
-											<ColumnDefinition Width="*" />
+											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
 										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
 										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" />
-										<TextBlock Grid.Column="1" Text="{Binding DateTimeAdded}" />
+										<TextBlock Grid.Column="1" Text="{Binding Notes}" TextWrapping="Wrap" />
 									</Grid >
 								</DataTemplate >
 							</ListBox.ItemTemplate >
 						</ListBox >
-					</StackPanel >
+					</Grid >
 						
-					<StackPanel Grid.Column="1" >
-						<TextBox Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" Height="200" LostFocus="tbHNotes_LoseFocus" />
-						<ListBox Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None">
+					<Grid Grid.Column="1" >
+						<Grid.RowDefinitions >
+							<RowDefinition Height="200" />
+							<RowDefinition />
+						</Grid.RowDefinitions >
+						<TextBox Grid.Row="0" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" LostFocus="tbHNotes_LoseFocus" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+						<ListBox Grid.Row="1" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >
 										<Grid.ColumnDefinitions >
 											<ColumnDefinition Width="25" />
-											<ColumnDefinition Width="*" />
+											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
 										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" />
-										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Width="1600" Margin="4" />
+										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
 									</Grid >
 								</DataTemplate >
 							</ListBox.ItemTemplate >
 						</ListBox >
-					</StackPanel >
+					</Grid >
 				</Grid >
 			</TabItem >
 		</TabControl >

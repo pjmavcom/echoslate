@@ -5,30 +5,28 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
-		Title="TodoItemEditor" Height="200" Width="580" >
-	<Grid>
-		<Grid.ColumnDefinitions >
-			<ColumnDefinition Width="60" />
-			<ColumnDefinition Width="500" />
-		</Grid.ColumnDefinitions >
-		<Grid.RowDefinitions >
-			<RowDefinition Height="100" />
-			<RowDefinition Height="50" />
-		</Grid.RowDefinitions >
-		<StackPanel >
-			<Label Content="Severity:" HorizontalAlignment="Right" />
-			<Label Content="TODO:" HorizontalAlignment="Right" />
-		</StackPanel >
-		<StackPanel Grid.Column="1">
-			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" >
+		Title="TodoItemEditor" Height="320" Width="610" >
+	<StackPanel TextElement.FontSize="16" >
+		<StackPanel Orientation="Horizontal" >
+			<Label Content="Severity:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" Width="100" HorizontalAlignment="Left" Margin="2" >
 				<ComboBoxItem Content="Low" IsSelected="True" />
 				<ComboBoxItem Content="Med" />
 				<ComboBoxItem Content="High" />
-			</ComboBox ><TextBox x:Name="tbTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="0" Height="50" />
+			</ComboBox >
 		</StackPanel >
-		<StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Grid.ColumnSpan="2" >
-			<Button Content="OK" Click="btnOK_Click" Width="150" IsDefault="True" />
-			<Button Content="Cancel" Click="btnCancel_Click" Width="150" />
+		<StackPanel Orientation="Horizontal" >
+			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
 		</StackPanel >
-	</Grid>
+		<StackPanel Orientation="Horizontal" >
+			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<TextBox Name="tbNotes" TextWrapping="Wrap" KeyboardNavigation.TabIndex="2" Height="100" Width="500" Margin="2" />
+		</StackPanel >
+		<StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal" Grid.ColumnSpan="2" >
+			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" />
+			<Button Content="OK" Click="btnOK_Click" Width="150" Height="35" IsDefault="True" />
+			<Button Content="Cancel" Click="btnCancel_Click" Width="150" Height="35" />
+		</StackPanel >
+	</StackPanel>
 </Window>

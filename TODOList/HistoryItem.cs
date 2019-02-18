@@ -101,7 +101,7 @@ namespace TODOList
 		}
 		public string ToClipboard()
 		{
-			string result = DateAdded + Environment.NewLine + "-" + Notes;
+			string result = DateAdded + Environment.NewLine + Notes;
 			foreach (TodoItem td in CompletedTodos)
 			{
 				result += Environment.NewLine + "--" + td.ToClipboard();
