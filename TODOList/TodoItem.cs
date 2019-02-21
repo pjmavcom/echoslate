@@ -23,6 +23,7 @@ namespace TODOList
 		private string _timeCompleted;
 		private bool _isComplete;
 		private int _severity;
+		private int _rank;
 		private List<string> _tags;
 		
 
@@ -77,7 +78,13 @@ namespace TODOList
 				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME) : "-";
 			}
 		}
+		public int Rank
+		{
+			get => _rank;
+			set => _rank = value;
+		}
 		public List<string> Tags => _tags;
+		
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem()
@@ -89,6 +96,7 @@ namespace TODOList
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = 0;
+			_rank = 0;
 			ParseTags();
 		}
 		public TodoItem(DateTime dateTime, string todo, string notes, int sev)
@@ -100,6 +108,7 @@ namespace TODOList
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = sev;
+			_rank = 0;
 			ParseTags();
 		}
 		public TodoItem(string newItem)
@@ -110,11 +119,12 @@ namespace TODOList
 			_dateCompleted = pieces[2].Trim();
 			_timeCompleted = pieces[3].Trim();
 			_isComplete = Convert.ToBoolean(pieces[4]); 
-			_severity = Convert.ToInt16(pieces[5]);
-			_todo = pieces[6].Trim();
+			_rank = Convert.ToInt16(pieces[5]);
+			_severity = Convert.ToInt16(pieces[6]);
+			_todo = pieces[7].Trim();
 			
-			if(pieces.Length > 7)
-				_notes = pieces[7].Trim();
+			if(pieces.Length > 8)
+				_notes = pieces[8].Trim();
 
 			ParseTags();
 		}
@@ -137,7 +147,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _isComplete + "|" + _severity + "|" + _todo + "|" + _notes;
+			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + _todo + "|" + _notes;
 
 			foreach (string s in _tags)
 			{
@@ -147,7 +157,9 @@ namespace TODOList
 		}
 		public string ToClipboard()
 		{
-			string result = _dateCompleted + "-" + _timeCompleted + " | " + _todo + Environment.NewLine + "\t\tNotes: " + _notes;
+			string result = _dateCompleted + "-" + _timeCompleted + " | " + _todo;
+			if(_notes != "")
+				result += Environment.NewLine + "\t\tNotes: " + _notes;
 			return result;
 		}
 	}

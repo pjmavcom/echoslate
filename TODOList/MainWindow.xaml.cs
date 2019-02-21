@@ -29,6 +29,7 @@ namespace TODOList
 	{
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
+		public const string VERSION = "1.2";
 
 		private bool _isChanged = false;
 		
@@ -49,8 +50,8 @@ namespace TODOList
 		
 		private int _tCurrentSeverity;
 
-		private bool _tReverseSort = true;
-		private string _tCurrentSort = "sev";
+		private bool _tReverseSort = false;
+		private string _tCurrentSort = "rank";
 		private int _tCurrentHashTagSortIndex = -1;
 		private bool _tDidHashChange;
 		private string _hashToSortBy = "";
@@ -71,7 +72,7 @@ namespace TODOList
 		private double height = 1920;
 		private bool maximized = false;
 
-		public string WindowTitle => "TodoList v1.1 " + currentOpenFile;
+		public string WindowTitle => "TodoList v" + VERSION + " " + currentOpenFile;
 
 		[DllImport("user32.dll")]
 		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
@@ -230,6 +231,7 @@ namespace TODOList
 
 			td.IsComplete = false;
 			_tIncompleteTodoList.Add(td);
+			td.Rank = _tIncompleteTodoList.Count;
 			ResortTodoList();
 			_hCurrentHistoryItem.CompletedTodos.Remove(td);
 			RefreshHistory();
@@ -282,6 +284,7 @@ namespace TODOList
 			TodoItem td = new TodoItem() {Todo = txtT1NewTodo.Text, Severity = _tCurrentSeverity};
 			
 			_tIncompleteTodoList.Add(td);
+			td.Rank = _tIncompleteTodoList.Count;
 			ResortTodoList();
 			txtT1NewTodo.Clear();
 		}
@@ -297,6 +300,7 @@ namespace TODOList
 		private void mnuTEdit_Click(object sender, EventArgs e)
 		{
 			ListBox lb = sender as ListBox;
+			object item = lb.DataContext;
 			TodoItem td = (TodoItem) lb.SelectedItem;
 			TodoItemEditor tdie = new TodoItemEditor(td);
 
@@ -337,11 +341,37 @@ namespace TODOList
 			td = _tIncompleteTodoList[index];
 
 			td.IsComplete = true;
-			AddTodoToHistory(td);
+//			AddTodoToHistory(td);
 			
 			ResortTodoList();
 		}
-		
+
+		// METHOD  ///////////////////////////////////// Rank() //
+		private void btnRank_Click(object sender, EventArgs e)
+		{
+			Button b = sender as Button;
+			TodoItem td = b.DataContext as TodoItem;
+			int index = lbTIncompleteTodos.SelectedIndex;
+			index = _tIncompleteTodoList.IndexOf(td);
+			
+			if ((string) b.CommandParameter == "up")
+			{
+				if (index == 0)
+					return;
+				int newRank = _tIncompleteTodoList[index - 1].Rank;
+				_tIncompleteTodoList[index - 1].Rank = td.Rank;
+				td.Rank = newRank;
+			}
+			else if ((string) b.CommandParameter == "down")
+			{
+				if (index >= _tIncompleteTodoList.Count)
+					return;
+				int newRank = _tIncompleteTodoList[index + 1].Rank;
+				_tIncompleteTodoList[index + 1].Rank = td.Rank;
+				td.Rank = newRank;
+			}
+			ResortTodoList();
+		}
 		// METHOD  ///////////////////////////////////// Sort() //
 		private void cbTHashtags_SelectionChanged(object sender, EventArgs e)
 		{
@@ -418,7 +448,15 @@ namespace TODOList
 				incompleteItems.Add(td);
 			return incompleteItems;
 		}
-		
+		private void FixRankings()
+		{
+			_tIncompleteTodoList = _tIncompleteTodoList.OrderBy(o => o.Rank).ToList();
+			for (int i = 0; i < _tIncompleteTodoList.Count; i++)
+			{
+				_tIncompleteTodoList[i].Rank = i + 1;
+			}
+
+		}
 		private void ResortTodoList()
 		{
 			// TODO: Get rid of this completeItems
@@ -455,6 +493,8 @@ namespace TODOList
 					if (_tHashTags[i] != hashTagList[i])
 						_tDidHashChange = true;
 			_tHashTags = hashTagList;
+
+			FixRankings();
 			
 			switch (_tCurrentSort)
 			{
@@ -467,6 +507,9 @@ namespace TODOList
 					break;
 				case "hash":
 					_tIncompleteTodoList = SortByHashTag();
+					break;
+				case "rank":
+					_tIncompleteTodoList = _tReverseSort ? _tIncompleteTodoList.OrderByDescending(o => o.Rank).ToList() : _tIncompleteTodoList.OrderBy(o => o.Rank).ToList();
 					break;
 			}
 			

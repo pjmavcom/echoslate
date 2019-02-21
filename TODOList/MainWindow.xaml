@@ -42,6 +42,7 @@
 					
 					<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" >
 						<ComboBox Name="cbHashtags" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
+						<Button Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" KeyboardNavigation.IsTabStop="False" />
@@ -60,15 +61,26 @@
 							<DataTemplate >
 								<Grid Margin="0,2" >
 									<Grid.ColumnDefinitions >
+										<ColumnDefinition Width="25" /> <!-- Complete button -->
+										<ColumnDefinition Width="*" /> <!-- DateTime -->
+									
+										<ColumnDefinition Width="40" /> <!-- RANK -->
 										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="180" />
-										<ColumnDefinition Width="100" />
-										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="25" />
+
+										<ColumnDefinition Width="100" /> <!-- Severity -->
+										<ColumnDefinition Width="*" /> <!-- Todo -->
 									</Grid.ColumnDefinitions >
 									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" />
 									<TextBlock Grid.Column="1" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" />
-									<ProgressBar Grid.Column="2" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" />
-									<TextBlock Grid.Column="3" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+									
+									<Label Grid.Column="2" Content="{Binding Rank}" Margin="4" />
+									<Button Grid.Column="3" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" />
+									<Button Grid.Column="4" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" />
+
+									
+									<ProgressBar Grid.Column="5" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" />
+									<TextBlock Grid.Column="6" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
