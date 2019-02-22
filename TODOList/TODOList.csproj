@@ -54,6 +54,9 @@
 		</ApplicationDefinition>
 		<Compile Include="HistoryItem.cs" />
 		<Compile Include="ProgressBarForegroundConverter.cs" />
+		<Compile Include="TodoItemItemComplete.xaml.cs">
+		  <DependentUpon>TodoItemComplete.xaml</DependentUpon>
+		</Compile>
 		<Compile Include="TodoItem.cs" />
 		<Compile Include="TodoItemEditor.xaml.cs">
 		  <DependentUpon>TodoItemEditor.xaml</DependentUpon>
@@ -70,6 +73,7 @@
 			<DependentUpon>MainWindow.xaml</DependentUpon>
 			<SubType>Code</SubType>
 		</Compile>
+		<Page Include="TodoItemComplete.xaml" />
 		<Page Include="TodoItemEditor.xaml" />
 	</ItemGroup>
 	<ItemGroup>

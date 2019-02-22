@@ -1,0 +1,38 @@
+<Window x:Class="TODOList.TodoItemComplete"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:local="clr-namespace:TODOList"
+		mc:Ignorable="d"
+		Title="TodoItemComplete" Height="320" Width="610" 
+		FocusManager.FocusedElement="{Binding ElementName=tbNotes}" >
+	<StackPanel TextElement.FontSize="16" >
+		<StackPanel Orientation="Horizontal" >
+		<!-- 	<Label Content="Severity:" HorizontalAlignment="Right" Width="80" Margin="2" /> -->
+		<!-- 	<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" Width="100" HorizontalAlignment="Left" Margin="2" > -->
+		<!-- 		<ComboBoxItem Content="Low" IsSelected="True" /> -->
+		<!-- 		<ComboBoxItem Content="Med" /> -->
+		<!-- 		<ComboBoxItem Content="High" /> -->
+		<!-- 	</ComboBox > -->
+		<!-- 	<Label Content="Rank: " Margin="2" /> -->
+		<!-- 	<Label Name="lblRank" Margin="2" Width="40" /> -->
+		<!-- 	<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" /> -->
+		<!-- 	<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" /> -->
+			<Label Content="Time: " Margin="2" />
+			<Label Name="lblTime" Margin="2" Width="40" />
+		</StackPanel >
+		<StackPanel Orientation="Horizontal" >
+			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<TextBox Name="tbTodo" TextWrapping="Wrap" TabIndex="2" Height="100" Width="500" Margin="2" />
+		</StackPanel >
+		<StackPanel Orientation="Horizontal" >
+			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<TextBox Name="tbNotes" TextWrapping="Wrap" TabIndex="0" Height="100" Width="500" Margin="2" />
+		</StackPanel >
+		<StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal" Grid.ColumnSpan="2" >
+			<Button Name="btnComplete" Content="Complete" IsDefault="True" Click="btnComplete_Click" Width="150" Height="35" />
+			<Button Content="Cancel" Click="btnCancel_Click" Width="150" Height="35" />
+		</StackPanel >
+	</StackPanel>
+</Window>

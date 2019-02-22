@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Forms.Clipboard;
@@ -15,6 +17,7 @@ using ComboBox = System.Windows.Controls.ComboBox;
 using ListBox = System.Windows.Controls.ListBox;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.Forms.MessageBox;
+using ProgressBar = System.Windows.Forms.ProgressBar;
 using RadioButton = System.Windows.Controls.RadioButton;
 
 
@@ -29,7 +32,7 @@ namespace TODOList
 	{
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.2";
+		public const string VERSION = "1.2a";
 
 		private bool _isChanged = false;
 		
@@ -44,7 +47,7 @@ namespace TODOList
 		private HwndSource source;
 		
 		// TODO TAB ITEMS
-		private List<TodoItem> _tIncompleteTodoList;
+		private List<TodoItem> _tIncompleteItems;
 //		private List<TodoItem> _tCompleteTodoList;
 		private List<string> _tHashTags;
 		
@@ -56,9 +59,11 @@ namespace TODOList
 		private bool _tDidHashChange;
 		private string _hashToSortBy = "";
 		private bool _hashSortSelected;
+
+		private DispatcherTimer _timer;
 		
 		// HISTORY TAB ITEMS
-		private readonly List<HistoryItem> _hHistoryList;
+		private List<HistoryItem> _hHistoryItems;
 		private HistoryItem _hCurrentHistoryItem;
 		
 		// FILE IO
@@ -90,18 +95,24 @@ namespace TODOList
 			Closing += Window_Closed;
 			InitializeComponent();
 			LoadSettings();
+			this.DataContext = this;
 
 			Top = top;
 			Left = left;
 			Height = height;
 			Width = width;
 			
-			_tIncompleteTodoList = new List<TodoItem>();
+			_tIncompleteItems = new List<TodoItem>();
 //			_tCompleteTodoList = new List<TodoItem>();
-			_hHistoryList = new List<HistoryItem>();
+			_hHistoryItems = new List<HistoryItem>();
 			_tHashTags = new List<string>();
 			
 			_hCurrentHistoryItem = new HistoryItem("", "");
+
+			_timer = new DispatcherTimer();
+			_timer.Tick += _timer_Tick;
+			_timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
+			_timer.Start();
 
 			
 			
@@ -111,10 +122,10 @@ namespace TODOList
 			cbLoadFiles.Items.Refresh();
 
 			cbHashtags.ItemsSource = _tHashTags;
-			lbTIncompleteTodos.ItemsSource = _tIncompleteTodoList;
+			lbTIncompleteItems.ItemsSource = _tIncompleteItems;
 //			lbTCompleteTodos.ItemsSource = _tCompleteTodoList;
 			
-			lbHHistory.ItemsSource = _hHistoryList;
+			lbHHistory.ItemsSource = _hHistoryItems;
 			ResortTodoList();
 			
 			Load(recentFiles[0]);
@@ -157,7 +168,19 @@ namespace TODOList
 			return IntPtr.Zero;
 		}
 		
-		
+		// METHOD  ///////////////////////////////////// Timer() //
+		private void _timer_Tick(object sender, EventArgs e)
+		{
+			foreach (TodoItem td in _tIncompleteItems)
+			{
+				if (td.IsTimerOn)
+				{
+					td.TimeTaken = td.TimeTaken.AddSeconds(1);
+					
+				}
+			}
+//			lbTIncompleteItems.Items.Refresh();
+		}
 		// METHOD  ///////////////////////////////////// HISTORY TAB() //
 		// METHOD  ///////////////////////////////////// AddTodoToHistory() //
 		private void AddTodoToHistory(TodoItem td)
@@ -165,7 +188,7 @@ namespace TODOList
 			if (_hCurrentHistoryItem.DateAdded == "")
 				AddNewHistoryItem();
 			RefreshHistory();
-			_hCurrentHistoryItem = _hHistoryList[0];
+			_hCurrentHistoryItem = _hHistoryItems[0];
 			_hCurrentHistoryItem.AddCompletedTodo(td);
 			RefreshHistory();
 			_isChanged = true;
@@ -182,9 +205,9 @@ namespace TODOList
 		private void lbHHistory_SelectionChanged(object sender, EventArgs e)
 		{
 			int index = lbHHistory.SelectedIndex;
-			if (_hHistoryList.Count > 0 && index >= _hHistoryList.Count)
-				index = _hHistoryList.Count - 1;
-			if (_hHistoryList.Count == 0) 
+			if (_hHistoryItems.Count > 0 && index >= _hHistoryItems.Count)
+				index = _hHistoryItems.Count - 1;
+			if (_hHistoryItems.Count == 0) 
 			{
 				_hCurrentHistoryItem = new HistoryItem("", "");
 				return;
@@ -201,22 +224,19 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// RefreshHistory() //
 		private void RefreshHistory()
 		{
-			List<HistoryItem> sorted = _hHistoryList.OrderByDescending(o => o.DateTimeAdded).ToList();
-			_hHistoryList.Clear();
-			foreach (HistoryItem hi in sorted)
-				_hHistoryList.Add(hi);
-
-			if (_hHistoryList.Count == 0)
-			{
+			_hHistoryItems = _hHistoryItems.OrderByDescending(o => o.DateTimeAdded).ToList();
+			
+			if (_hHistoryItems.Count == 0)
 				_hCurrentHistoryItem = new HistoryItem("", "");
-			}
 
-			if (_hHistoryList.Count > 0 && _hCurrentHistoryItem.DateAdded == "")
+			if (_hHistoryItems.Count > 0 && _hCurrentHistoryItem.DateAdded == "")
 				lbHHistory.SelectedIndex = 0;
+			
 			tbHNotes.Text = _hCurrentHistoryItem.Notes;
 			lbHCompletedTodos.ItemsSource = _hCurrentHistoryItem.CompletedTodos;
 			lbHCompletedTodos.Items.Refresh();
-			
+
+			lbHHistory.ItemsSource = _hHistoryItems;
 			lbHHistory.Items.Refresh();
 			_isChanged = true;
 		}
@@ -230,8 +250,8 @@ namespace TODOList
 				return;
 
 			td.IsComplete = false;
-			_tIncompleteTodoList.Add(td);
-			td.Rank = _tIncompleteTodoList.Count;
+			_tIncompleteItems.Add(td);
+			td.Rank = _tIncompleteItems.Count;
 			ResortTodoList();
 			_hCurrentHistoryItem.CompletedTodos.Remove(td);
 			RefreshHistory();
@@ -240,14 +260,14 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// DeleteHistory() //
 		private void btnHDeleteHistory_Click(object sender, EventArgs e)
 		{
-			if (_hHistoryList.Count == 0)
+			if (_hHistoryItems.Count == 0)
 				return;
 			if (MessageBox.Show("Delete", "Are you sure", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
 				return;
 
-			_hHistoryList.Remove(_hCurrentHistoryItem);
+			_hHistoryItems.Remove(_hCurrentHistoryItem);
 
-			_hCurrentHistoryItem = _hHistoryList.Count > 0 ? _hHistoryList[0] : new HistoryItem("", "");
+			_hCurrentHistoryItem = _hHistoryItems.Count > 0 ? _hHistoryItems[0] : new HistoryItem("", "");
 			RefreshHistory();
 		}
 
@@ -259,7 +279,7 @@ namespace TODOList
 		private void AddNewHistoryItem()
 		{
 			_hCurrentHistoryItem = new HistoryItem(DateTime.Now);
-			_hHistoryList.Add(_hCurrentHistoryItem);
+			_hHistoryItems.Add(_hCurrentHistoryItem);
 			RefreshHistory();
 		}
 
@@ -283,8 +303,8 @@ namespace TODOList
 		{
 			TodoItem td = new TodoItem() {Todo = txtT1NewTodo.Text, Severity = _tCurrentSeverity};
 			
-			_tIncompleteTodoList.Add(td);
-			td.Rank = _tIncompleteTodoList.Count;
+			_tIncompleteItems.Add(td);
+			td.Rank = _tIncompleteItems.Count;
 			ResortTodoList();
 			txtT1NewTodo.Clear();
 		}
@@ -292,28 +312,36 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// Delete() //
 		private void mnuTDelete_Click(object sender, EventArgs e)
 		{
-			_tIncompleteTodoList.RemoveAt(lbTIncompleteTodos.SelectedIndex);
+			_tIncompleteItems.RemoveAt(lbTIncompleteItems.SelectedIndex);
 			ResortTodoList();
 		}
 
 		// METHOD  ///////////////////////////////////// Edit() //
 		private void mnuTEdit_Click(object sender, EventArgs e)
 		{
-			ListBox lb = sender as ListBox;
-			object item = lb.DataContext;
-			TodoItem td = (TodoItem) lb.SelectedItem;
-			TodoItemEditor tdie = new TodoItemEditor(td);
+			EditItem(sender, _tIncompleteItems);
+		}
+		
+		private void mnuHEdit_Click(object sender, EventArgs e)
+		{
+			EditItem(sender, _hCurrentHistoryItem.CompletedTodos);
+		}
 
+		private void EditItem(object sender, List<TodoItem> list)
+		{
+			ListBox lb = sender as ListBox;
+			int index = lb.SelectedIndex;
+			if (index < 0)
+				return;
+			TodoItem td = list[index];
+			TodoItemEditor tdie = new TodoItemEditor(td);
+			
 			tdie.ShowDialog();
 			if (tdie.isOk)
 			{
-				List<TodoItem> lbi = lb.ItemsSource as List<TodoItem>;
-				lbi.RemoveAt(lb.SelectedIndex);
-
-				if (tdie.Result.IsComplete)
-					_hCurrentHistoryItem.CompletedTodos.Add(tdie.Result);
-				else
-					_tIncompleteTodoList.Add(tdie.Result);
+				list.Remove(td);
+//				tdie.Result.Rank = _tIncompleteTodoList.Count;
+				_tIncompleteItems.Add(tdie.Result);
 			}
 			
 			ResortTodoList();
@@ -334,15 +362,21 @@ namespace TODOList
 			Button b = sender as Button;
 			object item = b?.DataContext;
 			
-			int index = 0;
-			TodoItem td = new TodoItem();
+//			int index = 0;
+//			TodoItem td = new TodoItem();
 
-			index = lbTIncompleteTodos.Items.IndexOf(item);
-			td = _tIncompleteTodoList[index];
+			int index = lbTIncompleteItems.Items.IndexOf(item);
+			TodoItem td = _tIncompleteItems[index];
 
-			td.IsComplete = true;
-//			AddTodoToHistory(td);
+			TodoItemComplete tdc = new TodoItemComplete(td);
+			tdc.ShowDialog();
+			if (tdc.isOk)
+			{
+				_tIncompleteItems.RemoveAt(index);
+				_tIncompleteItems.Add(tdc.Result);
+			}
 			
+//			td.IsComplete = true;
 			ResortTodoList();
 		}
 
@@ -351,26 +385,53 @@ namespace TODOList
 		{
 			Button b = sender as Button;
 			TodoItem td = b.DataContext as TodoItem;
-			int index = lbTIncompleteTodos.SelectedIndex;
-			index = _tIncompleteTodoList.IndexOf(td);
+			int index = lbTIncompleteItems.SelectedIndex;
+			index = _tIncompleteItems.IndexOf(td);
 			
 			if ((string) b.CommandParameter == "up")
 			{
 				if (index == 0)
 					return;
-				int newRank = _tIncompleteTodoList[index - 1].Rank;
-				_tIncompleteTodoList[index - 1].Rank = td.Rank;
+				int newRank = _tIncompleteItems[index - 1].Rank;
+				_tIncompleteItems[index - 1].Rank = td.Rank;
 				td.Rank = newRank;
 			}
 			else if ((string) b.CommandParameter == "down")
 			{
-				if (index >= _tIncompleteTodoList.Count)
+				if (index >= _tIncompleteItems.Count)
 					return;
-				int newRank = _tIncompleteTodoList[index + 1].Rank;
-				_tIncompleteTodoList[index + 1].Rank = td.Rank;
+				int newRank = _tIncompleteItems[index + 1].Rank;
+				_tIncompleteItems[index + 1].Rank = td.Rank;
 				td.Rank = newRank;
 			}
 			ResortTodoList();
+		}
+
+		// METHOD  ///////////////////////////////////// TimeTaken() //
+		private void btnTimeTaken_Click(object sender, EventArgs e)
+		{
+			Button b = sender as Button;
+			TodoItem td = b.DataContext as TodoItem;
+			int index = lbTIncompleteItems.SelectedIndex;
+
+			if((string) b.CommandParameter == "start")
+				td.IsTimerOn = true;
+			else if ((string) b.CommandParameter == "stop")
+				td.IsTimerOn = false;
+			
+			lbTIncompleteItems.Items.Refresh();
+		}
+
+		// METHOD  ///////////////////////////////////// ResetTimer() //
+		private void mnuResetTimer_Click(object sender, EventArgs e)
+		{
+			int index = lbTIncompleteItems.SelectedIndex;
+			if (index < 0)
+				return;
+			TodoItem td = _tIncompleteItems[index];
+			td.TimeTaken = new DateTime();
+			td.IsTimerOn = false;
+			lbTIncompleteItems.Items.Refresh();
 		}
 		// METHOD  ///////////////////////////////////// Sort() //
 		private void cbTHashtags_SelectionChanged(object sender, EventArgs e)
@@ -432,7 +493,7 @@ namespace TODOList
 
 			foreach (string s in sortedHashTags)
 			{
-				List<TodoItem> temp = _tIncompleteTodoList.ToList();
+				List<TodoItem> temp = _tIncompleteItems.ToList();
 				foreach (TodoItem td in temp)
 				{
 					foreach (string t in td.Tags)
@@ -440,20 +501,20 @@ namespace TODOList
 						if (!s.Equals(t))
 							continue;
 						incompleteItems.Add(td);
-						_tIncompleteTodoList.Remove(td);
+						_tIncompleteItems.Remove(td);
 					}
 				}
 			}
-			foreach (TodoItem td in _tIncompleteTodoList)
+			foreach (TodoItem td in _tIncompleteItems)
 				incompleteItems.Add(td);
 			return incompleteItems;
 		}
 		private void FixRankings()
 		{
-			_tIncompleteTodoList = _tIncompleteTodoList.OrderBy(o => o.Rank).ToList();
-			for (int i = 0; i < _tIncompleteTodoList.Count; i++)
+			_tIncompleteItems = _tIncompleteItems.OrderBy(o => o.Rank).ToList();
+			for (int i = 0; i < _tIncompleteItems.Count; i++)
 			{
-				_tIncompleteTodoList[i].Rank = i + 1;
+				_tIncompleteItems[i].Rank = i + 1;
 			}
 
 		}
@@ -465,10 +526,13 @@ namespace TODOList
 			List<string> hashTagList = new List<string>();
 			
 //			_tIncompleteTodoList.InsertRange(0, _tCompleteTodoList);
-			foreach (TodoItem td in _tIncompleteTodoList)
+			foreach (TodoItem td in _tIncompleteItems)
 			{
 				if (td.IsComplete)
+				{
+					td.Rank = int.MaxValue;
 					AddTodoToHistory(td);
+				}
 //					completeItems.Add(td);
 				else
 				{
@@ -480,7 +544,7 @@ namespace TODOList
 					}
 				}
 			}
-			_tIncompleteTodoList = incompleteItems;
+			_tIncompleteItems = incompleteItems;
 //			_tCompleteTodoList = completeItems;
 			
 			hashTagList = hashTagList.OrderBy(o => o).ToList();
@@ -499,29 +563,33 @@ namespace TODOList
 			switch (_tCurrentSort)
 			{
 				case "sev":
-					_tIncompleteTodoList = _tReverseSort ? _tIncompleteTodoList.OrderByDescending(o => o.Severity).ToList() : _tIncompleteTodoList.OrderBy(o => o.Severity).ToList();
+					_tIncompleteItems = _tReverseSort ? _tIncompleteItems.OrderByDescending(o => o.Severity).ToList() : _tIncompleteItems.OrderBy(o => o.Severity).ToList();
 					break;
 				case "date":
-					_tIncompleteTodoList = _tReverseSort ? _tIncompleteTodoList.OrderByDescending(o => o.TimeStarted).ToList() : _tIncompleteTodoList.OrderBy(o => o.TimeStarted).ToList();
-					_tIncompleteTodoList = _tReverseSort ? _tIncompleteTodoList.OrderByDescending(o => o.DateStarted).ToList() : _tIncompleteTodoList.OrderBy(o => o.DateStarted).ToList();
+					_tIncompleteItems = _tReverseSort ? _tIncompleteItems.OrderByDescending(o => o.TimeStarted).ToList() : _tIncompleteItems.OrderBy(o => o.TimeStarted).ToList();
+					_tIncompleteItems = _tReverseSort ? _tIncompleteItems.OrderByDescending(o => o.DateStarted).ToList() : _tIncompleteItems.OrderBy(o => o.DateStarted).ToList();
 					break;
 				case "hash":
-					_tIncompleteTodoList = SortByHashTag();
+					_tIncompleteItems = SortByHashTag();
 					break;
 				case "rank":
-					_tIncompleteTodoList = _tReverseSort ? _tIncompleteTodoList.OrderByDescending(o => o.Rank).ToList() : _tIncompleteTodoList.OrderBy(o => o.Rank).ToList();
+					_tIncompleteItems = _tReverseSort ? _tIncompleteItems.OrderByDescending(o => o.Rank).ToList() : _tIncompleteItems.OrderBy(o => o.Rank).ToList();
+					break;
+				case "active":
+					_tIncompleteItems = _tReverseSort ? _tIncompleteItems.OrderByDescending(o => o.IsTimerOn).ToList() : _tIncompleteItems.OrderBy(o => o.IsTimerOn).ToList();
 					break;
 			}
 			
 //			_tCompleteTodoList = _tCompleteTodoList.OrderBy(o => o.TimeCompleted).ToList();
 //			_tCompleteTodoList = _tCompleteTodoList.OrderBy(o => o.DateCompleted).ToList();
-			lbTIncompleteTodos.ItemsSource = _tIncompleteTodoList;
-			lbTIncompleteTodos.Items.Refresh();
+			lbTIncompleteItems.ItemsSource = _tIncompleteItems;
+			lbTIncompleteItems.Items.Refresh();
 //			lbTCompleteTodos.ItemsSource = _tCompleteTodoList;
 //			lbTCompleteTodos.Items.Refresh();
 			cbHashtags.ItemsSource = _tHashTags;
 			cbHashtags.Items.Refresh();
 			_isChanged = true;
+//			ColorTodos();
 		}
 
 		// METHOD  ///////////////////////////////////// NewFile() //
@@ -529,8 +597,8 @@ namespace TODOList
 		{
 			if (MessageBox.Show("Are you sure?", "New File", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
 				return;
-			_hHistoryList.Clear();
-			_tIncompleteTodoList.Clear();
+			_hHistoryItems.Clear();
+			_tIncompleteItems.Clear();
 //			_tCompleteTodoList.Clear();
 
 			_hCurrentHistoryItem = new HistoryItem("", ""); 
@@ -582,7 +650,7 @@ namespace TODOList
 			
 			StreamWriter stream   = new StreamWriter(File.Open(path, FileMode.Create));
 
-			foreach (TodoItem td in _tIncompleteTodoList)
+			foreach (TodoItem td in _tIncompleteItems)
 			{
 				stream.WriteLine(td.ToString());
 			}
@@ -593,7 +661,7 @@ namespace TODOList
 //			}
 			
 			stream.WriteLine("====================================VCS");
-			foreach (HistoryItem hi in _hHistoryList)
+			foreach (HistoryItem hi in _hHistoryItems)
 			{
 				stream.Write(hi.ToString());
 			}
@@ -633,9 +701,9 @@ namespace TODOList
 			
 			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open));
 
-			_tIncompleteTodoList.Clear();
+			_tIncompleteItems.Clear();
 //			_tCompleteTodoList.Clear();
-			_hHistoryList.Clear();
+			_hHistoryItems.Clear();
 			
 			string line = stream.ReadLine();
 
@@ -652,7 +720,7 @@ namespace TODOList
 					break;
 				}
 				TodoItem td = new TodoItem(line);
-				_tIncompleteTodoList.Add(td);
+				_tIncompleteItems.Add(td);
 				line = stream.ReadLine();
 			}
 			
@@ -667,7 +735,7 @@ namespace TODOList
 				}
 				if (line == "EndVCS")
 				{
-					_hHistoryList.Add(new HistoryItem(history));
+					_hHistoryItems.Add(new HistoryItem(history));
 					line = stream.ReadLine();
 					continue;
 				}

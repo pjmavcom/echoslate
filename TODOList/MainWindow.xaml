@@ -6,11 +6,10 @@
 		xmlns:Converters="clr-namespace:TODOList"
         xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="1080" Width="1920" >
-	<Window.Resources>
+        Title="{Binding WindowTitle}" Height="1080" Width="1920"
+		FocusManager.FocusedElement="{Binding ElementName=txtT1NewTodo}" >
+	<Window.Resources >
 		<local:ProgressBarForegroundConverter x:Key="pbfg" />
-		
-		<!-- <ProgressBarForegoundConverter x:Key="ProgressBarForegoundConverter" /> -->
 	</Window.Resources >
 	<DockPanel TextElement.FontSize="16" >
 		<Menu DockPanel.Dock="Top" KeyboardNavigation.IsTabStop="False" >
@@ -46,41 +45,85 @@
 						<Button Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" KeyboardNavigation.IsTabStop="False" />
+						<Button Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 					</StackPanel >
 					 
 					
 					<!-- The list of incomplete todos -->
-					<ListBox Name="lbTIncompleteTodos" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
+					<ListBox Name="lbTIncompleteItems" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
 						<ListBox.ContextMenu >
 							<ContextMenu >
 								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
 								<MenuItem Header="Delete" Click="mnuTDelete_Click" />
+								<Separator />
+								<MenuItem Header="Reset Timer" Click="mnuResetTimer_Click" />
 							</ContextMenu >
 						</ListBox.ContextMenu >
 						<ListBox.ItemTemplate >
 							<DataTemplate >
-								<Grid Margin="0,2" >
+								<Grid ToolTip="{Binding TagsList}" Margin="0,2" >
 									<Grid.ColumnDefinitions >
 										<ColumnDefinition Width="25" /> <!-- Complete button -->
+										<ColumnDefinition Width="200" /> <!-- HashTags -->
 										<ColumnDefinition Width="*" /> <!-- DateTime -->
+										
+										<ColumnDefinition Width="100" /> <!-- Severity -->
 									
 										<ColumnDefinition Width="40" /> <!-- RANK -->
 										<ColumnDefinition Width="25" />
 										<ColumnDefinition Width="25" />
 
-										<ColumnDefinition Width="100" /> <!-- Severity -->
+										<ColumnDefinition Width="60" /> <!-- TIME TAKEN -->
+										<ColumnDefinition Width="40" />
+										
+										<ColumnDefinition Width="25" />
+										<ColumnDefinition Width="25" />
+
 										<ColumnDefinition Width="*" /> <!-- Todo -->
 									</Grid.ColumnDefinitions >
-									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" />
-									<TextBlock Grid.Column="1" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" />
+									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" />
+									<ComboBox Grid.Column="1" ItemsSource="{Binding Tags}" SelectedIndex="0" Height="30" VerticalAlignment="Top" />
+									<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" />
 									
-									<Label Grid.Column="2" Content="{Binding Rank}" Margin="4" />
-									<Button Grid.Column="3" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" />
-									<Button Grid.Column="4" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" />
-
+									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" />
 									
-									<ProgressBar Grid.Column="5" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" />
-									<TextBlock Grid.Column="6" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+									<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" />
+									<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" Height="30" VerticalAlignment="Top" />
+									<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" Height="30" VerticalAlignment="Top" />
+									
+									<Label Grid.Column="7" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"  ContentStringFormat="{}{0:000.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" >
+										<Label.Style >
+											<Style >
+												<Style.Triggers >
+													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
+														<Setter Property="Label.Background" Value="Lime" />
+													</DataTrigger >
+													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
+														<Setter Property="Label.Background" Value="Maroon" />
+													</DataTrigger >
+												</Style.Triggers >
+											</Style >
+										</Label.Style >
+									</Label >
+									<Label Grid.Column="8" Content="{Binding TimeTaken.Second}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" >
+										<Label.Style >
+											<Style >
+												<Style.Triggers >
+													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
+														<Setter Property="Label.Background" Value="Lime" />
+													</DataTrigger >
+													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
+														<Setter Property="Label.Background" Value="Maroon" />
+													</DataTrigger >
+												</Style.Triggers >
+											</Style >
+										</Label.Style >
+									</Label >
+									<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="4" Click="btnTimeTaken_Click" CommandParameter="start" Height="30" VerticalAlignment="Top" />
+									<Button Grid.Column="10" FontFamily="Marlett" FontSize="20" Content="g" Click="btnTimeTaken_Click" CommandParameter="stop" Height="30" VerticalAlignment="Top" />
+									
+									
+									<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
@@ -144,7 +187,7 @@
 							<RowDefinition />
 						</Grid.RowDefinitions >
 						<TextBox Grid.Row="0" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" LostFocus="tbHNotes_LoseFocus" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-						<ListBox Grid.Row="1" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
+						<ListBox Grid.Row="1" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >

@@ -5,9 +5,9 @@ using System.Windows.Input;
 
 namespace TODOList
 {
-	public partial class TodoItemEditor : Window
+	public partial class TodoItemComplete : Window
 	{
-		private int currentSeverity = 0;
+//		private int currentSeverity = 0;
 		private TodoItem td;
 		public TodoItem Result => td;
 //		public bool isComplete = false;
@@ -16,22 +16,21 @@ namespace TODOList
 		private int previousRank = 0;
 //		public string Result = "";
 		
-		public TodoItemEditor(TodoItem td)
+		public TodoItemComplete(TodoItem td)
 		{
 			InitializeComponent();
 			this.td = new TodoItem(td.ToString());
-			this.td.IsTimerOn = td.IsTimerOn;
-			currentSeverity = this.td.Severity;
+//			currentSeverity = this.td.Severity;
 
-			cbSev.SelectedIndex = currentSeverity - 1;
+//			cbSev.SelectedIndex = currentSeverity - 1;
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
-			lblRank.Content = td.Rank;
 			lblTime.Content = td.TimeTakenInMinutes + td.TimeTaken.Second;
-			previousRank = td.Rank;
+//			lblRank.Content = td.Rank;
+//			previousRank = td.Rank;
 			
 			CenterWindowOnMouse();
-			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
+//			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 		}
 		private void CenterWindowOnMouse()
 		{
@@ -44,47 +43,6 @@ namespace TODOList
 			Left = mousePositionInScreenCoordinates.X - halfWidth;
 		}
 
-		// METHOD  ///////////////////////////////////// Severity() //
-		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
-		{
-			ComboBox rb = sender as ComboBox;
-
-			currentSeverity = rb.SelectedIndex + 1;
-		}
-
-		// METHOD  ///////////////////////////////////// Rank() //
-		private void btnRank_Click(object sender, EventArgs e)
-		{
-			Button b = sender as Button;
-
-			if ((string) b.CommandParameter == "up")
-			{
-				td.Rank--;
-			}
-			else if ((string) b.CommandParameter == "down")
-			{
-				td.Rank++;
-			}
-
-			td.Rank = td.Rank > 0 ? td.Rank : 0;
-			lblRank.Content = td.Rank;
-		}
-
-		// METHOD  ///////////////////////////////////// btnOK() //
-		private void btnOK_Click(object sender, EventArgs e)
-		{
-			td.Todo = tbTodo.Text;
-			td.Notes = tbNotes.Text;
-			td.ParseTags();
-			td.Severity = currentSeverity;
-			isOk = true;
-			
-			if (previousRank > td.Rank)
-				td.Rank--;
-			
-			Close();
-		}
-
 		// METHOD  ///////////////////////////////////// btnComplete_Click() //
 		private void btnComplete_Click(object sender, EventArgs e)
 		{
@@ -94,7 +52,7 @@ namespace TODOList
 			td.Todo = tbTodo.Text;
 			td.Notes = tbNotes.Text;
 			td.ParseTags();
-			td.Severity = currentSeverity;
+//			td.Severity = currentSeverity;
 			Close();
 		}
 

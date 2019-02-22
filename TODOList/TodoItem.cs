@@ -7,12 +7,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace TODOList
 {
 	[Serializable]
-	public class TodoItem
+	public class TodoItem : INotifyPropertyChanged
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private string _todo;
@@ -21,11 +23,14 @@ namespace TODOList
 		private readonly string _timeStarted;
 		private string _dateCompleted;
 		private string _timeCompleted;
+		private DateTime _timeTaken;
+		private long _timeTakenInMinutes;
+		private bool _isTimerOn;
 		private bool _isComplete;
 		private int _severity;
 		private int _rank;
 		private List<string> _tags;
-		
+
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public string Todo
@@ -50,7 +55,7 @@ namespace TODOList
 		}
 		public string StartDateTime => _dateStarted + "-" + _timeStarted;
 		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
-		
+
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;
 		public int Severity
@@ -68,6 +73,31 @@ namespace TODOList
 			get => _timeCompleted;
 			set => _timeCompleted = value;
 		}
+		public DateTime TimeTaken
+		{
+			get => _timeTaken;
+			set
+			{
+				_timeTaken = value;
+				TimeTakenInMinutes = _timeTaken.Ticks / TimeSpan.TicksPerMinute;
+				OnPropertyChanged();
+			}
+		}
+		public long TimeTakenInMinutes
+		{
+			get => _timeTakenInMinutes; 
+			set
+			{
+				_timeTakenInMinutes = value;
+				OnPropertyChanged();
+			}
+		}
+
+	public bool IsTimerOn
+		{
+			get => _isTimerOn;
+			set => _isTimerOn = value;
+		}
 		public bool IsComplete
 		{
 			get => _isComplete;
@@ -84,6 +114,20 @@ namespace TODOList
 			set => _rank = value;
 		}
 		public List<string> Tags => _tags;
+		public string TagsList
+		{
+			get
+			{
+				string result = "";
+				if (_tags.Count != 0)
+					result = _tags[0];
+				for (int i = 1; i < _tags.Count; i++)
+				{
+					result += Environment.NewLine + _tags[i];
+				}
+				return result;
+			}
+		}
 		
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
@@ -118,13 +162,17 @@ namespace TODOList
 			_timeStarted = pieces[1].Trim();
 			_dateCompleted = pieces[2].Trim();
 			_timeCompleted = pieces[3].Trim();
-			_isComplete = Convert.ToBoolean(pieces[4]); 
-			_rank = Convert.ToInt16(pieces[5]);
-			_severity = Convert.ToInt16(pieces[6]);
-			_todo = pieces[7].Trim();
+
+			_timeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
+//			_timeTaken = pieces[4].Trim();
+
+			_isComplete = Convert.ToBoolean(pieces[5]); 
+			_rank = Convert.ToInt32(pieces[6]);
+			_severity = Convert.ToInt32(pieces[7]);
+			_todo = pieces[8].Trim();
 			
-			if(pieces.Length > 8)
-				_notes = pieces[8].Trim();
+			if(pieces.Length > 9)
+				_notes = pieces[9].Trim();
 
 			ParseTags();
 		}
@@ -147,7 +195,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + _todo + "|" + _notes;
+			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + _todo + "|" + _notes;
 
 			foreach (string s in _tags)
 			{
@@ -161,6 +209,13 @@ namespace TODOList
 			if(_notes != "")
 				result += Environment.NewLine + "\t\tNotes: " + _notes;
 			return result;
+		}
+		
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

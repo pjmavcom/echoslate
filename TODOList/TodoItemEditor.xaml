@@ -14,6 +14,12 @@
 				<ComboBoxItem Content="Med" />
 				<ComboBoxItem Content="High" />
 			</ComboBox >
+			<Label Content="Rank: " Margin="2" />
+			<Label Name="lblRank" Margin="2" Width="40" />
+			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" />
+			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" />
+			<Label Content="Time: " Margin="2" />
+			<Label Name="lblTime" Margin="2" Width="40" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
