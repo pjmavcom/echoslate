@@ -6,19 +6,10 @@
 		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
 		Title="TodoItemComplete" Height="320" Width="610" 
-		FocusManager.FocusedElement="{Binding ElementName=tbNotes}" >
+		FocusManager.FocusedElement="{Binding ElementName=tbNotes}"
+		Style="{StaticResource {x:Type Window}}" >
 	<StackPanel TextElement.FontSize="16" >
 		<StackPanel Orientation="Horizontal" >
-		<!-- 	<Label Content="Severity:" HorizontalAlignment="Right" Width="80" Margin="2" /> -->
-		<!-- 	<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" Width="100" HorizontalAlignment="Left" Margin="2" > -->
-		<!-- 		<ComboBoxItem Content="Low" IsSelected="True" /> -->
-		<!-- 		<ComboBoxItem Content="Med" /> -->
-		<!-- 		<ComboBoxItem Content="High" /> -->
-		<!-- 	</ComboBox > -->
-		<!-- 	<Label Content="Rank: " Margin="2" /> -->
-		<!-- 	<Label Name="lblRank" Margin="2" Width="40" /> -->
-		<!-- 	<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" /> -->
-		<!-- 	<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" /> -->
 			<Label Content="Time: " Margin="2" />
 			<Label Name="lblTime" Margin="2" Width="40" />
 		</StackPanel >

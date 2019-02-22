@@ -47,7 +47,6 @@ namespace TODOList
 				}
 			}
 		}
-
 		public string Notes
 		{
 			get => _notes;
@@ -55,7 +54,6 @@ namespace TODOList
 		}
 		public string StartDateTime => _dateStarted + "-" + _timeStarted;
 		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
-
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;
 		public int Severity
@@ -92,8 +90,7 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
-
-	public bool IsTimerOn
+		public bool IsTimerOn
 		{
 			get => _isTimerOn;
 			set => _isTimerOn = value;
@@ -128,7 +125,6 @@ namespace TODOList
 				return result;
 			}
 		}
-		
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem()
@@ -164,7 +160,6 @@ namespace TODOList
 			_timeCompleted = pieces[3].Trim();
 
 			_timeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
-//			_timeTaken = pieces[4].Trim();
 
 			_isComplete = Convert.ToBoolean(pieces[5]); 
 			_rank = Convert.ToInt32(pieces[6]);

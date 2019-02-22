@@ -1,14 +1,20 @@
 20190220|191143|-|-|0|False|1|1|Update version number|
-20190221|123736|-|-|0|False|2|1|Redo #interface style||#INTERFACE
+20190221|210634|-|-|0|False|2|1|Adding new history sometimes doesnt work #Bug||#BUG
+20190221|211121|-|-|0|False|3|1|Refactor everything after redoing interface style|
 ====================================VCS
+NewVCS
+20190221|210450|
+VCSTodos
+20190221|123736|20190222|152749|0|True|2147483647|1|Redo #interface style|Cleaned up the style I downloaded and removed a bunch of shit, edited some other shit. Changed primary fonts. Should be good now|#INTERFACE
+20190222|152812|20190222|154152|0|True|2147483647|1|Add exit to main menu|
+20190222|150023|20190222|154727|0|True|2147483647|1|Make its save and load as txt files #Fileio|Easy enough, added Filter to file dialogs|#FILEIO
+EndVCS
 NewVCS
 20190220|203647|v1.2a- Bugs and timers.
 VCSTodos
 20190220|202632|20190221|114006|0|True|1|3|#Bug when double clicking buttons, doesnt know what to do|Fixed by getting listbox.selectedindex, and if its out of bounds, return from function. So double clicking on buttons doesnt do anything. But you can still right click a button and get the correct index. That works correctly|#BUG
 20190221|112002|20190221|122620|0|True|11|1|When complete, edit #notes text|Just added new window, TodoItemComplete, copied from TodoItemEditor with some controls removed.|#NOTES
 20190220|203815|20190221|122655|0|True|10|1|Change rank in edit screen|Easy enough, sort already fixes duplicate ranks
-20190221|114107|20190221|134438|0|True|4|3|#Timers added to todoItem||#TIMERS
-20190221|134618|20190221|134734|0|True|3|2|#Timer tick is messing up lag some...|Increased interval to 5 seconds|#TIMER
 20190217|132720|20190221|134809|0|True|3|3|Add #timers to items or history. Only goes up when this app is open?|Timers only go up when they are clicked active. Active is not saved when saving, have to restart timer again when opened|#TIMERS
 20190217|132749|20190221|134824|0|True|4|3|Add #timers to todo items. Can keep track of current one worked on?|Can keep track of all active timers|#TIMERS
 20190217|132818|20190221|135115|0|True|4|3|#Timers starting moves todo item to top of list|Not really, but added a sort for it. Gonna add a green color to active items|#TIMERS
@@ -18,6 +24,8 @@ VCSTodos
 20190221|162540|20190221|162640|0|True|2147483647|1|#bug when editing an item and saving, rank is messed up|FIXED- When combining double click edit, I had set the rank to the lists count. This happened on either edit. Now the rank is set to int.max when the item is complete|#BUG
 20190217|175702|20190221|203331|0|True|2147483647|1|View resorts #hashtags list to left of todo notes|Easy to see list of individual hashtags now|#HASHTAGS
 20190221|204948|20190221|205009|0|True|2147483647|1|Add tooltip of #hashtags|Simple enough, tooltip property of grid in data template|#HASHTAGS
+20190221|134618|20190221|210334|0|True|2147483647|2|#Timer tick is messing up lag some...|Increased interval to 5 seconds. Then bound the data so it updates itself. Had to modify some properties of TodoItem to get it done right|#TIMER
+20190221|114107|20190221|134438|0|True|2147483647|3|#Timers added to TodoItem||#TIMERS
 EndVCS
 NewVCS
 20190217|203459|Added sorting by rank. Simple stuff

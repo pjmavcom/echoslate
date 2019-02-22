@@ -40,7 +40,7 @@ namespace TODOList
 			{
 				foreground = Colors.Green;
 			}
-			return foreground;
+			return new SolidColorBrush(foreground);
 		}
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{

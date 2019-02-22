@@ -3,16 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:Converters="clr-namespace:TODOList"
         xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
-		FocusManager.FocusedElement="{Binding ElementName=txtT1NewTodo}" >
+		FocusManager.FocusedElement="{Binding ElementName=txtT1NewTodo}" 
+		Style="{StaticResource {x:Type Window}}" >
+	
 	<Window.Resources >
 		<local:ProgressBarForegroundConverter x:Key="pbfg" />
 	</Window.Resources >
-	<DockPanel TextElement.FontSize="16" >
-		<Menu DockPanel.Dock="Top" KeyboardNavigation.IsTabStop="False" >
+	
+	<DockPanel TextElement.FontSize="16" TextElement.FontFamily="Source Code Pro">
+		<Menu DockPanel.Dock="Top" KeyboardNavigation.IsTabStop="False" FontSize="16" >
 			<MenuItem Name="mnuFile" Header="_File" KeyboardNavigation.IsTabStop="False" >
 				<MenuItem Name="mnuNew" Header="New" Click="mnuNew_Click" /> 				
 				<Separator />
@@ -20,12 +22,12 @@
 				<MenuItem Name="mnuSaveAs" Header="SaveAs" Click="mnuSaveAs_Click" KeyboardNavigation.IsTabStop="False" />
 				<Separator />
 				<MenuItem Name="mnuLoad" Header="Load" Click="mnuLoad_Click" KeyboardNavigation.IsTabStop="False" />
+				<Separator />
+				<MenuItem Name="mnuQuit" Header="Quit" Click="mnuClose_Click" KeyboardNavigation.IsTabStop="False" />
 			</MenuItem >
 			<MenuItem Name="mnuQuickSave" Header="Save" Click="mnuSave_Click" KeyboardNavigation.IsTabStop="False" />
-			<MenuItem Header="Recent Saves: " KeyboardNavigation.IsTabStop="False" />
-			<ComboBox Name="cbSaveFiles" SelectionChanged="cbSaveFiles_SelectionChanged" Focusable="False" IsTabStop="False" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" />
-			<MenuItem Header="Recent Loads: " KeyboardNavigation.IsTabStop="False"  />
-			<ComboBox Name="cbLoadFiles" SelectionChanged="cbLoadFiles_SelectionChanged" Focusable="False" IsTabStop="False" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" />
+			<MenuItem Header="Recent Saves" KeyboardNavigation.IsTabStop="False" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" />
+			<MenuItem Header="Recent Loads" KeyboardNavigation.IsTabStop="False" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_Click" />
 		</Menu >
 			
 		<TabControl >
@@ -35,22 +37,20 @@
 					<Grid.RowDefinitions >
 						<RowDefinition Height="30" />
 						<RowDefinition Height="*" />
-						<!-- <RowDefinition Height="*" /> -->
 						<RowDefinition Height="100" />
 					</Grid.RowDefinitions >
 					
 					<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-						<ComboBox Name="cbHashtags" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
+						<ComboBox Name="cbHashtags" ItemsSource="{Binding HashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" KeyboardNavigation.IsTabStop="False" />
 						<Button Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 					</StackPanel >
-					 
 					
 					<!-- The list of incomplete todos -->
-					<ListBox Name="lbTIncompleteItems" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
+					<ListBox Name="lbTIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
 						<ListBox.ContextMenu >
 							<ContextMenu >
 								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
@@ -79,13 +79,13 @@
 										<ColumnDefinition Width="25" />
 										<ColumnDefinition Width="25" />
 
-										<ColumnDefinition Width="*" /> <!-- Todo -->
+										<ColumnDefinition Width="3*" /> <!-- Todo -->
 									</Grid.ColumnDefinitions >
 									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" />
 									<ComboBox Grid.Column="1" ItemsSource="{Binding Tags}" SelectedIndex="0" Height="30" VerticalAlignment="Top" />
 									<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" />
 									
-									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" />
+									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" />
 									
 									<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" />
 									<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" Height="30" VerticalAlignment="Top" />
@@ -122,8 +122,7 @@
 									<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="4" Click="btnTimeTaken_Click" CommandParameter="start" Height="30" VerticalAlignment="Top" />
 									<Button Grid.Column="10" FontFamily="Marlett" FontSize="20" Content="g" Click="btnTimeTaken_Click" CommandParameter="stop" Height="30" VerticalAlignment="Top" />
 									
-									
-									<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4" />
+									<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
 								</Grid >
 							</DataTemplate >
 						</ListBox.ItemTemplate >
@@ -164,7 +163,7 @@
 							<Button Content="New" Click="btnHNewHistory_Click" Width="90" />
 							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" />
 						</StackPanel >
-						<ListBox Grid.Row="1" Name="lbHHistory" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+						<ListBox Grid.Row="1" Name="lbHHistory" ItemsSource="{Binding HistoryItems}" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >
@@ -207,5 +206,3 @@
 		</TabControl >
     </DockPanel >
 </Window >
-
-

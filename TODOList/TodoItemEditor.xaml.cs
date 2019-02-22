@@ -10,11 +10,8 @@ namespace TODOList
 		private int currentSeverity = 0;
 		private TodoItem td;
 		public TodoItem Result => td;
-//		public bool isComplete = false;
 		public bool isOk = false;
-//		public bool doAdjustRank = false;
 		private int previousRank = 0;
-//		public string Result = "";
 		
 		public TodoItemEditor(TodoItem td)
 		{
@@ -38,17 +35,14 @@ namespace TODOList
 			Point mousePositionInApp = Mouse.GetPosition(Application.Current.MainWindow);
 			Point mousePositionInScreenCoordinates = Application.Current.MainWindow.PointToScreen(mousePositionInApp);
 
-			double halfWidth = Width / 2;
-			double halfHeight = Height / 2;
-			Top = mousePositionInScreenCoordinates.Y - halfHeight;
-			Left = mousePositionInScreenCoordinates.X - halfWidth;
+			Top = mousePositionInScreenCoordinates.Y;
+			Left = mousePositionInScreenCoordinates.X;
 		}
 
 		// METHOD  ///////////////////////////////////// Severity() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
 			ComboBox rb = sender as ComboBox;
-
 			currentSeverity = rb.SelectedIndex + 1;
 		}
 
@@ -89,7 +83,6 @@ namespace TODOList
 		private void btnComplete_Click(object sender, EventArgs e)
 		{
 			isOk = true;
-//			isComplete = true;
 			td.IsComplete = !td.IsComplete;
 			td.Todo = tbTodo.Text;
 			td.Notes = tbNotes.Text;
@@ -101,7 +94,6 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// btnCancel() //
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
-//			td.Severity = 0;
 			Close();
 		}
 	}
