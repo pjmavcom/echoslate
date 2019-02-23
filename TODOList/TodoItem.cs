@@ -30,7 +30,7 @@ namespace TODOList
 		private int _severity;
 		private int _rank;
 		private List<string> _tags;
-
+		
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public string Todo
@@ -110,7 +110,11 @@ namespace TODOList
 			get => _rank;
 			set => _rank = value;
 		}
-		public List<string> Tags => _tags;
+		public List<string> Tags
+		{
+			get => _tags;
+			set => _tags = value;
+		}
 		public string TagsList
 		{
 			get
@@ -121,6 +125,20 @@ namespace TODOList
 				for (int i = 1; i < _tags.Count; i++)
 				{
 					result += Environment.NewLine + _tags[i];
+				}
+				return result;
+			}
+		}
+		public string TagsSorted
+		{
+			get
+			{
+				string result = "";
+				for (int i = 0; i < _tags.Count; i++)
+				{
+					result += _tags[i];
+					if (i != _tags.Count)
+						result += Environment.NewLine;
 				}
 				return result;
 			}

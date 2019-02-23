@@ -1,5 +1,16 @@
 20190220|191143|-|-|0|False|1|1|Update version number|
+20190223|092124|-|-|0|False|2|1|#groups||#GROUPS
 ====================================VCS
+NewVCS
+20190223|105243|
+VCSTodos
+EndVCS
+NewVCS
+20190223|104926|v1.4. Couple quick UI fixes
+VCSTodos
+20190223|092211|20190223|105133|0|True|2147483647|1|#Sort #hashtags #list #on #left #side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags field, cuz cant modify a list while iterating|#SORT|#HASHTAGS|#LIST|#ON|#LEFT|#SIDE.
+20190223|092234|20190223|105200|0|True|2147483647|1|Change #sort buttons to stretch across the window at top for sorting||#SORT
+EndVCS
 NewVCS
 20190222|233012|Fresh starting program and quiting gave the stuff has changed window when closing. The problem is in WPF, a selection changed event. Bah. Code changed...
 VCSTodos
