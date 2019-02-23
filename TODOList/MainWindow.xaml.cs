@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
@@ -26,7 +25,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.3";
+		public const string VERSION = "1.3a";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -34,7 +33,7 @@ namespace TODOList
 		private int _tCurrentSeverity;
 
 		// Sorting
-		private bool _tReverseSort = false;
+		private bool _tReverseSort;
 		private string _tCurrentSort = "rank";
 		private int _tCurrentHashTagSortIndex = -1;
 		private bool _tDidHashChange;
@@ -49,15 +48,13 @@ namespace TODOList
 		private const string basePath = @"C:\MyBinaries\";
 		private ObservableCollection<string> recentFiles;
 		private string currentOpenFile;
-		private bool _isChanged = false;
+		private bool _isChanged;
 
 		// WINDOW ITEMS
-		private double top = 0;
-		private double left = 0;
+		private double top;
+		private double left;
 		private double width = 1080;
 		private double height = 1920;
-
-		private DispatcherTimer _timer;
 
 		// HOTKEY STUFF
 		private const int HOTKEY_ID = 9000;
@@ -65,8 +62,6 @@ namespace TODOList
 		private HwndSource source;
 		[DllImport("user32.dll")]
 		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-		[DllImport("user32.dll")]
-		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
@@ -83,6 +78,7 @@ namespace TODOList
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public MainWindow()
 		{
+			left = 0;
 			InitializeComponent();
 			LoadSettings();
 			DataContext = this;
@@ -91,10 +87,10 @@ namespace TODOList
 			Left = left;
 			Height = height;
 			Width = width;
-			_timer = new DispatcherTimer();
-			_timer.Tick += _timer_Tick;
-			_timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
-			_timer.Start();
+			var timer = new DispatcherTimer();
+			timer.Tick += _timer_Tick;
+			timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
+			timer.Start();
 
 			Closing += Window_Closed;
 
@@ -105,6 +101,10 @@ namespace TODOList
 
 			if (recentFiles.Count > 0)
 				Load(recentFiles[0]);
+
+			lbHHistory.SelectedIndex = 0;
+			lbHCompletedTodos.SelectedIndex = 0;
+			lbTIncompleteItems.SelectedIndex = 0;
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
@@ -116,7 +116,8 @@ namespace TODOList
 
 			IntPtr handle = new WindowInteropHelper(this).Handle;
 			source = HwndSource.FromHwnd(handle);
-			source.AddHook(HwndHook);
+			if (source != null) 
+				source.AddHook(HwndHook);
 			RegisterHotKey(handle, HOTKEY_ID, MOD_WIN, 0x73);
 		}
 		// METHOD  ///////////////////////////////////// HwndHook() //
@@ -135,7 +136,7 @@ namespace TODOList
 								Activate();
 								FocusManager.SetFocusedElement(FocusManager.GetFocusScope(tbHNotes), tbHNotes);
 								txtT1NewTodo.Focus();
-								Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(delegate() { txtT1NewTodo.Focus(); }));
+								Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(delegate { txtT1NewTodo.Focus(); }));
 							}
 							handled = true;
 							break;
@@ -153,6 +154,82 @@ namespace TODOList
 					td.TimeTaken = td.TimeTaken.AddSeconds(1);
 		}
 
+		// METHOD  ///////////////////////////////////// hkSwitchTab() //
+		private void hkSwitchTab(object sender, ExecutedRoutedEventArgs e)
+		{
+			int index = TabControl.SelectedIndex;
+			if ((string) e.Parameter == "right")
+			{
+				index++;
+				if (index >= TabControl.Items.Count)
+					index = 0;
+			}
+			else if ((string) e.Parameter == "left")
+			{
+				index--;
+				if (index < 0)
+					index = TabControl.Items.Count - 1;
+			}
+			TabControl.SelectedIndex = index;
+		}
+		// METHOD  ///////////////////////////////////// hkSwitchSeverity() //
+		private void hkSwitchSeverity(object sender, ExecutedRoutedEventArgs e)
+		{
+			int index = cbSeverity.SelectedIndex;
+			if ((string) e.Parameter == "down")
+			{
+				index++;
+				if (index >= cbSeverity.Items.Count)
+					index = cbSeverity.Items.Count - 1;
+			}
+			else if ((string) e.Parameter == "up")
+			{
+				index--;
+				if (index < 0)
+					index = 0;
+			}
+			cbSeverity.SelectedIndex = index;
+			cbSeverity.Items.Refresh();
+		}
+		// METHOD  ///////////////////////////////////// hkComplete() //
+		private void hkComplete(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (tabHistory.IsSelected)
+				return;
+
+			TodoItem td = (TodoItem) lbTIncompleteItems.SelectedItem;
+			if (td != null)
+			{
+				TodoItemComplete tdc = new TodoItemComplete(td);
+				tdc.ShowDialog();
+				if (tdc.isOk)
+				{
+					_tIncompleteItems.RemoveAt(lbTIncompleteItems.SelectedIndex);
+					_tIncompleteItems.Add(tdc.Result);
+				}
+			}
+			ResortTodoList();
+		}
+		// METHOD  ///////////////////////////////////// hkAdd() //
+		private void hkAdd(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (tabHistory.IsSelected)
+				return;
+			btnTAdd_Click(sender, e);
+		}
+		// METHOD  ///////////////////////////////////// hkEdit() //
+		private void hkEdit(object sender, EventArgs e)
+		{
+			if(tabTodo.IsSelected)
+				EditItem(lbTIncompleteItems, _tIncompleteItems);
+			else if(tabHistory.IsSelected)
+				EditItem(lbHCompletedTodos, _hCurrentHistoryItem.CompletedTodos);
+		}
+		// METHOD  ///////////////////////////////////// hkQuickSave() //
+		private void hkQuickSave(object sender, ExecutedRoutedEventArgs e)
+		{
+			Save(recentFiles[0]);
+		}
 		// METHOD  ///////////////////////////////////// HISTORY TAB() //
 		// METHOD  ///////////////////////////////////// AddTodoToHistory() //
 		private void AddTodoToHistory(TodoItem td)
@@ -193,7 +270,10 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// RefreshHistory() //
 		private void RefreshHistory()
 		{
-			_hHistoryItems = _hHistoryItems.OrderByDescending(o => o.DateTimeAdded).ToList();
+			List<HistoryItem> temp = _hHistoryItems.OrderByDescending(o => o.DateTimeAdded).ToList();
+			_hHistoryItems.Clear();
+			foreach (HistoryItem hi in temp)
+				_hHistoryItems.Add(hi);
 
 			if (_hHistoryItems.Count == 0)
 				_hCurrentHistoryItem = new HistoryItem("", "");
@@ -205,7 +285,7 @@ namespace TODOList
 			lbHCompletedTodos.ItemsSource = _hCurrentHistoryItem.CompletedTodos;
 			lbHCompletedTodos.Items.Refresh();
 
-			lbHHistory.ItemsSource = _hHistoryItems;
+//			lbHHistory.ItemsSource = _hHistoryItems;
 			lbHHistory.Items.Refresh();
 			_isChanged = true;
 		}
@@ -218,11 +298,14 @@ namespace TODOList
 			if (MessageBox.Show("Delete", "Are you sure", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
 				return;
 
-			td.IsComplete = false;
-			_tIncompleteItems.Add(td);
-			td.Rank = _tIncompleteItems.Count;
-			ResortTodoList();
-			_hCurrentHistoryItem.CompletedTodos.Remove(td);
+			if (td != null)
+			{
+				td.IsComplete = false;
+				_tIncompleteItems.Add(td);
+				td.Rank = _tIncompleteItems.Count;
+				ResortTodoList();
+				_hCurrentHistoryItem.CompletedTodos.Remove(td);
+			}
 			RefreshHistory();
 		}
 
@@ -296,17 +379,20 @@ namespace TODOList
 		private void EditItem(object sender, List<TodoItem> list)
 		{
 			ListBox lb = sender as ListBox;
-			int index = lb.SelectedIndex;
-			if (index < 0)
-				return;
-			TodoItem td = list[index];
-			TodoItemEditor tdie = new TodoItemEditor(td);
-
-			tdie.ShowDialog();
-			if (tdie.isOk)
+			if (lb != null)
 			{
-				list.Remove(td);
-				_tIncompleteItems.Add(tdie.Result);
+				int index = lb.SelectedIndex;
+				if (index < 0)
+					return;
+				TodoItem td = list[index];
+				TodoItemEditor tdie = new TodoItemEditor(td);
+
+				tdie.ShowDialog();
+				if (tdie.isOk)
+				{
+					list.Remove(td);
+					_tIncompleteItems.Add(tdie.Result);
+				}
 			}
 
 			ResortTodoList();
@@ -316,8 +402,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// cbTSeverity_SelectionChanged() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
-			ComboBox rb = sender as ComboBox;
-			_tCurrentSeverity = rb.SelectedIndex + 1;
+			if (sender is ComboBox rb) _tCurrentSeverity = rb.SelectedIndex + 1;
 		}
 
 		// METHOD  ///////////////////////////////////// btnTComplete_Click() //
@@ -326,15 +411,18 @@ namespace TODOList
 			Button b = sender as Button;
 			object item = b?.DataContext;
 
-			int index = lbTIncompleteItems.Items.IndexOf(item);
-			TodoItem td = _tIncompleteItems[index];
-
-			TodoItemComplete tdc = new TodoItemComplete(td);
-			tdc.ShowDialog();
-			if (tdc.isOk)
+			if (item != null)
 			{
-				_tIncompleteItems.RemoveAt(index);
-				_tIncompleteItems.Add(tdc.Result);
+				int index = lbTIncompleteItems.Items.IndexOf(item);
+				TodoItem td = _tIncompleteItems[index];
+
+				TodoItemComplete tdc = new TodoItemComplete(td);
+				tdc.ShowDialog();
+				if (tdc.isOk)
+				{
+					_tIncompleteItems.RemoveAt(index);
+					_tIncompleteItems.Add(tdc.Result);
+				}
 			}
 			ResortTodoList();
 		}
@@ -343,25 +431,33 @@ namespace TODOList
 		private void btnRank_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
-			TodoItem td = b.DataContext as TodoItem;
-			int index = lbTIncompleteItems.SelectedIndex;
-			index = _tIncompleteItems.IndexOf(td);
+			if (b != null)
+			{
+				TodoItem td = b.DataContext as TodoItem;
+				var index = _tIncompleteItems.IndexOf(td);
 
-			if ((string) b.CommandParameter == "up")
-			{
-				if (index == 0)
-					return;
-				int newRank = _tIncompleteItems[index - 1].Rank;
-				_tIncompleteItems[index - 1].Rank = td.Rank;
-				td.Rank = newRank;
-			}
-			else if ((string) b.CommandParameter == "down")
-			{
-				if (index >= _tIncompleteItems.Count)
-					return;
-				int newRank = _tIncompleteItems[index + 1].Rank;
-				_tIncompleteItems[index + 1].Rank = td.Rank;
-				td.Rank = newRank;
+				if ((string) b.CommandParameter == "up")
+				{
+					if (index == 0)
+						return;
+					int newRank = _tIncompleteItems[index - 1].Rank;
+					if (td != null)
+					{
+						_tIncompleteItems[index - 1].Rank = td.Rank;
+						td.Rank = newRank;
+					}
+				}
+				else if ((string) b.CommandParameter == "down")
+				{
+					if (index >= _tIncompleteItems.Count)
+						return;
+					int newRank = _tIncompleteItems[index + 1].Rank;
+					if (td != null)
+					{
+						_tIncompleteItems[index + 1].Rank = td.Rank;
+						td.Rank = newRank;
+					}
+				}
 			}
 			ResortTodoList();
 		}
@@ -370,13 +466,19 @@ namespace TODOList
 		private void btnTimeTaken_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
-			TodoItem td = b.DataContext as TodoItem;
-			int index = lbTIncompleteItems.SelectedIndex;
+			if (b != null)
+			{
+				TodoItem td = b.DataContext as TodoItem;
 
-			if ((string) b.CommandParameter == "start")
-				td.IsTimerOn = true;
-			else if ((string) b.CommandParameter == "stop")
-				td.IsTimerOn = false;
+				if ((string) b.CommandParameter == "start")
+				{
+					if (td != null) 
+						td.IsTimerOn = true;
+				}
+				else if ((string) b.CommandParameter == "stop")
+					if (td != null)
+						td.IsTimerOn = false;
+			}
 
 			lbTIncompleteItems.Items.Refresh();
 		}
@@ -585,17 +687,6 @@ namespace TODOList
 				return;
 			Save(path);
 		}
-		// METHOD  ///////////////////////////////////// cbSaveFiles_SelectionChanged() //
-		private void cbSaveFiles_SelectionChanged(object sender, EventArgs e)
-		{
-			var lb = sender as ComboBox;
-			int index = lb.SelectedIndex;
-
-			if (MessageBox.Show("Save over " + recentFiles[index], "Are you sure you want to save?", MessageBoxButtons.YesNo) ==
-				System.Windows.Forms.DialogResult.No)
-				return;
-			Save(recentFiles[index]);
-		}
 		// METHOD  ///////////////////////////////////// mnuSaveAs_Click() //
 		private void mnuSaveAs_Click(object sender, EventArgs e)
 		{
@@ -647,7 +738,7 @@ namespace TODOList
 		}
 		// METHOD  ///////////////////////////////////// Load() //
 		// METHOD  ///////////////////////////////////// mnuLoadFiles_Click() //
-		public void mnuLoadFiles_Click(object sender, RoutedEventArgs e)
+		private void mnuLoadFiles_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = (MenuItem) e.OriginalSource;
 			string path = (string) mi.DataContext;
@@ -790,12 +881,13 @@ namespace TODOList
 			Close();
 		}
 		// METHOD  ///////////////////////////////////// Window_Closed() //
-		public void Window_Closed(object sender, CancelEventArgs e)
+		private void Window_Closed(object sender, CancelEventArgs e)
 		{
 			SaveSettings();
-			if (_isChanged)
-				if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
-					e.Cancel = true;
+			if (!_isChanged)
+				return;
+			if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+				e.Cancel = true;
 		}
 	}
 }

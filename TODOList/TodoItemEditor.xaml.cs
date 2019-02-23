@@ -1,23 +1,24 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace TODOList
 {
-	public partial class TodoItemEditor : Window
+	public partial class TodoItemEditor
 	{
-		private int currentSeverity = 0;
-		private TodoItem td;
+		private int currentSeverity;
+		private readonly TodoItem td;
 		public TodoItem Result => td;
-		public bool isOk = false;
-		private int previousRank = 0;
+		public bool isOk;
+		private readonly int previousRank;
 		
 		public TodoItemEditor(TodoItem td)
 		{
 			InitializeComponent();
-			this.td = new TodoItem(td.ToString());
-			this.td.IsTimerOn = td.IsTimerOn;
+			this.td = new TodoItem(td.ToString())
+			{
+				IsTimerOn = td.IsTimerOn
+			};
 			currentSeverity = this.td.Severity;
 
 			cbSev.SelectedIndex = currentSeverity - 1;
@@ -32,18 +33,18 @@ namespace TODOList
 		}
 		private void CenterWindowOnMouse()
 		{
-			Point mousePositionInApp = Mouse.GetPosition(Application.Current.MainWindow);
-			Point mousePositionInScreenCoordinates = Application.Current.MainWindow.PointToScreen(mousePositionInApp);
+			Window win = Application.Current.MainWindow;
 
-			Top = mousePositionInScreenCoordinates.Y;
-			Left = mousePositionInScreenCoordinates.X;
+			double centerX = win.Width / 2 + win.Left;
+			double centerY = win.Height / 2 + win.Top;
+			Left = centerX - Width / 2;
+			Top = centerY - Height / 2;
 		}
 
 		// METHOD  ///////////////////////////////////// Severity() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
-			ComboBox rb = sender as ComboBox;
-			currentSeverity = rb.SelectedIndex + 1;
+			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex + 1;
 		}
 
 		// METHOD  ///////////////////////////////////// Rank() //
@@ -51,11 +52,11 @@ namespace TODOList
 		{
 			Button b = sender as Button;
 
-			if ((string) b.CommandParameter == "up")
+			if (b != null && (string) b.CommandParameter == "up")
 			{
 				td.Rank--;
 			}
-			else if ((string) b.CommandParameter == "down")
+			else if (b != null && (string) b.CommandParameter == "down")
 			{
 				td.Rank++;
 			}

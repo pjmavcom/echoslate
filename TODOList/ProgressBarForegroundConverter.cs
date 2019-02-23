@@ -10,48 +10,29 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-
 namespace TODOList
 {
 	public class ProgressBarForegroundConverter : IValueConverter
 	{
-		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-
-
-		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
-
-
-		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			double progress = (double) value;
 			Color foreground = new Color();
+			if (value == null)
+				return new SolidColorBrush(foreground);
 			
+			double progress = (double) value;
 
 			if (progress >= 3d)
-			{
 				foreground = Colors.Red;
-			}
 			else if (progress >= 2d)
-			{
 				foreground = Colors.Yellow;
-			}
 			else if (progress >= 1d)
-			{
 				foreground = Colors.Green;
-			}
 			return new SolidColorBrush(foreground);
 		}
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
-
-		// MONOGAME METHODS //////////////////////////////////////////////////////////////////////////////////////////////////////////////// MONOGAME METHODS //
-
-
-		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
-
-
 	}
 }

@@ -3,7 +3,6 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
 		Title="TodoItemEditor" Height="320" Width="610"
 		Style="{StaticResource {x:Type Window}}" >
@@ -30,10 +29,10 @@
 			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
 			<TextBox Name="tbNotes" TextWrapping="Wrap" KeyboardNavigation.TabIndex="2" Height="100" Width="500" Margin="2" />
 		</StackPanel >
-		<StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal" Grid.ColumnSpan="2" >
+		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
 			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" />
 			<Button Content="OK" Click="btnOK_Click" Width="150" Height="35" IsDefault="True" />
-			<Button Content="Cancel" Click="btnCancel_Click" Width="150" Height="35" />
+			<Button Content="Cancel" IsCancel="True" Click="btnCancel_Click" Width="150" Height="35" />
 		</StackPanel >
 	</StackPanel>
 </Window>
