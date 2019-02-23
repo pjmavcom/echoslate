@@ -25,7 +25,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.3a";
+		public const string VERSION = "1.3a1";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -285,7 +285,6 @@ namespace TODOList
 			lbHCompletedTodos.ItemsSource = _hCurrentHistoryItem.CompletedTodos;
 			lbHCompletedTodos.Items.Refresh();
 
-//			lbHHistory.ItemsSource = _hHistoryItems;
 			lbHHistory.Items.Refresh();
 			_isChanged = true;
 		}
@@ -884,10 +883,9 @@ namespace TODOList
 		private void Window_Closed(object sender, CancelEventArgs e)
 		{
 			SaveSettings();
-			if (!_isChanged)
-				return;
-			if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
-				e.Cancel = true;
+			if (_isChanged)
+				if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+					e.Cancel = true;
 		}
 	}
 }

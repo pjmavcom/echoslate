@@ -1,13 +1,26 @@
 20190220|191143|-|-|0|False|1|1|Update version number|
-20190221|210634|-|-|0|False|2|1|Adding new history sometimes doesnt work #Bug||#BUG
-20190221|211121|-|-|0|False|3|1|Refactor everything after redoing interface style|
 ====================================VCS
 NewVCS
-20190221|210450|
+20190222|233012|Fresh starting program and quiting gave the stuff has changed window when closing. The problem is in WPF, a selection changed event. Bah. Code changed...
+VCSTodos
+EndVCS
+NewVCS
+20190222|162835|Working on warnings. Added some hotkeys in there too
+VCSTodos
+20190222|162921|20190222|225208|0|True|2147483647|1|Work on warnings|Just XAML crap warning left
+20190222|162925|20190222|230403|0|True|2147483647|1|Release|Yay all done!
+20190222|230557|20190222|232548|0|True|2147483647|1|#Annoying No hotkeys for menus. And keyboard arrows dont work for some reason|Fixed most of this. Hotkey for save is Ctrl+S and menus are tab accessible. Keyboard works like it needs to|#ANNOYING
+20190222|230457|20190222|232648|0|True|2147483647|1|#Annoying Cant tab off IncompleteItems|Fixed, KeyboardIsTabStop was false|#ANNOYING
+20190222|230513|20190222|232718|0|True|2147483647|1|#Annoying No hotkeys for History tab|Still cant arrow around the history list, cant figure that one out. But the rest of the screen works|#ANNOYING
+EndVCS
+NewVCS
+20190221|210450|Fixed the style and some bugs
 VCSTodos
 20190221|123736|20190222|152749|0|True|2147483647|1|Redo #interface style|Cleaned up the style I downloaded and removed a bunch of shit, edited some other shit. Changed primary fonts. Should be good now|#INTERFACE
 20190222|152812|20190222|154152|0|True|2147483647|1|Add exit to main menu|
 20190222|150023|20190222|154727|0|True|2147483647|1|Make its save and load as txt files #Fileio|Easy enough, added Filter to file dialogs|#FILEIO
+20190221|211121|20190222|162721|0|True|2147483647|1|Refactor everything after redoing interface style|
+20190221|210634|20190222|162750|0|True|2147483647|1|Adding new history sometimes doesnt work #Bug|Havent seen this happen anymore....|#BUG
 EndVCS
 NewVCS
 20190220|203647|v1.2a- Bugs and timers.
