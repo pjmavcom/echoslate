@@ -560,6 +560,19 @@ namespace TODOList
 				List<TodoItem> temp = _tIncompleteItems.ToList();
 				foreach (TodoItem td in temp)
 				{
+					List<string> sortedTags = new List<string>();
+					List<string> unsortedTags = td.Tags.ToList();
+					foreach (string u in td.Tags)
+					{
+						if (u == s)
+						{
+							sortedTags.Add(u);
+							unsortedTags.Remove(u);
+						}
+					}
+					sortedTags.AddRange(unsortedTags);
+					td.Tags = sortedTags;
+					
 					foreach (string t in td.Tags)
 					{
 						if (!s.Equals(t))

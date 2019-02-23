@@ -68,14 +68,27 @@
 						<RowDefinition Height="100" />
 					</Grid.RowDefinitions >
 					
-					<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-						<ComboBox Name="cbHashtags" ItemsSource="{Binding HashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
-						<Button Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-						<Button Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
-						<Button Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-						<Button Content="Hash" Click="btnTSort_Click" CommandParameter="hash" KeyboardNavigation.IsTabStop="False" />
-						<Button Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-					</StackPanel >
+					<!-- <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" > -->
+					<Grid >
+						<Grid.ColumnDefinitions >
+							<ColumnDefinition Width="35" />
+							
+							<ColumnDefinition Width="200" />
+							<ColumnDefinition Width="150" />
+							<ColumnDefinition Width="100" />
+							
+							<ColumnDefinition Width="90" />
+							<ColumnDefinition Width="150" />
+							
+						</Grid.ColumnDefinitions >
+						<ComboBox Grid.Column="1" Name="cbHashtags" ItemsSource="{Binding HashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
+						<Button Grid.Column="2" Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+						<Button Grid.Column="3" Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
+						
+						<Button Grid.Column="4" Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
+						<Button Grid.Column="5" Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+					</Grid >
+					<!-- </StackPanel > -->
 					
 					<!-- The list of incomplete todos -->
 					<ListBox Name="lbTIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
@@ -110,7 +123,7 @@
 										<ColumnDefinition Width="3*" /> <!-- Todo -->
 									</Grid.ColumnDefinitions >
 									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<ComboBox Grid.Column="1" ItemsSource="{Binding Tags}" SelectedIndex="0" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+									<TextBlock Grid.Column="1" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 									<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 									
 									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
