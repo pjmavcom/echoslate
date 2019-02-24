@@ -54,7 +54,13 @@
 				<MenuItem Header="Quit" Click="mnuClose_Click" />
 			</MenuItem >
 			<MenuItem Header="Quick Save" Click="mnuSave_Click" />
-			<MenuItem Header="Recent Saves" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" />
+			<MenuItem Name="mnuRecentSave" Header="Recent Saves" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" >
+				<MenuItem.ContextMenu>
+					<ContextMenu >
+						<MenuItem Header="Remove" Click="mnuRemoveFile_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
+					</ContextMenu >
+				</MenuItem.ContextMenu>
+			</MenuItem >
 			<MenuItem Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_Click" />
 		</Menu >
 			

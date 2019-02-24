@@ -5,19 +5,33 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		mc:Ignorable="d"
 		Title="TodoItemEditor" Height="320" Width="610"
+		FocusManager.FocusedElement="{Binding ElementName=tbTodo}"
 		Style="{StaticResource {x:Type Window}}" >
+	
+	<Window.Resources >
+		<RoutedUICommand x:Key="Complete" Text="Some Text" />
+	</Window.Resources >
+	
+	<Window.CommandBindings>
+		<CommandBinding Command="{StaticResource Complete}" Executed="btnComplete_Click" />
+	</Window.CommandBindings>
+	
+	<Window.InputBindings>
+		<KeyBinding Key="Enter" Modifiers="Control" Command="{StaticResource Complete}" />
+	</Window.InputBindings>
+	
 	<StackPanel TextElement.FontSize="16" >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Severity:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.TabIndex="1" Width="100" HorizontalAlignment="Left" Margin="2" >
+			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
 				<ComboBoxItem Content="Low" IsSelected="True" />
 				<ComboBoxItem Content="Med" />
 				<ComboBoxItem Content="High" />
 			</ComboBox >
 			<Label Content="Rank: " Margin="2" />
 			<Label Name="lblRank" Margin="2" Width="40" />
-			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" />
-			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" />
+			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
 			<Label Content="Time: " Margin="2" />
 			<Label Name="lblTime" Margin="2" Width="40" />
 		</StackPanel >
@@ -30,9 +44,9 @@
 			<TextBox Name="tbNotes" TextWrapping="Wrap" KeyboardNavigation.TabIndex="2" Height="100" Width="500" Margin="2" />
 		</StackPanel >
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
-			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" />
-			<Button Content="OK" Click="btnOK_Click" Width="150" Height="35" IsDefault="True" />
-			<Button Content="Cancel" IsCancel="True" Click="btnCancel_Click" Width="150" Height="35" />
+			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="OK" Click="btnOK_Click" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="Cancel" IsCancel="True" Click="btnCancel_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 	</StackPanel>
 </Window>

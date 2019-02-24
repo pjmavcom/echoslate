@@ -25,7 +25,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.4";
+		public const string VERSION = "1.4a";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -229,7 +229,26 @@ namespace TODOList
 		private void hkQuickSave(object sender, ExecutedRoutedEventArgs e)
 		{
 			Save(recentFiles[0]);
+		} 
+
+
+		// METHOD  ///////////////////////////////////// mnuRemoveFile_Click() //
+		private void mnuRemoveFile_Click(object sender, RoutedEventArgs e)
+		{
+			
 		}
+		// METHOD  ///////////////////////////////////// mnuResetTimer_Click() //
+		private void mnuResetTimer_Click(object sender, EventArgs e)
+		{
+			int index = lbTIncompleteItems.SelectedIndex;
+			if (index < 0)
+				return;
+			TodoItem td = _tIncompleteItems[index];
+			td.TimeTaken = new DateTime();
+			td.IsTimerOn = false;
+			lbTIncompleteItems.Items.Refresh();
+		}
+		
 		// METHOD  ///////////////////////////////////// HISTORY TAB() //
 		// METHOD  ///////////////////////////////////// AddTodoToHistory() //
 		private void AddTodoToHistory(TodoItem td)
@@ -482,17 +501,7 @@ namespace TODOList
 			lbTIncompleteItems.Items.Refresh();
 		}
 
-		// METHOD  ///////////////////////////////////// mnuResetTimer_Click() //
-		private void mnuResetTimer_Click(object sender, EventArgs e)
-		{
-			int index = lbTIncompleteItems.SelectedIndex;
-			if (index < 0)
-				return;
-			TodoItem td = _tIncompleteItems[index];
-			td.TimeTaken = new DateTime();
-			td.IsTimerOn = false;
-			lbTIncompleteItems.Items.Refresh();
-		}
+		
 		
 		// METHOD  ///////////////////////////////////// Sorting() //
 		// METHOD  ///////////////////////////////////// cbTHashtags_SelectionChanged() //
@@ -712,10 +721,12 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// SaveAs() //
 		private void SaveAs()
 		{
+			string path = GetFilePath();
 			SaveFileDialog sfd = new SaveFileDialog
 			{
 				Title = "Select folder to save game in.",
-				FileName = basePath,
+				FileName = GetFileName(),
+				InitialDirectory = GetFilePath(),
 				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
 			};
 
@@ -759,13 +770,37 @@ namespace TODOList
 				return;
 			Load(path);
 		}
+		// METHOD  ///////////////////////////////////// GetFilePath() //
+		private string GetFilePath()
+		{
+			string result = "";
+			if (recentFiles.Count == 0)
+				return basePath;
+
+			string[] sa = recentFiles[0].Split('\\');
+			for (int i = 0; i < sa.Length - 1; i++)
+			{
+				result += sa[i] + "\\";
+			}
+			return result;
+		}
+		// METHOD  ///////////////////////////////////// GetFileName() //
+		private string GetFileName()
+		{
+			string result = "";
+			if (recentFiles.Count == 0)
+				return "";
+
+			string[] sa = recentFiles[0].Split('\\');
+			return sa[sa.Count() - 1];
+		}
 		// METHOD  ///////////////////////////////////// mnuLoad_Click() //
 		private void mnuLoad_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog
 			{
 				Title = "Open file: ",
-				FileName = basePath,
+				InitialDirectory = GetFilePath(),
 				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
 			};
 
