@@ -51,17 +51,23 @@
 				<Separator />
 				<MenuItem Header="Load" Click="mnuLoad_Click" />
 				<Separator />
-				<MenuItem Header="Quit" Click="mnuClose_Click" />
+				<MenuItem Header="Quit" Click="mnuQuit_Click" />
 			</MenuItem >
 			<MenuItem Header="Quick Save" Click="mnuSave_Click" />
-			<MenuItem Name="mnuRecentSave" Header="Recent Saves" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" >
+			<MenuItem Name="mnuRecentSaves" Header="Recent Saves" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" MouseRightButtonUp="mnuRecentSavesRMB" >
 				<MenuItem.ContextMenu>
 					<ContextMenu >
 						<MenuItem Header="Remove" Click="mnuRemoveFile_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
 					</ContextMenu >
 				</MenuItem.ContextMenu>
 			</MenuItem >
-			<MenuItem Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_Click" />
+			<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_Click" MouseRightButtonUp="mnuRecentLoadsRMB" >
+				<MenuItem.ContextMenu>
+					<ContextMenu >
+						<MenuItem Header="Remove" Click="mnuRemoveFile_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
+					</ContextMenu >
+				</MenuItem.ContextMenu>
+			</MenuItem >
 		</Menu >
 			
 		<TabControl Name="TabControl">
@@ -220,7 +226,7 @@
 										</Grid.ColumnDefinitions >
 										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
 										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" KeyboardNavigation.IsTabStop="False" />
-										<TextBlock Grid.Column="1" Text="{Binding Notes}" TextWrapping="Wrap" KeyboardNavigation.IsTabStop="False" />
+										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" KeyboardNavigation.IsTabStop="False" />
 									</Grid >
 								</DataTemplate >
 							</ListBox.ItemTemplate >
@@ -229,11 +235,13 @@
 						
 					<Grid Grid.Column="1" >
 						<Grid.RowDefinitions >
+							<RowDefinition Height="35" />
 							<RowDefinition Height="200" />
 							<RowDefinition />
 						</Grid.RowDefinitions >
-						<TextBox Grid.Row="0" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" LostFocus="tbHNotes_LoseFocus" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-						<ListBox Grid.Row="1" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
+						<TextBox Grid.Row="0" Name="tbHTitle" TextWrapping="NoWrap" TextChanged="tbHTitle_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+						<TextBox Grid.Row="1" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="tbHNotes_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+						<ListBox Grid.Row="2" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >

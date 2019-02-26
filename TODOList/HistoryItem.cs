@@ -14,6 +14,7 @@ namespace TODOList
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private string _notes;
+		private string _title;
 		private readonly string _dateAdded;
 		private readonly string _timeAdded;
 		private readonly List<TodoItem> _completedTodos;
@@ -23,6 +24,11 @@ namespace TODOList
 		{
 			get => _notes;
 			set => _notes = value;
+		}
+		public string Title
+		{
+			get => _title;
+			set => _title = value;
 		}
 		public string DateAdded => _dateAdded;
 		public string TimeAdded => _timeAdded;
@@ -48,7 +54,8 @@ namespace TODOList
 			string[] pieces = newItem[0].Split('|');
 			_dateAdded = pieces[0];
 			_timeAdded = pieces[1];
-			_notes = pieces[2];
+			_title = pieces[2];
+			_notes = pieces[3];
 			
 			int index = 0;
 			newItem.RemoveAt(0);
@@ -88,7 +95,7 @@ namespace TODOList
 		public override string ToString()
 		{
 			string result = "NewVCS" + Environment.NewLine; 
-			result += DateAdded + "|" + TimeAdded + "|" + Notes;
+			result += DateAdded + "|" + TimeAdded + "|" + Title + "|" + Notes;
 
 			result += Environment.NewLine + "VCSTodos";
 			foreach (TodoItem td in CompletedTodos)
@@ -101,7 +108,7 @@ namespace TODOList
 		}
 		public string ToClipboard()
 		{
-			string result = DateAdded + Environment.NewLine + Notes;
+			string result = DateAdded + "- " + Title + Environment.NewLine + "Notes: " + Notes;
 			foreach (TodoItem td in CompletedTodos)
 			{
 				result += Environment.NewLine + "--" + td.ToClipboard();

@@ -1,29 +1,40 @@
 20190220|191143|-|-|0|False|1|3|Update version number|
 20190223|092124|-|-|0|False|2|1|#groups||#GROUPS
-20190223|120311|-|-|0|False|3|1|#UI Add title field to History tab, keep notes but not in the left side list||#UI
-20190223|120632|-|-|0|False|4|1|Right click a recent save file to remove?|
-20190223|120929|-|-|0|False|5|1|Maybe fix what changes the files to prompt saving|
-20190223|121648|-|-|0|False|6|1|Resort functions, make em easier to read. Like reorder the functions and organize them or something|
-20190223|121708|-|-|0|False|7|1|Figure out a better header/separator in the code to search by|
 ====================================VCS
 NewVCS
-20190223|105243|1.4a
+20190226|011942||
+VCSTodos
+EndVCS
+NewVCS
+20190223|193512|1.4b|Couple bugs fixed and got the remove option for recent files working
+VCSTodos
+20190223|120632|20190225|232111|7400000000|True|2147483647|1|Right click a recent save file to remove?|Used RMBUp event to set the index of the file to remove. Then removed it with the context menu.
+20190225|230857|20190225|232207|5090000000|True|2147483647|2|#Bug When no recent files, QuickSave throws index error|Checked for currentFileOpen instead. Then had to set it blank if a new file was created.|#BUG
+20190225|232641|20190225|233331|0|True|2147483647|2|#bug quick save and load no longer work. if (mi.Items.Count == 0) return; is 0 for some reason|Changed to check if the DataContext cast to string returns null or not|#BUG
+20190223|120929|20190225|235236|3010000000|True|2147483647|1|Maybe fix what changes the files to prompt saving|
+20190225|233655|20190226|001843|0|True|2147483647|2|Update History notes immediatly instead of when focus is lost|Used TextChanged event for the text boxes
+20190223|120311|20190226|001850|0|True|2147483647|1|#UI Add title field to History tab, keep notes but not in the left side list||#UI
+20190223|121708|20190226|011929|0|True|2147483647|1|Figure out a better header/separator in the code to search by|Umm...Got rid of these
+20190223|121648|20190226|011934|0|True|2147483647|1|Resort functions, make em easier to read. Like reorder the functions and organize them or something|
+EndVCS
+NewVCS
+20190223|105243|1.4a|
 VCSTodos
 20190223|120240|20190223|190957|0|True|2147483647|1|#UI Subscreens do not tab right, and text isnt preselected|Just fixedc tabstops and indexes|#UI
 20190223|120615|20190223|192332|0|True|2147483647|1|When loading or saving a file, use path of current file open to start|Created GetFilePath and GetFileName and loaded it in the file dialogs
 EndVCS
 NewVCS
-20190223|104926|v1.4. Couple quick UI fixes
+20190223|104926|v1.4. Couple quick UI fixes|
 VCSTodos
 20190223|092211|20190223|105133|0|True|2147483647|1|#Sort #hashtags #list #on #left #side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags field, cuz cant modify a list while iterating|#SORT|#HASHTAGS|#LIST|#ON|#LEFT|#SIDE.
 20190223|092234|20190223|105200|0|True|2147483647|1|Change #sort buttons to stretch across the window at top for sorting||#SORT
 EndVCS
 NewVCS
-20190222|233012|Fresh starting program and quiting gave the stuff has changed window when closing. The problem is in WPF, a selection changed event. Bah. Code changed...
+20190222|233012|Tried to fix things changed bug|Fresh starting program and quiting gave the stuff has changed window when closing. The problem is in WPF, a selection changed event. Bah. Code changed...
 VCSTodos
 EndVCS
 NewVCS
-20190222|162835|Working on warnings. Added some hotkeys in there too
+20190222|162835|Working on warnings. Added some hotkeys in there too|
 VCSTodos
 20190222|162921|20190222|225208|0|True|2147483647|1|Work on warnings|Just XAML crap warning left
 20190222|162925|20190222|230403|0|True|2147483647|1|Release|Yay all done!
@@ -32,7 +43,7 @@ VCSTodos
 20190222|230513|20190222|232718|0|True|2147483647|1|#Annoying No hotkeys for History tab|Still cant arrow around the history list, cant figure that one out. But the rest of the screen works|#ANNOYING
 EndVCS
 NewVCS
-20190221|210450|Fixed the style and some bugs
+20190221|210450|Fixed the style and some bugs|
 VCSTodos
 20190221|123736|20190222|152749|0|True|2147483647|1|Redo #interface style|Cleaned up the style I downloaded and removed a bunch of shit, edited some other shit. Changed primary fonts. Should be good now|#INTERFACE
 20190222|152812|20190222|154152|0|True|2147483647|1|Add exit to main menu|
@@ -41,7 +52,7 @@ VCSTodos
 20190221|210634|20190222|162750|0|True|2147483647|1|Adding new history sometimes doesnt work #Bug|Havent seen this happen anymore....|#BUG
 EndVCS
 NewVCS
-20190220|203647|v1.2a- Bugs and timers.
+20190220|203647|v1.2a- Bugs and timers.|
 VCSTodos
 20190220|202632|20190221|114006|0|True|1|3|#Bug when double clicking buttons, doesnt know what to do|Fixed by getting listbox.selectedindex, and if its out of bounds, return from function. So double clicking on buttons doesnt do anything. But you can still right click a button and get the correct index. That works correctly|#BUG
 20190221|112002|20190221|122620|0|True|11|1|When complete, edit #notes text|Just added new window, TodoItemComplete, copied from TodoItemEditor with some controls removed.|#NOTES
@@ -59,7 +70,7 @@ VCSTodos
 20190221|114107|20190221|134438|0|True|2147483647|3|#Timers added to TodoItem||#TIMERS
 EndVCS
 NewVCS
-20190217|203459|Added sorting by rank. Simple stuff
+20190217|203459|Added sorting by rank. Simple stuff|
 VCSTodos
 20190220|191159|20190220|202208|0|True|4|2|Sort by #rank|Add new code in sort function|#RANK
 20190220|191205|20190220|202218|0|True|4|2|Add #rank field to todo items||#RANK
@@ -69,7 +80,7 @@ VCSTodos
 20190220|191216|20190220|202214|0|True|4|2|Add buttons for #rank||#RANK
 EndVCS
 NewVCS
-20190210|173332|Adding Timers and removing completed items
+20190210|173332|Adding Timers and removing completed items|
 VCSTodos
 20190210|173236|20190220|194722|0|True|14|2|#Hashtag bugs fixed||#HASHTAG
 20190211|204155|20190217|143212|0|True|0|2|Remove completed items list from todo tab. When an item is removed from history todo, add it back to incomplete items|
@@ -86,13 +97,13 @@ VCSTodos
 20190217|133522|20190217|203436|0|True|0|2|Make dashs show up on every line of the notes, or not at all on the first one|Not so easy to make this look great, but its tolerable for text
 EndVCS
 NewVCS
-20190210|153413|Hotkey is now Win+F4
+20190210|153413|Hotkey is now Win+F4|
 VCSTodos
 20190210|153346|20190210|155930|0|True|0|3|Make this not rely on Monotone.XML|
 20190210|153402|20190210|155932|0|True|0|3|Change the global hotkey from CTRL+CAPSLOCK|
 EndVCS
 NewVCS
-20190210|110129|Fixed the found bugs. Implemented these ease options
+20190210|110129|Fixed the found bugs. Implemented these ease options|
 VCSTodos
 20190209|152035|20190210|110129|0|True|0|1|Dark mode|
 20190209|152920|20190210|110142|0|True|0|1|Still a right click context menu on the history items todos #Interface #bug||#INTERFACE|#BUG
@@ -114,7 +125,7 @@ VCSTodos
 20190210|070028|20190210|153035|0|True|0|1|Window remember position when closing?|
 EndVCS
 NewVCS
-20190209|152143|Working on ease of use items now
+20190209|152143|Working on ease of use items now|
 VCSTodos
 20190209|152541|20190209|152832|0|True|0|1|#Bug Loading files doesnt clear previous #HistoryItems||#BUG|#HISTORYITEMS
 20190209|152503|20190209|173546|0|True|0|1|Quick buttons for recent loaded files #Interface||#INTERFACE
@@ -122,7 +133,7 @@ VCSTodos
 20190209|152043|20190209|173551|0|True|0|1|Reopen last files #FileIO||#FILEIO
 EndVCS
 NewVCS
-20190206|112229|-Definitely not the order I did these all in...But it works now.-VCS History and sorting and copying to clipboardTODO sorting, severityFile saving and loadingHashtags
+20190206|112229|Bunch of stuff|-Definitely not the order I did these all in...But it works now.-VCS History and sorting and copying to clipboardTODO sorting, severityFile saving and loadingHashtags
 
 
 VCSTodos
