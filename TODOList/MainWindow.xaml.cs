@@ -26,7 +26,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.4d";
+		public const string VERSION = "1.4e";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -207,6 +207,12 @@ namespace TODOList
 			if (tabHistory.IsSelected)
 				return;
 
+			if (txtT1NewTodo.IsFocused)
+			{
+				QuickComplete();
+				return;
+			}
+
 			TodoItem td = (TodoItem) lbTIncompleteItems.SelectedItem;
 			if (td != null)
 			{
@@ -230,6 +236,12 @@ namespace TODOList
 
 		private void hkEdit(object sender, EventArgs e)
 		{
+			if (txtT1NewTodo.IsFocused)
+			{
+				btnTAdd_Click(sender, e);
+				return;
+			}
+			
 			if(tabTodo.IsSelected)
 				EditItem(lbTIncompleteItems, _tIncompleteItems);
 			else if(tabHistory.IsSelected)
@@ -241,6 +253,21 @@ namespace TODOList
 			Save(_recentFiles[0]);
 		} 
 
+		private void QuickComplete()
+		{
+			TodoItem newtd = new TodoItem
+			{
+				Todo = txtT1NewTodo.Text,
+				Severity = _tCurrentSeverity,
+				Rank = _tIncompleteItems.Count, 
+				IsComplete = true
+			};
+
+			_tIncompleteItems.Add(newtd);
+			_isChanged = true;
+			RefreshTodo();
+			txtT1NewTodo.Clear();
+		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// MenuCommands //
 		private void mnuNew_Click(object sender, EventArgs e)

@@ -2,8 +2,19 @@
 20190223|092124|-|-|0|False|2|1|#groups||#GROUPS
 ====================================VCS
 NewVCS
-20190226|232938||
+20190227|021625||
 VCSTodos
+EndVCS
+NewVCS
+20190227|000143|1.4e|
+VCSTodos
+20190227|014336|20190227|021609|0|True|2147483647|2|Make a quick complete option when entering fields|Added a quick complete method that checks whether the textbox is focused or not
+EndVCS
+NewVCS
+20190226|232938|1.4d|Just a little life easy hack.Fixed the warnings as well.
+
+VCSTodos
+20190226|234955|20190227|000049|6450000000|True|2147483647|1|If theres no changes, dont ask to load, just load it|Simple enough
 EndVCS
 NewVCS
 20190226|011942|1.4c|Couple quick bugs fixed
