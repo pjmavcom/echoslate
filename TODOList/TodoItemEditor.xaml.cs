@@ -25,7 +25,7 @@ namespace TODOList
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
 			lblRank.Content = td.Rank;
-			lblTime.Content = td.TimeTakenInMinutes + td.TimeTaken.Second;
+			lblTime.Content = string.Format("{0}:{1}",td.TimeTakenInMinutes, td.TimeTaken.Second);
 			previousRank = td.Rank;
 			
 			CenterWindowOnMouse();

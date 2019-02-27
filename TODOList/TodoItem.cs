@@ -177,7 +177,7 @@ namespace TODOList
 			_dateCompleted = pieces[2].Trim();
 			_timeCompleted = pieces[3].Trim();
 
-			_timeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
+			TimeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
 
 			_isComplete = Convert.ToBoolean(pieces[5]); 
 			_rank = Convert.ToInt32(pieces[6]);
@@ -218,7 +218,7 @@ namespace TODOList
 		}
 		public string ToClipboard()
 		{
-			string result = _dateCompleted + "-" + _timeCompleted + " | " + _todo;
+			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + _todo;
 			if(_notes != "")
 				result += Environment.NewLine + "\t\tNotes: " + _notes;
 			return result;

@@ -15,7 +15,7 @@ namespace TODOList
 			this.td = new TodoItem(td.ToString());
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
-			lblTime.Content = td.TimeTakenInMinutes + td.TimeTaken.Second;
+			lblTime.Content = string.Format("{0}:{1}",td.TimeTakenInMinutes, td.TimeTaken.Second);
 			
 			CenterWindowOnMouse();
 		}

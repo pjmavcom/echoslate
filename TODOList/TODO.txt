@@ -2,8 +2,15 @@
 20190223|092124|-|-|0|False|2|1|#groups||#GROUPS
 ====================================VCS
 NewVCS
-20190226|011942||
+20190226|232938||
 VCSTodos
+EndVCS
+NewVCS
+20190226|011942|1.4c|Couple quick bugs fixed
+VCSTodos
+20190226|225814|20190226|231150|1570000000|True|2147483647|2|Quick load does not ask to save files|Checked whether files chagned and prompted a save
+20190226|231238|20190226|232123|4880000000|True|2147483647|2|Time taken is not listed in the text when copied|Fixed. Had to add it to the copy to clipboard function and set the time taken when loaded by the property so it updates time taken in minutes as well
+20190226|232143|20190226|232720|2680000000|True|2147483647|2|Looks like edit windows are not showing time taken correctly|Formatted the string to show minutes and seconds. Was showing minutes plus seconds in string, so didnt quite look right. Mustve had minutes print out a colon as well before sometime
 EndVCS
 NewVCS
 20190223|193512|1.4b|Couple bugs fixed and got the remove option for recent files working

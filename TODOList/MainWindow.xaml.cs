@@ -26,7 +26,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.4b";
+		public const string VERSION = "1.4c";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -78,7 +78,7 @@ namespace TODOList
 		}
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-		public MainWindow()
+		public  MainWindow()
 		{
 			left = 0;
 			InitializeComponent();
@@ -89,7 +89,7 @@ namespace TODOList
 			Left = left;
 			Height = height;
 			Width = width;
-			var timer = new DispatcherTimer();
+ 			var timer = new DispatcherTimer();
 			timer.Tick += Timer_Tick;
 			timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
 			timer.Start();
@@ -348,9 +348,13 @@ namespace TODOList
 			if (path == null)
 				return;
 			
-			if (MessageBox.Show("Load " + path, "Are you sure you want to load?", MessageBoxButtons.YesNo) ==
-				System.Windows.Forms.DialogResult.No)
+			if (MessageBox.Show("Load " + path, "Are you sure you want to load?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
 				return;
+			
+			if(_isChanged)
+				if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+					Save(_currentOpenFile);
+			
 			Load(path);
 		}
 
@@ -367,6 +371,11 @@ namespace TODOList
 
 			if (dr != System.Windows.Forms.DialogResult.OK)
 				return;
+			
+			if(_isChanged)
+				if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+					Save(_currentOpenFile);
+
 			Load(ofd.FileName);
 		}
 		
