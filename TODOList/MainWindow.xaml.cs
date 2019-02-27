@@ -26,7 +26,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.4c";
+		public const string VERSION = "1.4d";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -273,22 +273,20 @@ namespace TODOList
 		{
 			_recentFilesIndex = -1;
 			var mi = e.OriginalSource as TextBlock;
-			if (mi != null)
-			{
-				string path = (string) mi.DataContext;
-				_recentFilesIndex = mnuRecentSaves.Items.IndexOf(path);
-			}
+			if (mi == null)
+				return;
+			string path = (string) mi.DataContext;
+			_recentFilesIndex = mnuRecentSaves.Items.IndexOf(path);
 		}
 		
 		private void mnuRecentLoadsRMB(object sender, MouseButtonEventArgs e)
 		{
 			_recentFilesIndex = -1;
 			var mi = e.OriginalSource as TextBlock;
-			if (mi != null)
-			{
-				string path = (string) mi.DataContext;
-				_recentFilesIndex = mnuRecentLoads.Items.IndexOf(path);
-			}
+			if (mi == null)
+				return;
+			string path = (string) mi.DataContext;
+			_recentFilesIndex = mnuRecentLoads.Items.IndexOf(path);
 		}
 		
 		private void mnuResetTimer_Click(object sender, EventArgs e)
@@ -346,9 +344,6 @@ namespace TODOList
 			MenuItem mi = (MenuItem) e.OriginalSource;
 			var path = mi.DataContext as string;
 			if (path == null)
-				return;
-			
-			if (MessageBox.Show("Load " + path, "Are you sure you want to load?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
 				return;
 			
 			if(_isChanged)
@@ -555,8 +550,7 @@ namespace TODOList
 
 		private void btnRank_Click(object sender, EventArgs e)
 		{
-			Button b = sender as Button;
-			if (b != null)
+			if (sender is Button b)
 			{
 				TodoItem td = b.DataContext as TodoItem;
 				var index = _tIncompleteItems.IndexOf(td);
@@ -591,8 +585,7 @@ namespace TODOList
 
 		private void btnTimeTaken_Click(object sender, EventArgs e)
 		{
-			Button b = sender as Button;
-			if (b != null)
+			if (sender is Button b)
 			{
 				TodoItem td = b.DataContext as TodoItem;
 
@@ -615,8 +608,7 @@ namespace TODOList
 
 		private void EditItem(object sender, List<TodoItem> list)
 		{
-			ListBox lb = sender as ListBox;
-			if (lb != null)
+			if (sender is ListBox lb)
 			{
 				int index = lb.SelectedIndex;
 				if (index < 0)
@@ -704,11 +696,10 @@ namespace TODOList
 					List<string> unsortedTags = td.Tags.ToList();
 					foreach (string u in td.Tags)
 					{
-						if (u == s)
-						{
-							sortedTags.Add(u);
-							unsortedTags.Remove(u);
-						}
+						if (u != s)
+							continue;
+						sortedTags.Add(u);
+						unsortedTags.Remove(u);
 					}
 					sortedTags.AddRange(unsortedTags);
 					td.Tags = sortedTags;
@@ -738,7 +729,6 @@ namespace TODOList
 		
 		private void RefreshTodo()
 		{
-			// TODO: Get rid of this completeItems
 			List<TodoItem> incompleteItems = new List<TodoItem>();
 			List<string> hashTagList = new List<string>();
 
@@ -827,17 +817,15 @@ namespace TODOList
 
 		private string GetFileName()
 		{
-			string result = "";
 			if (_recentFiles.Count == 0)
 				return "";
 
 			string[] sa = _recentFiles[0].Split('\\');
-			return sa[sa.Count() - 1];
+			return sa[sa.Length - 1];
 		}
 		
 		private void SaveAs()
 		{
-			string path = GetFilePath();
 			SaveFileDialog sfd = new SaveFileDialog
 			{
 				Title = "Select folder to save game in.",

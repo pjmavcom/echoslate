@@ -15,7 +15,7 @@ namespace TODOList
 			this.td = new TodoItem(td.ToString());
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
-			lblTime.Content = string.Format("{0}:{1}",td.TimeTakenInMinutes, td.TimeTaken.Second);
+			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
 			
 			CenterWindowOnMouse();
 		}
@@ -23,6 +23,8 @@ namespace TODOList
 		{
 			Window win = Application.Current.MainWindow;
 
+			if (win == null)
+				return;
 			double centerX = win.Width / 2 + win.Left;
 			double centerY = win.Height / 2 + win.Top;
 			Left = centerX - Width / 2;
