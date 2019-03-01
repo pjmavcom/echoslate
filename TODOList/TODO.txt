@@ -2,8 +2,22 @@
 20190223|092124|-|-|0|False|2|1|#groups||#GROUPS
 ====================================VCS
 NewVCS
-20190227|021625||
+20190301|023323||
 VCSTodos
+EndVCS
+NewVCS
+20190227|021625|1.5|Just some more quick easy things
+VCSTodos
+20190228|201839|20190301|003319|9450000000|True|2147483647|1|Multiselect for multiedit|That was actually easier than I thought
+20190228|201905|20190301|014257|17540000000|True|2147483647|2|Edit rank by typing in addition to the buttons in the editor|Had to add a value checker to the TextBox. Used PreviewTextInput to check as the text is entered whether to accept the new input or not
+20190228|201806|20190301|020654|6250000000|True|2147483647|2|+- 5 minute buttons|A DateTime cannot go below zero. So checked if ticks were enough to subtract 5 minutes, else subtract the ticks
+20190301|000114|20190301|001731|18140000000|True|2147483647|1|#Bug Right click edit menu doesnt work anymore. Code is checking for a ListBox, and thats a MenuItem|Menu was sending a MenuItem instead of a ListBox, but I had changed the code to receive a ListBox and List and didnt update this menu|#BUG
+20190228|235622|20190301|003329|6250000000|True|2147483647|1|Add multiselect editor|
+20190301|005805|20190301|014314|3000000000|True|2147483647|1|Canceling MultiEdit window still edits stuff|Didnt check value of IsOK or not. Simple fix
+20190301|012047|20190301|014521|6000000000|True|2147483647|1|Add checkboxes for whether to change the data or not|
+20190301|002158|20190301|015450|3000000000|True|2147483647|1|Add hashtag editor|Ehh... Maybe later. For now, multiedit will add text to Todo, and will parse new tags
+20190301|020851|20190301|022052|6000000000|True|2147483647|1|Total time spent on this history item|Kinda simple.
+20190301|023158|20190301|023319|6000000000|True|2147483647|1|Found the copy history to clipboard bug.|If you just clicked the copy button, the selected index was whatever it was last. I got the index from something else
 EndVCS
 NewVCS
 20190227|000143|1.4e|

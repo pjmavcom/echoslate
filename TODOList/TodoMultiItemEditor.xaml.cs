@@ -1,19 +1,36 @@
 using System;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace TODOList
 {
-	public partial class TodoItemEditor
+	public partial class TodoMultiItemEditor : Window
 	{
 		private int currentSeverity;
 		private readonly TodoItem td;
 		public TodoItem Result => td;
 		public bool isOk;
+		public bool isComplete;
 		private readonly int previousRank;
+
+		private int _rank;
+
+		private bool changeSev;
+		private bool changeRank;
+		private bool changeComplete;
+		private bool changeTodo;
+		public bool ChangeSev => changeSev;
+		public bool ChangeRank => changeRank;
+		public bool ChangeComplete => changeComplete;
+		public bool ChangeTodo => changeTodo;
 		
-		public TodoItemEditor(TodoItem td)
+		
+		public TodoMultiItemEditor(TodoItem td)
 		{
 			InitializeComponent();
 			this.td = new TodoItem(td.ToString())
@@ -23,10 +40,8 @@ namespace TODOList
 			currentSeverity = this.td.Severity;
 
 			cbSev.SelectedIndex = currentSeverity - 1;
-			tbTodo.Text = td.Todo;
-			tbNotes.Text = td.Notes;
-			tbRank.Text = td.Rank.ToString();
-			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+			_rank = td.Rank;
+			tbRank.Text = _rank.ToString();
 			previousRank = td.Rank;
 			
 			CenterWindowOnMouse();
@@ -51,28 +66,48 @@ namespace TODOList
 		}
 
 		// METHOD  ///////////////////////////////////// Rank() //
+		private void ckRank_Clicked(object sender, EventArgs e)
+		{
+			changeRank = (bool) ckRank.IsChecked;
+		}
+		
+		private void ckComplete_Clicked(object sender, EventArgs e)
+		{
+			changeComplete = (bool) ckComplete.IsChecked;
+		}
+		
+		private void ckSev_Clicked(object sender, EventArgs e)
+		{
+			changeSev = (bool) ckSev.IsChecked;
+		}
+		
+		private void ckTodo_Clicked(object sender, EventArgs e)
+		{
+			changeTodo = (bool) ckTodo.IsChecked;
+		}
+		
 		private void btnRank_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
 
 			if (b != null && (string) b.CommandParameter == "up")
 			{
-				td.Rank--;
+				_rank--;
 			}
 			else if (b != null && (string) b.CommandParameter == "down")
 			{
-				td.Rank++;
+				_rank++;
 			}
 
-			td.Rank = td.Rank > 0 ? td.Rank : 0;
-			tbRank.Text = td.Rank.ToString();
+			_rank = _rank > 0 ? _rank : 0;
+			tbRank.Text = _rank.ToString();
+			td.Rank = _rank;
 		}
 
 		// METHOD  ///////////////////////////////////// btnOK() //
 		private void btnOK_Click(object sender, EventArgs e)
 		{
 			td.Todo = tbTodo.Text;
-			td.Notes = tbNotes.Text;
 			td.ParseTags();
 			td.Severity = currentSeverity;
 			isOk = true;
@@ -87,9 +122,9 @@ namespace TODOList
 		private void btnComplete_Click(object sender, EventArgs e)
 		{
 			isOk = true;
+			isComplete = true;
 			td.IsComplete = !td.IsComplete;
 			td.Todo = tbTodo.Text;
-			td.Notes = tbNotes.Text;
 			td.ParseTags();
 			td.Severity = currentSeverity;
 			Close();
@@ -116,25 +151,6 @@ namespace TODOList
 			double val;
 			// If parsing is successful, set Handled to false
 			e.Handled = !double.TryParse(fullText, out val);
-		}
-
-		private void btnTime_Click(object sender, EventArgs e)
-		{
-			Button b = sender as Button;
-			if ((string) b.CommandParameter == "up")
-			{
-				td.TimeTaken = td.TimeTaken.AddMinutes(5);
-				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
-			}
-			else if ((string) b.CommandParameter == "down")
-			{
-				if (td.TimeTaken.Ticks >= TimeSpan.TicksPerMinute)
-					td.TimeTaken = td.TimeTaken.AddMinutes(-5);
-				else
-					td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
-				
-				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
-			}
 		}
 	}
 }

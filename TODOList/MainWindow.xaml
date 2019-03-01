@@ -103,7 +103,7 @@
 					<!-- </StackPanel > -->
 					
 					<!-- The list of incomplete todos -->
-					<ListBox Name="lbTIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" >
+					<ListBox Name="lbTIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" SelectionMode="Extended" >
 						<ListBox.ContextMenu >
 							<ContextMenu >
 								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
@@ -236,12 +236,17 @@
 					<Grid Grid.Column="1" >
 						<Grid.RowDefinitions >
 							<RowDefinition Height="35" />
+							<RowDefinition Height="35" />
 							<RowDefinition Height="200" />
 							<RowDefinition />
 						</Grid.RowDefinitions >
-						<TextBox Grid.Row="0" Name="tbHTitle" TextWrapping="NoWrap" TextChanged="tbHTitle_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
-						<TextBox Grid.Row="1" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="tbHNotes_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-						<ListBox Grid.Row="2" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
+						<StackPanel Orientation="Horizontal" Grid.Row="0">
+							<Label Content="Time: " Margin="2" />
+							<Label Name="lblHTotalTime" Margin="2" Width="40" />
+						</StackPanel >
+						<TextBox Grid.Row="1" Name="tbHTitle" TextWrapping="NoWrap" TextChanged="tbHTitle_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+						<TextBox Grid.Row="2" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="tbHNotes_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+						<ListBox Grid.Row="3" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >

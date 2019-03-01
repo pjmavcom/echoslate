@@ -61,6 +61,9 @@
 		<Compile Include="TodoItemEditor.xaml.cs">
 		  <DependentUpon>TodoItemEditor.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="TodoMultiItemEditor.xaml.cs">
+		  <DependentUpon>TodoMultiItemEditor.xaml</DependentUpon>
+		</Compile>
 		<Page Include="MainWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 			<SubType>Designer</SubType>
@@ -75,6 +78,7 @@
 		</Compile>
 		<Page Include="TodoItemComplete.xaml" />
 		<Page Include="TodoItemEditor.xaml" />
+		<Page Include="TodoMultiItemEditor.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Properties\AssemblyInfo.cs">

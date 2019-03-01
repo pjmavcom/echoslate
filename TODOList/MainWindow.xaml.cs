@@ -26,7 +26,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.4e";
+		public const string VERSION = "1.5";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -410,12 +410,16 @@ namespace TODOList
 
 		private void mnuTEdit_Click(object sender, EventArgs e)
 		{
-			EditItem(sender, _tIncompleteItems);
+			if (lbTIncompleteItems.SelectedItems.Count > 1)
+				MultiEditItems(lbTIncompleteItems, _tIncompleteItems);
+			else
+				EditItem(lbTIncompleteItems, _tIncompleteItems);
 		}
 		
 		private void mnuHEdit_Click(object sender, EventArgs e)
 		{
-			EditItem(sender, _hCurrentHistoryItem.CompletedTodos);
+			EditItem(lbHCompletedTodos, _hCurrentHistoryItem.CompletedTodos);
+			RefreshHistory();
 		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// HISTORY TAB //
@@ -445,6 +449,7 @@ namespace TODOList
 				index = 0;
 
 			_hCurrentHistoryItem = lbHHistory.Items[index] as HistoryItem;
+			lblHTotalTime.Content = _hCurrentHistoryItem.TotalTime;
 			RefreshHistory();
 		}
 
@@ -489,10 +494,13 @@ namespace TODOList
 		private void btnHCopyHistory_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
-			if (b?.DataContext is HistoryItem item)
-				Clipboard.SetText(item.ToClipboard());
-			if (lbHHistory.SelectedIndex == 0)
-				AddNewHistoryItem();
+			HistoryItem hi = (HistoryItem) b?.DataContext;
+			if (hi != null)
+			{
+				Clipboard.SetText(hi.ToClipboard());
+				if (lbHHistory.Items.IndexOf(hi) == 0)
+					AddNewHistoryItem();
+			}
 		}
 		
 		private void AddTodoToHistory(TodoItem td)
@@ -531,6 +539,7 @@ namespace TODOList
 			tbHTitle.Text = _hCurrentHistoryItem.Title;
 			lbHCompletedTodos.ItemsSource = _hCurrentHistoryItem.CompletedTodos;
 			lbHCompletedTodos.Items.Refresh();
+			lblHTotalTime.Content = _hCurrentHistoryItem.TotalTime;
 
 			lbHHistory.Items.Refresh();
 		}
@@ -633,27 +642,49 @@ namespace TODOList
 			lbTIncompleteItems.Items.Refresh();
 		}
 
-		private void EditItem(object sender, List<TodoItem> list)
+		private void EditItem(ListBox lb, List<TodoItem> list)
 		{
-			if (sender is ListBox lb)
-			{
-				int index = lb.SelectedIndex;
-				if (index < 0)
-					return;
-				TodoItem td = list[index];
-				TodoItemEditor tdie = new TodoItemEditor(td);
+			int index = lb.SelectedIndex;
+			if (index < 0)
+				return;
+			TodoItem td = list[index];
+			TodoItemEditor tdie = new TodoItemEditor(td);
 
-				tdie.ShowDialog();
-				if (tdie.isOk)
-				{
-					list.Remove(td);
-					_tIncompleteItems.Add(tdie.Result);
-					_isChanged = true;
-				}
+			tdie.ShowDialog();
+			if (tdie.isOk)
+			{
+				list.Remove(td);
+				_tIncompleteItems.Add(tdie.Result);
+				_isChanged = true;
 			}
 
 			RefreshTodo();
 			RefreshHistory();
+		}
+		
+		private void MultiEditItems(ListBox lb, List<TodoItem> list)
+		{
+			TodoItem firstTd = lb.SelectedItems[0] as TodoItem;
+			TodoMultiItemEditor tmie = new TodoMultiItemEditor(firstTd);
+			tmie.ShowDialog();
+			if (tmie.isOk)
+			{
+				foreach (TodoItem td in lb.SelectedItems)
+				{
+					if(tmie.ChangeRank)
+						td.Rank = tmie.Result.Rank;
+					if(tmie.ChangeSev)
+						td.Severity = tmie.Result.Severity;
+					if (tmie.isComplete && tmie.ChangeComplete)
+						td.IsComplete = true;
+					if (tmie.ChangeTodo)
+					{
+						td.Todo += Environment.NewLine + tmie.Result.Todo;
+						td.ParseTags();
+					}
+				}
+				RefreshTodo();
+			}
 		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sorting //

@@ -34,6 +34,18 @@ namespace TODOList
 		public string TimeAdded => _timeAdded;
 		public string DateTimeAdded => _dateAdded + "-" + _timeAdded;
 		public List<TodoItem> CompletedTodos => _completedTodos;
+		public string TotalTime
+		{
+			get
+			{
+				long result = 0;
+				foreach (TodoItem td in _completedTodos)
+				{
+					result += td.TimeTaken.Ticks;
+				}
+				return (result / TimeSpan.TicksPerMinute).ToString();
+			}
+		}
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public HistoryItem(DateTime dateTime) : this(dateTime.ToString("yyyyMMdd"), dateTime.ToString("HHmmss"))
@@ -108,7 +120,7 @@ namespace TODOList
 		}
 		public string ToClipboard()
 		{
-			string result = DateAdded + "- " + Title + Environment.NewLine + "Notes: " + Notes;
+			string result = DateAdded + "- " + Title + Environment.NewLine + "Estimated Time: " + TotalTime + Environment.NewLine + "Notes: " + Notes;
 			foreach (TodoItem td in CompletedTodos)
 			{
 				result += Environment.NewLine + "--" + td.ToClipboard();

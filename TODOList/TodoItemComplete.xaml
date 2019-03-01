@@ -11,6 +11,8 @@
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Time: " Margin="2" />
 			<Label Name="lblTime" Margin="2" Width="40" />
+			<Button Content="-5m" Click="btnTime_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="+5m" Click="btnTime_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />

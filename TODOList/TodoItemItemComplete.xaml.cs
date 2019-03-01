@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace TODOList
 {
@@ -46,6 +47,25 @@ namespace TODOList
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+		
+		private void btnTime_Click(object sender, EventArgs e)
+		{
+			Button b = sender as Button;
+			if ((string) b.CommandParameter == "up")
+			{
+				td.TimeTaken = td.TimeTaken.AddMinutes(5);
+				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+			}
+			else if ((string) b.CommandParameter == "down")
+			{
+				if (td.TimeTaken.Ticks >= TimeSpan.TicksPerMinute)
+					td.TimeTaken = td.TimeTaken.AddMinutes(-5);
+				else
+					td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
+				
+				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+			}
 		}
 	}
 }
