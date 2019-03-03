@@ -138,6 +138,8 @@ namespace TODOList
 		
 		private void tbRank_Changed(object sender, EventArgs e)
 		{
+			if (tbRank.Text == "")
+				tbRank.Text = "0";
 			td.Rank = Convert.ToInt32(tbRank.Text);
 		}
 		

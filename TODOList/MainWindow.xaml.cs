@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Forms.Clipboard;
@@ -26,7 +27,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.5";
+		public const string VERSION = "1.5a";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -40,6 +41,7 @@ namespace TODOList
 		private bool _tDidHashChange;
 		private string _hashToSortBy = "";
 		private bool _hashSortSelected;
+		
 
 		// HISTORY TAB ITEMS
 		private List<HistoryItem> _hHistoryItems;
@@ -51,6 +53,7 @@ namespace TODOList
 		private string _currentOpenFile;
 		private bool _isChanged;
 		private int _recentFilesIndex;
+		private bool _autoSave;
 
 		// WINDOW ITEMS
 		private double top;
@@ -120,6 +123,14 @@ namespace TODOList
 			if (source != null) 
 				source.AddHook(HwndHook);
 			RegisterHotKey(handle, HOTKEY_ID, MOD_WIN, 0x73);
+
+#if DEBUG
+			ckAutoSave.IsChecked = false;
+#else
+			ckAutoSave.IsChecked = true;
+#endif
+			
+			_autoSave = (bool) ckAutoSave.IsChecked;
 		}
 
 		private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -251,7 +262,22 @@ namespace TODOList
 		private void hkQuickSave(object sender, ExecutedRoutedEventArgs e)
 		{
 			Save(_recentFiles[0]);
-		} 
+		}
+
+		private void hkQuickLoadPrevious(object sender, ExecutedRoutedEventArgs e)
+		{
+			if(_recentFiles.Count >= 2)
+				Load(_recentFiles[1]);
+		}
+
+		private void hkStartStopTimer(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (!tabTodo.IsSelected)
+				return;
+			int index = lbTIncompleteItems.SelectedIndex;
+			_tIncompleteItems[index].IsTimerOn = !_tIncompleteItems[index].IsTimerOn;
+			lbTIncompleteItems.Items.Refresh();
+		}
 
 		private void QuickComplete()
 		{
@@ -264,7 +290,7 @@ namespace TODOList
 			};
 
 			_tIncompleteItems.Add(newtd);
-			_isChanged = true;
+			AutoSave();
 			RefreshTodo();
 			txtT1NewTodo.Clear();
 		}
@@ -283,7 +309,7 @@ namespace TODOList
 
 			_currentOpenFile = "";
 			Title = WindowTitle;
-			_isChanged = true;
+			AutoSave();
 			SaveAs();
 		}
 		
@@ -404,7 +430,7 @@ namespace TODOList
 		private void mnuTDelete_Click(object sender, EventArgs e)
 		{
 			_tIncompleteItems.RemoveAt(lbTIncompleteItems.SelectedIndex);
-			_isChanged = true;
+			AutoSave();
 			RefreshTodo();
 		}
 
@@ -420,6 +446,11 @@ namespace TODOList
 		{
 			EditItem(lbHCompletedTodos, _hCurrentHistoryItem.CompletedTodos);
 			RefreshHistory();
+		}
+
+		private void AutoSave_OnClick(object sender, EventArgs e)
+		{
+			_autoSave = (bool) ckAutoSave.IsChecked;
 		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// HISTORY TAB //
@@ -467,7 +498,7 @@ namespace TODOList
 				td.Rank = _tIncompleteItems.Count;
 				RefreshTodo();
 				_hCurrentHistoryItem.CompletedTodos.Remove(td);
-				_isChanged = true;
+				AutoSave();
 			}
 			RefreshHistory();
 		}
@@ -482,7 +513,7 @@ namespace TODOList
 			_hHistoryItems.Remove(_hCurrentHistoryItem);
 
 			_hCurrentHistoryItem = _hHistoryItems.Count > 0 ? _hHistoryItems[0] : new HistoryItem("", "");
-			_isChanged = true;
+			AutoSave();
 			RefreshHistory();
 		}
 
@@ -511,14 +542,14 @@ namespace TODOList
 			_hCurrentHistoryItem = _hHistoryItems[0];
 			_hCurrentHistoryItem.AddCompletedTodo(td);
 			RefreshHistory();
-			_isChanged = true;
+			AutoSave();
 		}
 		
 		private void AddNewHistoryItem()
 		{
 			_hCurrentHistoryItem = new HistoryItem(DateTime.Now);
 			_hHistoryItems.Add(_hCurrentHistoryItem);
-			_isChanged = true;
+			AutoSave();
 			RefreshHistory();
 		}
 		
@@ -557,7 +588,7 @@ namespace TODOList
 
 			_tIncompleteItems.Add(td);
 			td.Rank = _tIncompleteItems.Count;
-			_isChanged = true;
+			AutoSave();
 			RefreshTodo();
 			txtT1NewTodo.Clear();
 		}
@@ -578,7 +609,7 @@ namespace TODOList
 				{
 					_tIncompleteItems.RemoveAt(index);
 					_tIncompleteItems.Add(tdc.Result);
-					_isChanged = true;
+					AutoSave();
 				}
 			}
 			RefreshTodo();
@@ -600,7 +631,7 @@ namespace TODOList
 					{
 						_tIncompleteItems[index - 1].Rank = td.Rank;
 						td.Rank = newRank;
-						_isChanged = true;
+						AutoSave();
 					}
 				}
 				else if ((string) b.CommandParameter == "down")
@@ -612,7 +643,7 @@ namespace TODOList
 					{
 						_tIncompleteItems[index + 1].Rank = td.Rank;
 						td.Rank = newRank;
-						_isChanged = true;
+						AutoSave();
 					}
 				}
 			}
@@ -636,7 +667,7 @@ namespace TODOList
 						td.IsTimerOn = false;
 				}
 				
-				_isChanged = true;
+				AutoSave();
 			}
 
 			lbTIncompleteItems.Items.Refresh();
@@ -655,7 +686,7 @@ namespace TODOList
 			{
 				list.Remove(td);
 				_tIncompleteItems.Add(tdie.Result);
-				_isChanged = true;
+				AutoSave();
 			}
 
 			RefreshTodo();
@@ -773,6 +804,7 @@ namespace TODOList
 			}
 			foreach (TodoItem td in _tIncompleteItems)
 				incompleteItems.Add(td);
+			
 			return incompleteItems;
 		}
 		
@@ -856,6 +888,27 @@ namespace TODOList
 			lbTIncompleteItems.Items.Refresh();
 			cbHashtags.ItemsSource = _tHashTags;
 			cbHashtags.Items.Refresh();
+
+//			foreach (ListBoxItem lbi in lbTIncompleteItems.ItemContainerGenerator.Items)
+//			{
+//				int test = 0;
+//			}
+//			foreach (TodoItem td in _tIncompleteItems)
+//			{
+//				VirtualizingStackPanel.SetIsVirtualizing(lbTIncompleteItems, false);
+//				int index = lbTIncompleteItems.Items.IndexOf(td);
+//				ListBoxItem lbi22 = lbTIncompleteItems.Items.GetItemAt(index) as ListBoxItem;
+//				ListBoxItem lbi = lbTIncompleteItems.Items[index] as ListBoxItem;
+//			int index = 0;
+//			var lbi3 = (ListBoxItem) lbTIncompleteItems.SelectedItem;
+//				var lbi = lbTIncompleteItems.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
+//				var lbi2 = lbTIncompleteItems.ItemContainerGenerator.ContainerFromItem(_tIncompleteItems[0]) as ListBoxItem;
+//				if (_tCurrentSort == "hash" && td.Tags.Contains(_hashToSortBy))
+//					lbi.Background = Brushes.Red;
+//				else
+//					lbi.Background=Brushes.Transparent;
+
+//			}
 		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// FileIO //
@@ -880,6 +933,12 @@ namespace TODOList
 
 			string[] sa = _recentFiles[0].Split('\\');
 			return sa[sa.Length - 1];
+		}
+		private void AutoSave()
+		{
+			_isChanged = true;
+			if (_autoSave)
+				Save(_recentFiles[0]);
 		}
 		
 		private void SaveAs()

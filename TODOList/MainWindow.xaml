@@ -18,6 +18,8 @@
 		<RoutedUICommand x:Key="SwitchTab" Text="Yet Another Text" />
 		<RoutedUICommand x:Key="SwitchSeverity" Text="And Yet Another Text" />
 		<RoutedUICommand x:Key="QuickSave" Text="And Yet Another Text" />
+		<RoutedUICommand x:Key="QuickLoadPrevious" Text="And Yet Another Another Text" />
+		<RoutedUICommand x:Key="StartStopTimer" Text="And Yet Another Another Text" />
 	</Window.Resources >
 	
 	<Window.CommandBindings>
@@ -27,6 +29,8 @@
 		<CommandBinding Command="{StaticResource SwitchTab}" Executed="hkSwitchTab" />
 		<CommandBinding Command="{StaticResource SwitchSeverity}" Executed="hkSwitchSeverity" />
 		<CommandBinding Command="{StaticResource QuickSave}" Executed="hkQuickSave" />
+		<CommandBinding Command="{StaticResource QuickLoadPrevious}" Executed="hkQuickLoadPrevious" />
+		<CommandBinding Command="{StaticResource StartStopTimer}" Executed="hkStartStopTimer" />
 	</Window.CommandBindings>
 	
 	<Window.InputBindings>
@@ -38,6 +42,8 @@
 		<KeyBinding Key="Subtract" Command="{StaticResource SwitchSeverity}" CommandParameter="up" />
 		<KeyBinding Key="Add" Command="{StaticResource SwitchSeverity}" CommandParameter="down" />
 		<KeyBinding Key="S" Modifiers="Control" Command="{StaticResource QuickSave}" />
+		<KeyBinding Key="OemComma" Modifiers="Control" Command="{StaticResource QuickLoadPrevious}" />
+		<KeyBinding Key="P" Modifiers="Control" Command="{StaticResource StartStopTimer}" />
 	</Window.InputBindings>
 	
 	
@@ -48,6 +54,7 @@
 				<Separator />
 				<MenuItem Header="Save" Click="mnuSave_Click" />
 				<MenuItem Header="SaveAs" Click="mnuSaveAs_Click" />
+				<CheckBox Name="ckAutoSave" Content="AutoSave" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="AutoSave_OnClick" IsChecked="True" />
 				<Separator />
 				<MenuItem Header="Load" Click="mnuLoad_Click" />
 				<Separator />
