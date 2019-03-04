@@ -59,7 +59,7 @@ namespace TODOList
 			}
 			else if ((string) b.CommandParameter == "down")
 			{
-				if (td.TimeTaken.Ticks >= TimeSpan.TicksPerMinute)
+				if (td.TimeTaken.Ticks >= (5 * TimeSpan.TicksPerMinute))
 					td.TimeTaken = td.TimeTaken.AddMinutes(-5);
 				else
 					td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);

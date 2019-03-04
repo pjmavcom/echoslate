@@ -99,7 +99,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Content Include="TODO.txt" />
-	  <Content Include="VCSHistory.txt" />
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

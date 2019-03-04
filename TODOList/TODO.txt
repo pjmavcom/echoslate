@@ -1,7 +1,15 @@
-20190220|191143|-|-|10000000|False|1|3|Update version number|
-20190223|092124|-|-|0|False|2|1|#groups||#GROUPS
-20190301|201618|-|-|0|False|3|1|Group items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color|
+20190303|235132|-|-|6000000000|False|1|1|#Bug Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.||#BUG
+20190220|191143|-|-|0|False|2|3|Update version number|
+20190223|092124|-|-|0|False|3|1|#Groups||#GROUPS
+20190301|201618|-|-|0|False|4|1|#Groups items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color||#GROUPS
+20190303|235514|-|-|0|False|5|1|Quick button to raise or lower rank to top or bottom in editor windows|
 ====================================VCS
+NewVCS
+20190302|191414|1.5b|Some bug fixes
+VCSTodos
+20190303|235207|20190304|000446|3000000000|True|2147483647|3|#Bug Huge! Files deleted after clicking new and opening other file!!! Fix the fuck out of this!!!|This was easy to fix, checked AutoSave() and if _currentOpenFile == "" then run SaveAs() instead of Save(_recentFiles[0])|#BUG
+20190304|001748|20190304|002610|3000000000|True|2147483647|3|#Bug Crashes when time is less than 0 again in editor. Maybe I didnt get that editor?|I checked against 1 minutes worth of ticks, then subtracted 5 minutes worth...|#BUG
+EndVCS
 NewVCS
 20190301|023323|1.5a|Couple bug fixes and more tweaks.
 VCSTodos
@@ -223,6 +231,6 @@ VCSTodos
 20190209|112215|20190209|112231|0|True|0|1|Copy button #Interface||#INTERFACE
 EndVCS
 NewVCS
-20190302|191414||
+20190304|002658||
 VCSTodos
 EndVCS

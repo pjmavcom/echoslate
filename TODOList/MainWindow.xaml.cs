@@ -27,7 +27,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.5a";
+		public const string VERSION = "1.5b";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -937,6 +937,11 @@ namespace TODOList
 		private void AutoSave()
 		{
 			_isChanged = true;
+			if (_currentOpenFile == "")
+			{
+				SaveAs();
+				return;
+			}
 			if (_autoSave)
 				Save(_recentFiles[0]);
 		}
