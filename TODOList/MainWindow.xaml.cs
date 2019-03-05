@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.5b";
+		public const string VERSION = "1.5c";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -67,6 +68,14 @@ namespace TODOList
 		private HwndSource source;
 		[DllImport("user32.dll")]
 		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+		
+		// POMOTIMER
+		private DateTime _pomoTimer;
+		private bool _isPomoTimerOn;
+		private bool _isPomoWorkTimerOn;
+		private int _pomoWorkTime = 25;
+		private int _pomoBreakTime = 5;
+		private string _pomoTimerString;
 
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
@@ -79,6 +88,7 @@ namespace TODOList
 			get => _recentFiles;
 			set => _recentFiles = value;
 		}
+		
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public  MainWindow()
@@ -110,6 +120,9 @@ namespace TODOList
 			lbHHistory.SelectedIndex = 0;
 			lbHCompletedTodos.SelectedIndex = 0;
 			lbTIncompleteItems.SelectedIndex = 0;
+			
+			lblPomoWork.Content = _pomoWorkTime.ToString();
+			lblPomoBreak.Content = _pomoBreakTime.ToString();
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
@@ -163,6 +176,33 @@ namespace TODOList
 			foreach (TodoItem td in _tIncompleteItems)
 				if (td.IsTimerOn)
 					td.TimeTaken = td.TimeTaken.AddSeconds(1);
+			
+			if (_isPomoTimerOn)
+			{
+				_pomoTimer = _pomoTimer.AddSeconds(1);
+				lblPomo.Content = String.Format("Pomo: {0:00}:{1:00}", _pomoTimer.Ticks / TimeSpan.TicksPerMinute, _pomoTimer.Second);
+				
+				if(_isPomoWorkTimerOn)
+				{
+					lblPomo.Background = Brushes.Lime;
+					if (_pomoTimer.Ticks / TimeSpan.TicksPerMinute >= _pomoWorkTime)
+					{
+						_isPomoWorkTimerOn = false;
+						_pomoTimer=DateTime.MinValue;
+					}
+				}
+				else
+				{
+					lblPomo.Background = Brushes.Maroon;
+					if (_pomoTimer.Ticks / TimeSpan.TicksPerMinute >= _pomoBreakTime)
+					{
+						_isPomoWorkTimerOn = true;
+						_pomoTimer=DateTime.MinValue;
+					}
+				}
+			}
+			else
+				lblPomo.Background=Brushes.Transparent;
 		}
 		
 		private void Window_Closed(object sender, CancelEventArgs e)
@@ -173,6 +213,12 @@ namespace TODOList
 
 			if (MessageBox.Show("Maybe save first?", "Close", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
 				Save(_currentOpenFile);
+		}
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Hotkeys //
@@ -671,6 +717,41 @@ namespace TODOList
 			}
 
 			lbTIncompleteItems.Items.Refresh();
+		}
+
+		private void btnPomoTimerStart_OnClick(object sender, EventArgs e)
+		{
+			_isPomoTimerOn = true;
+			_isPomoWorkTimerOn = true;
+			_pomoTimer = DateTime.MinValue;
+		}
+		private void btnPomoTimerStop_OnClick(object sender, EventArgs e)
+		{
+			_isPomoTimerOn = false;
+		}
+		private void btnPomoWorkInc_OnClick(object sender, EventArgs e)
+		{
+			_pomoWorkTime += 5;
+			lblPomoWork.Content = _pomoWorkTime.ToString();
+		}
+		private void btnPomoWorkDec_OnClick(object sender, EventArgs e)
+		{
+			_pomoWorkTime -= 5;
+			if (_pomoWorkTime <= 0)
+				_pomoWorkTime = 5;
+			lblPomoWork.Content = _pomoWorkTime.ToString();
+		}
+		private void btnPomoBreakInc_OnClick(object sender, EventArgs e)
+		{
+			_pomoBreakTime += 5;
+			lblPomoBreak.Content = _pomoBreakTime.ToString();
+		}
+		private void btnPomoBreakDec_OnClick(object sender, EventArgs e)
+		{
+			_pomoBreakTime -= 5;
+			if (_pomoBreakTime <= 0)
+				_pomoBreakTime = 5;
+			lblPomoBreak.Content = _pomoBreakTime.ToString();
 		}
 
 		private void EditItem(ListBox lb, List<TodoItem> list)

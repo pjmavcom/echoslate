@@ -98,6 +98,7 @@
 							
 							<ColumnDefinition Width="90" />
 							<ColumnDefinition Width="150" />
+							<ColumnDefinition />
 							
 						</Grid.ColumnDefinitions >
 						<ComboBox Grid.Column="1" Name="cbHashtags" ItemsSource="{Binding HashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
@@ -106,6 +107,17 @@
 						
 						<Button Grid.Column="4" Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 						<Button Grid.Column="5" Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+						<StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Right" >
+							<Label Name="lblPomo" Width="400" HorizontalContentAlignment="Right" />
+							<Button FontFamily="Marlett" FontSize="20" Content="4" Click="btnPomoTimerStart_OnClick" />
+							<Button FontFamily="Marlett" FontSize="20" Content="g" Click="btnPomoTimerStop_OnClick" />
+							<Label Name="lblPomoWork" Width="100" />
+							<Button Content="+5" Click="btnPomoWorkInc_OnClick" />
+							<Button Content="-5" Click="btnPomoWorkDec_OnClick" />
+							<Label Name="lblPomoBreak" Width="100" />
+							<Button Content="+5" Click="btnPomoBreakInc_OnClick" />
+							<Button Content="-5" Click="btnPomoBreakDec_OnClick" />
+						</StackPanel >
 					</Grid >
 					<!-- </StackPanel > -->
 					
