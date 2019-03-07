@@ -54,14 +54,26 @@ namespace TODOList
 		private void btnRank_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
+			if (b == null)
+				return;
+			string compar = (string) b.CommandParameter;
 
-			if (b != null && (string) b.CommandParameter == "up")
+			
+			if (compar == "up")
 			{
 				td.Rank--;
 			}
-			else if (b != null && (string) b.CommandParameter == "down")
+			else if (compar == "down")
 			{
 				td.Rank++;
+			}
+			else if (compar == "top")
+			{
+				td.Rank = 0;
+			}
+			else if (compar == "bottom")
+			{
+				td.Rank = int.MaxValue;
 			}
 
 			td.Rank = td.Rank > 0 ? td.Rank : 0;

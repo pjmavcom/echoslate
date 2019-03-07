@@ -133,7 +133,7 @@
 						</ListBox.ContextMenu >
 						<ListBox.ItemTemplate >
 							<DataTemplate >
-								<Grid ToolTip="{Binding TagsList}" Margin="0,2" >
+								<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
 									<Grid.ColumnDefinitions >
 										<ColumnDefinition Width="25" /> <!-- Complete button -->
 										<ColumnDefinition Width="200" /> <!-- HashTags -->
@@ -268,7 +268,7 @@
 						<ListBox Grid.Row="3" Name="lbHCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
-									<Grid Margin="0,2" >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
 										<Grid.ColumnDefinitions >
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />

@@ -21,24 +21,23 @@
 	
 	<StackPanel TextElement.FontSize="16" >
 		<StackPanel Orientation="Horizontal" >
-			<CheckBox Name="ckSev" Click="ckSev_Clicked" Margin="2" />
-			<Label Content="Severity:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<CheckBox Content="Severity: " Name="ckSev" Click="ckSev_Clicked" Margin="2" Foreground="LightGray" />
 			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
 				<ComboBoxItem Content="Low" IsSelected="True" />
 				<ComboBoxItem Content="Med" />
 				<ComboBoxItem Content="High" />
 			</ComboBox >
 
-			<CheckBox Name="ckRank" Click="ckRank_Clicked" Margin="2" />
-			<Label Content="Rank: " Margin="2" />
+			<CheckBox Content="Rank: " Name="ckRank" Click="ckRank_Clicked" Margin="2" Foreground="LightGray" />
 			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="tbRank_PreviewTextInput" TextChanged="tbRank_Changed" />
 			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
 			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="55" Click="btnRank_Click" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="66" Click="btnRank_Click" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 		
 		<StackPanel Orientation="Horizontal" >
-			<CheckBox Name="ckTodo" Click="ckTodo_Clicked" Margin="2" />
-			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<CheckBox Content="TODO: " Name="ckTodo" Click="ckTodo_Clicked" Margin="2" Foreground="LightGray" />
 			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
 		</StackPanel >
 		

@@ -28,7 +28,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.5c";
+		public const string VERSION = "1.6a";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -574,7 +574,13 @@ namespace TODOList
 			HistoryItem hi = (HistoryItem) b?.DataContext;
 			if (hi != null)
 			{
-				Clipboard.SetText(hi.ToClipboard());
+				int totalTime = 0;
+				foreach (HistoryItem hist in _hHistoryItems)
+				{
+					totalTime += Convert.ToInt32(hist.TotalTime);
+				}
+				string time = String.Format("{0:00} : {1:00}", totalTime / 60, totalTime % 60);
+				Clipboard.SetText(hi.ToClipboard(time));
 				if (lbHHistory.Items.IndexOf(hi) == 0)
 					AddNewHistoryItem();
 			}
@@ -634,6 +640,8 @@ namespace TODOList
 
 			_tIncompleteItems.Add(td);
 			td.Rank = _tIncompleteItems.Count;
+			if (td.Severity == 3)
+				td.Rank = 0;
 			AutoSave();
 			RefreshTodo();
 			txtT1NewTodo.Clear();

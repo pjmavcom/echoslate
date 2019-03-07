@@ -90,13 +90,26 @@ namespace TODOList
 		{
 			Button b = sender as Button;
 
-			if (b != null && (string) b.CommandParameter == "up")
+			if (b == null)
+				return;
+			string compar = (string) b.CommandParameter;
+
+			
+			if (compar == "up")
 			{
 				_rank--;
 			}
-			else if (b != null && (string) b.CommandParameter == "down")
+			else if (compar == "down")
 			{
 				_rank++;
+			}
+			else if (compar == "top")
+			{
+				_rank = 0;
+			}
+			else if (compar == "bottom")
+			{
+				_rank = int.MaxValue;
 			}
 
 			_rank = _rank > 0 ? _rank : 0;

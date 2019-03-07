@@ -33,6 +33,8 @@
 			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="tbRank_PreviewTextInput" TextChanged="tbRank_Changed" />
 			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
 			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="55" Click="btnRank_Click" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="66" Click="btnRank_Click" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
 			
 			<Label Content="Time: " Margin="2" />
 			<Label Name="lblTime" Margin="2" Width="40" />

@@ -52,6 +52,10 @@ namespace TODOList
 			get => _notes;
 			set => _notes = value;
 		}
+		public string NotesAndTags
+		{
+			get => "Notes: " + Notes + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
+		}
 		public string StartDateTime => _dateStarted + "-" + _timeStarted;
 		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
 		public string DateStarted => _dateStarted;

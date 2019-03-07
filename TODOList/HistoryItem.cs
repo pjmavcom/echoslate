@@ -118,9 +118,12 @@ namespace TODOList
 			result += "EndVCS" + Environment.NewLine;
 			return result;
 		}
-		public string ToClipboard()
+		public string ToClipboard(string totalTimeSoFar)
 		{
-			string result = DateAdded + "- " + Title + Environment.NewLine + "Estimated Time: " + TotalTime + Environment.NewLine + "Notes: " + Notes;
+			string result = DateAdded + "- " + Title + Environment.NewLine +
+							"Estimated Time: " + TotalTime + Environment.NewLine +
+							"Estimated Total Time: " + totalTimeSoFar + Environment.NewLine +
+							"Notes: " + Notes;
 			foreach (TodoItem td in CompletedTodos)
 			{
 				result += Environment.NewLine + "--" + td.ToClipboard();
