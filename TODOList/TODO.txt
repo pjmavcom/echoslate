@@ -1,14 +1,36 @@
 20190220|191143|-|-|0|False|1|3|Update version number|
-20190303|235132|-|-|6000000000|False|3|1|#Bug Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.||#BUG
-20190223|092124|-|-|0|False|4|1|#Groups||#GROUPS
-20190301|201618|-|-|0|False|5|1|#Groups items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color||#GROUPS
-20190304|010503|-|-|0|False|6|1|#Bug Every once in a while a completed Todo is added more than once...||#BUG
-20190304|010852|-|-|0|False|7|1|#Bug Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.||#BUG
-20190304|003712|20190307|005706|3500000000|True|2147483647|1|Make a total time for entire project print out from clipboard|
+20190223|092124|-|-|0|False|2|0|#GROUPS Groups|
+20190301|201618|-|-|0|False|3|0|#GROUPS Groups items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color|
+20190303|235132|-|-|6000000000|False|1|0|#BUG Bug Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
+20190304|010503|-|-|0|False|2|0|#BUG Bug Every once in a while a completed Todo is added more than once...|
+20190304|010852|-|-|0|False|3|0|#BUG Bug Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|
+20190310|052903|-|-|0|False|1|1|#FEATURE Features Need to add a hashtag editor to at least the single item editor|
 ====================================VCS
 NewVCS
-20190305|050214|1.6a|Small bugs and features
--
+20190310|053257||
+VCSTodos
+EndVCS
+NewVCS
+20190309|210921|1.7|
+VCSTodos
+20190309|213455|20190309|213455|0|True|2147483647|1|Pomo looks like porno, removed it|
+20190309|213510|20190309|213510|0|True|2147483647|1|Moved pomo timer to the menu bar, its always visible now|
+20190309|204319|20190310|002306|77110000000|True|2147483647|1|How about a separate tab for bug hashtags and wanna be features? That sounds awesome.|Hmm. Check the Fix This Todos to add more tabs
+20190310|040525|20190310|043252|15300000000|True|2147483647|1|Move Hashtags to front of TODO but keep what was there. Actually remove all the way, but add back to front when saving|Hashtags are removed from the todo text. Saving is working correctly looks like.
+20190309|034036|20190309|211213|3330000000|True|2147483647|1|#BUG #GLITCH Bug glitch When switching between files, if youve looked at the HistoryTab, it doesnt update the right pane when switching|Had it set the _hCurrentHistoryItem to an existing history item or an empty one if it doesnt exist
+20190310|000923|20190310|015911|40220000000|True|2147483647|3|#BUG Bug The new todo item textbox and such hasnt been programmed yet|That took a lot longer than it shouldve. Getting the severity to work between screens...is....magic...
+20190310|030409|20190310|032813|0|True|0|3|#BUG Bug Pressing enter on another tabs new add button doesnt do anything useful|Easy enough to edit the hotkeys
+20190310|000923|20190310|032820|40220000000|True|0|3|#BUG Bug The new todo item textbox and such hasnt been programmed yet|That took a lot longer than it shouldve. Getting the severity to work between screens...is....magic...
+20190310|000213|20190310|005353|7310000000|True|2147483647|1|#FEATURE Feature Save does not work correctly with new tabs so far|Made a new list and copied over the 3 lists, then iterated through that
+20190310|030331|20190310|032827|0|True|0|3|#FEATURE Feature Severity should be able to go to 0|Done!
+20190310|000754|20190310|040501|12040000000|True|2147483647|1|#FEATURE Feature fix hashtags Bugs to Bug and Features to Feature if theyre wrong or something like that|
+20190310|000708|20190310|043304|0|True|2147483647|1|#FEATURE Feature Capitalize the hashtag in the text of the todo|
+20190310|030756|20190310|043749|0|True|2147483647|1|#FEATURE Feature Does the WinKey+F4 still work?|Yes, had to add a if statement to check which tab is selected again!
+20190310|000624|20190310|052830|36000000000|True|2147483647|0|#FEATURE Sort bugs and features in History tab|
+EndVCS
+NewVCS
+20190305|050214|1.6a|Small bugs and features-
+
 VCSTodos
 20190305|050342|20190307|003147|0|True|2147483647|3|Fix version number!|
 20190305|050358|20190307|003357|780000000|True|2147483647|3|If severity is added as high, set rank to 0|
@@ -25,8 +47,8 @@ EndVCS
 NewVCS
 20190302|191414|1.5b|Some bug fixes
 VCSTodos
-20190303|235207|20190304|000446|3000000000|True|2147483647|3|#Bug Huge! Files deleted after clicking new and opening other file!!! Fix the fuck out of this!!!|This was easy to fix, checked AutoSave() and if _currentOpenFile == "" then run SaveAs() instead of Save(_recentFiles[0])|#BUG
-20190304|001748|20190304|002610|3000000000|True|2147483647|3|#Bug Crashes when time is less than 0 again in editor. Maybe I didnt get that editor?|I checked against 1 minutes worth of ticks, then subtracted 5 minutes worth...|#BUG
+20190303|235207|20190304|000446|3000000000|True|2147483647|3|#BUG Bug Huge! Files deleted after clicking new and opening other file!!! Fix the fuck out of this!!!|This was easy to fix, checked AutoSave() and if _currentOpenFile == "" then run SaveAs() instead of Save(_recentFiles[0])
+20190304|001748|20190304|002610|3000000000|True|2147483647|3|#BUG Bug Crashes when time is less than 0 again in editor. Maybe I didnt get that editor?|I checked against 1 minutes worth of ticks, then subtracted 5 minutes worth...
 EndVCS
 NewVCS
 20190301|023323|1.5a|Couple bug fixes and more tweaks.
@@ -34,7 +56,7 @@ VCSTodos
 20190302|185058|20190302|191309|6000000000|True|2147483647|1|AutoSave function|Set this so when debugging, AutoSave is off. Everywhere _isChanged is set to true, it calls AutoSave() instead, sets _isChanged to true and if enabled, saves immediately.
 20190301|201201|20190302|185811|3000000000|True|2147483647|1|Hotkey to start and stop the clock on the selected item|
 20190301|201717|20190302|185109|3000000000|True|2147483647|1|Hotkey to quickly swap previous file. Ctrl+, if possible|
-20190302|052543|20190302|184617|6000000000|True|2147483647|3|#Bug Backspace clearing out the rank in the edit window crashes the app. Dont let this ever be empty?|Simple, wasnt what I thought though. Thought it was in the PreviewTextInput(), but was actually in the tbRank_Changed(). The Convert.ToInt() crashed when theres nothing in the textbox|#BUG
+20190302|052543|20190302|184617|6000000000|True|2147483647|3|#BUG Bug Backspace clearing out the rank in the edit window crashes the app. Dont let this ever be empty?|Simple, wasnt what I thought though. Thought it was in the PreviewTextInput(), but was actually in the tbRank_Changed(). The Convert.ToInt() crashed when theres nothing in the textbox
 EndVCS
 NewVCS
 20190227|021625|1.5|Just some more quick easy things
@@ -42,7 +64,7 @@ VCSTodos
 20190228|201839|20190301|003319|9450000000|True|2147483647|1|Multiselect for multiedit|That was actually easier than I thought
 20190228|201905|20190301|014257|17540000000|True|2147483647|2|Edit rank by typing in addition to the buttons in the editor|Had to add a value checker to the TextBox. Used PreviewTextInput to check as the text is entered whether to accept the new input or not
 20190228|201806|20190301|020654|6250000000|True|2147483647|2|+- 5 minute buttons|A DateTime cannot go below zero. So checked if ticks were enough to subtract 5 minutes, else subtract the ticks
-20190301|000114|20190301|001731|18140000000|True|2147483647|1|#Bug Right click edit menu doesnt work anymore. Code is checking for a ListBox, and thats a MenuItem|Menu was sending a MenuItem instead of a ListBox, but I had changed the code to receive a ListBox and List and didnt update this menu|#BUG
+20190301|000114|20190301|001731|18140000000|True|2147483647|1|#BUG Bug Right click edit menu doesnt work anymore. Code is checking for a ListBox, and thats a MenuItem|Menu was sending a MenuItem instead of a ListBox, but I had changed the code to receive a ListBox and List and didnt update this menu
 20190228|235622|20190301|003329|6250000000|True|2147483647|1|Add multiselect editor|
 20190301|005805|20190301|014314|3000000000|True|2147483647|1|Canceling MultiEdit window still edits stuff|Didnt check value of IsOK or not. Simple fix
 20190301|012047|20190301|014521|6000000000|True|2147483647|1|Add checkboxes for whether to change the data or not|
@@ -72,25 +94,25 @@ NewVCS
 20190223|193512|1.4b|Couple bugs fixed and got the remove option for recent files working
 VCSTodos
 20190223|120632|20190225|232111|7400000000|True|2147483647|1|Right click a recent save file to remove?|Used RMBUp event to set the index of the file to remove. Then removed it with the context menu.
-20190225|230857|20190225|232207|5090000000|True|2147483647|2|#Bug When no recent files, QuickSave throws index error|Checked for currentFileOpen instead. Then had to set it blank if a new file was created.|#BUG
-20190225|232641|20190225|233331|0|True|2147483647|2|#bug quick save and load no longer work. if (mi.Items.Count == 0) return; is 0 for some reason|Changed to check if the DataContext cast to string returns null or not|#BUG
+20190225|230857|20190225|232207|5090000000|True|2147483647|2|#BUG Bug When no recent files, QuickSave throws index error|Checked for currentFileOpen instead. Then had to set it blank if a new file was created.
+20190225|232641|20190225|233331|0|True|2147483647|2|#BUG Bug quick save and load no longer work. If (mi.Items.Count == 0) return; is 0 for some reason|Changed to check if the DataContext cast to string returns null or not
 20190223|120929|20190225|235236|3010000000|True|2147483647|1|Maybe fix what changes the files to prompt saving|
 20190225|233655|20190226|001843|0|True|2147483647|2|Update History notes immediatly instead of when focus is lost|Used TextChanged event for the text boxes
-20190223|120311|20190226|001850|0|True|2147483647|1|#UI Add title field to History tab, keep notes but not in the left side list||#UI
+20190223|120311|20190226|001850|0|True|2147483647|1|#UI Ui Add title field to History tab, keep notes but not in the left side list|
 20190223|121708|20190226|011929|0|True|2147483647|1|Figure out a better header/separator in the code to search by|Umm...Got rid of these
 20190223|121648|20190226|011934|0|True|2147483647|1|Resort functions, make em easier to read. Like reorder the functions and organize them or something|
 EndVCS
 NewVCS
 20190223|105243|1.4a|
 VCSTodos
-20190223|120240|20190223|190957|0|True|2147483647|1|#UI Subscreens do not tab right, and text isnt preselected|Just fixedc tabstops and indexes|#UI
+20190223|120240|20190223|190957|0|True|2147483647|1|#UI Ui Subscreens do not tab right, and text isnt preselected|Just fixedc tabstops and indexes
 20190223|120615|20190223|192332|0|True|2147483647|1|When loading or saving a file, use path of current file open to start|Created GetFilePath and GetFileName and loaded it in the file dialogs
 EndVCS
 NewVCS
 20190223|104926|v1.4. Couple quick UI fixes|
 VCSTodos
-20190223|092211|20190223|105133|0|True|2147483647|1|#Sort #hashtags #list #on #left #side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags field, cuz cant modify a list while iterating|#SORT|#HASHTAGS|#LIST|#ON|#LEFT|#SIDE.
-20190223|092234|20190223|105200|0|True|2147483647|1|Change #sort buttons to stretch across the window at top for sorting||#SORT
+20190223|092211|20190223|105133|0|True|2147483647|1|#SORT #HASHTAGS #LIST #ON #LEFT #SIDE. Sort hashtags list on left side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags field, cuz cant modify a list while iterating
+20190223|092234|20190223|105200|0|True|2147483647|1|#SORT Change sort buttons to stretch across the window at top for sorting|
 EndVCS
 NewVCS
 20190222|233012|Tried to fix things changed bug|Fresh starting program and quiting gave the stuff has changed window when closing. The problem is in WPF, a selection changed event. Bah. Code changed...
@@ -101,62 +123,62 @@ NewVCS
 VCSTodos
 20190222|162921|20190222|225208|0|True|2147483647|1|Work on warnings|Just XAML crap warning left
 20190222|162925|20190222|230403|0|True|2147483647|1|Release|Yay all done!
-20190222|230557|20190222|232548|0|True|2147483647|1|#Annoying No hotkeys for menus. And keyboard arrows dont work for some reason|Fixed most of this. Hotkey for save is Ctrl+S and menus are tab accessible. Keyboard works like it needs to|#ANNOYING
-20190222|230457|20190222|232648|0|True|2147483647|1|#Annoying Cant tab off IncompleteItems|Fixed, KeyboardIsTabStop was false|#ANNOYING
-20190222|230513|20190222|232718|0|True|2147483647|1|#Annoying No hotkeys for History tab|Still cant arrow around the history list, cant figure that one out. But the rest of the screen works|#ANNOYING
+20190222|230557|20190222|232548|0|True|2147483647|1|#ANNOYING Annoying No hotkeys for menus. And keyboard arrows dont work for some reason|Fixed most of this. Hotkey for save is Ctrl+S and menus are tab accessible. Keyboard works like it needs to
+20190222|230457|20190222|232648|0|True|2147483647|1|#ANNOYING Annoying Cant tab off IncompleteItems|Fixed, KeyboardIsTabStop was false
+20190222|230513|20190222|232718|0|True|2147483647|1|#ANNOYING Annoying No hotkeys for History tab|Still cant arrow around the history list, cant figure that one out. But the rest of the screen works
 EndVCS
 NewVCS
 20190221|210450|Fixed the style and some bugs|
 VCSTodos
-20190221|123736|20190222|152749|0|True|2147483647|1|Redo #interface style|Cleaned up the style I downloaded and removed a bunch of shit, edited some other shit. Changed primary fonts. Should be good now|#INTERFACE
+20190221|123736|20190222|152749|0|True|2147483647|1|#INTERFACE Redo interface style|Cleaned up the style I downloaded and removed a bunch of shit, edited some other shit. Changed primary fonts. Should be good now
 20190222|152812|20190222|154152|0|True|2147483647|1|Add exit to main menu|
-20190222|150023|20190222|154727|0|True|2147483647|1|Make its save and load as txt files #Fileio|Easy enough, added Filter to file dialogs|#FILEIO
+20190222|150023|20190222|154727|0|True|2147483647|1|#FILEIO Make its save and load as txt files fileio|Easy enough, added Filter to file dialogs
 20190221|211121|20190222|162721|0|True|2147483647|1|Refactor everything after redoing interface style|
-20190221|210634|20190222|162750|0|True|2147483647|1|Adding new history sometimes doesnt work #Bug|Havent seen this happen anymore....|#BUG
+20190221|210634|20190222|162750|0|True|2147483647|1|#BUG Adding new history sometimes doesnt work bug|Havent seen this happen anymore....
 EndVCS
 NewVCS
 20190220|203647|v1.2a- Bugs and timers.|
 VCSTodos
-20190220|202632|20190221|114006|0|True|1|3|#Bug when double clicking buttons, doesnt know what to do|Fixed by getting listbox.selectedindex, and if its out of bounds, return from function. So double clicking on buttons doesnt do anything. But you can still right click a button and get the correct index. That works correctly|#BUG
-20190221|112002|20190221|122620|0|True|11|1|When complete, edit #notes text|Just added new window, TodoItemComplete, copied from TodoItemEditor with some controls removed.|#NOTES
+20190220|202632|20190221|114006|0|True|1|3|#BUG Bug when double clicking buttons, doesnt know what to do|Fixed by getting listbox.selectedindex, and if its out of bounds, return from function. So double clicking on buttons doesnt do anything. But you can still right click a button and get the correct index. That works correctly
+20190221|112002|20190221|122620|0|True|11|1|#NOTES When complete, edit notes text|Just added new window, TodoItemComplete, copied from TodoItemEditor with some controls removed.
 20190220|203815|20190221|122655|0|True|10|1|Change rank in edit screen|Easy enough, sort already fixes duplicate ranks
-20190217|132720|20190221|134809|0|True|3|3|Add #timers to items or history. Only goes up when this app is open?|Timers only go up when they are clicked active. Active is not saved when saving, have to restart timer again when opened|#TIMERS
-20190217|132749|20190221|134824|0|True|4|3|Add #timers to todo items. Can keep track of current one worked on?|Can keep track of all active timers|#TIMERS
-20190217|132818|20190221|135115|0|True|4|3|#Timers starting moves todo item to top of list|Not really, but added a sort for it. Gonna add a green color to active items|#TIMERS
-20190221|134412|20190221|135119|0|True|3|2|Add #sort by active||#SORT
-20190221|134539|20190221|141335|300000000|True|2|2|Change text #color when time is active|Used data binding again on the labels. Check it out|#COLOR
-20190221|160734|20190221|162501|0|True|2147483647|1|Show #timer in edit windows||#TIMER
-20190221|162540|20190221|162640|0|True|2147483647|1|#bug when editing an item and saving, rank is messed up|FIXED- When combining double click edit, I had set the rank to the lists count. This happened on either edit. Now the rank is set to int.max when the item is complete|#BUG
-20190217|175702|20190221|203331|0|True|2147483647|1|View resorts #hashtags list to left of todo notes|Easy to see list of individual hashtags now|#HASHTAGS
-20190221|204948|20190221|205009|0|True|2147483647|1|Add tooltip of #hashtags|Simple enough, tooltip property of grid in data template|#HASHTAGS
-20190221|134618|20190221|210334|0|True|2147483647|2|#Timer tick is messing up lag some...|Increased interval to 5 seconds. Then bound the data so it updates itself. Had to modify some properties of TodoItem to get it done right|#TIMER
-20190221|114107|20190221|134438|0|True|2147483647|3|#Timers added to TodoItem||#TIMERS
+20190217|132720|20190221|134809|0|True|3|3|#TIMERS Add timers to items or history. Only goes up when this app is open?|Timers only go up when they are clicked active. Active is not saved when saving, have to restart timer again when opened
+20190217|132749|20190221|134824|0|True|4|3|#TIMERS Add timers to todo items. Can keep track of current one worked on?|Can keep track of all active timers
+20190217|132818|20190221|135115|0|True|4|3|#TIMERS Timers starting moves todo item to top of list|Not really, but added a sort for it. Gonna add a green color to active items
+20190221|134412|20190221|135119|0|True|3|2|#SORT Add sort by active|
+20190221|134539|20190221|141335|300000000|True|2|2|#COLOR Change text color when time is active|Used data binding again on the labels. Check it out
+20190221|160734|20190221|162501|0|True|2147483647|1|#TIMER Show timer in edit windows|
+20190221|162540|20190221|162640|0|True|2147483647|1|#BUG Bug when editing an item and saving, rank is messed up|FIXED- When combining double click edit, I had set the rank to the lists count. This happened on either edit. Now the rank is set to int.max when the item is complete
+20190217|175702|20190221|203331|0|True|2147483647|1|#HASHTAGS View resorts hashtags list to left of todo notes|Easy to see list of individual hashtags now
+20190221|204948|20190221|205009|0|True|2147483647|1|#HASHTAGS Add tooltip of hashtags|Simple enough, tooltip property of grid in data template
+20190221|134618|20190221|210334|0|True|2147483647|2|#TIMER Timer tick is messing up lag some...|Increased interval to 5 seconds. Then bound the data so it updates itself. Had to modify some properties of TodoItem to get it done right
+20190221|114107|20190221|134438|0|True|2147483647|3|#TIMERS Timers added to TodoItem|
 EndVCS
 NewVCS
 20190217|203459|Added sorting by rank. Simple stuff|
 VCSTodos
-20190220|191159|20190220|202208|0|True|4|2|Sort by #rank|Add new code in sort function|#RANK
-20190220|191205|20190220|202218|0|True|4|2|Add #rank field to todo items||#RANK
-20190220|191548|20190220|202222|0|True|4|2|Show #rank in display||#RANK
-20190220|202553|20190220|203254|0|True|10|1|Set default #sort order to #rank||#SORT|#RANK
-20190220|203545|20190220|203639|0|True|11|1|If theres no #notes dont print them out||#NOTES
-20190220|191216|20190220|202214|0|True|4|2|Add buttons for #rank||#RANK
+20190220|191159|20190220|202208|0|True|4|2|#RANK Sort by rank|Add new code in sort function
+20190220|191205|20190220|202218|0|True|4|2|#RANK Add rank field to todo items|
+20190220|191548|20190220|202222|0|True|4|2|#RANK Show rank in display|
+20190220|202553|20190220|203254|0|True|10|1|#SORT #RANK Set default sort order to rank|
+20190220|203545|20190220|203639|0|True|11|1|#NOTES If theres no notes dont print them out|
+20190220|191216|20190220|202214|0|True|4|2|#RANK Add buttons for rank|
 EndVCS
 NewVCS
 20190210|173332|Adding Timers and removing completed items|
 VCSTodos
-20190210|173236|20190220|194722|0|True|14|2|#Hashtag bugs fixed||#HASHTAG
+20190210|173236|20190220|194722|0|True|14|2|#HASHTAG Hashtag bugs fixed|
 20190211|204155|20190217|143212|0|True|0|2|Remove completed items list from todo tab. When an item is removed from history todo, add it back to incomplete items|
 20190217|133051|20190217|145900|0|True|0|2|History tab shows notes in list instead of date|
-20190217|133225|20190217|150213|0|True|0|2|Horizontal scroll bar on sections? Probably need to fix my own style to fix this. FIXED- Added ScrollViewer.HorizontalScrollBarVisibility="Disabled" to the ListBoxes and removed Width from the TextBlocks|
-20190217|133132|20190217|175548|0|True|0|2|Edit windows font size is not consistant with  main window|
-20190217|175615|20190217|175950|0|True|0|1|Double click opens up edit window #interface|Just added MouseDoubleClick event to ListBox|#INTERFACE
+20190217|133225|20190217|150213|0|True|0|2|Horizontal scroll bar on sections? Probably need to fix my own style to fix this. FIXED- Added ScrollViewer.HorizontalScrollBarVisibility="Disabled" To the ListBoxes and removed Width from the TextBlocks|
+20190217|133132|20190217|175548|0|True|0|2|Edit windows font size is not consistant with main window|
+20190217|175615|20190217|175950|0|True|0|1|#INTERFACE Double click opens up edit window interface|Just added MouseDoubleClick event to ListBox
 20190210|173319|20190217|183559|0|True|0|1|Window position of edit window should center on current window place|Centered it on mouse position
 20190217|150106|20190217|183708|0|True|0|2|A section for todos on how it was fixed. Maybe have it pop up when complete is clicked?|Made it edit the todo on double click. Quick and easy
 20190217|143521|20190217|192017|0|True|0|2|Able to edit todos on history tab|Refactored mnuTEdit to work with both history and todo list items
 20190217|192041|20190217|193420|0|True|0|1|Add Complete button to editor window|test
 20190217|193437|20190217|194740|0|True|0|1|Remove complete button from editor window if invoked from history?|Done. Made a switch based on IsComplete. Moves between lists based on that, sets button based on that
-20190217|133032|20190217|201044|0|True|0|2|Clicking #copy button creates a new history item if its the most recent history item|Simple really, though showed a bug where the right side of history is still there from a previous item after loading a list without something there...simple fix of checking if historylist.count == 0 and setting currenthistoryitem to new if it is|#COPY
+20190217|133032|20190217|201044|0|True|0|2|#COPY Clicking copy button creates a new history item if its the most recent history item|Simple really, though showed a bug where the right side of history is still there from a previous item after loading a list without something there...simple fix of checking if historylist.count == 0 and setting currenthistoryitem to new if it is
 20190217|133522|20190217|203436|0|True|0|2|Make dashs show up on every line of the notes, or not at all on the first one|Not so easy to make this look great, but its tolerable for text
 EndVCS
 NewVCS
@@ -169,82 +191,82 @@ NewVCS
 20190210|110129|Fixed the found bugs. Implemented these ease options|
 VCSTodos
 20190209|152035|20190210|110129|0|True|0|1|Dark mode|
-20190209|152920|20190210|110142|0|True|0|1|Still a right click context menu on the history items todos #Interface #bug||#INTERFACE|#BUG
+20190209|152920|20190210|110142|0|True|0|1|#INTERFACE #BUG Still a right click context menu on the history items todos interface bug|
 20190209|174001|20190210|114615|0|True|0|3|Add title of current file open|
-20190210|110915|20190210|114631|0|True|0|1|Dates not showing because rider said I wasnt using those properties #Code||#CODE
-20190210|110541|20190210|114643|0|True|0|1|Make textbox for new todo taller #interface||#INTERFACE
+20190210|110915|20190210|114631|0|True|0|1|#CODE Dates not showing because rider said I wasnt using those properties code|
+20190210|110541|20190210|114643|0|True|0|1|#INTERFACE Make textbox for new todo taller interface|
 20190209|174340|20190210|120429|0|True|0|3|New Todolist button!!! Wtf....|
-20190210|065844|20190210|120522|0|True|0|2|Default to #sorting by severity||#SORTING
-20190210|110951|20190210|120543|0|True|0|1|Default sort order is backwards? Need to sort by highest severity first #Code||#CODE
-20190209|152030|20190210|140203|0|True|0|3|#Hotkeys for global new todo text box||#HOTKEYS
-20190209|152109|20190210|140238|0|True|0|2|Sort by bugs, or have a bugs list window #Sorting #Interface||#SORTING|#INTERFACE
+20190210|065844|20190210|120522|0|True|0|2|#SORTING Default to sorting by severity|
+20190210|110951|20190210|120543|0|True|0|1|#CODE Default sort order is backwards? Need to sort by highest severity first code|
+20190209|152030|20190210|140203|0|True|0|3|#HOTKEYS Hotkeys for global new todo text box|
+20190209|152109|20190210|140238|0|True|0|2|#SORTING #INTERFACE Sort by bugs, or have a bugs list window sorting interface|
 20190209|174057|20190210|142611|0|True|0|2|Add popup to save before closing|
-20190210|110549|20190210|142653|0|True|0|1|Make severity a dropdown list #interface||#INTERFACE
+20190210|110549|20190210|142653|0|True|0|1|#INTERFACE Make severity a dropdown list interface|
 20190209|151943|20190210|142707|0|True|0|2|Colors for severity. This works if its not in dark mode...|
-20190210|110625|20190210|143557|0|True|0|1|Edit todo box is not good sizing...#interface #TodoItem||SIZING...#INTERFACE|#TODOITEM
+20190210|110625|20190210|143557|0|True|0|1|SIZING...#INTERFACE #TODOITEM Edit todo box is not good izing...#interface Todoitem|
 20190210|110648|20190210|143558|0|True|0|1|TodoEdit box default ok button|
-20190210|065758|20190210|151458|0|True|0|2|Add dropdown for #hashtags sorting #Interface||#HASHTAGS|#INTERFACE
+20190210|065758|20190210|151458|0|True|0|2|#HASHTAGS #INTERFACE Add dropdown for hashtags sorting interface|
 20190209|174253|20190210|151517|0|True|0|1|Show hashtags to side of todo and which one it is sorting by|
 20190210|070028|20190210|153035|0|True|0|1|Window remember position when closing?|
 EndVCS
 NewVCS
 20190209|152143|Working on ease of use items now|
 VCSTodos
-20190209|152541|20190209|152832|0|True|0|1|#Bug Loading files doesnt clear previous #HistoryItems||#BUG|#HISTORYITEMS
-20190209|152503|20190209|173546|0|True|0|1|Quick buttons for recent loaded files #Interface||#INTERFACE
-20190209|152128|20190209|173549|0|True|0|1|Change #hashtags to all caps for case insenstivity||#HASHTAGS
-20190209|152043|20190209|173551|0|True|0|1|Reopen last files #FileIO||#FILEIO
+20190209|152541|20190209|152832|0|True|0|1|#BUG #HISTORYITEMS Bug Loading files doesnt clear previous historyitems|
+20190209|152503|20190209|173546|0|True|0|1|#INTERFACE Quick buttons for recent loaded files interface|
+20190209|152128|20190209|173549|0|True|0|1|#HASHTAGS Change hashtags to all caps for case insenstivity|
+20190209|152043|20190209|173551|0|True|0|1|#FILEIO Reopen last files fileio|
 EndVCS
 NewVCS
 20190206|112229|Bunch of stuff|-Definitely not the order I did these all in...But it works now.-VCS History and sorting and copying to clipboardTODO sorting, severityFile saving and loadingHashtags
 
 
 VCSTodos
-20190206|112215|20190209|112231|0|True|0|1|Fix the rdo buttons #Severity||#SEVERITY
-20190206|112215|20190209|112231|0|True|0|1|Need file input and output #FileIO||#FILEIO
-20190206|112215|20190209|112231|0|True|0|1|Design interface for history tab #Interface||#INTERFACE
-20190206|112215|20190209|112231|0|True|0|1|Design interface for todo tab #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Add Completed field to TodoItem #TodoItem||#TODOITEM
-20190207|112215|20190209|112231|0|True|0|1|TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!? #TodoItem||#TODOITEM
-20190207|112215|20190209|112231|0|True|0|1|TodoItem.ToString() #TodoItem||#TODOITEM
-20190207|112215|20190209|112231|0|True|0|1|Default severity selected #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Hotkeys for Add #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Show multiple lines of text when selected? Or always show all of todo? #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Button for move up and down list #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Sorting by date/time #Interface #Sorting||#INTERFACE|#SORTING
-20190207|112215|20190209|112231|0|True|0|1|Sorting by severity #Interface #Sorting||#INTERFACE|#SORTING
-20190207|112215|20190209|112231|0|True|0|1|Sorting by severity for active todos #Interface #Sorting||#INTERFACE|#SORTING
-20190207|112215|20190209|112231|0|True|0|1|Sorting by date completed for completed todos #Interface #Sorting||#INTERFACE|#SORTING
-20190207|112215|20190209|112231|0|True|0|1|Button for complete or delete todos #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Buttons for sorting type, by severity or date, and only active todos #Interface #Sorting||#INTERFACE|#SORTING
-20190207|112215|20190209|112231|0|True|0|1|Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize #Interface #Bug||#INTERFACE|#BUG
-20190207|112215|20190209|112231|0|True|0|1|Add completed time to list view #Interface #Bug||#INTERFACE|#BUG
-20190207|112215|20190209|112231|0|True|0|1|Empty textbox when new added #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Button for uncomplete or reactivate todo #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Save to txt file, or make file easily readable #FileIO||#FILEIO
-20190207|112215|20190209|112231|0|True|0|1|Multiline input #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Edit entire TodoItem- Made new window pop up for it #Interface||#INTERFACE
-20190207|112215|20190209|112231|0|True|0|1|Extract hashtags for sorting #Sorting #HashTags||#SORTING|#HASHTAGS
-20190207|112215|20190209|112231|0|True|0|1|Sorting by those hashtags #Sorting #HashTags||#SORTING|#HASHTAGS
-20190207|112215|20190209|112231|0|True|0|1|When a todo is completed, copy to VCS History as something done to most recent history item #Interface #History||#INTERFACE|#HISTORY
-20190208|112215|20190209|112231|0|True|0|1|Redesigned TodoItem- added separate date and time fields #TodoItem||#TODOITEM
-20190208|112215|20190209|112231|0|True|0|1|Reorder fields in the text file #Interface #FileIO||#INTERFACE|#FILEIO
-20190208|112215|20190209|112231|0|True|0|1|Remove up/down buttons #Interface||#INTERFACE
-20190208|112215|20190209|112231|0|True|0|1|Edit complete items not working #Interface #Bug||#INTERFACE|#BUG
-20190208|112215|20190209|112231|0|True|0|1|Separate Lists of complete and incomplete. #Interface||#INTERFACE
-20190208|112215|20190209|112231|0|True|0|1|Separate incomplete and complete at sorting so they can be inserted as one list #FileIO #Interface #Sorting||#FILEIO|#INTERFACE|#SORTING
-20190208|112215|20190209|112231|0|True|0|1|Separate the text file too #FileIO||#FILEIO
-20190208|112215|20190209|112231|0|True|0|1|Colored date and time by start and finished #Interface||#INTERFACE
+20190206|112215|20190209|112231|0|True|0|1|#SEVERITY Fix the rdo buttons severity|
+20190206|112215|20190209|112231|0|True|0|1|#FILEIO Need file input and output fileio|
+20190206|112215|20190209|112231|0|True|0|1|#INTERFACE Design interface for history tab interface|
+20190206|112215|20190209|112231|0|True|0|1|#INTERFACE Design interface for todo tab interface|
+20190207|112215|20190209|112231|0|True|0|1|#TODOITEM Add Completed field to TodoItem todoitem|
+20190207|112215|20190209|112231|0|True|0|1|#TODOITEM TodoItem.ToTodoItem(string). Make this a static function? Or just a fucking constructor!? todoitem|
+20190207|112215|20190209|112231|0|True|0|1|#TODOITEM TodoItem.ToString() Todoitem|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Default severity selected interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Hotkeys for Add interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Show multiple lines of text when selected? Or always show all of todo? interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Button for move up and down list interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #SORTING Sorting by date/time interface sorting|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #SORTING Sorting by severity interface sorting|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #SORTING Sorting by severity for active todos interface sorting|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #SORTING Sorting by date completed for completed todos interface sorting|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Button for complete or delete todos interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #SORTING Buttons for sorting type, by severity or date, and only active todos interface sorting|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #BUG Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize interface bug|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #BUG Add completed time to list view interface bug|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Empty textbox when new added interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Button for uncomplete or reactivate todo interface|
+20190207|112215|20190209|112231|0|True|0|1|#FILEIO Save to txt file, or make file easily readable fileio|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Multiline input interface|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE Edit entire TodoItem- Made new window pop up for it interface|
+20190207|112215|20190209|112231|0|True|0|1|#SORTING #HASHTAGS Extract hashtags for sorting sorting hashtags|
+20190207|112215|20190209|112231|0|True|0|1|#SORTING #HASHTAGS Sorting by those hashtags sorting hashtags|
+20190207|112215|20190209|112231|0|True|0|1|#INTERFACE #HISTORY When a todo is completed, copy to VCS History as something done to most recent history item interface history|
+20190208|112215|20190209|112231|0|True|0|1|#TODOITEM Redesigned TodoItem- added separate date and time fields todoitem|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE #FILEIO Reorder fields in the text file interface fileio|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE Remove up/down buttons interface|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE #BUG Edit complete items not working interface bug|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE Separate Lists of complete and incomplete. Interface|
+20190208|112215|20190209|112231|0|True|0|1|#FILEIO #INTERFACE #SORTING Separate incomplete and complete at sorting so they can be inserted as one list fileio interface sorting|
+20190208|112215|20190209|112231|0|True|0|1|#FILEIO Separate the text file too fileio|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE Colored date and time by start and finished interface|
 20190208|112215|20190209|112231|0|True|0|1|Added time to date and time items|
 20190208|112215|20190209|112231|0|True|0|1|Add pointer to most recent history list|
-20190208|112215|20190209|112231|0|True|0|1|Create new history item #HistoryItem||#HISTORYITEM
-20190208|112215|20190209|112231|0|True|0|1|Refresh and sort history items #HistoryItem #Sorting||#HISTORYITEM|#SORTING
-20190208|112215|20190209|112231|0|True|0|1|Change visible history item in listbox #Interface #HistoryItem||#INTERFACE|#HISTORYITEM
-20190208|112215|20190209|112231|0|True|0|1|History tab- add buttons for add and delete new history items #Interface||#INTERFACE
-20190209|112215|20190209|112231|0|True|0|1|Save text in notes #Bug||#BUG
-20190209|112215|20190209|112231|0|True|0|1|Export to text file #FileIO||#FILEIO
-20190209|112215|20190209|112231|0|True|0|1|Import from text #FileIO||#FILEIO
-20190209|112215|20190209|112231|0|True|0|1|Delete todo from history item #Interface||#INTERFACE
-20190209|112215|20190209|112231|0|True|0|1|Only add to most recent History Item #Interface #HistoryItem||#INTERFACE|#HISTORYITEM
-20190209|112215|20190209|112231|0|True|0|1|Copy button #Interface||#INTERFACE
+20190208|112215|20190209|112231|0|True|0|1|#HISTORYITEM Create new history item historyitem|
+20190208|112215|20190209|112231|0|True|0|1|#HISTORYITEM #SORTING Refresh and sort history items historyitem sorting|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE #HISTORYITEM Change visible history item in listbox interface historyitem|
+20190208|112215|20190209|112231|0|True|0|1|#INTERFACE History tab- add buttons for add and delete new history items interface|
+20190209|112215|20190209|112231|0|True|0|1|#BUG Save text in notes bug|
+20190209|112215|20190209|112231|0|True|0|1|#FILEIO Export to text file fileio|
+20190209|112215|20190209|112231|0|True|0|1|#FILEIO Import from text fileio|
+20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Delete todo from history item interface|
+20190209|112215|20190209|112231|0|True|0|1|#INTERFACE #HISTORYITEM Only add to most recent History Item interface historyitem|
+20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Copy button interface|
 EndVCS

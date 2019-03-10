@@ -22,8 +22,8 @@ namespace TODOList
 			};
 			currentSeverity = this.td.Severity;
 
-			cbSev.SelectedIndex = currentSeverity - 1;
-			tbTodo.Text = td.Todo;
+			cbSev.SelectedIndex = currentSeverity;
+			tbTodo.Text = td.TodoUnstripped;
 			tbNotes.Text = td.Notes;
 			tbRank.Text = td.Rank.ToString();
 			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
@@ -47,7 +47,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// Severity() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
-			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex + 1;
+			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex;
 		}
 
 		// METHOD  ///////////////////////////////////// Rank() //

@@ -30,23 +30,26 @@ namespace TODOList
 		private int _severity;
 		private int _rank;
 		private List<string> _tags;
+		private string _todoStripped;
 		
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public string Todo
 		{
-			get => _todo;
+			get => _todoStripped;
 			set
 			{
 				_todo = value;
-				string[] pieces = _todo.Split(' ');
-				foreach (string s in pieces)
-				{
-					if (s.Contains("#"))
-						_tags.Add(s.ToUpper());
-				}
+				ParseTags();
+//				string[] pieces = _todo.Split(' ');
+//				foreach (string s in pieces)
+//				{
+//					if (s.Contains("#"))
+//						_tags.Add(s.ToUpper());
+//				}
 			}
 		}
+		public string TodoUnstripped => _todo;
 		public string Notes
 		{
 			get => _notes;
@@ -203,21 +206,63 @@ namespace TODOList
 		{
 			_tags = new List<string>();
 			string[] pieces = _todo.Split(' ');
-			foreach(string s in pieces)
+
+			List<string> list = new List<string>();
+			for (int index = 0; index < pieces.Length; index++)
 			{
+				string s = pieces[index];
 				if (s.Contains('#'))
-					_tags.Add(s.ToUpper());
+				{
+					string t = "";
+					t = s.ToUpper();
+					if (t.Equals("#FEATURES"))
+						t = "#FEATURE";
+					if (t.Equals("#BUGS"))
+						t = "#BUG";
+					_tags.Add(t);
+					s = s.Remove(0, 1);
+					s = s.ToLower();
+				}
+				if (index == 0 || index > 0 && pieces[index - 1].Contains('.'))
+				{
+					s = UpperFirstLetter(s);
+				}
+				list.Add(s);
 			}
+
+			string tempTodoTags = "";
+			string tempTodo = "";
+			foreach (string s in _tags)
+			{
+				if (s == "")
+					continue;
+				tempTodoTags += s + " ";
+			}
+			foreach (string s in list)
+			{
+				if (s == "")
+					continue;
+				tempTodo += s + " ";
+			}
+			_todo = tempTodoTags + tempTodo.Trim();
+			_todoStripped = tempTodo.Trim();
+		}
+		private string UpperFirstLetter(string s)
+		{
+			string result = "";
+			for (int i = 0; i < s.Length; i++)
+			{
+				if(i == 0)
+					result += s[i].ToString().ToUpper();
+				else
+					result += s[i];
+			}
+			return result;
 		}
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
 			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + _todo + "|" + _notes;
-
-			foreach (string s in _tags)
-			{
-				result += "|" + s;
-			}
 			return result;
 		}
 		public string ToClipboard()

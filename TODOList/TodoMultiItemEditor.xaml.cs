@@ -39,7 +39,7 @@ namespace TODOList
 			};
 			currentSeverity = this.td.Severity;
 
-			cbSev.SelectedIndex = currentSeverity - 1;
+			cbSev.SelectedIndex = currentSeverity;
 			_rank = td.Rank;
 			tbRank.Text = _rank.ToString();
 			previousRank = td.Rank;
@@ -62,7 +62,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// Severity() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
-			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex + 1;
+			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex;
 		}
 
 		// METHOD  ///////////////////////////////////// Rank() //

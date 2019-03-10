@@ -23,7 +23,8 @@
 		<StackPanel Orientation="Horizontal" >
 			<CheckBox Content="Severity: " Name="ckSev" Click="ckSev_Clicked" Margin="2" Foreground="LightGray" />
 			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
-				<ComboBoxItem Content="Low" IsSelected="True" />
+				<ComboBoxItem Content="None" IsSelected="True" /> 
+				<ComboBoxItem Content="Low" />
 				<ComboBoxItem Content="Med" />
 				<ComboBoxItem Content="High" />
 			</ComboBox >

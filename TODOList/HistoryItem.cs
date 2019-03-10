@@ -17,7 +17,9 @@ namespace TODOList
 		private string _title;
 		private readonly string _dateAdded;
 		private readonly string _timeAdded;
-		private readonly List<TodoItem> _completedTodos;
+		private List<TodoItem> _completedTodos;
+		private List<TodoItem> _completedTodosBugs;
+		private List<TodoItem> _completedTodosFeatures;
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public string Notes
@@ -33,7 +35,21 @@ namespace TODOList
 		public string DateAdded => _dateAdded;
 		public string TimeAdded => _timeAdded;
 		public string DateTimeAdded => _dateAdded + "-" + _timeAdded;
-		public List<TodoItem> CompletedTodos => _completedTodos;
+		public List<TodoItem> CompletedTodos
+		{
+			get => _completedTodos;
+			set => _completedTodos = value;
+		}
+		public List<TodoItem> CompletedTodosBugs
+		{
+			get => _completedTodosBugs;
+			set => _completedTodosBugs = value;
+		}
+		public List<TodoItem> CompletedTodosFeatures
+		{
+			get => _completedTodosFeatures;
+			set => _completedTodosFeatures = value;
+		}
 		public string TotalTime
 		{
 			get
@@ -55,6 +71,8 @@ namespace TODOList
 		public HistoryItem(string date, string time)
 		{
 			_completedTodos = new List<TodoItem>();
+			_completedTodosBugs = new List<TodoItem>();
+			_completedTodosFeatures = new List<TodoItem>();
 			_dateAdded = date;
 			_timeAdded = time;
 			_notes = "";
@@ -62,6 +80,8 @@ namespace TODOList
 		public HistoryItem(List<string> newItem)
 		{
 			_completedTodos = new List<TodoItem>();
+			_completedTodosBugs = new List<TodoItem>();
+			_completedTodosFeatures = new List<TodoItem>();
 
 			string[] pieces = newItem[0].Split('|');
 			_dateAdded = pieces[0];
@@ -111,9 +131,11 @@ namespace TODOList
 
 			result += Environment.NewLine + "VCSTodos";
 			foreach (TodoItem td in CompletedTodos)
-			{
 				result += Environment.NewLine + td;
-			}
+			foreach (TodoItem td in CompletedTodosBugs)
+				result += Environment.NewLine + td;
+			foreach (TodoItem td in CompletedTodosFeatures)
+				result += Environment.NewLine + td;
 			result += Environment.NewLine;
 			result += "EndVCS" + Environment.NewLine;
 			return result;
@@ -123,11 +145,18 @@ namespace TODOList
 			string result = DateAdded + "- " + Title + Environment.NewLine +
 							"Estimated Time: " + TotalTime + Environment.NewLine +
 							"Estimated Total Time: " + totalTimeSoFar + Environment.NewLine +
-							"Notes: " + Notes;
-			foreach (TodoItem td in CompletedTodos)
-			{
+							"Notes: " + Notes +
+							"=Bugs Squashed====================================================================================================";
+			foreach (TodoItem td in CompletedTodosBugs)
 				result += Environment.NewLine + "--" + td.ToClipboard();
-			}
+			
+			result += Environment.NewLine + "--" + "=Features Added============================================================================================================================";
+			foreach (TodoItem td in CompletedTodosFeatures)
+				result += Environment.NewLine + "--" + td.ToClipboard();
+			
+			result += Environment.NewLine + "--" + "=Other Stuff===============================================================================================================================";
+			foreach (TodoItem td in CompletedTodos)
+				result += Environment.NewLine + "--" + td.ToClipboard();
 			return result;
 		}
 	}
