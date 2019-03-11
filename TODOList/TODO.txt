@@ -2,9 +2,15 @@
 20190303|235132|-|-|6000000000|False|1|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
 20190304|010503|-|-|0|False|2|0|#BUG Every once in a while a completed Todo is added more than once...|
 20190304|010852|-|-|0|False|3|0|#BUG Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|
-20190311|000303|-|-|0|False|1|3|#FEATURE Custom tabs? Or maybe a few extra tabs, you can set the name of, and right click menu send things there, but only see the tabs or menu if theres a name set for it? And this will take care of the group items thing below|
-20190301|201618|-|-|0|False|2|0|#FEATURE #GROUPS Group items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color|
+20190311|172900|-|-|0|False|4|1|#BUG Probably gotta do checks on adding tabs with same names|
 ====================================VCS
+NewVCS
+20190311|001319|v2.0 !!!|
+VCSTodos
+20190311|172921|20190311|174528|9620000000|True|0|1|2.0 Cleanup|
+20190301|201618|20190311|172842|0|True|0|0|#FEATURE #GROUPS Group items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color|Got this in tabs
+20190311|000303|20190311|172829|198000000000|True|0|3|#FEATURE Custom tabs? Or maybe a few extra tabs, you can set the name of, and right click menu send things there, but only see the tabs or menu if theres a name set for it? And this will take care of the group items thing below|So many things changed here. Now on version 2.0
+EndVCS
 NewVCS
 20190310|235702|v1.7a Quickie bug splat|
 VCSTodos
@@ -280,6 +286,6 @@ VCSTodos
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Copy button interface|
 EndVCS
 NewVCS
-20190311|001319||
+20190311|174537||
 VCSTodos
 EndVCS

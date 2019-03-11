@@ -183,383 +183,142 @@
 				</Grid >
 			</TabItem >
 			
-			<!-- Todo Tab -->
-			<TabItem Name="tabTodo" Header="TODO" KeyboardNavigation.IsTabStop="False" >
-				<Grid  >
+			<TabItem Name="tabTodos" Header="TODOs" >
+				<Grid >
 					<Grid.RowDefinitions >
-						<RowDefinition Height="30" />
-						<RowDefinition Height="*" />
+						<RowDefinition />
 						<RowDefinition Height="100" />
 					</Grid.RowDefinitions >
-					
-					<Grid >
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="35" />
-							
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="150" />
-							<ColumnDefinition Width="100" />
-							
-							<ColumnDefinition Width="90" />
-							<ColumnDefinition Width="150" />
-							<ColumnDefinition />
-							
-						</Grid.ColumnDefinitions >
-						<ComboBox Grid.Column="1" Name="cbHashtags" ItemsSource="{Binding HashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="2" Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="3" Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
-						
-						<Button Grid.Column="4" Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="5" Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-						
-					</Grid >
-					
-					<!-- The list of incomplete todos -->
-					<ListBox Name="lbIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" SelectionMode="Extended" >
-						<ListBox.ContextMenu >
+					<TabControl Name="tabTest" ItemsSource="{Binding}" SelectionChanged="tabSelectionChanged" >
+						<TabControl.ContextMenu >
 							<ContextMenu >
-								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
-								<MenuItem Header="Delete" Click="mnuTDelete_Click" />
-								<Separator />
-								<MenuItem Header="Reset Timer" Click="mnuResetTimer_Click" />
+								<MenuItem Header="Add New Tab" Click="AddNewTab_OnClick" />
+								<MenuItem Header="Remove Tab" Click="RemoveTab_OnClick" />
 							</ContextMenu >
-						</ListBox.ContextMenu >
-						<ListBox.ItemTemplate >
+						</TabControl.ContextMenu >
+						<TabControl.ContentTemplate >
 							<DataTemplate >
-								<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
-									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="25" /> <!-- Complete button -->
-										<ColumnDefinition Width="200" /> <!-- HashTags -->
-										<ColumnDefinition Width="*" /> <!-- DateTime -->
+								<Grid  >
+									<Grid.RowDefinitions >
+										<RowDefinition Height="30" />
+										<RowDefinition Height="*" />
+										<!-- <RowDefinition Height="100" /> -->
+									</Grid.RowDefinitions >
+									
+									<Grid >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="35" />
+											
+											<ColumnDefinition Width="200" />
+											<ColumnDefinition Width="150" />
+											<ColumnDefinition Width="100" />
+											
+											<ColumnDefinition Width="90" />
+											<ColumnDefinition Width="150" />
+											<ColumnDefinition />
+											
+										</Grid.ColumnDefinitions >
+										<ComboBox Grid.Column="1" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="cbHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="2" Name="btnSortDate" Content="Date" Click="btnSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="3" Name="btnSortSeverity" Content="Severity" Click="btnSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
 										
-										<ColumnDefinition Width="100" /> <!-- Severity -->
-									
-										<ColumnDefinition Width="40" /> <!-- RANK -->
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="25" />
-
-										<ColumnDefinition Width="60" /> <!-- TIME TAKEN -->
-										<ColumnDefinition Width="40" />
+										<Button Grid.Column="4" Name="btnSortRank" Content="Rank" Click="btnSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="5" Name="btnSortActive" Content="Active" Click="btnSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 										
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="25" />
-
-										<ColumnDefinition Width="3*" /> <!-- Todo -->
-									</Grid.ColumnDefinitions >
-									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<TextBlock Grid.Column="1" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+									</Grid >
 									
-									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+									<!-- The list of incomplete todos -->
+									<ListBox Name="lbIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" SelectionMode="Extended" >
+										<ListBox.ContextMenu >
+											<ContextMenu >
+												<MenuItem Name="cmnuEdit" Header="Edit" Click="mnuTEdit_Click" />
+												<MenuItem Name="cmnuDelete" Header="Delete" Click="mnuTDelete_Click" />
+												<Separator />
+												<MenuItem Name="cmnuResetTimer" Header="Reset Timer" Click="mnuResetTimer_Click" />
+											</ContextMenu >
+										</ListBox.ContextMenu >
+										<ListBox.ItemTemplate >
+											<DataTemplate >
+												<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+													<Grid.ColumnDefinitions >
+														<ColumnDefinition Width="25" /> <!-- Complete button -->
+														<ColumnDefinition Width="200" /> <!-- HashTags -->
+														<ColumnDefinition Width="*" /> <!-- DateTime -->
+														
+														<ColumnDefinition Width="100" /> <!-- Severity -->
+													
+														<ColumnDefinition Width="40" /> <!-- RANK -->
+														<ColumnDefinition Width="25" />
+														<ColumnDefinition Width="25" />
+				
+														<ColumnDefinition Width="60" /> <!-- TIME TAKEN -->
+														<ColumnDefinition Width="40" />
+														
+														<ColumnDefinition Width="25" />
+														<ColumnDefinition Width="25" />
+				
+														<ColumnDefinition Width="3*" /> <!-- Todo -->
+													</Grid.ColumnDefinitions >
+													<Button Grid.Column="0" Name="btnComplete" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													<TextBlock Grid.Column="1" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													
+													<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													
+													<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													
+													<Label Grid.Column="7" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"  ContentStringFormat="{}{0:000.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+														<Label.Style >
+															<Style >
+																<Style.Triggers >
+																	<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
+																		<Setter Property="Label.Background" Value="Lime" />
+																	</DataTrigger >
+																	<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
+																		<Setter Property="Label.Background" Value="Maroon" />
+																	</DataTrigger >
+																</Style.Triggers >
+															</Style >
+														</Label.Style >
+													</Label >
+													<Label Grid.Column="8" Content="{Binding TimeTaken.Second}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+														<Label.Style >
+															<Style >
+																<Style.Triggers >
+																	<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
+																		<Setter Property="Label.Background" Value="Lime" />
+																	</DataTrigger >
+																	<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
+																		<Setter Property="Label.Background" Value="Maroon" />
+																	</DataTrigger >
+																</Style.Triggers >
+															</Style >
+														</Label.Style >
+													</Label >
+													<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="4" Click="btnTimeTaken_Click" CommandParameter="start" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													<Button Grid.Column="10" FontFamily="Marlett" FontSize="20" Content="g" Click="btnTimeTaken_Click" CommandParameter="stop" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+													
+													<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+												</Grid >
+											</DataTemplate >
+										</ListBox.ItemTemplate >
+									</ListBox >
 									
-									<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<Label Grid.Column="7" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"  ContentStringFormat="{}{0:000.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-										<Label.Style >
-											<Style >
-												<Style.Triggers >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-														<Setter Property="Label.Background" Value="Lime" />
-													</DataTrigger >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-														<Setter Property="Label.Background" Value="Maroon" />
-													</DataTrigger >
-												</Style.Triggers >
-											</Style >
-										</Label.Style >
-									</Label >
-									<Label Grid.Column="8" Content="{Binding TimeTaken.Second}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-										<Label.Style >
-											<Style >
-												<Style.Triggers >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-														<Setter Property="Label.Background" Value="Lime" />
-													</DataTrigger >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-														<Setter Property="Label.Background" Value="Maroon" />
-													</DataTrigger >
-												</Style.Triggers >
-											</Style >
-										</Label.Style >
-									</Label >
-									<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="4" Click="btnTimeTaken_Click" CommandParameter="start" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="10" FontFamily="Marlett" FontSize="20" Content="g" Click="btnTimeTaken_Click" CommandParameter="stop" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+									<!-- The add, radio buttons, and input field -->
 								</Grid >
 							</DataTemplate >
-						</ListBox.ItemTemplate >
-					</ListBox >
-					
-					<!-- The add, radio buttons, and input field -->
-					<Grid Grid.Row="2" >
+						</TabControl.ContentTemplate >
+					</TabControl >
+					<Grid Grid.Row="1" >
 						<Grid.ColumnDefinitions >
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="100" />
 						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbNewTodo" Grid.Column="0" TextChanged="NewTodo_OnTextChanged" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+						<TextBox x:Name="tbNewTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
 						<StackPanel Grid.Column="1" >
 							<ComboBox Name="cbSeverity" SelectionChanged="cbSeverity_SelectionChanged" Loaded="cb_IsLoaded" Unloaded="cb_IsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" /> 
-								<ComboBoxItem Content="Low" IsSelected="True" />
-								<ComboBoxItem Content="Med" />
-								<ComboBoxItem Content="High" />
-							</ComboBox >
-							<Button Content="Add" Click="btnTAdd_Click" KeyboardNavigation.TabIndex="3" />
-						</StackPanel >
-					</Grid >
-				</Grid >
-			</TabItem >
-			
-			<!-- Bug ToDo tab -->
-			<TabItem Name="tabBug" Header="Bugs" KeyboardNavigation.IsTabStop="False" >
-				<Grid  >
-					<Grid.RowDefinitions >
-						<RowDefinition Height="30" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="100" />
-					</Grid.RowDefinitions >
-					
-					<Grid >
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="35" />
-							
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="150" />
-							<ColumnDefinition Width="100" />
-							
-							<ColumnDefinition Width="90" />
-							<ColumnDefinition Width="150" />
-							<ColumnDefinition />
-							
-						</Grid.ColumnDefinitions >
-						<ComboBox Grid.Column="1" Name="cbBugHashtags" ItemsSource="{Binding BugHashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="2" Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="3" Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
-						
-						<Button Grid.Column="4" Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="5" Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-					</Grid >
-					
-					<!-- The list of incomplete Bug todos -->
-					<ListBox Name="lbIncompleteBugItems" ItemsSource="{Binding IncompleteBugItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" SelectionMode="Extended" >
-						<ListBox.ContextMenu >
-							<ContextMenu >
-								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
-								<MenuItem Header="Delete" Click="mnuTDelete_Click" />
-								<Separator />
-								<MenuItem Header="Reset Timer" Click="mnuResetTimer_Click" />
-							</ContextMenu >
-						</ListBox.ContextMenu >
-						<ListBox.ItemTemplate >
-							<DataTemplate >
-								<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
-									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="25" /> <!-- Complete button -->
-										<ColumnDefinition Width="200" /> <!-- HashTags -->
-										<ColumnDefinition Width="*" /> <!-- DateTime -->
-										
-										<ColumnDefinition Width="100" /> <!-- Severity -->
-									
-										<ColumnDefinition Width="40" /> <!-- RANK -->
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="25" />
-
-										<ColumnDefinition Width="60" /> <!-- TIME TAKEN -->
-										<ColumnDefinition Width="40" />
-										
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="25" />
-
-										<ColumnDefinition Width="3*" /> <!-- Todo -->
-									</Grid.ColumnDefinitions >
-									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<TextBlock Grid.Column="1" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<Label Grid.Column="7" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"  ContentStringFormat="{}{0:000.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-										<Label.Style >
-											<Style >
-												<Style.Triggers >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-														<Setter Property="Label.Background" Value="Lime" />
-													</DataTrigger >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-														<Setter Property="Label.Background" Value="Maroon" />
-													</DataTrigger >
-												</Style.Triggers >
-											</Style >
-										</Label.Style >
-									</Label >
-									<Label Grid.Column="8" Content="{Binding TimeTaken.Second}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-										<Label.Style >
-											<Style >
-												<Style.Triggers >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-														<Setter Property="Label.Background" Value="Lime" />
-													</DataTrigger >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-														<Setter Property="Label.Background" Value="Maroon" />
-													</DataTrigger >
-												</Style.Triggers >
-											</Style >
-										</Label.Style >
-									</Label >
-									<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="4" Click="btnTimeTaken_Click" CommandParameter="start" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="10" FontFamily="Marlett" FontSize="20" Content="g" Click="btnTimeTaken_Click" CommandParameter="stop" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
-								</Grid >
-							</DataTemplate >
-						</ListBox.ItemTemplate >
-					</ListBox >
-					
-					<!-- The add, radio buttons, and input field -->
-					<Grid Grid.Row="2" >
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="100" />
-						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbBugNewTodo" Grid.Column="0" TextChanged="NewTodoBug_OnTextChanged" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
-						<StackPanel Grid.Column="1" >
-							<ComboBox Name="cbBugSeverity" SelectionChanged="cbSeverity_SelectionChanged" Loaded="cb_IsLoaded" Unloaded="cb_IsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" /> 
-								<ComboBoxItem Content="Low" IsSelected="True" />
-								<ComboBoxItem Content="Med" />
-								<ComboBoxItem Content="High" />
-							</ComboBox >
-							<Button Content="Add" Click="btnTAdd_Click" KeyboardNavigation.TabIndex="3" />
-						</StackPanel >
-					</Grid >
-				</Grid >
-			</TabItem >
-			
-			<!-- Features ToDo tab -->
-			<TabItem Name="tabFeature" Header="Features" KeyboardNavigation.IsTabStop="False" >
-				<Grid  >
-					<Grid.RowDefinitions >
-						<RowDefinition Height="30" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="100" />
-					</Grid.RowDefinitions >
-					
-					<Grid >
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="35" />
-							
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="150" />
-							<ColumnDefinition Width="100" />
-							
-							<ColumnDefinition Width="90" />
-							<ColumnDefinition Width="150" />
-							<ColumnDefinition />
-							
-						</Grid.ColumnDefinitions >
-						<ComboBox Grid.Column="1" Name="cbFeatureHashtags" ItemsSource="{Binding FeatureHashTags}" SelectionChanged="cbTHashtags_SelectionChanged" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="2" Content="Date" Click="btnTSort_Click" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="3" Content="Severity" Click="btnTSort_Click" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
-						
-						<Button Grid.Column="4" Content="Rank" Click="btnTSort_Click" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-						<Button Grid.Column="5" Content="Active" Click="btnTSort_Click" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-					</Grid >
-					
-					<!-- The list of incomplete Bug todos -->
-					<ListBox Name="lbIncompleteFeatureItems" ItemsSource="{Binding IncompleteFeatureItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuTEdit_Click" SelectionMode="Extended" >
-						<ListBox.ContextMenu >
-							<ContextMenu >
-								<MenuItem Header="Edit" Click="mnuTEdit_Click" />
-								<MenuItem Header="Delete" Click="mnuTDelete_Click" />
-								<Separator />
-								<MenuItem Header="Reset Timer" Click="mnuResetTimer_Click" />
-							</ContextMenu >
-						</ListBox.ContextMenu >
-						<ListBox.ItemTemplate >
-							<DataTemplate >
-								<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
-									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="25" /> <!-- Complete button -->
-										<ColumnDefinition Width="200" /> <!-- HashTags -->
-										<ColumnDefinition Width="*" /> <!-- DateTime -->
-										
-										<ColumnDefinition Width="100" /> <!-- Severity -->
-									
-										<ColumnDefinition Width="40" /> <!-- RANK -->
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="25" />
-
-										<ColumnDefinition Width="60" /> <!-- TIME TAKEN -->
-										<ColumnDefinition Width="40" />
-										
-										<ColumnDefinition Width="25" />
-										<ColumnDefinition Width="25" />
-
-										<ColumnDefinition Width="3*" /> <!-- Todo -->
-									</Grid.ColumnDefinitions >
-									<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="a" Click="btnTComplete_Click" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<TextBlock Grid.Column="1" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<TextBlock Grid.Column="2" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<ProgressBar Grid.Column="3" Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<Label Grid.Column="7" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"  ContentStringFormat="{}{0:000.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-										<Label.Style >
-											<Style >
-												<Style.Triggers >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-														<Setter Property="Label.Background" Value="Lime" />
-													</DataTrigger >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-														<Setter Property="Label.Background" Value="Maroon" />
-													</DataTrigger >
-												</Style.Triggers >
-											</Style >
-										</Label.Style >
-									</Label >
-									<Label Grid.Column="8" Content="{Binding TimeTaken.Second}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-										<Label.Style >
-											<Style >
-												<Style.Triggers >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-														<Setter Property="Label.Background" Value="Lime" />
-													</DataTrigger >
-													<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-														<Setter Property="Label.Background" Value="Maroon" />
-													</DataTrigger >
-												</Style.Triggers >
-											</Style >
-										</Label.Style >
-									</Label >
-									<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="4" Click="btnTimeTaken_Click" CommandParameter="start" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									<Button Grid.Column="10" FontFamily="Marlett" FontSize="20" Content="g" Click="btnTimeTaken_Click" CommandParameter="stop" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-									
-									<TextBlock Grid.Column="11" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
-								</Grid >
-							</DataTemplate >
-						</ListBox.ItemTemplate >
-					</ListBox >
-					
-					<!-- The add, radio buttons, and input field -->
-					<Grid Grid.Row="2" >
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="100" />
-						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbFeatureNewTodo" Grid.Column="0" TextChanged="NewTodoFeature_OnTextChanged" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
-						<StackPanel Grid.Column="1" >
-							<ComboBox Name="cbFeatureSeverity" SelectionChanged="cbSeverity_SelectionChanged" Loaded="cb_IsLoaded" Unloaded="cb_IsLoaded" KeyboardNavigation.TabIndex="2" >
 								<ComboBoxItem Content="None" /> 
 								<ComboBoxItem Content="Low" IsSelected="True" />
 								<ComboBoxItem Content="Med" />
