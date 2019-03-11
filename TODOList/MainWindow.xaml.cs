@@ -29,7 +29,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "1.7";
+		public const string VERSION = "1.7a";
 
 		// TO DO TAB ITEMS
 		private List<TodoItem> _tIncompleteItems;
@@ -1476,6 +1476,8 @@ namespace TODOList
 			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open));
 
 			_tIncompleteItems.Clear();
+			_tIncompleteBugItems.Clear();
+			_tIncompleteFeatureItems.Clear();
 			_hHistoryItems.Clear();
 
 			string line = stream.ReadLine();

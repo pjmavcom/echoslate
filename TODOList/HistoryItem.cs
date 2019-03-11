@@ -144,19 +144,29 @@ namespace TODOList
 		{
 			string result = DateAdded + "- " + Title + Environment.NewLine +
 							"Estimated Time: " + TotalTime + Environment.NewLine +
-							"Estimated Total Time: " + totalTimeSoFar + Environment.NewLine +
-							"Notes: " + BreakLines(Notes) + Environment.NewLine + Environment.NewLine +
-							"=Bugs Squashed====================================================================================================";
-			foreach (TodoItem td in CompletedTodosBugs)
-				result += Environment.NewLine + "--" + td.ToClipboard();
-			
-			result += Environment.NewLine + Environment.NewLine + "--" + "=Features Added===================================================================================================";
-			foreach (TodoItem td in CompletedTodosFeatures)
-				result += Environment.NewLine + "--" + td.ToClipboard();
-			
-			result += Environment.NewLine + Environment.NewLine + "--" + "=Other Stuff======================================================================================================";
-			foreach (TodoItem td in CompletedTodos)
-				result += Environment.NewLine + "--" + td.ToClipboard();
+							"Estimated Total Time: " + totalTimeSoFar;
+
+			if (!Notes.Contains(""))
+				result += Environment.NewLine + "Notes: " + BreakLines(Notes) + Environment.NewLine;
+
+			if (CompletedTodosBugs.Count > 0)
+			{
+				result += Environment.NewLine + Environment.NewLine + "=Bugs Squashed====================================================================================================";
+				foreach (TodoItem td in CompletedTodosBugs)
+					result += Environment.NewLine + "--" + td.ToClipboard();
+			}
+			if (CompletedTodosFeatures.Count > 0)
+			{
+				result += Environment.NewLine + Environment.NewLine + "=Features Added===================================================================================================";
+				foreach (TodoItem td in CompletedTodosFeatures)
+					result += Environment.NewLine + "--" + td.ToClipboard();
+			}
+			if (CompletedTodos.Count > 0)
+			{
+				result += Environment.NewLine + Environment.NewLine + "=Other Stuff======================================================================================================";
+				foreach (TodoItem td in CompletedTodos)
+					result += Environment.NewLine + "--" + td.ToClipboard();
+			}
 			return result;
 		}
 		private string BreakLines(string s)
