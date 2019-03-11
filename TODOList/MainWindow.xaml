@@ -87,9 +87,103 @@
 				<Button Content="-5" Click="btnPomoBreakDec_OnClick" />
 			</StackPanel >
 		</Menu >
-			
+		
 		<TabControl Name="TabControl">
-			<!-- To do Tab -->
+			<!-- VCS History tab -->
+			<TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False" >
+				<Grid >
+					<Grid.ColumnDefinitions >
+						<ColumnDefinition Width="300" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions >
+					<Grid Grid.Column="0" >
+						<Grid.RowDefinitions >
+							<RowDefinition Height="35" />
+							<RowDefinition />
+						</Grid.RowDefinitions >
+						<StackPanel Grid.Row="0" Orientation="Horizontal" >
+							<Button Content="New" Click="btnHNewHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
+							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
+						</StackPanel >
+						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding HistoryItems}" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+							<ListBox.ItemTemplate >
+								<DataTemplate >
+									<Grid Margin="0,2" >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="25" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions >
+										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" KeyboardNavigation.IsTabStop="False" />
+										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" KeyboardNavigation.IsTabStop="False" />
+									</Grid >
+								</DataTemplate >
+							</ListBox.ItemTemplate >
+						</ListBox >
+					</Grid >
+						
+					<Grid Grid.Column="1" >
+						<Grid.RowDefinitions >
+							<RowDefinition Height="35" />
+							<RowDefinition Height="35" />
+							<RowDefinition Height="300" />
+							<RowDefinition Height="300" />
+							<RowDefinition Height="300" />
+							<RowDefinition />
+						</Grid.RowDefinitions >
+						<StackPanel Orientation="Horizontal" Grid.Row="0">
+							<Label Content="Time: " Margin="2" />
+							<Label Name="lblHTotalTime" Margin="2" Width="40" />
+						</StackPanel >
+						<TextBox Grid.Row="1" Name="tbHTitle" TextWrapping="NoWrap" TextChanged="tbHTitle_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+						<TextBox Grid.Row="2" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="tbHNotes_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+						<ListBox Grid.Row="3" Name="lbCompletedTodosBugs" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
+							<ListBox.ItemTemplate >
+								<DataTemplate >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="25" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions >
+										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" KeyboardNavigation.IsTabStop="False" />
+										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+									</Grid >
+								</DataTemplate >
+							</ListBox.ItemTemplate >
+						</ListBox >
+						<ListBox Grid.Row="4" Name="lbCompletedTodosFeatures" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
+							<ListBox.ItemTemplate >
+								<DataTemplate >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="25" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions >
+										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" KeyboardNavigation.IsTabStop="False" />
+										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+									</Grid >
+								</DataTemplate >
+							</ListBox.ItemTemplate >
+						</ListBox >
+						<ListBox Grid.Row="5" Name="lbCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
+							<ListBox.ItemTemplate >
+								<DataTemplate >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+										<Grid.ColumnDefinitions >
+											<ColumnDefinition Width="25" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions >
+										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" KeyboardNavigation.IsTabStop="False" />
+										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+									</Grid >
+								</DataTemplate >
+							</ListBox.ItemTemplate >
+						</ListBox >
+					</Grid >
+				</Grid >
+			</TabItem >
+			
+			<!-- Todo Tab -->
 			<TabItem Name="tabTodo" Header="TODO" KeyboardNavigation.IsTabStop="False" >
 				<Grid  >
 					<Grid.RowDefinitions >
@@ -208,107 +302,13 @@
 						<TextBox x:Name="tbNewTodo" Grid.Column="0" TextChanged="NewTodo_OnTextChanged" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
 						<StackPanel Grid.Column="1" >
 							<ComboBox Name="cbSeverity" SelectionChanged="cbSeverity_SelectionChanged" Loaded="cb_IsLoaded" Unloaded="cb_IsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" IsSelected="True" /> 
-								<ComboBoxItem Content="Low" />
+								<ComboBoxItem Content="None" /> 
+								<ComboBoxItem Content="Low" IsSelected="True" />
 								<ComboBoxItem Content="Med" />
 								<ComboBoxItem Content="High" />
 							</ComboBox >
 							<Button Content="Add" Click="btnTAdd_Click" KeyboardNavigation.TabIndex="3" />
 						</StackPanel >
-					</Grid >
-				</Grid >
-			</TabItem >
-
-			<!-- VCS History tab -->
-			<TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False" >
-				<Grid >
-					<Grid.ColumnDefinitions >
-						<ColumnDefinition Width="300" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions >
-					<Grid Grid.Column="0" >
-						<Grid.RowDefinitions >
-							<RowDefinition Height="35" />
-							<RowDefinition />
-						</Grid.RowDefinitions >
-						<StackPanel Grid.Row="0" Orientation="Horizontal" >
-							<Button Content="New" Click="btnHNewHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
-							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
-						</StackPanel >
-						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding HistoryItems}" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
-							<ListBox.ItemTemplate >
-								<DataTemplate >
-									<Grid Margin="0,2" >
-										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="25" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions >
-										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
-										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" KeyboardNavigation.IsTabStop="False" />
-										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" KeyboardNavigation.IsTabStop="False" />
-									</Grid >
-								</DataTemplate >
-							</ListBox.ItemTemplate >
-						</ListBox >
-					</Grid >
-						
-					<Grid Grid.Column="1" >
-						<Grid.RowDefinitions >
-							<RowDefinition Height="35" />
-							<RowDefinition Height="35" />
-							<RowDefinition Height="300" />
-							<RowDefinition Height="300" />
-							<RowDefinition Height="300" />
-							<RowDefinition />
-						</Grid.RowDefinitions >
-						<StackPanel Orientation="Horizontal" Grid.Row="0">
-							<Label Content="Time: " Margin="2" />
-							<Label Name="lblHTotalTime" Margin="2" Width="40" />
-						</StackPanel >
-						<TextBox Grid.Row="1" Name="tbHTitle" TextWrapping="NoWrap" TextChanged="tbHTitle_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
-						<TextBox Grid.Row="2" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="tbHNotes_TextChanged" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-						<ListBox Grid.Row="3" Name="lbCompletedTodosBugs" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
-							<ListBox.ItemTemplate >
-								<DataTemplate >
-									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
-										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="25" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" KeyboardNavigation.IsTabStop="False" />
-										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
-									</Grid >
-								</DataTemplate >
-							</ListBox.ItemTemplate >
-						</ListBox >
-						<ListBox Grid.Row="4" Name="lbCompletedTodosFeatures" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
-							<ListBox.ItemTemplate >
-								<DataTemplate >
-									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
-										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="25" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" KeyboardNavigation.IsTabStop="False" />
-										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
-									</Grid >
-								</DataTemplate >
-							</ListBox.ItemTemplate >
-						</ListBox >
-						<ListBox Grid.Row="5" Name="lbCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuHEdit_Click" >
-							<ListBox.ItemTemplate >
-								<DataTemplate >
-									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
-										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="25" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="btnHDeleteTodo_Click" KeyboardNavigation.IsTabStop="False" />
-										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
-									</Grid >
-								</DataTemplate >
-							</ListBox.ItemTemplate >
-						</ListBox >
 					</Grid >
 				</Grid >
 			</TabItem >
@@ -431,8 +431,8 @@
 						<TextBox x:Name="tbBugNewTodo" Grid.Column="0" TextChanged="NewTodoBug_OnTextChanged" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
 						<StackPanel Grid.Column="1" >
 							<ComboBox Name="cbBugSeverity" SelectionChanged="cbSeverity_SelectionChanged" Loaded="cb_IsLoaded" Unloaded="cb_IsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" IsSelected="True" /> 
-								<ComboBoxItem Content="Low" />
+								<ComboBoxItem Content="None" /> 
+								<ComboBoxItem Content="Low" IsSelected="True" />
 								<ComboBoxItem Content="Med" />
 								<ComboBoxItem Content="High" />
 							</ComboBox >
@@ -560,8 +560,8 @@
 						<TextBox x:Name="tbFeatureNewTodo" Grid.Column="0" TextChanged="NewTodoFeature_OnTextChanged" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
 						<StackPanel Grid.Column="1" >
 							<ComboBox Name="cbFeatureSeverity" SelectionChanged="cbSeverity_SelectionChanged" Loaded="cb_IsLoaded" Unloaded="cb_IsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" IsSelected="True" /> 
-								<ComboBoxItem Content="Low" />
+								<ComboBoxItem Content="None" /> 
+								<ComboBoxItem Content="Low" IsSelected="True" />
 								<ComboBoxItem Content="Med" />
 								<ComboBoxItem Content="High" />
 							</ComboBox >

@@ -4,7 +4,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		mc:Ignorable="d"
-		Title="TodoItemComplete" Height="320" Width="610" 
+		Title="TodoItemComplete" Height="430" Width="610" 
 		FocusManager.FocusedElement="{Binding ElementName=tbNotes}"
 		Style="{StaticResource {x:Type Window}}" >
 	<StackPanel TextElement.FontSize="16" >
@@ -16,11 +16,15 @@
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbTodo" TextWrapping="Wrap" TabIndex="2" Height="100" Width="500" Margin="2" KeyboardNavigation.TabIndex="1" />
+			<TextBox Name="tbTodo" TextWrapping="Wrap" TabIndex="0" Height="100" Width="500" Margin="2" KeyboardNavigation.TabIndex="0" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbNotes" TextWrapping="Wrap" TabIndex="0" Height="100" Width="500" Margin="2" KeyboardNavigation.TabIndex="0" />
+			<TextBox Name="tbNotes" TextWrapping="Wrap" TabIndex="1" Height="100" Width="500" Margin="2" KeyboardNavigation.TabIndex="1" />
+		</StackPanel >
+		<StackPanel Orientation="Horizontal" >
+			<Label Content="Tags:" HorizontalAlignment="Right" Width="80" Margin="2" />
+			<TextBox Name="tbTags" TextWrapping="Wrap" TabIndex="2" Height="100" Width="500" Margin="2" KeyboardNavigation.TabIndex="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
 		</StackPanel >
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
 			<Button Name="btnComplete" Content="Complete" IsDefault="True" Click="btnComplete_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />

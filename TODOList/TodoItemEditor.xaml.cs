@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,8 +25,9 @@ namespace TODOList
 			currentSeverity = this.td.Severity;
 
 			cbSev.SelectedIndex = currentSeverity;
-			tbTodo.Text = td.TodoUnstripped;
+			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
+			tbTags.Text = td.TagsList;
 			tbRank.Text = td.Rank.ToString();
 			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
 			previousRank = td.Rank;
@@ -85,7 +88,10 @@ namespace TODOList
 		{
 			td.Todo = tbTodo.Text;
 			td.Notes = tbNotes.Text;
-			td.ParseTags();
+
+			td.Tags = ParseTags(tbTags.Text);
+			
+//			td.ParseTags();
 			td.Severity = currentSeverity;
 			isOk = true;
 			
@@ -95,6 +101,32 @@ namespace TODOList
 			Close();
 		}
 
+		private List<string> ParseTags(string tags)
+		{
+			List<string> result = td.Tags.ToList();
+			string[] lines = tags.Split('\r');
+			
+			foreach (string s in lines)
+			{
+				string trimmed = s.Trim();
+				if (trimmed == "")
+					continue;
+				if (trimmed.Contains("\n"))
+				{
+					int index = trimmed.IndexOf("\n");
+					trimmed = trimmed.Remove(index, 1);
+				}
+				string newTag = "";
+				if (trimmed.Contains("#"))
+					newTag = trimmed.ToUpper();
+				else
+					newTag = "#" + trimmed.ToUpper();
+				
+				if(!result.Contains(newTag))
+					result.Add(newTag);
+			}
+			return result;
+		}
 		// METHOD  ///////////////////////////////////// btnComplete_Click() //
 		private void btnComplete_Click(object sender, EventArgs e)
 		{
@@ -102,7 +134,8 @@ namespace TODOList
 			td.IsComplete = !td.IsComplete;
 			td.Todo = tbTodo.Text;
 			td.Notes = tbNotes.Text;
-			td.ParseTags();
+			td.Tags = ParseTags(tbTags.Text);
+//			td.ParseTags();
 			td.Severity = currentSeverity;
 			Close();
 		}

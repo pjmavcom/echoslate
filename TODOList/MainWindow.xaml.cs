@@ -648,7 +648,13 @@ namespace TODOList
 		
 		private void mnuHEdit_Click(object sender, EventArgs e)
 		{
-			EditItem(lbCompletedTodos, _hCurrentHistoryItem.CompletedTodos);
+			if(lbCompletedTodos.IsMouseOver)
+				EditItem(lbCompletedTodos, _hCurrentHistoryItem.CompletedTodos);
+			else if(lbCompletedTodosFeatures.IsMouseOver)
+				EditItem(lbCompletedTodosFeatures, _hCurrentHistoryItem.CompletedTodosFeatures);
+			else if(lbCompletedTodosBugs.IsMouseOver)
+				EditItem(lbCompletedTodosBugs, _hCurrentHistoryItem.CompletedTodosBugs);
+			
 			RefreshHistory();
 		}
 

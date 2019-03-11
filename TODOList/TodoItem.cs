@@ -30,26 +30,29 @@ namespace TODOList
 		private int _severity;
 		private int _rank;
 		private List<string> _tags;
-		private string _todoStripped;
 		
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public string Todo
 		{
-			get => _todoStripped;
+			get => _todo;
 			set
 			{
 				_todo = value;
 				ParseTags();
-//				string[] pieces = _todo.Split(' ');
-//				foreach (string s in pieces)
-//				{
-//					if (s.Contains("#"))
-//						_tags.Add(s.ToUpper());
-//				}
 			}
 		}
-		public string TodoUnstripped => _todo;
+		public string TagsAndTodoToSave
+		{
+			get
+			{
+				string result = "";
+				foreach (string t in _tags)
+					result += t + " ";
+				result += _todo;
+				return result;
+			}
+		}
 		public string Notes
 		{
 			get => _notes;
@@ -206,6 +209,7 @@ namespace TODOList
 		{
 			_tags = new List<string>();
 			string[] pieces = _todo.Split(' ');
+			bool isBeginningTag = false;
 
 			List<string> list = new List<string>();
 			for (int index = 0; index < pieces.Length; index++)
@@ -213,17 +217,30 @@ namespace TODOList
 				string s = pieces[index];
 				if (s.Contains('#'))
 				{
+					if (index == 0)
+						isBeginningTag = true;
+					
 					string t = "";
 					t = s.ToUpper();
-					if (t.Equals("#FEATURES"))
+					if (t.Equals("#FEATURES") || t.Equals("#F"))
 						t = "#FEATURE";
-					if (t.Equals("#BUGS"))
+					if (t.Equals("#BUGS") || t.Equals("#B"))
 						t = "#BUG";
 					_tags.Add(t);
+					
 					s = s.Remove(0, 1);
 					s = s.ToLower();
+					if (s.Equals("f"))
+						s = "feature";
+					if (s.Equals("b"))
+						s = "bug";
 				}
-				if (index == 0 || index > 0 && pieces[index - 1].Contains('.'))
+				else
+					isBeginningTag = false;
+				
+				if (isBeginningTag)
+					continue;
+				if (index == 0 || index > 0 && pieces[index - 1].Contains('.') || list.Count == 0)
 				{
 					s = UpperFirstLetter(s);
 				}
@@ -244,8 +261,7 @@ namespace TODOList
 					continue;
 				tempTodo += s + " ";
 			}
-			_todo = tempTodoTags + tempTodo.Trim();
-			_todoStripped = tempTodo.Trim();
+			_todo = tempTodo.Trim();
 		}
 		private string UpperFirstLetter(string s)
 		{
@@ -262,17 +278,39 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + _todo + "|" + _notes;
+			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + TagsAndTodoToSave + "|" + _notes;
 			return result;
 		}
 		public string ToClipboard()
 		{
-			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + _todo;
+			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + BreakLines(_todo);
 			if(_notes != "")
-				result += Environment.NewLine + "\t\tNotes: " + _notes;
+				result += Environment.NewLine + "\tNotes: " + BreakLines(_notes);
 			return result;
 		}
-		
+		private string BreakLines(string s)
+		{
+			int charLimit = 100;
+			int currentCharCount = 0;
+			List<string> lines = new List<string>();
+			string result = "";
+			string[] pieces = s.Split(' ');
+			foreach (string word in pieces)
+			{
+				currentCharCount += word.Length + 1;
+
+				if (currentCharCount <= charLimit)
+				{
+					result += word + " ";
+				}
+				else
+				{
+					currentCharCount = 0;
+					result += Environment.NewLine + "\t\t" + word + " ";
+				}
+			}
+			return result;
+		}
 		
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

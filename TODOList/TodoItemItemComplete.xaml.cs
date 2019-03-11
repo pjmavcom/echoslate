@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -16,6 +18,7 @@ namespace TODOList
 			this.td = new TodoItem(td.ToString());
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
+			tbTags.Text = td.TagsList;
 			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
 			
 			CenterWindowOnMouse();
@@ -38,11 +41,37 @@ namespace TODOList
 			isOk = true;
 			td.IsComplete = !td.IsComplete;
 			td.Todo = tbTodo.Text;
+			td.Tags = ParseTags(tbTags.Text);
 			td.Notes = tbNotes.Text;
-			td.ParseTags();
+//			td.ParseTags();
 			Close();
 		}
 
+		private List<string> ParseTags(string tags)
+		{
+			List<string> result = td.Tags.ToList();
+			string[] lines = tags.Split('\r');
+			
+			foreach (string s in lines)
+			{
+				
+				string trimmed = s.Trim();
+				if (trimmed == "")
+					continue;
+				if (trimmed.Contains("\n"))
+				{
+					int index = trimmed.IndexOf("\n");
+					trimmed = trimmed.Remove(index, 1);
+				}
+				string newTag = "";
+				if (trimmed.Contains("#"))
+					newTag = trimmed.ToUpper();
+				else
+					newTag = "#" + trimmed.ToUpper();
+				result.Add(newTag);
+			}
+			return result;
+		}
 		// METHOD  ///////////////////////////////////// btnCancel() //
 		private void btnCancel_Click(object sender, EventArgs e)
 		{

@@ -1,31 +1,33 @@
 20190220|191143|-|-|0|False|1|3|Update version number|
-20190223|092124|-|-|0|False|2|0|#GROUPS Groups|
-20190301|201618|-|-|0|False|3|0|#GROUPS Groups items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color|
-20190303|235132|-|-|6000000000|False|1|0|#BUG Bug Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
-20190304|010503|-|-|0|False|2|0|#BUG Bug Every once in a while a completed Todo is added more than once...|
-20190304|010852|-|-|0|False|3|0|#BUG Bug Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|
-20190310|052903|-|-|0|False|1|1|#FEATURE Features Need to add a hashtag editor to at least the single item editor|
+20190303|235132|-|-|6000000000|False|1|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
+20190304|010503|-|-|0|False|2|0|#BUG Every once in a while a completed Todo is added more than once...|
+20190304|010852|-|-|0|False|3|0|#BUG Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|
+20190301|201618|-|-|0|False|1|0|#FEATURE #GROUPS Group items by background? Like when sorting by hashtags, make the top ranked hashtags background a different color|
 ====================================VCS
 NewVCS
-20190310|053257||
-VCSTodos
-EndVCS
-NewVCS
-20190309|210921|1.7|
+20190309|210921|1.7- Added Tabs for Bugs and Features and an ICON!!|Plus other new bug fixes and such
 VCSTodos
 20190309|213455|20190309|213455|0|True|2147483647|1|Pomo looks like porno, removed it|
-20190309|213510|20190309|213510|0|True|2147483647|1|Moved pomo timer to the menu bar, its always visible now|
 20190309|204319|20190310|002306|77110000000|True|2147483647|1|How about a separate tab for bug hashtags and wanna be features? That sounds awesome.|Hmm. Check the Fix This Todos to add more tabs
 20190310|040525|20190310|043252|15300000000|True|2147483647|1|Move Hashtags to front of TODO but keep what was there. Actually remove all the way, but add back to front when saving|Hashtags are removed from the todo text. Saving is working correctly looks like.
-20190309|034036|20190309|211213|3330000000|True|2147483647|1|#BUG #GLITCH Bug glitch When switching between files, if youve looked at the HistoryTab, it doesnt update the right pane when switching|Had it set the _hCurrentHistoryItem to an existing history item or an empty one if it doesnt exist
-20190310|000923|20190310|015911|40220000000|True|2147483647|3|#BUG Bug The new todo item textbox and such hasnt been programmed yet|That took a lot longer than it shouldve. Getting the severity to work between screens...is....magic...
-20190310|030409|20190310|032813|0|True|0|3|#BUG Bug Pressing enter on another tabs new add button doesnt do anything useful|Easy enough to edit the hotkeys
-20190310|000923|20190310|032820|40220000000|True|0|3|#BUG Bug The new todo item textbox and such hasnt been programmed yet|That took a lot longer than it shouldve. Getting the severity to work between screens...is....magic...
-20190310|000213|20190310|005353|7310000000|True|2147483647|1|#FEATURE Feature Save does not work correctly with new tabs so far|Made a new list and copied over the 3 lists, then iterated through that
-20190310|030331|20190310|032827|0|True|0|3|#FEATURE Feature Severity should be able to go to 0|Done!
-20190310|000754|20190310|040501|12040000000|True|2147483647|1|#FEATURE Feature fix hashtags Bugs to Bug and Features to Feature if theyre wrong or something like that|
-20190310|000708|20190310|043304|0|True|2147483647|1|#FEATURE Feature Capitalize the hashtag in the text of the todo|
-20190310|030756|20190310|043749|0|True|2147483647|1|#FEATURE Feature Does the WinKey+F4 still work?|Yes, had to add a if statement to check which tab is selected again!
+20190309|213510|20190309|213510|0|True|0|1|Moved pomo timer to the menu bar, its always visible now|
+20190223|092124|20190310|233913|0|True|0|0|#GROUPS Groups|Well this is kinda done now. Grouped Bugs and Features
+20190310|233826|20190310|233830|0|True|0|1|#BUG Severity should default to 1|
+20190309|034036|20190309|211213|3330000000|True|0|1|#BUG #GLITCH When switching between files, if youve looked at the HistoryTab, it doesnt update the right pane when switching|Had it set the _hCurrentHistoryItem to an existing history item or an empty one if it doesnt exist
+20190310|000923|20190310|015911|40220000000|True|0|3|#BUG The new todo item textbox and such hasnt been programmed yet|That took a lot longer than it shouldve. Getting the severity to work between screens...is....magic...
+20190310|030409|20190310|232940|0|True|0|3|#BUG Pressing enter on another tabs new add button doesnt do anything useful|Easy enough to edit the hotkeys
+20190310|233538|20190310|233542|0|True|0|0|#BUG Tab order for editor windows is wrong|
+20190310|231811|20190310|233512|0|True|0|1|#BUG The first letter of sentence isnt capitalized|Added list.Count == 0 to the check for UpperFirstLetter() in TodoItem
+20190310|231744|20190310|232952|0|True|0|1|#BUG The editor on History pane doesnt work anymore|Fixed, needed another if() check. Used IsMouseOver for the different listboxes
+20190310|235636|20190310|235639|0|True|0|1|#FEATURE Add an icon|
+20190310|030756|20190310|043749|0|True|0|1|#FEATURE Does the WinKey+F4 still work?|Yes, had to add a if statement to check which tab is selected again!
+20190310|000754|20190310|040501|12040000000|True|0|1|#FEATURE Fix hashtags Bugs to Bug and Features to Feature if theyre wrong or something like that|
+20190310|030331|20190310|032827|0|True|0|3|#FEATURE Severity should be able to go to 0|Done!
+20190310|052903|20190310|231520|28610000000|True|0|1|#FEATURE Need to add a hashtag editor to at least the single item editor|
+20190310|000213|20190310|005353|7310000000|True|0|1|#FEATURE Save does not work correctly with new tabs so far|Made a new list and copied over the 3 lists, then iterated through that
+20190310|000708|20190310|043304|0|True|0|1|#FEATURE Capitalize the hashtag in the text of the todo|
+20190310|220325|20190310|231523|0|True|0|1|#FEATURE Clipboard out width set to something so theres no line wraps|
+20190310|220301|20190310|231516|1720000000|True|0|1|#FEATURE Hashtag shortcuts- feature or bug|
 20190310|000624|20190310|052830|36000000000|True|2147483647|0|#FEATURE Sort bugs and features in History tab|
 EndVCS
 NewVCS
@@ -203,7 +205,7 @@ VCSTodos
 20190209|174057|20190210|142611|0|True|0|2|Add popup to save before closing|
 20190210|110549|20190210|142653|0|True|0|1|#INTERFACE Make severity a dropdown list interface|
 20190209|151943|20190210|142707|0|True|0|2|Colors for severity. This works if its not in dark mode...|
-20190210|110625|20190210|143557|0|True|0|1|SIZING...#INTERFACE #TODOITEM Edit todo box is not good izing...#interface Todoitem|
+20190210|110625|20190210|143557|0|True|0|1|SIZING...#INTERFACE #TODOITEM IZING...#INTERFACE ZING...#INTERFACE ING...#INTERFACE NG...#INTERFACE G...#INTERFACE ...#INTERFACE Edit todo box is not good ..#interface Todoitem|
 20190210|110648|20190210|143558|0|True|0|1|TodoEdit box default ok button|
 20190210|065758|20190210|151458|0|True|0|2|#HASHTAGS #INTERFACE Add dropdown for hashtags sorting interface|
 20190209|174253|20190210|151517|0|True|0|1|Show hashtags to side of todo and which one it is sorting by|
@@ -269,4 +271,8 @@ VCSTodos
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Delete todo from history item interface|
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE #HISTORYITEM Only add to most recent History Item interface historyitem|
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Copy button interface|
+EndVCS
+NewVCS
+20190310|235702||
+VCSTodos
 EndVCS

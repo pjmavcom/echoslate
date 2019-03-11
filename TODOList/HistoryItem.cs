@@ -145,18 +145,41 @@ namespace TODOList
 			string result = DateAdded + "- " + Title + Environment.NewLine +
 							"Estimated Time: " + TotalTime + Environment.NewLine +
 							"Estimated Total Time: " + totalTimeSoFar + Environment.NewLine +
-							"Notes: " + Notes +
+							"Notes: " + BreakLines(Notes) + Environment.NewLine + Environment.NewLine +
 							"=Bugs Squashed====================================================================================================";
 			foreach (TodoItem td in CompletedTodosBugs)
 				result += Environment.NewLine + "--" + td.ToClipboard();
 			
-			result += Environment.NewLine + "--" + "=Features Added============================================================================================================================";
+			result += Environment.NewLine + Environment.NewLine + "--" + "=Features Added===================================================================================================";
 			foreach (TodoItem td in CompletedTodosFeatures)
 				result += Environment.NewLine + "--" + td.ToClipboard();
 			
-			result += Environment.NewLine + "--" + "=Other Stuff===============================================================================================================================";
+			result += Environment.NewLine + Environment.NewLine + "--" + "=Other Stuff======================================================================================================";
 			foreach (TodoItem td in CompletedTodos)
 				result += Environment.NewLine + "--" + td.ToClipboard();
+			return result;
+		}
+		private string BreakLines(string s)
+		{
+			int charLimit = 100;
+			int currentCharCount = 0;
+			List<string> lines = new List<string>();
+			string result = "";
+			string[] pieces = s.Split(' ');
+			foreach (string word in pieces)
+			{
+				currentCharCount += word.Length + 1;
+
+				if (currentCharCount <= charLimit)
+				{
+					result += word + " ";
+				}
+				else
+				{
+					currentCharCount = 0;
+					result += Environment.NewLine + "\t" + word + " ";
+				}
+			}
 			return result;
 		}
 	}
