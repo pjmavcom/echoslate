@@ -1,9 +1,61 @@
+Other
+Feature
+Bug
+Cleanup
+====================================TODO
 20190220|191143|-|-|0|False|1|3|Update version number|
+20190312|055121|-|-|0|False|2|1|Add active todos to a list to increment the timers rather than iterate through them all|
+20190312|054034|-|-|0|False|1|1|#FEATURE Move pomo timer to above tab bar to stop menu interactions with it. Move it all the way right|
+20190312|054046|-|-|0|False|2|1|#FEATURE Add number of todos to tab names|
+20190312|054142|-|-|0|False|3|1|#FEATURE Option to remove global hotkeys. Add bool to menu to toggle as I did with autosave|
+20190312|055027|-|-|0|False|4|1|#FEATURE Add pause to pomo timer|
+20190312|055051|-|-|0|False|5|1|#FEATURE Increment pomo by 1 minute intervals?|
+20190312|055659|-|-|0|False|6|1|#FEATURE Move tabs left and right|
+20190312|065925|-|-|0|False|7|1|#FEATURE Edit tabs window instead of add remove menus|
+20190312|070233|-|-|0|False|8|1|#FEATURE Multiedit tags, remove if they all have the same tag or add|
+20190312|070300|-|-|0|False|9|1|#FEATURE Probably could remove recent saves and quick save from the menu bar|
+20190312|070313|-|-|0|False|10|1|#FEATURE Add help menu with hotkey shortcuts|
+20190312|070408|-|-|0|False|11|1|#FEATURE No way to tell if youve saved a history or not|
+20190312|070443|-|-|0|False|12|1|#FEATURE Save current pomo time settings|
+20190312|070928|-|-|0|False|13|1|#FEATURE Can I make the shortcuts for hashtags dynamic? First letter or two of the header?|
+20190312|070953|-|-|0|False|14|1|#FEATURE Add capitalize after ? " as well|
+20190312|071222|-|-|0|False|15|1|#FEATURE In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well|
+20190312|071345|-|-|0|False|16|1|#FEATURE Maybe remember each files previous open tab?|
+20190312|075925|-|-|0|False|17|1|#FEATURE Pomo timer, make the bar fill up based on time left, not just green and red on and off|
+20190312|075941|-|-|0|False|18|1|#FEATURE Pomo timer make the red bar reduce based on time left|
+20190313|163630|-|-|0|False|19|1|#FEATURE Capitalize first letters in the notes|
+20190313|164055|-|-|0|False|20|1|#FEATURE Really got to add a master list that has all the items in it. Maybe have a separate list, clicking it edits the item in the real list? Or the other way around. Doing it this way, with a master list, items can be in more than one list. So, make a class that holds a TodoItem and a rank for each list. And then theres the master list that uses the TodoItems rank while the others use the new classes rank.|
+20190313|164121|-|-|0|False|21|1|#FEATURE Add total number of todos to title bar|
+20190313|164258|-|-|0|False|22|1|#FEATURE Rename program to EtherealistVCS|
+20190313|164348|-|-|0|False|23|1|#FEATURE #FILEIO Should have the save file have the version in it somewhere and load based on that version|
+20190319|161440|-|-|0|False|24|1|#HISTORY #FEATURE Make a new history dialog you can put a title into|
+20190319|161629|-|-|0|False|25|1|#FEATURE Put save and new and other windows in center of window location|
+20190319|161836|-|-|0|False|26|1|#HISTORY #FEATURE The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|
+20190319|162545|-|-|0|False|27|1|#FEATURE When debugging, make title bar red or something|
+20190319|155958|-|-|0|False|8|1|#HISTORY #BUG When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
+20190319|104123|-|-|0|False|7|1|#SETTINGS #BUG Add window size to settings file|
 20190303|235132|-|-|6000000000|False|1|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
 20190304|010503|-|-|0|False|2|0|#BUG Every once in a while a completed Todo is added more than once...|
-20190304|010852|-|-|0|False|3|0|#BUG Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|
-20190311|172900|-|-|0|False|4|1|#BUG Probably gotta do checks on adding tabs with same names|
+20190312|070212|-|-|8820000000|False|3|1|#BUG How does multiedit work for the todo or notes? Its not adding hashes or anything to them|
+20190312|071936|-|-|0|False|4|1|#BUG Global hotkey and typing then enter didnt work for some reason|
+20190312|072052|-|-|0|False|5|1|#BUG Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|
+20190319|104103|-|-|0|False|6|1|#BUG Add todo file to vcs files|
+20190312|054228|-|-|0|False|1|1|#CLEANUP Cleanup functions. Remove extra letters and start with capitals and such. OnClick instead of clicked or something|
+20190312|054305|-|-|0|False|2|1|#CLEANUP Cleanup code and use pattern matching and other features to compact the code|
 ====================================VCS
+NewVCS
+20190311|174537|v2.01 Just bugs to start with|
+VCSTodos
+20190312|054942|20190319|162459|2910000000|True|0|1|#HISTORY #BUG After typing something in the name on the history tab, and then clicking copy, the text was not copied. Hadnt been injected in to the class yet|Actually this is working....If it was the Notes I meant, that was because there was a check whether it Contains(""), so notes were never copied to clipboard. If it was the Title, that is working. So...Problem solved
+20190312|054812|20190319|161730|7850000000|True|0|1|#HISTORY #BUG Completed todos are added to history tab wonky. They are always added to the newest History. Maybe make the new button copy? Or when starting, popup message to start a new History? Or when copying, popup a message|Added MessageBoxes to the Copy button and when starting up. Gonna add a dialog window with a text block to type in a new title when adding a new history item
+20190319|160204|20190319|160645|1210000000|True|0|1|#HISTORY #BUG Mouse select does not work now on history tab|Added setting _hCurrentHistoryItem back to SelectionChanged event.
+20190313|113103|20190319|155922|88110000000|True|0|1|#BUG Still a bug moving up and down history list with keyboard|Got this fixed MOSTLY. Small bug now when at the 0 index. Takes 2 keypresses to move...I think its a keyboard tab index thing now, but who knows. Actually had to move vmost of the SelectionChanged event code to OnKeyDown. And then added a mouse event for selecting by mouse and keeping the index
+20190319|103250|20190319|110037|15260000000|True|0|1|#BUG Clicking quicksave with no recent files crashes|Checked for _currentOpenFile == null instead of ""
+20190313|165916|20190319|103406|16910000000|True|0|1|#BUG Doesnt work when theres no settings file. Get it working as though its on a fresh computer. No saves or settings.|Added some checks for no settings file, started the functions that check for different versions of settings file. Added version to settings file
+20190312|070007|20190319|100458|2600000000|True|0|1|#BUG Changing tabs does not autosave|Added AutoSave() call to AddNewTodoTab() and RemoveTodoTab(). Also renamed RemoveTab() to RemoveTodoTab()
+20190311|172900|20190319|095923|3000000000|True|0|1|#BUG Probably gotta do checks on adding tabs with same names|Added a check to look through the names
+20190304|010852|20190312|053733|0|True|0|0|#BUG Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|I think this was because of the way a file is loaded. Happened when this switched to 2.0 and it crashed because the file format was not updated
+EndVCS
 NewVCS
 20190311|001319|v2.0 !!!|
 VCSTodos
@@ -286,6 +338,6 @@ VCSTodos
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Copy button interface|
 EndVCS
 NewVCS
-20190311|174537||
+20190319|165723||
 VCSTodos
 EndVCS

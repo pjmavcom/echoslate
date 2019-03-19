@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -16,6 +17,7 @@ using System.Windows.Threading;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Forms.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using ListBox = System.Windows.Controls.ListBox;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -29,7 +31,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "2.0";
+		public const string VERSION = "2.1 TESTING";
 
 		private List<TabItem> tabItemList;
 
@@ -56,6 +58,9 @@ namespace TODOList
 		// HISTORY TAB ITEMS
 		private List<HistoryItem> _hHistoryItems;
 		private HistoryItem _hCurrentHistoryItem;
+		private int _currentHistoryItemIndex;
+		private int _currentHistoryItemMouseIndex;
+		private bool _didMouseSelect;
 
 		// FILE IO
 		private const string basePath = @"C:\MyBinaries\";
@@ -116,6 +121,7 @@ namespace TODOList
 			InitializeComponent();
 			LoadSettings();
 			DataContext = this;
+			
 
 			Top = top;
 			Left = left;
@@ -146,6 +152,7 @@ namespace TODOList
 				Load(_recentFiles[0]);
 
 			lbHistory.SelectedIndex = 0;
+			_currentHistoryItemIndex = 0;
 			lbCompletedTodos.SelectedIndex = 0;
 			
 			lblPomoWork.Content = _pomoWorkTime.ToString();
@@ -163,18 +170,28 @@ namespace TODOList
 		private void AddNewTodoTab(string name)
 		{
 			TabItem ti = new TabItem();
-			string hash = "#" + name.ToUpper();
 			name = UpperFirstLetter(name);
 			ti.Header = name;
 			ti.Name = name;
+			foreach (TabItem existingTabItem in tabItemList)
+			{
+				if (existingTabItem.Name == name)
+				{
+					MessageBox.Show("Already have a tab called " + name);
+					return;
+				}
+			}
+			
+			string hash = "#" + name.ToUpper();
 			_incompleteItems.Add(new List<TodoItem>());
 			_hashTags.Add(new List<string>());
 			_tabHash.Add(hash);
 			tabItemList.Add(ti);
 			RefreshTodo();
 			tabTest.Items.Refresh();
+			AutoSave();
 		}
-		private void RemoveTab(int index)
+		private void RemoveTodoTab(int index)
 		{
 			if (index < 1 || index >= tabItemList.Count)
 				return;
@@ -187,6 +204,7 @@ namespace TODOList
 			tabTest.SelectedIndex = 0;
 			tabTest.Items.Refresh();
 			RefreshTodo();
+			AutoSave();
 		}
 		private string UpperFirstLetter(string s)
 		{
@@ -468,7 +486,7 @@ namespace TODOList
 			rt.ShowDialog();
 			if (!rt.Result)
 				return;
-			RemoveTab(rt.Index);
+			RemoveTodoTab(rt.Index);
 		}
 			
 		private void mnuNew_Click(object sender, EventArgs e)
@@ -557,7 +575,7 @@ namespace TODOList
 
 		private void mnuSave_Click(object sender, EventArgs e)
 		{
-			if (_currentOpenFile == "")
+			if (_currentOpenFile == null)
 			{
 				MessageBox.Show("No current file", "Nope");
 				return;
@@ -649,22 +667,59 @@ namespace TODOList
 			lbHistory.Items.Refresh();
 		}
 
-		private void lbHHistory_SelectionChanged(object sender, EventArgs e)
+		private void lbHHistory_OnKeyDown(object sender, KeyEventArgs e)
 		{
-			int index = lbHistory.SelectedIndex;
-			if (_hHistoryItems.Count > 0 && index >= _hHistoryItems.Count)
-				index = _hHistoryItems.Count - 1;
+			if (_currentHistoryItemMouseIndex != -1)
+			{
+				_currentHistoryItemIndex = _currentHistoryItemMouseIndex;
+				_currentHistoryItemMouseIndex = -1;
+			}
+			int prevIndex = _currentHistoryItemIndex;
+			switch (e.Key)
+			{
+				case Key.Down:
+					_currentHistoryItemIndex++;
+					break;
+				case Key.Up:
+					_currentHistoryItemIndex--;
+					break;
+				default:
+					break;
+			}
+			
+			if (_currentHistoryItemIndex >= _hHistoryItems.Count)
+				_currentHistoryItemIndex = 0;
+			if (_currentHistoryItemIndex < 0)
+				_currentHistoryItemIndex = _hHistoryItems.Count - 1;
 			if (_hHistoryItems.Count == 0)
 			{
 				_hCurrentHistoryItem = new HistoryItem("", "");
 				return;
 			}
-			if (index < 0)
-				index = 0;
+			if (prevIndex == _currentHistoryItemIndex)
+				return;
 
-			_hCurrentHistoryItem = lbHistory.Items[index] as HistoryItem;
+			_hCurrentHistoryItem = lbHistory.Items[_currentHistoryItemIndex] as HistoryItem;
 			lblHTotalTime.Content = _hCurrentHistoryItem.TotalTime;
+			lbHistory.SelectedIndex = _currentHistoryItemIndex;
 			RefreshHistory();
+		}
+		private void LBHHistory_OnMouseDown(object sender, EventArgs e)
+		{
+			_didMouseSelect = true;
+		}
+		
+		private void lbHHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if(_didMouseSelect)
+				_currentHistoryItemIndex = lbHistory.SelectedIndex;
+			
+			_hCurrentHistoryItem = lbHistory.Items[_currentHistoryItemIndex] as HistoryItem;
+			lblHTotalTime.Content = _hCurrentHistoryItem.TotalTime;
+			lbHistory.SelectedIndex = _currentHistoryItemIndex;
+			
+			RefreshHistory();
+			_didMouseSelect = false;
 		}
 
 		private void btnHDeleteTodo_Click(object sender, EventArgs e)
@@ -724,7 +779,9 @@ namespace TODOList
 				string time = String.Format("{0:00} : {1:00}", totalTime / 60, totalTime % 60);
 				Clipboard.SetText(hi.ToClipboard(time));
 				if (lbHistory.Items.IndexOf(hi) == 0)
-					AddNewHistoryItem();
+					// TODO: Add new history dialog here
+					if(MessageBox.Show("Add a new History Item?","New History",MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+						AddNewHistoryItem();
 			}
 		}
 		
@@ -772,7 +829,9 @@ namespace TODOList
 			lbCompletedTodosFeatures.Items.Refresh();
 			lblHTotalTime.Content = _hCurrentHistoryItem.TotalTime;
 
+			int index = lbHistory.SelectedIndex;
 			lbHistory.Items.Refresh();
+			lbHistory.SelectedIndex = index;
 		}
 		
 		private void SortCompletedItems(HistoryItem hi)
@@ -1365,41 +1424,113 @@ namespace TODOList
 
 			_isChanged = false;
 			_currentOpenFile = path;
+			// TODO: Add new history dialog here
+			if(MessageBox.Show("Start a new History Item?", "New History", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+				AddNewHistoryItem();
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Settings //
 		private void LoadSettings()
 		{
 			_recentFiles = new ObservableCollection<string>();
-			StreamReader stream = new StreamReader(File.Open(basePath + "TDHistory.settings", FileMode.Open));
+			string version = null;
+			
+			string filePath = basePath + "TDHistory.settings";
+			if (!File.Exists(filePath))
+				SaveSettings();
+			
+			StreamReader stream = new StreamReader(File.Open(filePath, FileMode.Open));
 			string line = stream.ReadLine();
-			_recentFiles.Clear();
-			while (line != null)
+			if (line != "VERSION")
 			{
-				_recentFiles.Add(line);
+				if (File.Exists(line))
+				{
+					version = "Pre 2.0";
+				}
+				else
+				{
+					MessageBox.Show("Error with the settings file");
+					MessageBox.Show("New file created");
+					return;
+				}
+			}
+			else
+			{
 				line = stream.ReadLine();
-				if (line == "WINDOWPOSITION")
-					break;
+				version = line;
 			}
 
+			if (version.Contains("2.0"))
+				LoadV2_0Settings(stream, line);
+			else if (version.Contains("2.1"))
+				LoadV2_1Settings(stream, line);
+			
+			stream.Close();
+
+			if (_recentFiles.Count == 0)
+				MessageBox.Show("New file created");
+		}
+		
+		private void LoadV2_0Settings(StreamReader stream, string line)
+		{
+			while (line != null)
+			{
+				if (line == "RECENTFILES" || line == "")
+					continue;
+				if (line == "WINDOWPOSITION")
+					break;
+					
+				_recentFiles.Add(line);
+				line = stream.ReadLine();
+			}
+			
 			top = Convert.ToDouble(stream.ReadLine());
 			left = Convert.ToDouble(stream.ReadLine());
 			height = Convert.ToDouble(stream.ReadLine());
 			width = Convert.ToDouble(stream.ReadLine());
-
-			stream.Close();
+		}
+		
+		private void LoadV2_1Settings(StreamReader stream, string line)
+		{
+			while (line != null)
+			{
+				line = stream.ReadLine();
+				if (line == "RECENTFILES" || line == "")
+					continue;
+				if (line == "WINDOWPOSITION")
+					break;
+					
+				_recentFiles.Add(line);
+			}
+			
+			top = Convert.ToDouble(stream.ReadLine());
+			left = Convert.ToDouble(stream.ReadLine());
+			height = Convert.ToDouble(stream.ReadLine());
+			width = Convert.ToDouble(stream.ReadLine());
 		}
 
 		private void SaveSettings()
 		{
-			StreamWriter stream = new StreamWriter(File.Open(basePath + "TDHistory.settings", FileMode.Create));
+			string filePath = basePath + "TDHistory.settings";
+			StreamWriter stream = new StreamWriter(File.Open(filePath, FileMode.Create));
+
+			stream.WriteLine("VERSION");
+			stream.WriteLine(VERSION);
+			
+			stream.WriteLine("RECENTFILES");
 			foreach (string s in _recentFiles)
+			{
+				if (s == "")
+					continue;
 				stream.WriteLine(s);
+			}
+			
 			stream.WriteLine("WINDOWPOSITION");
 			stream.WriteLine(Top);
 			stream.WriteLine(Left);
 			stream.WriteLine(Height);
 			stream.WriteLine(Width);
+			
 			stream.Close();
 		}
 

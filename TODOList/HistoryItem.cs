@@ -146,7 +146,7 @@ namespace TODOList
 							"Estimated Time: " + TotalTime + Environment.NewLine +
 							"Estimated Total Time: " + totalTimeSoFar;
 
-			if (!Notes.Contains(""))
+			if (!Notes.Equals(""))
 				result += Environment.NewLine + "Notes: " + BreakLines(Notes) + Environment.NewLine;
 
 			if (CompletedTodosBugs.Count > 0)

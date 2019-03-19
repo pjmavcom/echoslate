@@ -105,7 +105,7 @@
 							<Button Content="New" Click="btnHNewHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
 							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
 						</StackPanel >
-						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding HistoryItems}" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding HistoryItems}" KeyDown="lbHHistory_OnKeyDown" PreviewMouseLeftButtonDown="LBHHistory_OnMouseDown" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >
@@ -113,9 +113,9 @@
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
-										<Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/>
+										<!-- <Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/> -->
 										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" KeyboardNavigation.IsTabStop="False" />
-										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" KeyboardNavigation.IsTabStop="False" />
+										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" />
 									</Grid >
 								</DataTemplate >
 							</ListBox.ItemTemplate >
