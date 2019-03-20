@@ -103,7 +103,7 @@ namespace TODOList
 
 		private List<string> ParseTags(string tags)
 		{
-			List<string> result = td.Tags.ToList();
+			List<string> result = new List<string>(); // TODO: //td.Tags.ToList();
 			string[] lines = tags.Split('\r');
 			
 			foreach (string s in lines)

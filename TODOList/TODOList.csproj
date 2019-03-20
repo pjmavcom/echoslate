@@ -70,6 +70,7 @@
 		<Compile Include="TodoItemEditor.xaml.cs">
 		  <DependentUpon>TodoItemEditor.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="TodoListHolder.cs" />
 		<Compile Include="TodoMultiItemEditor.xaml.cs">
 		  <DependentUpon>TodoMultiItemEditor.xaml</DependentUpon>
 		</Compile>

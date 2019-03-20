@@ -39,7 +39,7 @@ namespace TODOList
 			set
 			{
 				_todo = value;
-				ParseTags();
+				ParseNewTags();
 			}
 		}
 		public string TagsAndTodoToSave
@@ -204,7 +204,11 @@ namespace TODOList
 
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
-		// METHOD  ///////////////////////////////////// ParseTags() //
+		public void ParseNewTags()
+		{
+			_todo = TagsAndTodoToSave;
+			ParseTags();
+		}
 		public void ParseTags()
 		{
 			_tags = new List<string>();
