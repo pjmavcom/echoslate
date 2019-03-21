@@ -120,7 +120,10 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// btnOK() //
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-			td.Todo = tbTodo.Text;
+			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
+//			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			td.Todo = /*tempTags.Trim() + " " + */tempTodo.Trim();
+//			td.Todo = tbTodo.Text;
 			td.Severity = currentSeverity;
 			isOk = true;
 			
@@ -136,7 +139,11 @@ namespace TODOList
 			isOk = true;
 			isComplete = true;
 			td.IsComplete = !td.IsComplete;
-			td.Todo = tbTodo.Text;
+			
+			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
+//			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			td.Todo = /*tempTags.Trim() + " " + */tempTodo.Trim();
+//			td.Todo = tbTodo.Text;
 			td.ParseTags();
 			td.Severity = currentSeverity;
 			Close();

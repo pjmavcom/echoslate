@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace TODOList
 {
-	public class TodoListHolder
+	public class TodoListHolder : INotifyPropertyChanged
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private TodoItem _td;

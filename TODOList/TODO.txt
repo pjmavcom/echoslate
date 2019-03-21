@@ -5,50 +5,68 @@ Cleanup
 ====================================TODO
 20190220|191143|-|-|0|False|1|3|Update version number|
 20190312|055121|-|-|0|False|2|1|Add active todos to a list to increment the timers rather than iterate through them all|
-20190320|100429|-|-|0|False|1|1|#EASY #FEATURE If the current history item is empty or not completed/copied, dont ask to start a new one at startup|
-20190312|054142|-|-|0|False|2|1|#EASY #FEATURE Option to remove global hotkeys. Add bool to menu to toggle as I did with autosave|
-20190312|070300|-|-|0|False|3|1|#EASY #FEATURE Probably could remove recent saves and quick save from the menu bar|
-20190312|070953|-|-|0|False|4|1|#EASY #FEATURE Add capitalize after ? " as well|
-20190313|163630|-|-|0|False|5|1|#EASY #FEATURE Capitalize first letters in the notes|
-20190313|164121|-|-|0|False|6|1|#EASY #FEATURE Add total number of todos to title bar|
-20190313|164258|-|-|0|False|7|1|#EASY #FEATURE Rename program to EtherealistVCS|
-20190312|054034|-|-|0|False|8|1|#FEATURE #POMO Move pomo timer to above tab bar to stop menu interactions with it. Move it all the way right|
-20190312|055027|-|-|0|False|9|1|#FEATURE #POMO Add pause to pomo timer|
-20190312|055051|-|-|0|False|10|1|#FEATURE #POMO Increment pomo by 1 minute intervals?|
-20190312|070443|-|-|0|False|11|1|#FEATURE #POMO Save current pomo time settings|
-20190312|075925|-|-|0|False|12|1|#FEATURE #POMO Pomo timer, make the bar fill up based on time left, not just green and red on and off|
-20190312|075941|-|-|0|False|13|1|#FEATURE #POMO Pomo timer make the red bar reduce based on time left|
-20190312|065925|-|-|0|False|14|2|#FEATURE #TABS Edit tabs window instead of add remove menus|
-20190312|055659|-|-|0|False|15|2|#FEATURE #TABS Move tabs left and right|
-20190312|054046|-|-|0|False|16|2|#FEATURE #TABS Add number of todos to tab names|
-20190312|070233|-|-|0|False|17|1|#FEATURE Multiedit tags, remove if they all have the same tag or add|
-20190312|070313|-|-|0|False|18|1|#FEATURE Add help menu with hotkey shortcuts|
-20190312|070408|-|-|0|False|19|1|#FEATURE No way to tell if youve saved a history or not|
-20190312|070928|-|-|0|False|20|1|#FEATURE Can I make the shortcuts for hashtags dynamic? First letter or two of the header?|
-20190312|071222|-|-|0|False|21|1|#FEATURE In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well|
-20190312|071345|-|-|0|False|22|1|#FEATURE Maybe remember each files previous open tab?|
-20190319|161440|-|-|0|False|23|1|#FEATURE #HISTORY Make a new history dialog you can put a title into|
-20190319|161629|-|-|0|False|24|1|#FEATURE Put save and new and other windows in center of window location|
-20190319|161836|-|-|0|False|25|1|#FEATURE #HISTORY The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|
-20190320|095550|-|-|0|False|26|1|#FEATURE Edit time or +/- 10 minute buttons as well|
-20190320|100538|-|-|0|False|27|1|#FEATURE Make a tag on the history item that shows whether it was copied or not and make it visible somewhere|
-20190320|103524|-|-|0|False|28|1|#FEATURE Turn save files to binary|
-20190320|110649|-|-|0|False|29|1|#FEATURE Make a backup system for the files|
-20190320|110720|-|-|0|False|30|1|#FEATURE #FILEIO Version the todos and history items and error check the strings going in|
-20190320|160037|-|-|14360000000|False|1|3|#BUG Times are not updating|Cant figure this out yet, PropertyChanged is firing...dont know....
-20190320|154943|-|-|1120000000|False|2|3|#BUG Bugs for MasterList|
-20190320|103425|-|-|18000000000|False|3|1|#BUG If the save file is wrong it wont start|
-20190303|235132|-|-|6000000000|False|4|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
-20190304|010503|-|-|0|False|5|0|#BUG Every once in a while a completed Todo is added more than once...|
-20190312|072052|-|-|6000000000|False|6|0|#BUG Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|This works most of the time. Sometimes it doesnt
-20190319|155958|-|-|0|False|7|0|#BUG #HISTORY When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
-20190320|100613|-|-|0|False|8|1|#BUG Moving tags between lists keeps the same rank as the previous list. Maybe reset it?|
-20190320|113213|-|-|0|False|9|1|#BUG Adding hash tags in editor, if theres no return, it will combine the lines into one tag.|
-20190320|122447|-|-|0|False|10|1|#BUG Editing a todo with the master list in place adds a duplicate|
-20190320|154423|-|-|0|False|11|1|#BUG Lists are slow when theres alot of them|
+20190321|143422|-|-|0|False|3|1|#INTERFACE Make the interface look clean|
+20190312|065925|-|-|0|False|1|2|#FEATURE #TABS #WINDOW Edit tabs window instead of add remove menus|
+20190312|055659|-|-|0|False|2|2|#FEATURE #TABS Move tabs left and right|
+20190312|070233|-|-|0|False|3|1|#FEATURE Multiedit tags, remove if they all have the same tag or add|
+20190312|070313|-|-|0|False|4|1|#FEATURE #WINDOW Add help menu with hotkey shortcuts|
+20190312|071222|-|-|0|False|5|1|#FEATURE #WINDOW In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well|
+20190312|071345|-|-|0|False|6|1|#FEATURE Maybe remember each files previous open tab?|
+20190319|161440|-|-|0|False|7|1|#FEATURE #WINDOW #HISTORY Make a new history dialog you can put a title into|
+20190319|161629|-|-|0|False|8|1|#FEATURE Put save and new and other windows in center of window location|
+20190319|161836|-|-|0|False|9|1|#FEATURE #WINDOW #HISTORY The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|
+20190320|095550|-|-|0|False|10|1|#FEATURE Edit time or +/- 10 minute buttons as well|
+20190320|103524|-|-|0|False|11|1|#FEATURE Turn save files to binary|
+20190320|110649|-|-|0|False|12|1|#FEATURE Make a backup system for the files|
+20190321|111228|-|-|0|False|13|1|#FEATURE If a todo only has the one tag that it is sorted by, move that to top of list on sorting by that hashtag|
+20190320|154943|-|-|1120000000|False|1|3|#BUG Bugs for MasterList|
+20190320|103425|-|-|18000000000|False|2|1|#BUG If the save file is wrong it wont start|
+20190303|235132|-|-|6000000000|False|3|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
+20190312|072052|-|-|6000000000|False|4|0|#BUG Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|This works most of the time. Sometimes it doesnt
+20190319|155958|-|-|0|False|5|0|#BUG #HISTORY When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
+20190320|100613|-|-|0|False|6|1|#BUG Moving tags between lists keeps the same rank as the previous list. Maybe reset it?|
+20190320|154423|-|-|0|False|7|1|#BUG Lists are slow when theres alot of them. Much faster in release though. May not be an issue, or need a small optimization|
+20190321|063739|-|-|0|False|8|1|#BUG #SORTING Sorting not working on tab[0]|
+20190321|070122|-|-|0|False|9|0|#BUG #FILEIO Save file is missing todos sometimes...cant Figure out why yet. It is saving the _masterList.|
+20190321|074451|-|-|0|False|10|1|#BUG Editor is not parsing Notes|
+20190321|075033|-|-|0|False|11|3|#BUG Delete history todo crashes|
+20190321|075203|-|-|0|False|12|1|#BUG Not saving rank when editing todo. Its not checking the TodoListHolder rank|
+20190321|101714|-|-|0|False|13|1|#BUG Reset timer does reset timer, but it doesnt show until a refresh|
+20190321|101723|-|-|0|False|14|1|#BUG Rank up and down dont work|
+20190321|111114|-|-|0|False|15|1|#BUG Hashtag drop down doesnt update when the last of the tags are removed|
 20190312|054228|-|-|0|False|1|1|#CLEANUP Cleanup functions. Remove extra letters and start with capitals and such. OnClick instead of clicked or something|
 20190312|054305|-|-|0|False|2|1|#CLEANUP Cleanup code and use pattern matching and other features to compact the code|
 ====================================VCS
+NewVCS
+20190320|162657|v2.03 more features being worked on|Working on the tab editor window now
+VCSTodos
+20190321|113822|20190321|133158|0|True|0|1|#BUG Hashtag shortcuts added in the new hash tag in the editor are not expanded|This works now
+20190320|113213|20190321|133113|0|True|0|1|#BUG Adding hash tags in editor, if theres no return, it will combine the lines into one tag.|
+20190304|010503|20190321|133058|0|True|0|0|#BUG Every once in a while a completed Todo is added more than once...|Think I figured this one out
+20190321|074236|20190321|074354|0|True|0|1|#BUG Settings file isnt loading|changed the version from 2.02 to 2.03 and it didnt know about 2.03. Changed version to a float. Then since the version was 2.03 TESTING it crashed on conversion. Split(' ') the line and converted only the number.
+20190320|122447|20190321|070244|0|True|0|1|#BUG Editing a todo with the master list in place adds a duplicate|Got this fixed somehow...
+20190320|160037|20190321|065555|14360000000|True|0|3|#BUG Times are not updating|Cant figure this out yet, PropertyChanged is firing...dont know....Oh...Didnt implement INotifyPropertyChanged in the TodoListHolder class....fucking working now
+20190312|075941|20190321|144817|0|True|0|1|#FEATURE #POMO Pomo timer make the red bar reduce based on time left|
+20190312|075925|20190321|144805|0|True|0|1|#FEATURE #POMO Pomo timer, make the bar fill up based on time left, not just green and red on and off|
+20190312|070443|20190321|140302|0|True|0|1|#FEATURE #POMO Save current pomo time settings|
+20190312|055051|20190321|135920|0|True|0|1|#FEATURE #POMO Increment pomo by 1 minute intervals?|
+20190312|055027|20190321|135418|8510000000|True|0|1|#FEATURE #POMO Add pause to pomo timer|
+20190312|054034|20190321|133958|0|True|0|1|#FEATURE #POMO Move pomo timer to above tab bar to stop menu interactions with it. Move it all the way right|Added it to the DockPanel.Dock="Top"
+20190321|113713|20190321|133639|0|True|0|1|#EFFICIENCY #FEATURE Instead of loading new tabs all the time on startup, load them if a file is not loaded|
+20190312|070928|20190321|133225|72000000000|True|0|1|#FEATURE Can I make the shortcuts for hashtags dynamic? First letter or two of the header?|Yes
+20190312|054142|20190321|110819|12620000000|True|0|1|#EASY #FEATURE Option to remove global hotkeys. Add bool to menu to toggle as I did with autosave|Now have it Register and Unregister hotkeys when this checkbox in the menu is checked. May need to add an options menu soon
+20190320|110720|20190321|103355|0|True|0|1|#FEATURE #FILEIO Version the todos and history items and error check the strings going in|
+20190321|091145|20190321|103237|9320000000|True|0|1|#HISTORY #FEATURE In history tab, right click to reset _hasBeenCopied|That took longer than it shouldve. Was a problem with the SelectionChanged event for that list box. Always resetting the index. Commented that line out, and moving up and down by keyboard still works, and the reset copied works. Shrug
+20190320|100429|20190321|100953|1730000000|True|0|1|#HISTORY #EASY #FEATURE If the current history item is empty or not completed/copied, dont ask to start a new one at startup|Checks whether the current history item HasBeenCopied or not
+20190320|100538|20190321|100631|0|True|0|1|#HISTORY #FEATURE Make a tag on the history item that shows whether it was copied or not and make it visible somewhere|
+20190312|070408|20190321|100622|38680000000|True|0|1|#HISTORY #FEATURE No way to tell if youve saved a history or not|Changed the color of the button to green when its been copied. Older versioned files are set to true by default. Alsot versioned the save file, TodoItems and HistoryItems
+20190312|054046|20190321|080446|0|True|0|2|#FEATURE #TABS Add number of todos to tab names|
+20190312|070300|20190321|080422|0|True|0|1|#EASY #FEATURE Probably could remove recent saves and quick save from the menu bar|
+20190313|164121|20190321|080303|5040000000|True|0|1|#EASY #FEATURE Add total number of todos to title bar|
+20190313|164258|20190321|075421|0|True|0|1|#EASY #FEATURE Rename program to EtherealistVCSNotes|
+20190313|163630|20190321|074211|0|True|0|1|#EASY #FEATURE Capitalize first letters in the notes|
+20190312|070953|20190321|070454|0|True|0|1|#EASY #FEATURE Add capitalize after ? " as well|
+EndVCS
 NewVCS
 20190319|165723|v2.02 Working on master lists and all those other features|
 VCSTodos
@@ -151,13 +169,13 @@ VCSTodos
 20190228|201839|20190301|003319|9450000000|True|2147483647|1|Multiselect for multiedit|That was actually easier than I thought
 20190228|201905|20190301|014257|17540000000|True|2147483647|2|Edit rank by typing in addition to the buttons in the editor|Had to add a value checker to the TextBox. Used PreviewTextInput to check as the text is entered whether to accept the new input or not
 20190228|201806|20190301|020654|6250000000|True|2147483647|2|+- 5 minute buttons|A DateTime cannot go below zero. So checked if ticks were enough to subtract 5 minutes, else subtract the ticks
-20190301|000114|20190301|001731|18140000000|True|2147483647|1|#BUG Bug Right click edit menu doesnt work anymore. Code is checking for a ListBox, and thats a MenuItem|Menu was sending a MenuItem instead of a ListBox, but I had changed the code to receive a ListBox and List and didnt update this menu
 20190228|235622|20190301|003329|6250000000|True|2147483647|1|Add multiselect editor|
 20190301|005805|20190301|014314|3000000000|True|2147483647|1|Canceling MultiEdit window still edits stuff|Didnt check value of IsOK or not. Simple fix
 20190301|012047|20190301|014521|6000000000|True|2147483647|1|Add checkboxes for whether to change the data or not|
 20190301|002158|20190301|015450|3000000000|True|2147483647|1|Add hashtag editor|Ehh... Maybe later. For now, multiedit will add text to Todo, and will parse new tags
 20190301|020851|20190301|022052|6000000000|True|2147483647|1|Total time spent on this history item|Kinda simple.
 20190301|023158|20190301|023319|6000000000|True|2147483647|1|Found the copy history to clipboard bug.|If you just clicked the copy button, the selected index was whatever it was last. I got the index from something else
+20190301|000114|20190301|001731|18140000000|True|2147483647|1|#BUG Bug Right click edit menu doesnt work anymore. Code is checking for a ListBox, and thats a MenuItem|Menu was sending a MenuItem instead of a ListBox, but I had changed the code to receive a ListBox and List and didnt update this menu
 EndVCS
 NewVCS
 20190227|000143|1.4e|
@@ -358,6 +376,6 @@ VCSTodos
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Copy button interface|
 EndVCS
 NewVCS
-20190320|162657||
+20190321|173951||
 VCSTodos
 EndVCS

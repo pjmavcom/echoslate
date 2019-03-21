@@ -54,20 +54,22 @@
 				<Separator />
 				<MenuItem Header="Save" Click="mnuSave_Click" />
 				<MenuItem Header="SaveAs" Click="mnuSaveAs_Click" />
+				<Separator />
 				<CheckBox Name="ckAutoSave" Content="AutoSave" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="AutoSave_OnClick" IsChecked="True" />
+				<CheckBox Name="ckGlobalHotkeys" Content="Global Hotkeys" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="GlobalHotkeysToggle_OnClick" IsChecked="False" />
 				<Separator />
 				<MenuItem Header="Load" Click="mnuLoad_Click" />
 				<Separator />
 				<MenuItem Header="Quit" Click="mnuQuit_Click" />
 			</MenuItem >
-			<MenuItem Header="Quick Save" Click="mnuSave_Click" />
-			<MenuItem Name="mnuRecentSaves" Header="Recent Saves" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" MouseRightButtonUp="mnuRecentSavesRMB" >
-				<MenuItem.ContextMenu>
-					<ContextMenu >
-						<MenuItem Header="Remove" Click="mnuRemoveFile_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
-					</ContextMenu >
-				</MenuItem.ContextMenu>
-			</MenuItem >
+			<!-- <MenuItem Header="Quick Save" Click="mnuSave_Click" /> -->
+			<!-- <MenuItem Name="mnuRecentSaves" Header="Recent Saves" ItemsSource="{Binding RecentFiles}" Click="mnuSaveFiles_Click" MouseRightButtonUp="mnuRecentSavesRMB" > -->
+			<!-- 	<MenuItem.ContextMenu> -->
+			<!-- 		<ContextMenu > -->
+			<!-- 			<MenuItem Header="Remove" Click="mnuRemoveFile_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/> -->
+			<!-- 		</ContextMenu > -->
+			<!-- 	</MenuItem.ContextMenu> -->
+			<!-- </MenuItem > -->
 			<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_Click" MouseRightButtonUp="mnuRecentLoadsRMB" >
 				<MenuItem.ContextMenu>
 					<ContextMenu >
@@ -75,18 +77,41 @@
 					</ContextMenu >
 				</MenuItem.ContextMenu>
 			</MenuItem >
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-				<Label Name="lblPomo" Width="400" HorizontalContentAlignment="Right" />
-				<Button FontFamily="Marlett" FontSize="20" Content="4" Click="btnPomoTimerStart_OnClick" />
-				<Button FontFamily="Marlett" FontSize="20" Content="g" Click="btnPomoTimerStop_OnClick" />
-				<Label Name="lblPomoWork" Width="100" />
-				<Button Content="+5" Click="btnPomoWorkInc_OnClick" />
-				<Button Content="-5" Click="btnPomoWorkDec_OnClick" />
-				<Label Name="lblPomoBreak" Width="100" />
-				<Button Content="+5" Click="btnPomoBreakInc_OnClick" />
-				<Button Content="-5" Click="btnPomoBreakDec_OnClick" />
-			</StackPanel >
 		</Menu >
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" >
+			<Grid >
+				<ProgressBar Name="pbPomo" Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100" BorderBrush="DarkSlateGray" Background="Maroon" Height="30" Width="400" />
+				<Label Name="lblPomo" Width="400" HorizontalContentAlignment="Right" Foreground="Black" FontWeight="SemiBold" FontSize="20" >
+					<!-- <Label.Style > -->
+					<!-- 	<Style > -->
+					<!-- 		<Style.Triggers > -->
+					<!-- 			<DataTrigger Binding="{Binding IsPomoTimerOn}" Value="True" > -->
+					<!-- 				<Setter Property="Label.Background" Value="ForestGreen" /> -->
+					<!-- 				<Setter Property="Label.Foreground" Value="Black" /> -->
+					<!-- 			</DataTrigger > -->
+					<!-- 			<DataTrigger Binding="{Binding IsPomoTimerOn}" Value="False" > -->
+					<!-- 				<Setter Property="Label.Background" Value="#222" /> -->
+					<!-- 				<Setter Property="Label.Foreground" Value="Black" /> -->
+					<!-- 			</DataTrigger > -->
+					<!-- 		</Style.Triggers > -->
+					<!-- 	</Style > -->
+					<!-- </Label.Style > -->
+				</Label >
+			</Grid >
+			<Button FontFamily="Marlett" FontSize="20" Content="4" Click="btnPomoTimerStart_OnClick" />
+			<Button FontFamily="Marlett" FontSize="20" Content="7" Click="btnPomoTimerPause_OnClick" />
+			<Button FontFamily="Marlett" FontSize="20" Content="g" Click="btnPomoTimerStop_OnClick" />
+			<Label Name="lblPomoWork" Width="100" />
+			<Button Content="+5" Click="btnPomoWorkInc_OnClick" CommandParameter="5" />
+			<Button Content="+1" Click="btnPomoWorkInc_OnClick" CommandParameter="1" />
+			<Button Content="-1" Click="btnPomoWorkDec_OnClick" CommandParameter="1" />
+			<Button Content="-5" Click="btnPomoWorkDec_OnClick" CommandParameter="5" />
+			<Label Name="lblPomoBreak" Width="100" />
+			<Button Content="+5" Click="btnPomoBreakInc_OnClick" CommandParameter="5" />
+			<Button Content="+1" Click="btnPomoBreakInc_OnClick" CommandParameter="1" />
+			<Button Content="-1" Click="btnPomoBreakDec_OnClick" CommandParameter="1" />
+			<Button Content="-5" Click="btnPomoBreakDec_OnClick" CommandParameter="5" />
+		</StackPanel >
 		
 		<TabControl Name="TabControl">
 			<!-- VCS History tab -->
@@ -106,6 +131,11 @@
 							<Button Content="Delete" Click="btnHDeleteHistory_Click" Width="90" KeyboardNavigation.IsTabStop="False" />
 						</StackPanel >
 						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding HistoryItems}" KeyDown="lbHHistory_OnKeyDown" PreviewMouseLeftButtonDown="LBHHistory_OnMouseDown" SelectionChanged="lbHHistory_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+							<ListBox.ContextMenu >
+								<ContextMenu >
+									<MenuItem Header="Reset Copied" Click="mnuResetHistoryCopied" />
+								</ContextMenu >
+							</ListBox.ContextMenu >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
 									<Grid Margin="0,2" >
@@ -114,7 +144,22 @@
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
 										<!-- <Border Name="PlaceHolderBorder" Grid.Column="0" Margin="7"/> -->
-										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="btnHCopyHistory_Click" KeyboardNavigation.IsTabStop="False" >
+											<Button.Style >
+												<Style >
+													<Style.Triggers >
+														<DataTrigger Binding="{Binding HasBeenCopied}" Value="True" >
+															<Setter Property="Label.Background" Value="ForestGreen" />
+															<Setter Property="Label.Foreground" Value="Black" />
+														</DataTrigger >
+														<DataTrigger Binding="{Binding HasBeenCopied}" Value="False" >
+															<Setter Property="Label.Background" Value="#222" />
+															<Setter Property="Label.Foreground" Value="Black" />
+														</DataTrigger >
+													</Style.Triggers >
+												</Style >
+											</Button.Style >
+										</Button >
 										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" />
 									</Grid >
 								</DataTemplate >

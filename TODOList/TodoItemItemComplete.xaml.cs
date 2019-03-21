@@ -39,9 +39,12 @@ namespace TODOList
 		private void btnComplete_Click(object sender, EventArgs e)
 		{
 			isOk = true;
-			td.IsComplete = !td.IsComplete;
-			td.Todo = tbTodo.Text;
-			td.Tags = ParseTags(tbTags.Text);
+			td.IsComplete = true;
+			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
+			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
+//			td.Todo = tbTodo.Text;
+//			td.Tags = ParseTags(tbTags.Text);
 			td.Notes = tbNotes.Text;
 //			td.ParseTags();
 			Close();

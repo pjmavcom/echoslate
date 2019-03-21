@@ -86,10 +86,13 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// btnOK() //
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-			td.Todo = tbTodo.Text;
+//			MainWindow.ExpandHashTags(td);
+			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
+			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 			td.Notes = tbNotes.Text;
 
-			td.Tags = ParseTags(tbTags.Text);
+//			td.Tags = ParseTags(tbTags.Text);
 			
 //			td.ParseTags();
 			td.Severity = currentSeverity;
@@ -103,7 +106,7 @@ namespace TODOList
 
 		private List<string> ParseTags(string tags)
 		{
-			List<string> result = new List<string>(); // TODO: //td.Tags.ToList();
+			List<string> result = td.Tags.ToList();
 			string[] lines = tags.Split('\r');
 			
 			foreach (string s in lines)
@@ -132,9 +135,12 @@ namespace TODOList
 		{
 			isOk = true;
 			td.IsComplete = !td.IsComplete;
-			td.Todo = tbTodo.Text;
+			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
+			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
+//			td.Todo = tbTodo.Text;
 			td.Notes = tbNotes.Text;
-			td.Tags = ParseTags(tbTags.Text);
+//			td.Tags = ParseTags(tbTags.Text);
 //			td.ParseTags();
 			td.Severity = currentSeverity;
 			Close();

@@ -19,8 +19,8 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private string _todo;
 		private string _notes;
-		private readonly string _dateStarted;
-		private readonly string _timeStarted;
+		private string _dateStarted;
+		private string _timeStarted;
 		private string _dateCompleted;
 		private string _timeCompleted;
 		private DateTime _timeTaken;
@@ -48,7 +48,14 @@ namespace TODOList
 			{
 				string result = "";
 				foreach (string t in _tags)
-					result += t + " ";
+				{
+					string[] pieces = t.Split('\r');
+					foreach(string p in pieces)
+					{
+						if(p != "")
+							result += p.Trim() + " ";
+					}
+				}
 				result += _todo;
 				return result;
 			}
@@ -56,7 +63,11 @@ namespace TODOList
 		public string Notes
 		{
 			get => _notes;
-			set => _notes = value;
+			set
+			{
+				_notes = value;
+				ParseNotes();
+			}
 		}
 		public string NotesAndTags
 		{
@@ -157,6 +168,7 @@ namespace TODOList
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem()
 		{
+			_tags = new List<string>();
 			_todo = "";
 			_notes = "";
 			_dateStarted = DateTime.Now.ToString("yyyyMMdd");
@@ -165,21 +177,43 @@ namespace TODOList
 			_timeCompleted = "-";
 			_severity = 0;
 			_rank = 0;
-			ParseTags();
+//			ParseTags();
 		}
 		public TodoItem(DateTime dateTime, string todo, string notes, int sev)
 		{
-			_todo = todo;
-			_notes = notes;
+			_tags = new List<string>();
+//			_todo = todo;
+//			_notes = notes;
+			Todo = todo;
+			Notes = notes;
 			_dateStarted = dateTime.ToString("yyyyMMdd");
 			_timeStarted = dateTime.ToString("HHmmss");
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = sev;
 			_rank = 0;
-			ParseTags();
+//			ParseTags();
 		}
 		public TodoItem(string newItem)
+		{
+			_tags = new List<string>();
+			float version;
+			string[] pieces = newItem.Split('|');
+			if (pieces[0].Contains("VERSION"))
+			{
+				string[] versionPieces = pieces[0].Split(' ');
+				version = Convert.ToSingle(versionPieces[1]);
+			}
+			else
+				version = 2.0f;
+
+			if (version <= 2.0f)
+				LoadPre2_0(newItem);
+			else if (version > 2.0f)
+				Load2_0(newItem);
+		}
+
+		private void LoadPre2_0(string newItem)
 		{
 			string[] pieces = newItem.Split('|');
 			_dateStarted = pieces[0].Trim();
@@ -192,12 +226,36 @@ namespace TODOList
 			_isComplete = Convert.ToBoolean(pieces[5]); 
 			_rank = Convert.ToInt32(pieces[6]);
 			_severity = Convert.ToInt32(pieces[7]);
-			_todo = pieces[8].Trim();
+			Todo = pieces[8].Trim();
+//			_todo = pieces[8].Trim();
 			
 			if(pieces.Length > 9)
-				_notes = pieces[9].Trim();
+//				_notes = pieces[9].Trim();
+				Notes = pieces[9].Trim();
 
-			ParseTags();
+//			ParseTags();
+		}
+		private void Load2_0(string newItem)
+		{
+			string[] pieces = newItem.Split('|');
+			_dateStarted = pieces[1].Trim();
+			_timeStarted = pieces[2].Trim();
+			_dateCompleted = pieces[3].Trim();
+			_timeCompleted = pieces[4].Trim();
+
+			TimeTaken = new DateTime(Convert.ToInt64(pieces[5].Trim()));
+
+			_isComplete = Convert.ToBoolean(pieces[6]); 
+			_rank = Convert.ToInt32(pieces[7]);
+			_severity = Convert.ToInt32(pieces[8]);
+			Todo = pieces[9].Trim();
+//			_todo = pieces[8].Trim();
+			
+			if(pieces.Length > 10)
+//				_notes = pieces[9].Trim();
+				Notes = pieces[10].Trim();
+
+//			ParseTags();
 		}
 
 		// MONOGAME METHODS //////////////////////////////////////////////////////////////////////////////////////////////////////////////// MONOGAME METHODS //
@@ -212,13 +270,24 @@ namespace TODOList
 		public void ParseTags()
 		{
 			_tags = new List<string>();
-			string[] pieces = _todo.Split(' ');
+			string temp = "";
+			string[] tempPieces = _todo.Split('\r');
+			foreach (string s in tempPieces)
+				temp += s + " ";
+			tempPieces = temp.Split('\n');
+			temp = "";
+			foreach (string s in tempPieces)
+				temp += s + " ";
+			
+			string[] pieces = temp.Split(' ');
 			bool isBeginningTag = false;
 
 			List<string> list = new List<string>();
 			for (int index = 0; index < pieces.Length; index++)
 			{
 				string s = pieces[index];
+				if (s == "")
+					continue;
 				if (s.Contains('#'))
 				{
 					if (index == 0)
@@ -230,7 +299,8 @@ namespace TODOList
 						t = "#FEATURE";
 					if (t.Equals("#BUGS") || t.Equals("#B"))
 						t = "#BUG";
-					_tags.Add(t);
+					if(!_tags.Contains(t))
+						_tags.Add(t);
 					
 					s = s.Remove(0, 1);
 					s = s.ToLower();
@@ -244,7 +314,10 @@ namespace TODOList
 				
 				if (isBeginningTag)
 					continue;
-				if (index == 0 || index > 0 && pieces[index - 1].Contains('.') || list.Count == 0)
+				if (index == 0 ||
+					index > 0 && pieces[index - 1].Contains(". ") ||
+					index > 0 && pieces[index - 1].Contains("? ") ||
+					list.Count == 0)
 				{
 					s = UpperFirstLetter(s);
 				}
@@ -267,6 +340,32 @@ namespace TODOList
 			}
 			_todo = tempTodo.Trim();
 		}
+		public void ParseNotes()
+		{
+			string[] pieces = _notes.Split(' ');
+			List<string> list = new List<string>();
+			for (int index = 0; index < pieces.Length; index++)
+			{
+				string s = pieces[index];
+				if (index == 0 ||
+					index > 0 && pieces[index - 1].Contains(". ") ||
+					index > 0 && pieces[index - 1].Contains("? ") ||
+					list.Count == 0)
+				{
+					s = UpperFirstLetter(s);
+				}
+				list.Add(s);
+			}
+
+			string tempNotes = "";
+			foreach (string s in list)
+			{
+				if (s == "")
+					continue;
+				tempNotes += s + " ";
+			}
+			_notes = tempNotes.Trim();
+		}
 		private string UpperFirstLetter(string s)
 		{
 			string result = "";
@@ -282,7 +381,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + TagsAndTodoToSave + "|" + _notes;
+			string result = "VERSION " + MainWindow.VERSION + "|" + _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + TagsAndTodoToSave + "|" + _notes;
 			return result;
 		}
 		public string ToClipboard()
