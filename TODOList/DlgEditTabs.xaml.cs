@@ -9,12 +9,13 @@ using System.Windows.Controls;
 
 namespace TODOList
 {
-	public partial class EditTabs : Window
+	public partial class DlgEditTabs : Window
 	{
 		public List<TabItemHolder> newTabItemList;
+		public List<string> ResultList;
 		public bool Result;
 		
-		public EditTabs(List<TabItem> list)
+		public DlgEditTabs(List<TabItem> list)
 		{
 			newTabItemList = new List<TabItemHolder>();
 			foreach (TabItem ti in list)
@@ -40,6 +41,11 @@ namespace TODOList
 		
 		private void Ok_OnClick(object sender, EventArgs e)
 		{
+			ResultList = new List<string>();
+			foreach (TabItemHolder tih in newTabItemList)
+			{
+				ResultList.Add(tih.Name);
+			}	
 			Result = true;
 			Close();
 		}
@@ -74,7 +80,7 @@ namespace TODOList
 				} while (nameExists);
 				ti.Name = name + tabNumber;
 				ti.Header = name + tabNumber;
-				newTabItemList.Insert(index, new TabItemHolder(ti));
+				newTabItemList.Insert(index + 1, new TabItemHolder(ti));
 
 				RefreshTabOrder();
 				lbTabs.Items.Refresh();
@@ -138,94 +144,15 @@ namespace TODOList
 			RefreshTabOrder();
 			lbTabs.Items.Refresh();
 		}
+		private void TextBox_OnPreviewTextInput(object sender, EventArgs e)
+		{
+			if (sender is TextBox tb)
+			{
+				TabItemHolder tih = tb.DataContext as TabItemHolder;
+				tih.Name = tb.Text;
+			}
+		}
 	}
 
-	public class TabItemHolder : INotifyPropertyChanged
-	{
-		private TabItem _ti;
-		public bool _canMoveUp;
-		public bool _canMoveDown;
-		private int _currentIndex;
-		private int _maxIndex;
-
-		public string Header
-		{
-			get => _ti.Header as string;
-			set
-			{
-				_ti.Header = value;
-				OnPropertyChanged();
-			}
-		}
-		public string Name
-		{
-			get => _ti.Name;
-			set 
-			{
-				_ti.Name = value;
-				OnPropertyChanged();
-			}
-		}
-		public bool CanMoveUp
-		{
-			get => _canMoveUp;
-			set
-			{
-				_canMoveUp = value;
-				OnPropertyChanged();
-			}
-		}
-		public bool CanMoveDown
-		{
-			get => _canMoveDown;
-			set
-			{
-				_canMoveDown = value;
-				OnPropertyChanged();
-			}
-		}
-		public int CurrentIndex
-		{
-			get => _currentIndex;
-			set
-			{
-				CanMoveUp = true;
-				CanMoveDown = true;
-				
-				if (value <= 0)
-				{
-					_currentIndex = 0;
-					CanMoveUp = false;
-				}
-				else if (value >= _maxIndex - 1)
-				{
-					_currentIndex = _maxIndex - 1;
-					CanMoveDown = false;
-				}
-				else
-				{
-					_currentIndex = value;
-				}
-				OnPropertyChanged();
-			}
-		}
-		public int MaxIndex
-		{
-			get => _maxIndex;
-			set => _maxIndex = value;
-		}
-
-		public TabItemHolder(TabItem ti)
-		{
-			_ti = ti;
-		}
-		
-		
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
+	
 }

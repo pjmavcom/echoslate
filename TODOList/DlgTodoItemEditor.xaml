@@ -1,10 +1,10 @@
-<Window x:Class="TODOList.TodoItemEditor"
+<Window x:Class="TODOList.DlgTodoItemEditor"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		mc:Ignorable="d"
-		Title="TodoItemEditor" Height="430" Width="610"
+		Title="Todo Item Edit" Height="530" Width="650"
 		FocusManager.FocusedElement="{Binding ElementName=tbTodo}"
 		Style="{StaticResource {x:Type Window}}" >
 	
@@ -32,27 +32,42 @@
 			
 			<Label Content="Rank: " Margin="2" />
 			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="tbRank_PreviewTextInput" TextChanged="tbRank_Changed" />
-			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="Marlett" FontSize="20" Content="55" Click="btnRank_Click" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="Marlett" FontSize="20" Content="66" Click="btnRank_Click" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
+			
+			<Button FontFamily="WingDings" FontSize="20" Content="ò" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="ñ" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="Ý" Click="btnRank_Click" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="Þ" Click="btnRank_Click" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
 			
 			<Label Content="Time: " Margin="2" />
 			<Label Name="lblTime" Margin="2" Width="40" />
-			<Button Content="-5m" Click="btnTime_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="+5m" Click="btnTime_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="-10m" Click="btnTime_Click" CommandParameter="down10" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="-5m" Click="btnTime_Click" CommandParameter="down5" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="+5m" Click="btnTime_Click" CommandParameter="up5" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="+10m" Click="btnTime_Click" CommandParameter="up10" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
+			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="462" Margin="2" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbNotes" TextWrapping="Wrap" KeyboardNavigation.TabIndex="1" Height="100" Width="500" Margin="2" />
+			<TextBox Name="tbNotes" TextWrapping="Wrap" KeyboardNavigation.TabIndex="1" Height="100" Width="462" Margin="2" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
-			<Label Content="Tags:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbTags" TextWrapping="Wrap" TabIndex="2" Height="100" Width="500" Margin="2" KeyboardNavigation.TabIndex="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+			<StackPanel >
+				<Label Content="Tags:" HorizontalAlignment="Right" Width="80" Margin="2"  />
+				<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
+			</StackPanel >
+			<ListBox Name="lbTags" Height="200" Width="462" Margin="2" KeyboardNavigation.TabIndex="2" >
+				<ListBox.ItemTemplate >
+					<DataTemplate >
+						<StackPanel Orientation="Horizontal" Height="35" >
+							<Button Content="X" Click="DeleteTag_OnClick" Width="35" />
+							<TextBox Text="{Binding Text}" Width="200" />
+						</StackPanel >
+					</DataTemplate >
+				</ListBox.ItemTemplate >
+			</ListBox >
 		</StackPanel >
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
 			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />

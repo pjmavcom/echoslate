@@ -11,12 +11,12 @@ using System.Runtime.CompilerServices;
 
 namespace TODOList
 {
-	public class TodoListHolder : INotifyPropertyChanged
+	public class TodoItemHolder : INotifyPropertyChanged
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private TodoItem _td;
 		private int _rank;
-		private long _timeTaken;
+		private DateTime _timeTaken;
 		private long _timeTakenInMinutes;
 		
 
@@ -52,19 +52,22 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
-		public long TimeTaken
+		public DateTime TimeTaken
 		{
 			get => _timeTaken;
 			set
 			{
 				_timeTaken = value;
+				TimeTakenInMinutes = _timeTaken.Ticks / TimeSpan.TicksPerMinute;
 				OnPropertyChanged();
 			}
 		}
+		public string TimeStarted => TD.TimeStarted;
+		public string DateStarted => TD.DateStarted;
 		
 		
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-		public TodoListHolder(TodoItem td)
+		public TodoItemHolder(TodoItem td)
 		{
 			_td = td;
 			_rank = int.MaxValue;

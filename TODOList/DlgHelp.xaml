@@ -1,0 +1,54 @@
+<Window x:Class="TODOList.DlgHelp"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:local="clr-namespace:TODOList"
+		mc:Ignorable="d"
+		Title="Help" Height="400" Width="380" 
+		Style="{StaticResource {x:Type Window}}" >
+	<Grid TextElement.FontSize="16" TextElement.Foreground="Gray" >
+		<StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Alt+Enter" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Add new Todo item" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Ctrl+Enter" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Quick complete new Todo item" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Enter" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Edit selected Todo item" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Numpad /" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Previous tab" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Numpad *" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Next tab" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Numpad -" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Decrease new severity" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Numpad +" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Increase new severity" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Ctrl+S" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Quick save" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Ctrl+," Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Quick load previous file" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+			<StackPanel Orientation="Horizontal" >
+				<Label Content="Ctrl+P" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
+				<Label Content="=Toggle work timer" Width="300" HorizontalContentAlignment="Left" />
+			</StackPanel >
+		</StackPanel >
+	</Grid>
+</Window>

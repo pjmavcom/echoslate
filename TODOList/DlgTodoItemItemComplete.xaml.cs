@@ -6,13 +6,13 @@ using System.Windows.Controls;
 
 namespace TODOList
 {
-	public partial class TodoItemComplete
+	public partial class DlgTodoItemComplete
 	{
 		private readonly TodoItem td;
 		public TodoItem Result => td;
 		public bool isOk;
 
-		public TodoItemComplete(TodoItem td)
+		public DlgTodoItemComplete(TodoItem td)
 		{
 			InitializeComponent();
 			this.td = new TodoItem(td.ToString());
@@ -83,20 +83,29 @@ namespace TODOList
 		
 		private void btnTime_Click(object sender, EventArgs e)
 		{
-			Button b = sender as Button;
-			if ((string) b.CommandParameter == "up")
+			if (sender is Button b)
 			{
-				td.TimeTaken = td.TimeTaken.AddMinutes(5);
-				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
-			}
-			else if ((string) b.CommandParameter == "down")
-			{
-				if (td.TimeTaken.Ticks >= (5 * TimeSpan.TicksPerMinute))
-					td.TimeTaken = td.TimeTaken.AddMinutes(-5);
-				else
-					td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
-				
-				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+				int inc = 0;
+				switch ((string) b.CommandParameter)
+				{
+					case "down10":
+						inc = -10;
+						break;
+					case "down5":
+						inc = -5;
+						break;
+					case "up5":
+						inc = 5;
+						break;
+					case "up10":
+						inc = 10;
+						break;
+				}
+					if (td.TimeTaken.Ticks >= ((-inc) * TimeSpan.TicksPerMinute))
+						td.TimeTaken = td.TimeTaken.AddMinutes(inc);
+					else
+						td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
+					lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
 			}
 		}
 	}

@@ -7,15 +7,17 @@ using System.Windows.Input;
 
 namespace TODOList
 {
-	public partial class TodoItemEditor
+	public partial class DlgTodoItemEditor
 	{
 		private int currentSeverity;
 		private readonly TodoItem td;
 		public TodoItem Result => td;
+		public List<string> ResultTags;
 		public bool isOk;
 		private readonly int previousRank;
+		private List<TagHolder> Tags { get; set; }
 		
-		public TodoItemEditor(TodoItem td)
+		public DlgTodoItemEditor(TodoItem td)
 		{
 			InitializeComponent();
 			this.td = new TodoItem(td.ToString())
@@ -27,10 +29,15 @@ namespace TODOList
 			cbSev.SelectedIndex = currentSeverity;
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
-			tbTags.Text = td.TagsList;
 			tbRank.Text = td.Rank.ToString();
 			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
 			previousRank = td.Rank;
+
+			Tags = new List<TagHolder>();
+			foreach (string tag in td.Tags)
+				Tags.Add(new TagHolder(tag));
+			lbTags.ItemsSource = Tags;
+			lbTags.Items.Refresh();
 			
 			CenterWindowOnMouse();
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
@@ -46,14 +53,10 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-
-		// METHOD  ///////////////////////////////////// Severity() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
 			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex;
 		}
-
-		// METHOD  ///////////////////////////////////// Rank() //
 		private void btnRank_Click(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
@@ -82,13 +85,52 @@ namespace TODOList
 			td.Rank = td.Rank > 0 ? td.Rank : 0;
 			tbRank.Text = td.Rank.ToString();
 		}
-
-		// METHOD  ///////////////////////////////////// btnOK() //
+		private void AddTag_OnClick(object sender, EventArgs e)
+		{
+			string name = "#NewTag";
+			int tagNumber = 0;
+			bool nameExists = false;
+			do
+			{
+				foreach (TagHolder t in Tags)
+				{
+					if (t.Text == name + tagNumber.ToString())
+					{
+						tagNumber++;
+						nameExists = true;
+						break;
+					}
+					else 
+						nameExists = false;
+				}
+			} while (nameExists);
+			TagHolder th = new TagHolder(name + tagNumber);
+			Tags.Add(th);
+			lbTags.Items.Refresh();
+		}
+		private void DeleteTag_OnClick(object sender, EventArgs e)
+		{
+			if (sender is Button b)
+			{
+				TagHolder th = b.DataContext as TagHolder;
+				Tags.Remove(th);
+				lbTags.Items.Refresh();
+				
+			}
+		}
 		private void btnOK_Click(object sender, EventArgs e)
 		{
+			
 //			MainWindow.ExpandHashTags(td);
 			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
-			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			string tempTags = "";
+			ResultTags = new List<string>();
+			foreach(TagHolder th in Tags)
+				if (!ResultTags.Contains(th.Text))
+					ResultTags.Add(th.Text);
+			foreach (string tag in ResultTags)
+				tempTags += tag + " ";
+			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 			td.Notes = tbNotes.Text;
 
@@ -136,7 +178,14 @@ namespace TODOList
 			isOk = true;
 			td.IsComplete = !td.IsComplete;
 			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
-			string tempTags = MainWindow.ExpandHashTagsInString(tbTags.Text);
+			string tempTags = "";
+			ResultTags = new List<string>();
+			foreach(TagHolder th in Tags)
+				if (!ResultTags.Contains(th.Text))
+					ResultTags.Add(th.Text);
+			foreach (string tag in ResultTags)
+				tempTags += tag + " ";
+			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 //			td.Todo = tbTodo.Text;
 			td.Notes = tbNotes.Text;
@@ -173,20 +222,29 @@ namespace TODOList
 
 		private void btnTime_Click(object sender, EventArgs e)
 		{
-			Button b = sender as Button;
-			if ((string) b.CommandParameter == "up")
+			if (sender is Button b)
 			{
-				td.TimeTaken = td.TimeTaken.AddMinutes(5);
-				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
-			}
-			else if ((string) b.CommandParameter == "down")
-			{
-				if (td.TimeTaken.Ticks >= (5 * TimeSpan.TicksPerMinute))
-					td.TimeTaken = td.TimeTaken.AddMinutes(-5);
-				else
-					td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
-				
-				lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+				int inc = 0;
+				switch ((string) b.CommandParameter)
+				{
+					case "down10":
+						inc = -10;
+						break;
+					case "down5":
+						inc = -5;
+						break;
+					case "up5":
+						inc = 5;
+						break;
+					case "up10":
+						inc = 10;
+						break;
+				}
+					if (td.TimeTaken.Ticks >= ((-inc) * TimeSpan.TicksPerMinute))
+						td.TimeTaken = td.TimeTaken.AddMinutes(inc);
+					else
+						td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
+					lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
 			}
 		}
 	}

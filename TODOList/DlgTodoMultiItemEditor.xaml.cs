@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -9,11 +10,12 @@ using System.Windows.Input;
 
 namespace TODOList
 {
-	public partial class TodoMultiItemEditor : Window
+	public partial class DlgTodoMultiItemEditor : Window
 	{
 		private int currentSeverity;
 		private readonly TodoItem td;
 		public TodoItem Result => td;
+		public List<string> ResultTags;
 		public bool isOk;
 		public bool isComplete;
 		private readonly int previousRank;
@@ -28,11 +30,20 @@ namespace TODOList
 		public bool ChangeRank => changeRank;
 		public bool ChangeComplete => changeComplete;
 		public bool ChangeTodo => changeTodo;
+		public bool ChangeTag { get; set; }
+
+		public List<TagHolder> Tags { get; set; }
 		
 		
-		public TodoMultiItemEditor(TodoItem td)
+		
+		public DlgTodoMultiItemEditor(TodoItem td, List<string> tags)
 		{
 			InitializeComponent();
+
+			Tags = new List<TagHolder>();
+			foreach (string tag in tags)
+				Tags.Add(new TagHolder(tag));
+			
 			this.td = new TodoItem(td.ToString())
 			{
 				IsTimerOn = td.IsTimerOn
@@ -46,6 +57,8 @@ namespace TODOList
 			
 			CenterWindowOnMouse();
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
+			lbTags.ItemsSource = Tags;
+			lbTags.Items.Refresh();
 		}
 		private void CenterWindowOnMouse()
 		{
@@ -58,14 +71,46 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-
-		// METHOD  ///////////////////////////////////// Severity() //
 		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
 		{
 			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex;
 		}
-
-		// METHOD  ///////////////////////////////////// Rank() //
+		private void DeleteTag_OnClick(object sender, EventArgs e)
+		{
+			if (sender is Button b)
+			{
+				TagHolder th = b.DataContext as TagHolder;
+				Tags.Remove(th);
+				lbTags.Items.Refresh();
+			}
+		}
+		private void AddTag_OnClick(object sender, EventArgs e)
+		{
+			string name = "#NewTag";
+			int tagNumber = 0;
+			bool nameExists = false;
+			do
+			{
+				foreach (TagHolder t in Tags)
+				{
+					if (t.Text == name + tagNumber.ToString())
+					{
+						tagNumber++;
+						nameExists = true;
+						break;
+					}
+					else 
+						nameExists = false;
+				}
+			} while (nameExists);
+			TagHolder th = new TagHolder(name + tagNumber);
+			Tags.Add(th);
+			lbTags.Items.Refresh();
+		}
+		private void ckTags_Clicked(object sender, EventArgs e)
+		{
+			ChangeTag = (bool) ckTags.IsChecked;
+		}
 		private void ckRank_Clicked(object sender, EventArgs e)
 		{
 			changeRank = (bool) ckRank.IsChecked;
@@ -129,6 +174,10 @@ namespace TODOList
 			
 			if (previousRank > td.Rank)
 				td.Rank--;
+
+			ResultTags = new List<string>();
+			foreach (TagHolder th in Tags)
+				ResultTags.Add(th.Text);
 			
 			Close();
 		}

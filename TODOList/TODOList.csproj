@@ -55,26 +55,37 @@
 			<Generator>MSBuild:Compile</Generator>
 			<SubType>Designer</SubType>
 		</ApplicationDefinition>
-		<Compile Include="AddTab.xaml.cs">
-		  <DependentUpon>AddTab.xaml</DependentUpon>
+		<Compile Include="DlgAddNewHistory.xaml.cs">
+		  <DependentUpon>DlgAddNewHistory.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="DlgHelp.xaml.cs">
+		  <DependentUpon>DlgHelp.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="DlgYesNo.xaml.cs">
+		  <DependentUpon>DlgYesNo.xaml</DependentUpon>
 		</Compile>
 		<Compile Include="HistoryItem.cs" />
+		<Compile Include="MasterListItem.cs" />
 		<Compile Include="ProgressBarForegroundConverter.cs" />
-		<Compile Include="EditTabs.xaml.cs">
-		  <DependentUpon>EditTabs.xaml</DependentUpon>
+		<Compile Include="DlgEditTabs.xaml.cs">
+		  <DependentUpon>DlgEditTabs.xaml</DependentUpon>
 		</Compile>
-		<Compile Include="TodoItemItemComplete.xaml.cs">
-		  <DependentUpon>TodoItemComplete.xaml</DependentUpon>
+		<Compile Include="DlgTodoItemItemComplete.xaml.cs">
+		  <DependentUpon>DlgTodoItemComplete.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="TabItemHolder.cs" />
+		<Compile Include="TagHolder.cs" />
 		<Compile Include="TodoItem.cs" />
-		<Compile Include="TodoItemEditor.xaml.cs">
-		  <DependentUpon>TodoItemEditor.xaml</DependentUpon>
+		<Compile Include="DlgTodoItemEditor.xaml.cs">
+		  <DependentUpon>DlgTodoItemEditor.xaml</DependentUpon>
 		</Compile>
-		<Compile Include="TodoListHolder.cs" />
-		<Compile Include="TodoMultiItemEditor.xaml.cs">
-		  <DependentUpon>TodoMultiItemEditor.xaml</DependentUpon>
+		<Compile Include="TodoItemHolder.cs" />
+		<Compile Include="DlgTodoMultiItemEditor.xaml.cs">
+		  <DependentUpon>DlgTodoMultiItemEditor.xaml</DependentUpon>
 		</Compile>
-		<Page Include="AddTab.xaml" />
+		<Page Include="DlgAddNewHistory.xaml" />
+		<Page Include="DlgHelp.xaml" />
+		<Page Include="DlgYesNo.xaml" />
 		<Page Include="MainWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 			<SubType>Designer</SubType>
@@ -87,10 +98,10 @@
 			<DependentUpon>MainWindow.xaml</DependentUpon>
 			<SubType>Code</SubType>
 		</Compile>
-		<Page Include="EditTabs.xaml" />
-		<Page Include="TodoItemComplete.xaml" />
-		<Page Include="TodoItemEditor.xaml" />
-		<Page Include="TodoMultiItemEditor.xaml" />
+		<Page Include="DlgEditTabs.xaml" />
+		<Page Include="DlgTodoItemComplete.xaml" />
+		<Page Include="DlgTodoItemEditor.xaml" />
+		<Page Include="DlgTodoMultiItemEditor.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Properties\AssemblyInfo.cs">

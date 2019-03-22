@@ -1,11 +1,11 @@
-<Window x:Class="TODOList.TodoMultiItemEditor"
+<Window x:Class="TODOList.DlgTodoMultiItemEditor"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
-		Title="TodoMultiItemEditor" Height="320" Width="610"
+		Title="Todo Multi Item Edit" Height="420" Width="610"
 		Style="{StaticResource {x:Type Window}}" >
 <Window.Resources >
 		<RoutedUICommand x:Key="Complete" Text="Some Text" />
@@ -40,6 +40,23 @@
 		<StackPanel Orientation="Horizontal" >
 			<CheckBox Content="TODO: " Name="ckTodo" Click="ckTodo_Clicked" Margin="2" Foreground="LightGray" />
 			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
+		</StackPanel >
+		
+		<StackPanel Orientation="Horizontal" >
+			<StackPanel Width="74" >
+				<CheckBox Content="Tags:" Name="ckTags" Click="ckTags_Clicked" Foreground="LightGray" HorizontalAlignment="Right" Width="72" Margin="2"  />
+				<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
+			</StackPanel >
+			<ListBox Name="lbTags" Height="200" Width="500" Margin="2" KeyboardNavigation.TabIndex="2" >
+				<ListBox.ItemTemplate >
+					<DataTemplate >
+						<StackPanel Orientation="Horizontal" Height="35" >
+							<Button Content="X" Click="DeleteTag_OnClick" Width="35" />
+							<TextBox Name="tbTag" Text="{Binding Text}" Width="200" />
+						</StackPanel >
+					</DataTemplate >
+				</ListBox.ItemTemplate >
+			</ListBox >
 		</StackPanel >
 		
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >

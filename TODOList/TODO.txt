@@ -2,41 +2,45 @@ Other
 Feature
 Bug
 Cleanup
+Rank
 ====================================TODO
 20190220|191143|-|-|0|False|1|3|Update version number|
-20190312|055121|-|-|0|False|2|1|Add active todos to a list to increment the timers rather than iterate through them all|
-20190321|143422|-|-|0|False|3|1|#INTERFACE Make the interface look clean|
-20190312|065925|-|-|0|False|1|2|#FEATURE #TABS #WINDOW Edit tabs window instead of add remove menus|
-20190312|055659|-|-|0|False|2|2|#FEATURE #TABS Move tabs left and right|
-20190312|070233|-|-|0|False|3|1|#FEATURE Multiedit tags, remove if they all have the same tag or add|
-20190312|070313|-|-|0|False|4|1|#FEATURE #WINDOW Add help menu with hotkey shortcuts|
-20190312|071222|-|-|0|False|5|1|#FEATURE #WINDOW In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well|
-20190312|071345|-|-|0|False|6|1|#FEATURE Maybe remember each files previous open tab?|
-20190319|161440|-|-|0|False|7|1|#FEATURE #WINDOW #HISTORY Make a new history dialog you can put a title into|
-20190319|161629|-|-|0|False|8|1|#FEATURE Put save and new and other windows in center of window location|
-20190319|161836|-|-|0|False|9|1|#FEATURE #WINDOW #HISTORY The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|
-20190320|095550|-|-|0|False|10|1|#FEATURE Edit time or +/- 10 minute buttons as well|
-20190320|103524|-|-|0|False|11|1|#FEATURE Turn save files to binary|
-20190320|110649|-|-|0|False|12|1|#FEATURE Make a backup system for the files|
-20190321|111228|-|-|0|False|13|1|#FEATURE If a todo only has the one tag that it is sorted by, move that to top of list on sorting by that hashtag|
-20190320|154943|-|-|1120000000|False|1|3|#BUG Bugs for MasterList|
-20190320|103425|-|-|18000000000|False|2|1|#BUG If the save file is wrong it wont start|
-20190303|235132|-|-|6000000000|False|3|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
-20190312|072052|-|-|6000000000|False|4|0|#BUG Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|This works most of the time. Sometimes it doesnt
-20190319|155958|-|-|0|False|5|0|#BUG #HISTORY When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
-20190320|100613|-|-|0|False|6|1|#BUG Moving tags between lists keeps the same rank as the previous list. Maybe reset it?|
-20190320|154423|-|-|0|False|7|1|#BUG Lists are slow when theres alot of them. Much faster in release though. May not be an issue, or need a small optimization|
-20190321|063739|-|-|0|False|8|1|#BUG #SORTING Sorting not working on tab[0]|
-20190321|070122|-|-|0|False|9|0|#BUG #FILEIO Save file is missing todos sometimes...cant Figure out why yet. It is saving the _masterList.|
-20190321|074451|-|-|0|False|10|1|#BUG Editor is not parsing Notes|
-20190321|075033|-|-|0|False|11|3|#BUG Delete history todo crashes|
-20190321|075203|-|-|0|False|12|1|#BUG Not saving rank when editing todo. Its not checking the TodoListHolder rank|
-20190321|101714|-|-|0|False|13|1|#BUG Reset timer does reset timer, but it doesnt show until a refresh|
-20190321|101723|-|-|0|False|14|1|#BUG Rank up and down dont work|
-20190321|111114|-|-|0|False|15|1|#BUG Hashtag drop down doesnt update when the last of the tags are removed|
+20190321|143422|-|-|0|False|2|1|#INTERFACE Make the interface look clean|
+20190320|103524|-|-|0|False|1|1|#FEATURE Turn save files to binary|
+20190303|235132|-|-|6000000000|False|1|0|#BUG Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
+20190312|072052|-|-|6000000000|False|2|0|#BUG Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|This works most of the time. Sometimes it doesnt
+20190319|155958|-|-|0|False|3|0|#BUG #HISTORY When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
 20190312|054228|-|-|0|False|1|1|#CLEANUP Cleanup functions. Remove extra letters and start with capitals and such. OnClick instead of clicked or something|
 20190312|054305|-|-|0|False|2|1|#CLEANUP Cleanup code and use pattern matching and other features to compact the code|
+20190320|100613|-|-|0|False|1|1|#RANK Moving tags between lists keeps the same rank as the previous list. Maybe reset it? rank|
+20190321|075203|-|-|0|False|2|1|#RANK Not saving rank when editing todo. Its not checking the TodoListHolder rank|
+20190321|101723|-|-|0|False|3|1|#RANK Rank up and down dont work|
+20190322|155004|-|-|0|False|4|1|#RANK To fix ranks, could add a new class that masterlist holds, holding either a dictionary of tabs and their ranks within the tab or a list with individual ranks per list, whether it goes in that list or not|
 ====================================VCS
+NewVCS
+20190321|173951|v2.04 Most features are done|Working on ranks and bugs next, but changing something big. This is a backup in case I give up on this way
+VCSTodos
+20190320|154423|20190322|154829|0|True|0|1|#BUG Lists are slow when theres alot of them. Much faster in release though. May not be an issue, or need a small optimization|Looks like the slow down is not in the sorting but in the viewing or loading of the listboxes. Which is so much slower in debug than release. I checked, the sorting takes 1/10th of a second with about 20 todos to sort in debug mode. looks a lot quicker in release, dont think its a problem really
+20190321|111114|20190322|151722|0|True|0|1|#BUG Hashtag drop down doesnt update when the last of the tags are removed|Already working
+20190321|101714|20190322|151615|0|True|0|1|#BUG Reset timer does reset timer, but it doesnt show until a refresh|Dont know what the problem was
+20190321|074451|20190322|145141|0|True|0|1|#BUG Editor is not parsing Notes|This looks like its working
+20190322|063605|20190322|142922|0|True|0|1|#BUG Dont let All tab have a hash shortcut|
+20190321|075033|20190322|140639|0|True|0|3|#BUG Delete history todo crashes|Think this is already fixed a while ago.
+20190321|070122|20190322|140352|0|True|0|0|#BUG #FILEIO Save file is missing todos sometimes...cant Figure out why yet. It is saving the _masterList. Ok, so when clicking complete from the todo editor, it only saves the first few todos. May not be an issue with the changes Ive made, but checking it out anyway|Ok, looks like this is fixed in the new version. Saving the _masterList is probably fixing it all
+20190321|063739|20190322|134803|0|True|0|1|#BUG #SORTING Sorting not working on tab[0]|Wasnt creating a new TodoListHolder for the master list, so it was sorting by other lists attributes, as well as by TD.Rank instead of the TodoListHolders rank
+20190322|063552|20190322|080740|0|True|0|1|#BUG #FEATURE Dont let user change All tab.|
+20190321|111228|20190322|133608|0|True|0|1|#FEATURE If a todo only has the one tag that it is sorted by, move that to top of list on sorting by that hashtag|
+20190320|110649|20190322|130341|0|True|0|1|#FEATURE Make a backup system for the files|
+20190320|095550|20190322|123921|0|True|0|1|#FEATURE Edit time or +/- 10 minute buttons as well|
+20190319|161629|20190322|112010|0|True|0|1|#FEATURE Put save and new and other windows in center of window location|Created a new dialog window for this, DlgYesNo, got rid of all MessageBoxes
+20190312|071222|20190322|100708|0|True|0|1|#WINDOW #FEATURE In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well|
+20190312|070313|20190322|100702|12000000000|True|0|1|#WINDOW #FEATURE Add help menu with hotkey shortcuts|
+20190312|070233|20190322|092559|36000000000|True|0|1|#FEATURE Multiedit tags, remove if they all have the same tag or add|
+20190319|161836|20190322|075223|0|True|0|1|#WINDOW #FEATURE #HISTORY The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|Just made the text all selected when it starts, can type right over it if necessary
+20190319|161440|20190322|071024|0|True|0|1|#WINDOW #FEATURE #HISTORY Make a new history dialog you can put a title into|Repurposed the AddTab dialog and renamed all dialogs with Dlg in front
+20190312|055659|20190322|065135|0|True|0|2|#FEATURE #TABS Move tabs left and right|
+20190312|065925|20190322|065133|72000000000|True|0|2|#FEATURE #TABS #WINDOW Edit tabs window instead of add remove menus|Had a problem to start, couldnt hide the up and down buttons for the ones that couldnt move. I had the wrong list bound, else it wouldve only taken an hour
+EndVCS
 NewVCS
 20190320|162657|v2.03 more features being worked on|Working on the tab editor window now
 VCSTodos
@@ -376,6 +380,6 @@ VCSTodos
 20190209|112215|20190209|112231|0|True|0|1|#INTERFACE Copy button interface|
 EndVCS
 NewVCS
-20190321|173951||
+20190322|161151||
 VCSTodos
 EndVCS

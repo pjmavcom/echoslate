@@ -1,11 +1,11 @@
-<Window x:Class="TODOList.EditTabs"
+<Window x:Class="TODOList.DlgEditTabs"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
-		Title="RemoveTab" Height="600" Width="400" 
+		Title="Edit Tab" Height="600" Width="400" 
 		FocusManager.FocusedElement="{Binding ElementName=lbTabs}"
 		Style="{StaticResource {x:Type Window}}" >
 	
@@ -22,9 +22,9 @@
 			<ListBox.ItemTemplate >
 				<DataTemplate >
 					<StackPanel Orientation="Horizontal" Height="35">
-						<Button Width="30" Content="+" Click="AddNewTab_OnClick" />
-						<Button Width="30" Content="X" Click="RemoveTab_OnClick" />
-						<TextBox Width="248" Text="{Binding Name}" />
+						<Button Width="30" Content="+" Click="AddNewTab_OnClick" Visibility="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" />
+						<Button Width="30" Content="X" Click="RemoveTab_OnClick" Visibility="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" />
+						<TextBox Width="248" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_OnPreviewTextInput" />
 						<Button Width="30" Content="6" FontFamily="Marlett" Click="Move_OnClick" CommandParameter="down" >
 							<Button.Style >
 								<Style TargetType="Button">
