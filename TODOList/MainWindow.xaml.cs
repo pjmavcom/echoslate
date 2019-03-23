@@ -29,7 +29,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.01";
+		public const string VERSION = "3.02";
 		private const float VERSIONINCREMENT = 0.01f;
 
 		private readonly List<TabItem> _tabList;
@@ -400,19 +400,21 @@ namespace TODOList
 			};
 			string args = "/c git --git-dir " + gitPath + "\\.git log > \"" + _historyLogPath + "\"";
 			startInfo.Arguments = args;
-
-			 Process.Start(startInfo);
-
-			 List<string> log = new List<string>();
-			 StreamReader stream = new StreamReader(File.Open(_historyLogPath, FileMode.OpenOrCreate));
-			 string line = stream.ReadLine();
-			 while (line != null)
-			 {
-				 log.Add(line);
-				 line = stream.ReadLine();
-			 }
-			 lbHistoryLog.ItemsSource = log;
-			 lbHistoryLog.Items.Refresh();
+			Process p = new Process();
+			p.StartInfo = startInfo;
+			p.Start();
+			p.WaitForExit();
+			
+			List<string> log = new List<string>();
+			StreamReader stream = new StreamReader(File.Open(_historyLogPath, FileMode.OpenOrCreate));
+			string line = stream.ReadLine();
+			while (line != null)
+			{
+				log.Add(line);
+				line = stream.ReadLine();
+			}
+			lbHistoryLog.ItemsSource = log;
+			lbHistoryLog.Items.Refresh();
 		}
 		private string FindGitDirectory(string dir)
 		{
@@ -877,11 +879,12 @@ namespace TODOList
 		}
 		private void AddNewHistoryItem()
 		{
-			string[] versionPieces = VERSION.Split(' ');
-			DlgAddNewHistory dlgANH = new DlgAddNewHistory(Convert.ToSingle(versionPieces[0]), VERSIONINCREMENT);
+			DlgAddNewHistory dlgANH = new DlgAddNewHistory(_currentProjectVersion, _projectVersionIncrement);
 			dlgANH.ShowDialog();
 			if (!dlgANH.Result)
 				return;
+
+			_currentProjectVersion += _projectVersionIncrement;
 
 			_currentHistoryItem = new HistoryItem(DateTime.Now)
 			{
