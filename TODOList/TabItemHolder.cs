@@ -20,6 +20,7 @@ namespace TODOList
 		private int _currentIndex;
 		private int _maxIndex;
 		private Visibility _isVisible;
+		private string _name;
 
 		public string Header
 		{
@@ -32,10 +33,10 @@ namespace TODOList
 		}
 		public string Name
 		{
-			get => _ti.Name;
+			get => _name;
 			set 
 			{
-				_ti.Name = value;
+				_name = value;
 				OnPropertyChanged();
 			}
 		}
@@ -110,6 +111,7 @@ namespace TODOList
 		public TabItemHolder(TabItem ti)
 		{
 			_ti = ti;
+			Name = _ti.Name;
 		}
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

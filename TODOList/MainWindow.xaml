@@ -52,11 +52,12 @@
 			<MenuItem Header="_File" >
 				<MenuItem Header="New" Click="mnuNew_Click" /> 				
 				<Separator />
+				<MenuItem Header="Options" Click="mnuOptions_Click" />
+				<Separator />
 				<MenuItem Header="Save" Click="mnuSave_Click" />
 				<MenuItem Header="SaveAs" Click="mnuSaveAs_Click" />
-				<Separator />
-				<CheckBox Name="ckAutoSave" Content="AutoSave" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="AutoSave_OnClick" IsChecked="True" />
-				<CheckBox Name="ckGlobalHotkeys" Content="Global Hotkeys" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="GlobalHotkeysToggle_OnClick" IsChecked="False" />
+				<!-- <CheckBox Name="ckAutoSave" Content="AutoSave" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="AutoSave_OnClick" IsChecked="True" /> -->
+				<!-- <CheckBox Name="ckGlobalHotkeys" Content="Global Hotkeys" FontSize="16" FontFamily="Source Code Pro" Foreground="Gray" Click="GlobalHotkeysToggle_OnClick" IsChecked="False" /> -->
 				<Separator />
 				<MenuItem Header="Load" Click="mnuLoad_Click" />
 				<Separator />
@@ -376,6 +377,16 @@
 							<Button Content="Add" Click="btnTAdd_Click" KeyboardNavigation.TabIndex="3" />
 						</StackPanel >
 					</Grid >
+				</Grid >
+			</TabItem >
+			<TabItem Name="TabHistoryLog" Header="Log" >
+				<Grid >
+					<Grid.RowDefinitions >
+						<RowDefinition Height="30" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions >
+					<Button Grid.Row="0" Content="Refresh" Click="RefreshLog_OnClick" />
+					<ListBox Name="lbHistoryLog" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 				</Grid >
 			</TabItem >
 		</TabControl >

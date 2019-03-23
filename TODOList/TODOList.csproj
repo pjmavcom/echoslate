@@ -61,6 +61,9 @@
 		<Compile Include="DlgHelp.xaml.cs">
 		  <DependentUpon>DlgHelp.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="DlgOptions.xaml.cs">
+		  <DependentUpon>DlgOptions.xaml</DependentUpon>
+		</Compile>
 		<Compile Include="DlgYesNo.xaml.cs">
 		  <DependentUpon>DlgYesNo.xaml</DependentUpon>
 		</Compile>
@@ -85,6 +88,7 @@
 		</Compile>
 		<Page Include="DlgAddNewHistory.xaml" />
 		<Page Include="DlgHelp.xaml" />
+		<Page Include="DlgOptions.xaml" />
 		<Page Include="DlgYesNo.xaml" />
 		<Page Include="MainWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>

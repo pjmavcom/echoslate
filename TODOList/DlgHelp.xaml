@@ -50,5 +50,6 @@
 				<Label Content="=Toggle work timer" Width="300" HorizontalContentAlignment="Left" />
 			</StackPanel >
 		</StackPanel >
+		<Button HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Close" IsDefault="True" IsCancel="True" />
 	</Grid>
 </Window>

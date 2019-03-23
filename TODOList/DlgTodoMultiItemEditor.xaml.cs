@@ -21,6 +21,7 @@ namespace TODOList
 		private readonly int previousRank;
 
 		private int _rank;
+		private string _currentListHash;
 
 		private bool changeSev;
 		private bool changeRank;
@@ -36,7 +37,7 @@ namespace TODOList
 		
 		
 		
-		public DlgTodoMultiItemEditor(TodoItem td, List<string> tags)
+		public DlgTodoMultiItemEditor(TodoItem td, string currentListHash, List<string> tags)
 		{
 			InitializeComponent();
 
@@ -51,9 +52,10 @@ namespace TODOList
 			currentSeverity = this.td.Severity;
 
 			cbSev.SelectedIndex = currentSeverity;
-			_rank = td.Rank;
+			_currentListHash = currentListHash;
+			_rank = td.Rank[_currentListHash];
 			tbRank.Text = _rank.ToString();
-			previousRank = td.Rank;
+			previousRank = td.Rank[_currentListHash];
 			
 			CenterWindowOnMouse();
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
@@ -159,7 +161,7 @@ namespace TODOList
 
 			_rank = _rank > 0 ? _rank : 0;
 			tbRank.Text = _rank.ToString();
-			td.Rank = _rank;
+			td.Rank[_currentListHash] = _rank;
 		}
 
 		// METHOD  ///////////////////////////////////// btnOK() //
@@ -172,8 +174,8 @@ namespace TODOList
 			td.Severity = currentSeverity;
 			isOk = true;
 			
-			if (previousRank > td.Rank)
-				td.Rank--;
+			if (previousRank > td.Rank[_currentListHash])
+				td.Rank[_currentListHash]--;
 
 			ResultTags = new List<string>();
 			foreach (TagHolder th in Tags)
@@ -208,7 +210,7 @@ namespace TODOList
 		{
 			if (tbRank.Text == "")
 				tbRank.Text = "0";
-			td.Rank = Convert.ToInt32(tbRank.Text);
+			td.Rank[_currentListHash] = Convert.ToInt32(tbRank.Text);
 		}
 		
 		private void tbRank_PreviewTextInput(object sender, TextCompositionEventArgs e)

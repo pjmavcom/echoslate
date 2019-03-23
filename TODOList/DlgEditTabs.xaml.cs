@@ -45,7 +45,23 @@ namespace TODOList
 			foreach (TabItemHolder tih in newTabItemList)
 			{
 				ResultList.Add(tih.Name);
-			}	
+			}
+
+			List<string> resultsWithoutSpaces = new List<string>();
+			foreach (string s in ResultList)
+			{
+				string newName = "";
+				if(s.Contains(' '))
+				{
+					foreach (char c in s)
+						if (c != ' ')
+							newName += c;
+				}
+				else
+					newName = s;
+				resultsWithoutSpaces.Add(newName);
+			}
+			ResultList = resultsWithoutSpaces;
 			Result = true;
 			Close();
 		}
@@ -149,6 +165,7 @@ namespace TODOList
 			if (sender is TextBox tb)
 			{
 				TabItemHolder tih = tb.DataContext as TabItemHolder;
+				
 				tih.Name = tb.Text;
 			}
 		}

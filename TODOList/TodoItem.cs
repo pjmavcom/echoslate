@@ -28,7 +28,7 @@ namespace TODOList
 		private bool _isTimerOn;
 		private bool _isComplete;
 		private int _severity;
-		private int _rank;
+		private Dictionary<string, int> _rank;
 		private List<string> _tags;
 		
 
@@ -126,10 +126,20 @@ namespace TODOList
 				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME) : "-";
 			}
 		}
-		public int Rank
+		public Dictionary<string, int> Rank
 		{
 			get => _rank;
 			set => _rank = value;
+		}
+		public string Ranks
+		{
+			get
+			{
+				string result = "";
+				foreach (KeyValuePair<string, int> kvp in Rank)
+					result += kvp.Key + " # " + kvp.Value + ",";
+				return result;
+			}
 		}
 		public List<string> Tags
 		{
@@ -176,7 +186,7 @@ namespace TODOList
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = 0;
-			_rank = 0;
+			_rank = new Dictionary<string, int>();
 //			ParseTags();
 		}
 		public TodoItem(DateTime dateTime, string todo, string notes, int sev)
@@ -191,12 +201,13 @@ namespace TODOList
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = sev;
-			_rank = 0;
+			_rank = new Dictionary<string, int>();
 //			ParseTags();
 		}
 		public TodoItem(string newItem)
 		{
 			_tags = new List<string>();
+			_rank = new Dictionary<string, int>();
 			float version;
 			string[] pieces = newItem.Split('|');
 			if (pieces[0].Contains("VERSION"))
@@ -224,7 +235,8 @@ namespace TODOList
 			TimeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
 
 			_isComplete = Convert.ToBoolean(pieces[5]); 
-			_rank = Convert.ToInt32(pieces[6]);
+			_rank.Add("All", Convert.ToInt32(pieces[6]));
+			          
 			_severity = Convert.ToInt32(pieces[7]);
 			Todo = pieces[8].Trim();
 //			_todo = pieces[8].Trim();
@@ -245,8 +257,17 @@ namespace TODOList
 
 			TimeTaken = new DateTime(Convert.ToInt64(pieces[5].Trim()));
 
-			_isComplete = Convert.ToBoolean(pieces[6]); 
-			_rank = Convert.ToInt32(pieces[7]);
+			_isComplete = Convert.ToBoolean(pieces[6]);
+			
+			// TODO: Verify this works correctly
+			string[] rankPieces = pieces[7].Split(',');
+			foreach (string s in rankPieces)
+				if(s != "")
+				{
+					string[] rank = s.Split('#');
+					_rank.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
+				}
+			
 			_severity = Convert.ToInt32(pieces[8]);
 			Todo = pieces[9].Trim();
 //			_todo = pieces[8].Trim();
@@ -381,7 +402,7 @@ namespace TODOList
 		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = "VERSION " + MainWindow.VERSION + "|" + _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + _rank + "|" + _severity + "|" + TagsAndTodoToSave + "|" + _notes;
+			string result = "VERSION " + MainWindow.VERSION + "|" + _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + Ranks + "|" + _severity + "|" + TagsAndTodoToSave + "|" + _notes;
 			return result;
 		}
 		public string ToClipboard()

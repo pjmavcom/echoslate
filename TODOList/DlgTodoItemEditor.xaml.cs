@@ -16,8 +16,9 @@ namespace TODOList
 		public bool isOk;
 		private readonly int previousRank;
 		private List<TagHolder> Tags { get; set; }
+		private string _currentListHash;
 		
-		public DlgTodoItemEditor(TodoItem td)
+		public DlgTodoItemEditor(TodoItem td, string currentListHash)
 		{
 			InitializeComponent();
 			this.td = new TodoItem(td.ToString())
@@ -25,13 +26,14 @@ namespace TODOList
 				IsTimerOn = td.IsTimerOn
 			};
 			currentSeverity = this.td.Severity;
+			_currentListHash = currentListHash;
 
 			cbSev.SelectedIndex = currentSeverity;
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
-			tbRank.Text = td.Rank.ToString();
+			tbRank.Text = td.Rank[_currentListHash].ToString();
 			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
-			previousRank = td.Rank;
+			previousRank = td.Rank[_currentListHash];
 
 			Tags = new List<TagHolder>();
 			foreach (string tag in td.Tags)
@@ -67,23 +69,23 @@ namespace TODOList
 			
 			if (compar == "up")
 			{
-				td.Rank--;
+				td.Rank[_currentListHash]--;
 			}
 			else if (compar == "down")
 			{
-				td.Rank++;
+				td.Rank[_currentListHash]++;
 			}
 			else if (compar == "top")
 			{
-				td.Rank = 0;
+				td.Rank[_currentListHash] = 0;
 			}
 			else if (compar == "bottom")
 			{
-				td.Rank = int.MaxValue;
+				td.Rank[_currentListHash] = int.MaxValue;
 			}
 
-			td.Rank = td.Rank > 0 ? td.Rank : 0;
-			tbRank.Text = td.Rank.ToString();
+			td.Rank[_currentListHash] = td.Rank[_currentListHash] > 0 ? td.Rank[_currentListHash] : 0;
+			tbRank.Text = td.Rank[_currentListHash].ToString();
 		}
 		private void AddTag_OnClick(object sender, EventArgs e)
 		{
@@ -125,12 +127,17 @@ namespace TODOList
 			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
 			string tempTags = "";
 			ResultTags = new List<string>();
+
+//			List<string> removeTags = new List<string>();
+//			foreach(string tag in td.Tags)
+//				if()
 			foreach(TagHolder th in Tags)
 				if (!ResultTags.Contains(th.Text))
 					ResultTags.Add(th.Text);
 			foreach (string tag in ResultTags)
 				tempTags += tag + " ";
 			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
+			td.Tags = new List<string>();
 			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 			td.Notes = tbNotes.Text;
 
@@ -140,8 +147,8 @@ namespace TODOList
 			td.Severity = currentSeverity;
 			isOk = true;
 			
-			if (previousRank > td.Rank)
-				td.Rank--;
+			if (previousRank > td.Rank[_currentListHash])
+				td.Rank[_currentListHash]--;
 			
 			Close();
 		}
@@ -205,7 +212,7 @@ namespace TODOList
 		{
 			if (tbRank.Text == "")
 				tbRank.Text = "0";
-			td.Rank = Convert.ToInt32(tbRank.Text);
+			td.Rank[_currentListHash] = Convert.ToInt32(tbRank.Text);
 		}
 		
 		private void tbRank_PreviewTextInput(object sender, TextCompositionEventArgs e)
