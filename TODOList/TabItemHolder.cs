@@ -14,23 +14,14 @@ namespace TODOList
 {
 	public class TabItemHolder : INotifyPropertyChanged
 	{
-		private TabItem _ti;
-		public bool _canMoveUp;
-		public bool _canMoveDown;
+		private readonly TabItem _ti;
+		private bool _canMoveUp;
+		private bool _canMoveDown;
 		private int _currentIndex;
 		private int _maxIndex;
 		private Visibility _isVisible;
 		private string _name;
 
-		public string Header
-		{
-			get => _ti.Header as string;
-			set
-			{
-				_ti.Header = value;
-				OnPropertyChanged();
-			}
-		}
 		public string Name
 		{
 			get => _name;

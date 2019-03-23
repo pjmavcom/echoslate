@@ -2,7 +2,7 @@ using System.Windows;
 
 namespace TODOList
 {
-	public partial class DlgHelp : Window
+	public partial class DlgHelp
 	{
 		public DlgHelp()
 		{

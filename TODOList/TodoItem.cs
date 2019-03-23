@@ -30,8 +30,7 @@ namespace TODOList
 		private int _severity;
 		private Dictionary<string, int> _rank;
 		private List<string> _tags;
-		
-
+	
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public string Todo
 		{
@@ -42,7 +41,7 @@ namespace TODOList
 				ParseNewTags();
 			}
 		}
-		public string TagsAndTodoToSave
+		private string TagsAndTodoToSave
 		{
 			get
 			{
@@ -50,11 +49,7 @@ namespace TODOList
 				foreach (string t in _tags)
 				{
 					string[] pieces = t.Split('\r');
-					foreach(string p in pieces)
-					{
-						if(p != "")
-							result += p.Trim() + " ";
-					}
+					result = pieces.Where(p => p != "").Aggregate(result, (current, p) => current + (p.Trim() + " "));
 				}
 				result += _todo;
 				return result;
@@ -69,12 +64,8 @@ namespace TODOList
 				ParseNotes();
 			}
 		}
-		public string NotesAndTags
-		{
-			get => "Notes: " + Notes + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
-		}
+		public string NotesAndTags => "Notes: " + Notes + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
 		public string StartDateTime => _dateStarted + "-" + _timeStarted;
-		public string CompletedDateTime => _dateCompleted + "-" + _timeCompleted;
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;
 		public int Severity
@@ -82,14 +73,12 @@ namespace TODOList
 			get => _severity;
 			set => _severity = value;
 		}
-		public string DateCompleted
+		private string DateCompleted
 		{
-			get => _dateCompleted;
 			set => _dateCompleted = value;
 		}
-		public string TimeCompleted
+		private string TimeCompleted
 		{
-			get => _timeCompleted;
 			set => _timeCompleted = value;
 		}
 		public DateTime TimeTaken
@@ -104,8 +93,8 @@ namespace TODOList
 		}
 		public long TimeTakenInMinutes
 		{
-			get => _timeTakenInMinutes; 
-			set
+			get => _timeTakenInMinutes;
+			private set
 			{
 				_timeTakenInMinutes = value;
 				OnPropertyChanged();
@@ -146,7 +135,7 @@ namespace TODOList
 			get => _tags;
 			set => _tags = value;
 		}
-		public string TagsList
+		private string TagsList
 		{
 			get
 			{
@@ -187,22 +176,6 @@ namespace TODOList
 			_timeCompleted = "-";
 			_severity = 0;
 			_rank = new Dictionary<string, int>();
-//			ParseTags();
-		}
-		public TodoItem(DateTime dateTime, string todo, string notes, int sev)
-		{
-			_tags = new List<string>();
-//			_todo = todo;
-//			_notes = notes;
-			Todo = todo;
-			Notes = notes;
-			_dateStarted = dateTime.ToString("yyyyMMdd");
-			_timeStarted = dateTime.ToString("HHmmss");
-			_dateCompleted = "-";
-			_timeCompleted = "-";
-			_severity = sev;
-			_rank = new Dictionary<string, int>();
-//			ParseTags();
 		}
 		public TodoItem(string newItem)
 		{
@@ -224,6 +197,7 @@ namespace TODOList
 				Load2_0(newItem);
 		}
 
+		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		private void LoadPre2_0(string newItem)
 		{
 			string[] pieces = newItem.Split('|');
@@ -239,13 +213,9 @@ namespace TODOList
 			          
 			_severity = Convert.ToInt32(pieces[7]);
 			Todo = pieces[8].Trim();
-//			_todo = pieces[8].Trim();
 			
 			if(pieces.Length > 9)
-//				_notes = pieces[9].Trim();
 				Notes = pieces[9].Trim();
-
-//			ParseTags();
 		}
 		private void Load2_0(string newItem)
 		{
@@ -259,7 +229,6 @@ namespace TODOList
 
 			_isComplete = Convert.ToBoolean(pieces[6]);
 			
-			// TODO: Verify this works correctly
 			string[] rankPieces = pieces[7].Split(',');
 			foreach (string s in rankPieces)
 				if(s != "")
@@ -270,36 +239,23 @@ namespace TODOList
 			
 			_severity = Convert.ToInt32(pieces[8]);
 			Todo = pieces[9].Trim();
-//			_todo = pieces[8].Trim();
 			
 			if(pieces.Length > 10)
-//				_notes = pieces[9].Trim();
 				Notes = pieces[10].Trim();
-
-//			ParseTags();
 		}
-
-		// MONOGAME METHODS //////////////////////////////////////////////////////////////////////////////////////////////////////////////// MONOGAME METHODS //
-
-
-		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
-		public void ParseNewTags()
+		private void ParseNewTags()
 		{
 			_todo = TagsAndTodoToSave;
 			ParseTags();
 		}
-		public void ParseTags()
+		private void ParseTags()
 		{
 			_tags = new List<string>();
-			string temp = "";
 			string[] tempPieces = _todo.Split('\r');
-			foreach (string s in tempPieces)
-				temp += s + " ";
+			string temp = tempPieces.Aggregate("", (current, s) => current + (s + " "));
 			tempPieces = temp.Split('\n');
-			temp = "";
-			foreach (string s in tempPieces)
-				temp += s + " ";
-			
+			temp = tempPieces.Aggregate("", (current, s) => current + (s + " "));
+
 			string[] pieces = temp.Split(' ');
 			bool isBeginningTag = false;
 
@@ -313,9 +269,8 @@ namespace TODOList
 				{
 					if (index == 0)
 						isBeginningTag = true;
-					
-					string t = "";
-					t = s.ToUpper();
+
+					var t = s.ToUpper();
 					if (t.Equals("#FEATURES") || t.Equals("#F"))
 						t = "#FEATURE";
 					if (t.Equals("#BUGS") || t.Equals("#B"))
@@ -345,14 +300,7 @@ namespace TODOList
 				list.Add(s);
 			}
 
-			string tempTodoTags = "";
 			string tempTodo = "";
-			foreach (string s in _tags)
-			{
-				if (s == "")
-					continue;
-				tempTodoTags += s + " ";
-			}
 			foreach (string s in list)
 			{
 				if (s == "")
@@ -361,7 +309,7 @@ namespace TODOList
 			}
 			_todo = tempTodo.Trim();
 		}
-		public void ParseNotes()
+		private void ParseNotes()
 		{
 			string[] pieces = _notes.Split(' ');
 			List<string> list = new List<string>();
@@ -399,10 +347,19 @@ namespace TODOList
 			}
 			return result;
 		}
-		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
-			string result = "VERSION " + MainWindow.VERSION + "|" + _dateStarted + "|" + _timeStarted + "|" + _dateCompleted + "|" + _timeCompleted + "|" + _timeTaken.Ticks + "|" + _isComplete + "|" + Ranks + "|" + _severity + "|" + TagsAndTodoToSave + "|" + _notes;
+			string result = "VERSION " + MainWindow.VERSION + "|" + 
+							_dateStarted + "|" + 
+							_timeStarted + "|" + 
+							_dateCompleted + "|" + 
+							_timeCompleted + "|" + 
+							_timeTaken.Ticks + "|" + 
+							_isComplete + "|" + 
+							Ranks + "|" + 
+							_severity + "|" + 
+							TagsAndTodoToSave + "|" + 
+							_notes;
 			return result;
 		}
 		public string ToClipboard()
@@ -416,7 +373,6 @@ namespace TODOList
 		{
 			int charLimit = 100;
 			int currentCharCount = 0;
-			List<string> lines = new List<string>();
 			string result = "";
 			string[] pieces = s.Split(' ');
 			foreach (string word in pieces)

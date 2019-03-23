@@ -3,7 +3,6 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
 		Title="Todo Multi Item Edit" Height="420" Width="610"
 		Style="{StaticResource {x:Type Window}}" >
@@ -12,7 +11,7 @@
 	</Window.Resources >
 	
 	<Window.CommandBindings>
-		<CommandBinding Command="{StaticResource Complete}" Executed="btnComplete_Click" />
+		<CommandBinding Command="{StaticResource Complete}" Executed="Complete_OnClick" />
 	</Window.CommandBindings>
 	
 	<Window.InputBindings>
@@ -21,30 +20,30 @@
 	
 	<StackPanel TextElement.FontSize="16" >
 		<StackPanel Orientation="Horizontal" >
-			<CheckBox Content="Severity: " Name="ckSev" Click="ckSev_Clicked" Margin="2" Foreground="LightGray" />
-			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
+			<CheckBox Content="Severity: " Name="ckSev" Click="SevCheckBox_OnClick" Margin="2" Foreground="LightGray" />
+			<ComboBox Name="cbSev" SelectionChanged="Severity_OnSelectionChange" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
 				<ComboBoxItem Content="None" IsSelected="True" /> 
 				<ComboBoxItem Content="Low" />
 				<ComboBoxItem Content="Med" />
 				<ComboBoxItem Content="High" />
 			</ComboBox >
 
-			<CheckBox Content="Rank: " Name="ckRank" Click="ckRank_Clicked" Margin="2" Foreground="LightGray" />
-			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="tbRank_PreviewTextInput" TextChanged="tbRank_Changed" />
-			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="Marlett" FontSize="20" Content="55" Click="btnRank_Click" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="Marlett" FontSize="20" Content="66" Click="btnRank_Click" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
+			<CheckBox Content="Rank: " Name="ckRank" Click="RankCheckBox_OnClick" Margin="2" Foreground="LightGray" />
+			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="Rank_OnPreviewTextInput" TextChanged="Rank_OnTextChanged" />
+			<Button FontFamily="Marlett" FontSize="20" Content="6" Click="Rank_OnClick" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="5" Click="Rank_OnClick" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="55" Click="Rank_OnClick" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="Marlett" FontSize="20" Content="66" Click="Rank_OnClick" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 		
 		<StackPanel Orientation="Horizontal" >
-			<CheckBox Content="TODO: " Name="ckTodo" Click="ckTodo_Clicked" Margin="2" Foreground="LightGray" />
+			<CheckBox Content="TODO: " Name="ckTodo" Click="TodoCheckBox_OnClick" Margin="2" Foreground="LightGray" />
 			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
 		</StackPanel >
 		
 		<StackPanel Orientation="Horizontal" >
 			<StackPanel Width="74" >
-				<CheckBox Content="Tags:" Name="ckTags" Click="ckTags_Clicked" Foreground="LightGray" HorizontalAlignment="Right" Width="72" Margin="2"  />
+				<CheckBox Content="Tags:" Name="ckTags" Click="TagsCheckBox_OnClick" Foreground="LightGray" HorizontalAlignment="Right" Width="72" Margin="2"  />
 				<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
 			</StackPanel >
 			<ListBox Name="lbTags" Height="200" Width="500" Margin="2" KeyboardNavigation.TabIndex="2" >
@@ -60,11 +59,11 @@
 		</StackPanel >
 		
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
-			<CheckBox Name="ckComplete" Click="ckComplete_Clicked" Margin="2" />
-			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
+			<CheckBox Name="ckComplete" Click="CompleteCheckBox_OnClick" Margin="2" />
+			<Button Name="btnComplete" Content="Complete" Click="Complete_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 			
-			<Button Content="OK" Click="btnOK_Click" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="Cancel" IsCancel="True" Click="btnCancel_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="OK" Click="Ok_OnClick" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="Cancel" IsCancel="True" Click="Cancel_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 	</StackPanel>
 </Window>

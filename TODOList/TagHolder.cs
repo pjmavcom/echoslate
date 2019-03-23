@@ -10,18 +10,12 @@ using System.Runtime.CompilerServices;
 
 namespace TODOList
 {
-	public class TagHolder : INotifyPropertyChanged
+	public class TagHolder
 	{
 		public string Text { get; set; }
 		public TagHolder(string tag)
 		{
 			Text = tag;
-		}
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

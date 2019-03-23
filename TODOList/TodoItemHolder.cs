@@ -15,22 +15,16 @@ namespace TODOList
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private TodoItem _td;
-		private int _rank;
 		private DateTime _timeTaken;
 		private long _timeTakenInMinutes;
 		
-
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public TodoItem TD
 		{
 			get => _td;
 			set => _td = value;
 		}
-		public int Rank
-		{
-			get => _rank;
-			set => _rank = value;
-		}
+		public int Rank { get; set; }
 		public string Todo => _td.Todo;
 		public string NotesAndTags => _td.NotesAndTags;
 		public string TagsSorted => _td.TagsSorted;
@@ -40,9 +34,7 @@ namespace TODOList
 			get => _td.Severity;
 			set => _td.Severity = value;
 		}
-//		public long TimeTakenInMinutes => _td.TimeTakenInMinutes;
 		public bool IsTimerOn => _td.IsTimerOn;
-//		public DateTime TimeTaken => _td.TimeTaken;
 		public long TimeTakenInMinutes
 		{
 			get => _timeTakenInMinutes; 
@@ -65,15 +57,14 @@ namespace TODOList
 		public string TimeStarted => TD.TimeStarted;
 		public string DateStarted => TD.DateStarted;
 		
-		
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItemHolder(TodoItem td)
 		{
 			_td = td;
-			_rank = int.MaxValue;
+			Rank = int.MaxValue;
 		}
 
-		// MONOGAME METHODS //////////////////////////////////////////////////////////////////////////////////////////////////////////////// MONOGAME METHODS //
+		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		public override string ToString()
 		{
 			string result = "";
@@ -81,12 +72,10 @@ namespace TODOList
 			return result;
 		}
 
-		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
-
 	}
 }

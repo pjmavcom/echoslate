@@ -1,27 +1,39 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
 
 namespace TODOList
 {
-	public partial class DlgOptions : Window
+	public partial class DlgOptions
 	{
 		public bool AutoSave { get; set; }
 		public bool GlobalHotkeys { get; set; }
 		public bool AutoBackup { get; set; }
 		public TimeSpan BackupTime { get; set; }
+		public float CurrentProjectVersion { get; set; }
+		public float ProjectVersionIncrement { get; set; }
 		public bool Result;
-		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime)
+		
+		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime, float currentProjectVersion, float projectVersionIncrement)
 		{
 			InitializeComponent();
 			AutoSave = autoSave;
 			GlobalHotkeys = hotkeys;
 			AutoBackup = autoBackup;
 			BackupTime = backupTime;
+			CurrentProjectVersion = currentProjectVersion;
+			ProjectVersionIncrement = projectVersionIncrement;
 
 			cbAS.IsChecked = AutoSave;
 			cbGHK.IsChecked = GlobalHotkeys;
 			cbAB.IsChecked = AutoBackup;
-			tbBT.Text = BackupTime.Minutes.ToString();
+
+			int totalMinutes = BackupTime.Days * 24 * 60 +BackupTime.Hours * 60 + BackupTime.Minutes;
+			tbBT.Text = totalMinutes.ToString();
+			tbCPV.Text = $"{CurrentProjectVersion:0.00}";
+			tbPVI.Text = $"{ProjectVersionIncrement:0.000}"; 
 			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse()
@@ -35,13 +47,45 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
+		private void ConvertBackupTime()
+		{
+			int totalMinutes = Convert.ToInt32(tbBT.Text);
+			int hours = totalMinutes / 60;
+			int minutes = totalMinutes % 60;
+			BackupTime = new TimeSpan(hours, minutes, 0);
+		}
+		private void BT_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			if (!(sender is TextBox tb))
+				return;
+			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
+			e.Handled = !Int32.TryParse(fullText, out _);
+		}
+		private void CPV_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			if (!(sender is TextBox tb))
+				return;
+			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
+			e.Handled = !float.TryParse(fullText, out _);
+		}
+		private void PVI_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			if (!(sender is TextBox tb))
+				return;
+			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
+			e.Handled = !float.TryParse(fullText, out _);
+		}
 		private void Ok_OnClick(object sender, EventArgs e)
 		{
-			AutoSave = (bool) cbAS.IsChecked;
-			GlobalHotkeys = (bool) cbGHK.IsChecked;
-			AutoBackup = (bool) cbAB.IsChecked;
-			int backupTime = Convert.ToInt32(tbBT.Text);
-			BackupTime = new TimeSpan(0, backupTime, 0);
+			if (cbAS.IsChecked != null)
+				AutoSave = (bool) cbAS.IsChecked;
+			if (cbGHK.IsChecked != null)
+				GlobalHotkeys = (bool) cbGHK.IsChecked;
+			if (cbAB.IsChecked != null)
+				AutoBackup = (bool) cbAB.IsChecked;
+			ConvertBackupTime();
+			CurrentProjectVersion = Convert.ToSingle(tbCPV.Text);
+			ProjectVersionIncrement = Convert.ToSingle(tbPVI.Text);
 			
 			Result = true;
 			Close();
