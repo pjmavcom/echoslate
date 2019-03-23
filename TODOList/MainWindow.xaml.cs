@@ -29,7 +29,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.0";
+		public const string VERSION = "3.01";
 		private const float VERSIONINCREMENT = 0.01f;
 
 		private readonly List<TabItem> _tabList;
@@ -113,6 +113,11 @@ namespace TODOList
 				_pomoTimeLeft = value;
 				OnPropertyChanged();
 			}
+		}
+		public ObservableCollection<string> RecentFiles
+		{
+			get => _recentFiles;
+			set => _recentFiles = value;
 		}
 		private List<TodoItemHolder> IncompleteItems => _incompleteItems[_todoTabs.SelectedIndex];
 		private List<string> HashTags => _hashTags[_todoTabs.SelectedIndex];

@@ -227,7 +227,7 @@
 									
 									<Grid >
 										<Grid.ColumnDefinitions >
-											<ColumnDefinition Width="35" />
+											<ColumnDefinition Width="10" />
 											
 											<ColumnDefinition Width="200" />
 											<ColumnDefinition Width="150" />
