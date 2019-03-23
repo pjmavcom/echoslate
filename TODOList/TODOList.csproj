@@ -68,13 +68,9 @@
 		  <DependentUpon>DlgYesNo.xaml</DependentUpon>
 		</Compile>
 		<Compile Include="HistoryItem.cs" />
-		<Compile Include="MasterListItem.cs" />
 		<Compile Include="ProgressBarForegroundConverter.cs" />
 		<Compile Include="DlgEditTabs.xaml.cs">
 		  <DependentUpon>DlgEditTabs.xaml</DependentUpon>
-		</Compile>
-		<Compile Include="DlgTodoItemItemComplete.xaml.cs">
-		  <DependentUpon>DlgTodoItemComplete.xaml</DependentUpon>
 		</Compile>
 		<Compile Include="TabItemHolder.cs" />
 		<Compile Include="TagHolder.cs" />
@@ -103,7 +99,6 @@
 			<SubType>Code</SubType>
 		</Compile>
 		<Page Include="DlgEditTabs.xaml" />
-		<Page Include="DlgTodoItemComplete.xaml" />
 		<Page Include="DlgTodoItemEditor.xaml" />
 		<Page Include="DlgTodoMultiItemEditor.xaml" />
 	</ItemGroup>

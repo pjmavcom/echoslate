@@ -20,8 +20,6 @@ namespace TODOList
 		private string _dateAdded;
 		private string _timeAdded;
 		private List<TodoItem> _completedTodos;
-		private List<TodoItem> _completedTodosBugs;
-		private List<TodoItem> _completedTodosFeatures;
 		private bool _hasBeenCopied;
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
@@ -43,16 +41,8 @@ namespace TODOList
 			get => _completedTodos;
 			set => _completedTodos = value;
 		}
-		public List<TodoItem> CompletedTodosBugs
-		{
-			get => _completedTodosBugs;
-			set => _completedTodosBugs = value;
-		}
-		public List<TodoItem> CompletedTodosFeatures
-		{
-			get => _completedTodosFeatures;
-			set => _completedTodosFeatures = value;
-		}
+		public List<TodoItem> CompletedTodosBugs { get; set; }
+		public List<TodoItem> CompletedTodosFeatures { get; set; }
 		public string TotalTime
 		{
 			get
@@ -68,12 +58,13 @@ namespace TODOList
 		public bool HasBeenCopied
 		{
 			get => _hasBeenCopied;
-			set
+			private set
 			{
 				_hasBeenCopied = value;
 				OnPropertyChanged();
 			}
 		}
+		
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public HistoryItem(DateTime dateTime) : this(dateTime.ToString("yyyyMMdd"), dateTime.ToString("HHmmss"))
 		{
@@ -82,8 +73,8 @@ namespace TODOList
 		public HistoryItem(string date, string time)
 		{
 			_completedTodos = new List<TodoItem>();
-			_completedTodosBugs = new List<TodoItem>();
-			_completedTodosFeatures = new List<TodoItem>();
+			CompletedTodosBugs = new List<TodoItem>();
+			CompletedTodosFeatures = new List<TodoItem>();
 			_dateAdded = date;
 			_timeAdded = time;
 			_notes = "";
@@ -91,8 +82,8 @@ namespace TODOList
 		public HistoryItem(List<string> newItem)
 		{
 			_completedTodos = new List<TodoItem>();
-			_completedTodosBugs = new List<TodoItem>();
-			_completedTodosFeatures = new List<TodoItem>();
+			CompletedTodosBugs = new List<TodoItem>();
+			CompletedTodosFeatures = new List<TodoItem>();
 
 			float version;
 			string[] pieces = newItem[0].Split('|');
@@ -103,17 +94,14 @@ namespace TODOList
 			}
 			else
 				version = 2.0f;
-
 			
 			// Heres where versions are loaded
 			if(version <= 2.0f)
 				LoadPre2_0(newItem);
 			if (version > 2.0f)
 				Load2_0(newItem);
-			
-			
 		}
-		public void Load2_0(List<string> newItem)
+		private void Load2_0(List<string> newItem)
 		{
 			string[] pieces = newItem[0].Split('|');
 			_hasBeenCopied = Convert.ToBoolean(pieces[1]);
@@ -145,7 +133,7 @@ namespace TODOList
 				_completedTodos.Add(td);
 			}
 		}
-		public void LoadPre2_0(List<string> newItem)
+		private void LoadPre2_0(List<string> newItem)
 		{
 			string[] pieces = newItem[0].Split('|');
 			_hasBeenCopied = true;
@@ -178,16 +166,11 @@ namespace TODOList
 			}
 		}
 
-		// MONOGAME METHODS //////////////////////////////////////////////////////////////////////////////////////////////////////////////// MONOGAME METHODS //
-
-
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
-		// METHOD  ///////////////////////////////////// AddCompletedTodo() //
 		public void AddCompletedTodo(TodoItem td)
 		{
 			_completedTodos.Add(td);
 		}
-
 		public void SetCopied()
 		{
 			HasBeenCopied = true;
@@ -196,7 +179,6 @@ namespace TODOList
 		{
 			HasBeenCopied = false;
 		}
-		// METHOD  ///////////////////////////////////// ToString() //
 		public override string ToString()
 		{
 			string result = "NewVCS" + Environment.NewLine; 
@@ -246,7 +228,6 @@ namespace TODOList
 		{
 			int charLimit = 100;
 			int currentCharCount = 0;
-			List<string> lines = new List<string>();
 			string result = "";
 			string[] pieces = s.Split(' ');
 			foreach (string word in pieces)

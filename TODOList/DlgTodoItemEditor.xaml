@@ -13,7 +13,7 @@
 	</Window.Resources >
 	
 	<Window.CommandBindings>
-		<CommandBinding Command="{StaticResource Complete}" Executed="btnComplete_Click" />
+		<CommandBinding Command="{StaticResource Complete}" Executed="Complete_OnClick" />
 	</Window.CommandBindings>
 	
 	<Window.InputBindings>
@@ -23,7 +23,7 @@
 	<StackPanel TextElement.FontSize="16" >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Severity:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<ComboBox Name="cbSev" SelectionChanged="cbTSeverity_SelectionChanged" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
+			<ComboBox Name="cbSev" SelectionChanged="Severity_OnSelectionChange" KeyboardNavigation.IsTabStop="False" Width="100" HorizontalAlignment="Left" Margin="2" >
 				<ComboBoxItem Content="None" IsSelected="True" /> 
 				<ComboBoxItem Content="Low" />
 				<ComboBoxItem Content="Med" />
@@ -31,19 +31,19 @@
 			</ComboBox >
 			
 			<Label Content="Rank: " Margin="2" />
-			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="tbRank_PreviewTextInput" TextChanged="tbRank_Changed" />
+			<TextBox Name="tbRank" Margin="2" Width="40" PreviewTextInput="Rank_OnPreviewTextInput" TextChanged="Rank_OnTextChange" />
 			
-			<Button FontFamily="WingDings" FontSize="20" Content="ò" Click="btnRank_Click" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="WingDings" FontSize="20" Content="ñ" Click="btnRank_Click" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="WingDings" FontSize="20" Content="Ý" Click="btnRank_Click" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
-			<Button FontFamily="WingDings" FontSize="20" Content="Þ" Click="btnRank_Click" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="ò" Click="Rank_OnClick" CommandParameter="down" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="ñ" Click="Rank_OnClick" CommandParameter="up" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="Ý" Click="Rank_OnClick" CommandParameter="top" KeyboardNavigation.IsTabStop="False" />
+			<Button FontFamily="WingDings" FontSize="20" Content="Þ" Click="Rank_OnClick" CommandParameter="bottom" KeyboardNavigation.IsTabStop="False" />
 			
 			<Label Content="Time: " Margin="2" />
 			<Label Name="lblTime" Margin="2" Width="40" />
-			<Button Content="-10m" Click="btnTime_Click" CommandParameter="down10" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="-5m" Click="btnTime_Click" CommandParameter="down5" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="+5m" Click="btnTime_Click" CommandParameter="up5" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="+10m" Click="btnTime_Click" CommandParameter="up10" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="-10m" Click="Time_OnClick" CommandParameter="down10" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="-5m" Click="Time_OnClick" CommandParameter="down5" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="+5m" Click="Time_OnClick" CommandParameter="up5" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="+10m" Click="Time_OnClick" CommandParameter="up10" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
@@ -70,9 +70,9 @@
 			</ListBox >
 		</StackPanel >
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
-			<Button Name="btnComplete" Content="Complete" Click="btnComplete_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="OK" Click="btnOK_Click" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="Cancel" IsCancel="True" Click="btnCancel_Click" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
+			<Button Name="btnComplete" Content="Complete" Click="Complete_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="OK" Click="OK_OnClick" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="Cancel" IsCancel="True" Click="Cancel_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 	</StackPanel>
 </Window>

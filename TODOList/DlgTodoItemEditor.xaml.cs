@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,40 +8,42 @@ namespace TODOList
 {
 	public partial class DlgTodoItemEditor
 	{
-		private int currentSeverity;
-		private readonly TodoItem td;
-		public TodoItem Result => td;
+		private readonly TodoItem _td;
+		public TodoItem ResultTD => _td;
 		public List<string> ResultTags;
-		public bool isOk;
-		private readonly int previousRank;
-		private List<TagHolder> Tags { get; set; }
+		public bool Result;
+		
+		private int _currentSeverity;
+		private readonly int _previousRank;
+		private List<TagHolder> _tags { get; set; }
 		private string _currentListHash;
 		
 		public DlgTodoItemEditor(TodoItem td, string currentListHash)
 		{
 			InitializeComponent();
-			this.td = new TodoItem(td.ToString())
+			
+			_td = new TodoItem(td.ToString())
 			{
 				IsTimerOn = td.IsTimerOn
 			};
-			currentSeverity = this.td.Severity;
+			_currentSeverity = _td.Severity;
 			_currentListHash = currentListHash;
+			_previousRank = td.Rank[_currentListHash];
 
-			cbSev.SelectedIndex = currentSeverity;
+			cbSev.SelectedIndex = _currentSeverity;
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
 			tbRank.Text = td.Rank[_currentListHash].ToString();
 			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
-			previousRank = td.Rank[_currentListHash];
+			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 
-			Tags = new List<TagHolder>();
+			_tags = new List<TagHolder>();
 			foreach (string tag in td.Tags)
-				Tags.Add(new TagHolder(tag));
-			lbTags.ItemsSource = Tags;
+				_tags.Add(new TagHolder(tag));
+			lbTags.ItemsSource = _tags;
 			lbTags.Items.Refresh();
 			
 			CenterWindowOnMouse();
-			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 		}
 		private void CenterWindowOnMouse()
 		{
@@ -55,204 +56,139 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-		private void cbTSeverity_SelectionChanged(object sender, EventArgs e)
+		private void SetTodo()
 		{
-			if (sender is ComboBox rb) currentSeverity = rb.SelectedIndex;
-		}
-		private void btnRank_Click(object sender, EventArgs e)
-		{
-			Button b = sender as Button;
-			if (b == null)
-				return;
-			string compar = (string) b.CommandParameter;
-
+			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
+		
+			string tempTags = "";
+			ResultTags = new List<string>();
+			foreach(TagHolder th in _tags)
+				if (!ResultTags.Contains(th.Text))
+					ResultTags.Add(th.Text);
+			foreach (string tag in ResultTags)
+				tempTags += tag + " ";
+			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			
-			if (compar == "up")
-			{
-				td.Rank[_currentListHash]--;
-			}
-			else if (compar == "down")
-			{
-				td.Rank[_currentListHash]++;
-			}
-			else if (compar == "top")
-			{
-				td.Rank[_currentListHash] = 0;
-			}
-			else if (compar == "bottom")
-			{
-				td.Rank[_currentListHash] = int.MaxValue;
-			}
-
-			td.Rank[_currentListHash] = td.Rank[_currentListHash] > 0 ? td.Rank[_currentListHash] : 0;
-			tbRank.Text = td.Rank[_currentListHash].ToString();
+			_td.Tags = new List<string>();
+			_td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
+			_td.Notes = tbNotes.Text;
+			_td.Severity = _currentSeverity;
+			if (_previousRank > _td.Rank[_currentListHash])
+				_td.Rank[_currentListHash]--;
+		}
+		private void Severity_OnSelectionChange(object sender, EventArgs e)
+		{
+			if (sender is ComboBox rb) _currentSeverity = rb.SelectedIndex;
 		}
 		private void AddTag_OnClick(object sender, EventArgs e)
 		{
-			string name = "#NewTag";
+			string name = "#NEWTAG";
 			int tagNumber = 0;
 			bool nameExists = false;
 			do
 			{
-				foreach (TagHolder t in Tags)
+				foreach (TagHolder t in _tags)
 				{
-					if (t.Text == name + tagNumber.ToString())
+					if (t.Text == name.ToUpper() + tagNumber ||
+					    t.Text == "#" + name.ToUpper() + tagNumber)
 					{
 						tagNumber++;
 						nameExists = true;
 						break;
 					}
-					else 
-						nameExists = false;
+					nameExists = false;
 				}
 			} while (nameExists);
-			TagHolder th = new TagHolder(name + tagNumber);
-			Tags.Add(th);
+			
+			TagHolder th = new TagHolder(name.ToUpper() + tagNumber);
+			_tags.Add(th);
 			lbTags.Items.Refresh();
 		}
 		private void DeleteTag_OnClick(object sender, EventArgs e)
 		{
-			if (sender is Button b)
-			{
-				TagHolder th = b.DataContext as TagHolder;
-				Tags.Remove(th);
-				lbTags.Items.Refresh();
-				
-			}
+			if (!(sender is Button b))
+				return;
+			
+			TagHolder th = b.DataContext as TagHolder;
+			_tags.Remove(th);
+			lbTags.Items.Refresh();
 		}
-		private void btnOK_Click(object sender, EventArgs e)
+		private void Rank_OnClick(object sender, EventArgs e)
 		{
+			if (!(sender is Button b))
+				return;
 			
-//			MainWindow.ExpandHashTags(td);
-			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
-			string tempTags = "";
-			ResultTags = new List<string>();
+			string compare = (string) b.CommandParameter;
+			
+			if (compare == "up")
+				_td.Rank[_currentListHash]--;
+			else if (compare == "down")
+				_td.Rank[_currentListHash]++;
+			else if (compare == "top")
+				_td.Rank[_currentListHash] = 0;
+			else if (compare == "bottom")
+				_td.Rank[_currentListHash] = int.MaxValue;
 
-//			List<string> removeTags = new List<string>();
-//			foreach(string tag in td.Tags)
-//				if()
-			foreach(TagHolder th in Tags)
-				if (!ResultTags.Contains(th.Text))
-					ResultTags.Add(th.Text);
-			foreach (string tag in ResultTags)
-				tempTags += tag + " ";
-			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
-			td.Tags = new List<string>();
-			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
-			td.Notes = tbNotes.Text;
-
-//			td.Tags = ParseTags(tbTags.Text);
-			
-//			td.ParseTags();
-			td.Severity = currentSeverity;
-			isOk = true;
-			
-			if (previousRank > td.Rank[_currentListHash])
-				td.Rank[_currentListHash]--;
-			
-			Close();
+			_td.Rank[_currentListHash] = _td.Rank[_currentListHash] > 0 ? _td.Rank[_currentListHash] : 0;
+			tbRank.Text = _td.Rank[_currentListHash].ToString();
 		}
-
-		private List<string> ParseTags(string tags)
+		private void Rank_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
 		{
-			List<string> result = td.Tags.ToList();
-			string[] lines = tags.Split('\r');
-			
-			foreach (string s in lines)
-			{
-				string trimmed = s.Trim();
-				if (trimmed == "")
-					continue;
-				if (trimmed.Contains("\n"))
-				{
-					int index = trimmed.IndexOf("\n");
-					trimmed = trimmed.Remove(index, 1);
-				}
-				string newTag = "";
-				if (trimmed.Contains("#"))
-					newTag = trimmed.ToUpper();
-				else
-					newTag = "#" + trimmed.ToUpper();
-				
-				if(!result.Contains(newTag))
-					result.Add(newTag);
-			}
-			return result;
+			if (!(sender is TextBox tb))
+				return;
+			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
+			e.Handled = !double.TryParse(fullText, out _);
 		}
-		// METHOD  ///////////////////////////////////// btnComplete_Click() //
-		private void btnComplete_Click(object sender, EventArgs e)
-		{
-			isOk = true;
-			td.IsComplete = !td.IsComplete;
-			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
-			string tempTags = "";
-			ResultTags = new List<string>();
-			foreach(TagHolder th in Tags)
-				if (!ResultTags.Contains(th.Text))
-					ResultTags.Add(th.Text);
-			foreach (string tag in ResultTags)
-				tempTags += tag + " ";
-			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
-			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
-//			td.Todo = tbTodo.Text;
-			td.Notes = tbNotes.Text;
-//			td.Tags = ParseTags(tbTags.Text);
-//			td.ParseTags();
-			td.Severity = currentSeverity;
-			Close();
-		}
-
-		// METHOD  ///////////////////////////////////// btnCancel() //
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-		
-		private void tbRank_Changed(object sender, EventArgs e)
+		private void Rank_OnTextChange(object sender, EventArgs e)
 		{
 			if (tbRank.Text == "")
 				tbRank.Text = "0";
-			td.Rank[_currentListHash] = Convert.ToInt32(tbRank.Text);
+			_td.Rank[_currentListHash] = Convert.ToInt32(tbRank.Text);
 		}
-		
-		private void tbRank_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void Time_OnClick(object sender, EventArgs e)
 		{
-			var textBox = sender as TextBox;
-			// Use SelectionStart property to find the caret position.
-			// Insert the previewed text into the existing text in the textbox.
-			var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
-		
-			double val;
-			// If parsing is successful, set Handled to false
-			e.Handled = !double.TryParse(fullText, out val);
-		}
-
-		private void btnTime_Click(object sender, EventArgs e)
-		{
-			if (sender is Button b)
+			if (!(sender is Button b))
+				return;
+			
+			int inc = 0;
+			switch ((string) b.CommandParameter)
 			{
-				int inc = 0;
-				switch ((string) b.CommandParameter)
-				{
-					case "down10":
-						inc = -10;
-						break;
-					case "down5":
-						inc = -5;
-						break;
-					case "up5":
-						inc = 5;
-						break;
-					case "up10":
-						inc = 10;
-						break;
-				}
-					if (td.TimeTaken.Ticks >= ((-inc) * TimeSpan.TicksPerMinute))
-						td.TimeTaken = td.TimeTaken.AddMinutes(inc);
-					else
-						td.TimeTaken = td.TimeTaken.AddTicks(-td.TimeTaken.Ticks);
-					lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+				case "down10":
+					inc = -10;
+					break;
+				case "down5":
+					inc = -5;
+					break;
+				case "up5":
+					inc = 5;
+					break;
+				case "up10":
+					inc = 10;
+					break;
 			}
+			_td.TimeTaken = _td.TimeTaken.Ticks >= ((-inc) * TimeSpan.TicksPerMinute)
+				? _td.TimeTaken.AddMinutes(inc)
+				: _td.TimeTaken.AddTicks(-_td.TimeTaken.Ticks);
+			lblTime.Content = $"{_td.TimeTakenInMinutes}:{_td.TimeTaken.Second}";
+		}
+		private void OK_OnClick(object sender, EventArgs e)
+		{
+			Result = true;
+			SetTodo();
+			
+			Close();
+		}
+		private void Complete_OnClick(object sender, EventArgs e)
+		{
+			Result = true;
+			_td.IsComplete = !_td.IsComplete;
+			SetTodo();
+			
+			Close();
+		}
+		private void Cancel_OnClick(object sender, EventArgs e)
+		{
+			Close();
 		}
 	}
 }

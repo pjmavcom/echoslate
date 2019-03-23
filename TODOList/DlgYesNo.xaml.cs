@@ -1,49 +1,28 @@
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace TODOList
 {
-	public partial class DlgYesNo : INotifyPropertyChanged
+	public partial class DlgYesNo
 	{
-		private string _windowTitle;
-//		private string _windowMessage;
-		public string WindowTitle
-		{
-			get => _windowTitle;
-			set
-			{
-				_windowTitle = value;
-				OnPropertyChanged();
-			}
-			
-		}
-//		public string WindowMessage
-//		{
-//			get => _windowMessage;
-//			set
-//			{
-//				_windowMessage = value;
-//				OnPropertyChanged();
-//			}
-//		}
 		public bool Result;
+		
 		public DlgYesNo(string windowTitle, string windowMessage)
 		{
 			InitializeComponent();
-			CenterWindowOnMouse();
-			this.Title = windowTitle;
+			Title = windowTitle;
 			WindowMessage.Text = windowMessage;
+			
+			CenterWindowOnMouse();
 		}
 		public DlgYesNo(string windowMessage)
 		{
 			InitializeComponent();
-			CenterWindowOnMouse();
-			this.Title = "";
+			Title = "";
 			WindowMessage.Text = windowMessage;
-//			btnOK.Visibility = Visibility.Hidden;
 			btnCancel.Visibility = Visibility.Collapsed;
+			
+			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse()
 		{
@@ -65,11 +44,6 @@ namespace TODOList
 		{
 			Result = false;
 			Close();
-		}
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
