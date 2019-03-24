@@ -29,8 +29,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.03";
-		private const float VERSIONINCREMENT = 0.01f;
+		public const string VERSION = "3.04";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -188,7 +187,7 @@ namespace TODOList
 			source = HwndSource.FromHwnd(_handle);
 			source?.AddHook(HwndHook);
 
-#if !DEBUG
+#if DEBUG
 			_autoSave = false;
 			_autoBackup = false;
 #else
@@ -272,8 +271,8 @@ namespace TODOList
 		}
 		private void CreateNewTabs()
 		{
-			AddNewTodoTab("Other");
-			AddNewTodoTab("Bug");
+			AddNewTodoTab("Other", false);
+			AddNewTodoTab("Bug", false);
 			AddNewTodoTab("Feature");
 		}
 		private void AddNewTodoTab(string name, bool doSave = true)
@@ -300,13 +299,19 @@ namespace TODOList
 				_tabHash.Add(hash);
 			}
 			
+			foreach(TodoItem td in _masterList)
+				if (!td.Rank.ContainsKey(name))
+					td.Rank.Add(name, -1);
+			
 			_incompleteItems.Add(new List<TodoItemHolder>());
 			_hashTags.Add(new List<string>());
 			_tabList.Add(ti);
-			RefreshTodo();
-			_todoTabs.Items.Refresh();
 			if (doSave)
+			{
+				RefreshTodo();
+				_todoTabs.Items.Refresh();
 				AutoSave();
+			}
 		}
 		private string GetHashShortcut(string name, string shortcut)
 		{
@@ -401,8 +406,10 @@ namespace TODOList
 			};
 			string args = "/c git --git-dir " + gitPath + "\\.git log > \"" + _historyLogPath + "\"";
 			startInfo.Arguments = args;
-			Process p = new Process();
-			p.StartInfo = startInfo;
+			Process p = new Process
+			{
+				StartInfo = startInfo
+			};
 			p.Start();
 			p.WaitForExit();
 			
@@ -572,7 +579,12 @@ namespace TODOList
 			_hashTags.Clear();
 			_incompleteItems.Clear();
 			foreach (string s in rt.ResultList)
-				AddNewTodoTab(s);
+			{
+				if (rt.ResultList.IndexOf(s) < rt.ResultList.Count - 1)
+					AddNewTodoTab(s, false);
+				else
+					AddNewTodoTab(s);
+			}
 
 			foreach (TodoItem td in _masterList)
 				CleanTodoHashRanks(td);
