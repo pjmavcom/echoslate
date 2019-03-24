@@ -15,7 +15,7 @@ True
 AutoSave
 True
 CurrentProjectVersion
-3.03
+3.04
 ProjectVersionIncrement
 0.01
 ====================================TODO
@@ -26,6 +26,15 @@ VERSION 3.02|20190303|235132|-|-|6000000000|False|All # 5,Other # 4,Feature # -1
 VERSION 3.02|20190320|103524|-|-|0|False|All # 3,Other # 5,Feature # 1,Bug # -1,|1|#FEATURE Turn save files to binary|
 VERSION 3.02|20190319|155958|-|-|0|False|All # 6,Other # 5,Feature # -1,Bug # 3,|0|#BUG #HISTORY When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
 ====================================VCS
+NewVCS
+VERSION 3.02|False|20190323|185958|v3.04|
+VCSTodos
+EndVCS
+NewVCS
+VERSION 3.02|True|20190323|172121|v3.03 FileIO bug|
+VCSTodos
+VERSION 3.02|20190323|185758|20190323|185937|0|True|Other # -1,All # 1,Feature # -1,Bug # 1,|1|#BUG Crashing when loading file when one is already loaded.|This was a problem with loading the file and trying to save it before done loading. Added a bool to the AddNewTodoTab() that will toggle AutoSave or not. When loading, AutoSave is toggled off.
+EndVCS
 NewVCS
 VERSION 3.02|True|20190323|172058|v3.02 More quick bugs|
 VCSTodos
@@ -417,8 +426,4 @@ VERSION 3.02|20190207|112215|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG F
 VERSION 3.02|20190207|112215|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Add completed time to list view interface bug|
 VERSION 3.02|20190208|112215|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Edit complete items not working interface bug|
 VERSION 3.02|20190209|112215|20190209|112231|0|True|All # 0,|1|#BUG Save text in notes bug|
-EndVCS
-NewVCS
-VERSION 3.02|False|20190323|172121|v3.03|
-VCSTodos
 EndVCS

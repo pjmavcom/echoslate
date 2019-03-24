@@ -188,7 +188,7 @@ namespace TODOList
 			source = HwndSource.FromHwnd(_handle);
 			source?.AddHook(HwndHook);
 
-#if DEBUG
+#if !DEBUG
 			_autoSave = false;
 			_autoBackup = false;
 #else
@@ -276,7 +276,7 @@ namespace TODOList
 			AddNewTodoTab("Bug");
 			AddNewTodoTab("Feature");
 		}
-		private void AddNewTodoTab(string name)
+		private void AddNewTodoTab(string name, bool doSave = true)
 		{
 			TabItem ti = new TabItem();
 			name = UpperFirstLetter(name);
@@ -305,7 +305,8 @@ namespace TODOList
 			_tabList.Add(ti);
 			RefreshTodo();
 			_todoTabs.Items.Refresh();
-			AutoSave();
+			if (doSave)
+				AutoSave();
 		}
 		private string GetHashShortcut(string name, string shortcut)
 		{
@@ -1531,7 +1532,7 @@ namespace TODOList
 			SortRecentFiles(path);
 			SaveSettings();
 
-			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open));
+			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
 			_incompleteItems.Clear();
 			_masterList.Clear();
@@ -1602,7 +1603,7 @@ namespace TODOList
 					line = stream.ReadLine();
 					break;
 				}
-				AddNewTodoTab(line);
+				AddNewTodoTab(line, false);
 				line = stream.ReadLine();
 			}
 
@@ -1652,7 +1653,7 @@ namespace TODOList
 				if (line != null && line.Contains("=====FILESETTINGS"))
 					break;
 			
-				AddNewTodoTab(line);
+				AddNewTodoTab(line, false);
 			}
 			
 			stream.ReadLine();
@@ -1740,6 +1741,7 @@ namespace TODOList
 		private void SaveFile(string path)
 		{
 			StreamWriter stream = new StreamWriter(File.Open(path, FileMode.Create));
+			
 			stream.WriteLine("====================================VERSION");
 			stream.WriteLine(VERSION);
 
