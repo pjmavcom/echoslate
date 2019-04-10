@@ -38,6 +38,7 @@ namespace TODOList
 			set
 			{
 				_todo = value;
+				ParseTodo();
 				ParseNewTags();
 			}
 		}
@@ -334,6 +335,32 @@ namespace TODOList
 				tempNotes += s + " ";
 			}
 			_notes = tempNotes.Trim();
+		}
+		private void ParseTodo()
+		{
+			string[] pieces = _todo.Split(' ');
+			List<string> list = new List<string>();
+			for (int index = 0; index < pieces.Length; index++)
+			{
+				string s = pieces[index];
+				if (index == 0 ||
+					index > 0 && pieces[index - 1].Contains(".") ||
+					index > 0 && pieces[index - 1].Contains("?") ||
+					list.Count == 0)
+				{
+					s = UpperFirstLetter(s);
+				}
+				list.Add(s);
+			}
+
+			string tempTodo = "";
+			foreach (string s in list)
+			{
+				if (s == "")
+					continue;
+				tempTodo += s + " ";
+			}
+			_todo = tempTodo.Trim();
 		}
 		private string UpperFirstLetter(string s)
 		{

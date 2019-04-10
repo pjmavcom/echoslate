@@ -29,7 +29,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.04";
+		public const string VERSION = "3.05";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -250,6 +250,10 @@ namespace TODOList
 		}
 		private void updateHandler()
 		{
+			if (_todoTabs.Items.Count <= 0)
+				return;
+			if(_todoTabs.SelectedIndex < 0)
+				_todoTabs.SelectedIndex = 0;
 			ContentPresenter myContentPresenter = _todoTabs.Template.FindName("PART_SelectedContentHost", _todoTabs) as ContentPresenter;
 			{
 				if (myContentPresenter != null)
@@ -267,6 +271,7 @@ namespace TODOList
 					return;
 				cbHashTags.ItemsSource = HashTags;
 				cbHashTags.Items.Refresh();
+				FixRankings();
 			}
 		}
 		private void CreateNewTabs()
@@ -281,6 +286,8 @@ namespace TODOList
 			name = UpperFirstLetter(name);
 			ti.Header = name;
 			ti.Name = name;
+			ti.MinWidth = 100;
+			ti.Padding = new Thickness(10, 5, 10, 5);
 			foreach (TabItem existingTabItem in _tabList)
 			{
 				if (existingTabItem.Name != name)
@@ -1380,23 +1387,17 @@ namespace TODOList
 		}
 		private void FixRankings()
 		{
-			for (int i = 0; i < _incompleteItems.Count; i++)
+			if (_todoTabs.Items.Count == 0 || _todoTabs.SelectedIndex < 0)
+				return;
+			string currentHash = _tabList[_todoTabs.SelectedIndex].Name;
+			foreach(TodoItemHolder tdih in _incompleteItems[_todoTabs.SelectedIndex])
+				if (!tdih.TD.Rank.ContainsKey(currentHash))
+					tdih.TD.Rank.Add(currentHash, 99);
+			_incompleteItems[_todoTabs.SelectedIndex] = _incompleteItems[_todoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
+			for (int rank = 0; rank < _incompleteItems[_todoTabs.SelectedIndex].Count; rank++)
 			{
-				if (_incompleteItems[i].Count <= 0)
-					continue;
-				
-				string hash = _tabList[i].Name;
-
-				if (!_incompleteItems[i][0].TD.Rank.ContainsKey(hash))
-					_incompleteItems[i][0].TD.Rank.Add(hash, -1);
-	
-				
-				_incompleteItems[i] = _incompleteItems[i].OrderBy(o => o.TD.Rank[hash]).ToList();
-				for (int rank = 0; rank < _incompleteItems[i].Count; rank++)
-				{
-					_incompleteItems[i][rank].TD.Rank[hash] = rank + 1;
-					_incompleteItems[i][rank].Rank = _incompleteItems[i][rank].TD.Rank[hash];
-				}
+				_incompleteItems[_todoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
+				_incompleteItems[_todoTabs.SelectedIndex][rank].Rank = _incompleteItems[_todoTabs.SelectedIndex][rank].TD.Rank[currentHash];
 			}
 		}
 		private void CheckForHashTagListChanges()
@@ -1579,6 +1580,7 @@ namespace TODOList
 
 			RefreshTodo();
 			RefreshHistory();
+			_todoTabs.Items.Refresh();
 			if (HistoryItems.Count > 0)
 			{
 				lbHistory.SelectedIndex = 0;

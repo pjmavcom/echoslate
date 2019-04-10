@@ -90,7 +90,7 @@
 			<Button Content="-5" Click="PomoBreakDec_OnClick" CommandParameter="5" />
 		</StackPanel >
 		
-		<TabControl Name="TabControl">
+		<TabControl Name="TabControl" >
 			<!-- VCS History tab -->
 			<TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False" >
 				<Grid >
