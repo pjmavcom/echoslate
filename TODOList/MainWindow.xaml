@@ -230,7 +230,7 @@
 											<ColumnDefinition Width="10" />
 											
 											<ColumnDefinition Width="200" />
-											<ColumnDefinition Width="150" />
+											<ColumnDefinition Width="160" />
 											<ColumnDefinition Width="100" />
 											
 											<ColumnDefinition Width="90" />
@@ -338,7 +338,7 @@
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="100" />
 						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbNewTodo" Grid.Column="0" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+						<TextBox x:Name="tbNewTodo" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
 						<StackPanel Grid.Column="1" >
 							<ComboBox Name="cbSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
 								<ComboBoxItem Content="None" /> 

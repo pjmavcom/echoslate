@@ -38,7 +38,7 @@
 		
 		<StackPanel Orientation="Horizontal" >
 			<CheckBox Content="TODO: " Name="ckTodo" Click="TodoCheckBox_OnClick" Margin="2" Foreground="LightGray" />
-			<TextBox Name="tbTodo" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
+			<TextBox Name="tbTodo" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
 		</StackPanel >
 		
 		<StackPanel Orientation="Horizontal" >

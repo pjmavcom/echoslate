@@ -34,7 +34,7 @@ namespace TODOList
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
 			tbRank.Text = td.Rank[_currentListHash].ToString();
-			lblTime.Content = $"{td.TimeTakenInMinutes}:{td.TimeTaken.Second}";
+			lblTime.Content = $"{td.TimeTakenInMinutes:00}:{td.TimeTaken.Second:00}";
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 
 			_tags = new List<TagHolder>();
@@ -169,7 +169,7 @@ namespace TODOList
 			_td.TimeTaken = _td.TimeTaken.Ticks >= ((-inc) * TimeSpan.TicksPerMinute)
 				? _td.TimeTaken.AddMinutes(inc)
 				: _td.TimeTaken.AddTicks(-_td.TimeTaken.Ticks);
-			lblTime.Content = $"{_td.TimeTakenInMinutes}:{_td.TimeTaken.Second}";
+			lblTime.Content = $"{_td.TimeTakenInMinutes:00}:{_td.TimeTaken.Second:00}";
 		}
 		private void OK_OnClick(object sender, EventArgs e)
 		{

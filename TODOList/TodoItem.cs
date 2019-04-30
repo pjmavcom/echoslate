@@ -66,7 +66,7 @@ namespace TODOList
 			}
 		}
 		public string NotesAndTags => "Notes: " + Notes + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
-		public string StartDateTime => _dateStarted + "-" + _timeStarted;
+		public string StartDateTime => _dateStarted + "" + "_" + _timeStarted;
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;
 		public int Severity
@@ -171,8 +171,8 @@ namespace TODOList
 			_tags = new List<string>();
 			_todo = "";
 			_notes = "";
-			_dateStarted = DateTime.Now.ToString("yyyyMMdd");
-			_timeStarted = DateTime.Now.ToString("HHmmss");
+			_dateStarted = DateTime.Now.ToString("yyyy/MM/dd");
+			_timeStarted = DateTime.Now.ToString("HH:mm");
 			_dateCompleted = "-";
 			_timeCompleted = "-";
 			_severity = 0;
@@ -194,8 +194,10 @@ namespace TODOList
 
 			if (version <= 2.0f)
 				LoadPre2_0(newItem);
-			else if (version > 2.0f)
+			else if (version < 3.06f)
 				Load2_0(newItem);
+			else
+				Load3_06(newItem);
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
@@ -219,6 +221,47 @@ namespace TODOList
 				Notes = pieces[9].Trim();
 		}
 		private void Load2_0(string newItem)
+		{
+			string[] pieces = newItem.Split('|');
+			_dateStarted = pieces[1].Trim();
+			_timeStarted = pieces[2].Trim();
+			_dateCompleted = pieces[3].Trim();
+			_timeCompleted = pieces[4].Trim();
+
+			TimeTaken = new DateTime(Convert.ToInt64(pieces[5].Trim()));
+
+			_isComplete = Convert.ToBoolean(pieces[6]);
+			
+			string[] rankPieces = pieces[7].Split(',');
+			foreach (string s in rankPieces)
+				if(s != "")
+				{
+					string[] rank = s.Split('#');
+					_rank.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
+				}
+			
+			_severity = Convert.ToInt32(pieces[8]);
+			Todo = pieces[9].Trim();
+			
+			if(pieces.Length > 10)
+				Notes = pieces[10].Trim();
+
+			FixDateTime();
+		}
+		private void FixDateTime()
+		{
+			if (!_dateStarted.Contains("-"))
+			{
+				_dateStarted = _dateStarted.Insert(4, "-");
+				_dateStarted = _dateStarted.Insert(7, "-");
+			}
+			if (!_timeStarted.Contains(":"))
+			{
+				_timeStarted = _timeStarted.Insert(2, ":");
+				_timeStarted = _timeStarted.Substring(0, 5);
+			}
+		}
+		private void Load3_06(string newItem)
 		{
 			string[] pieces = newItem.Split('|');
 			_dateStarted = pieces[1].Trim();

@@ -37,20 +37,20 @@ namespace TODOList
 		public bool IsTimerOn => _td.IsTimerOn;
 		public long TimeTakenInMinutes
 		{
-			get => _timeTakenInMinutes; 
-			set
-			{
-				_timeTakenInMinutes = value;
-				OnPropertyChanged();
-			}
+			get => _td.TimeTakenInMinutes; 
+//			set
+//			{
+//				imeTakenInMinutes = value;
+//				OnPropertyChanged();
+//			}
 		}
 		public DateTime TimeTaken
 		{
-			get => _timeTaken;
+			get => _td.TimeTaken;//_timeTaken;
 			set
 			{
-				_timeTaken = value;
-				TimeTakenInMinutes = _timeTaken.Ticks / TimeSpan.TicksPerMinute;
+				_td.TimeTaken = value;
+//				TimeTakenInMinutes = _timeTaken.Ticks / TimeSpan.TicksPerMinute;
 				OnPropertyChanged();
 			}
 		}

@@ -29,7 +29,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.05";
+		public const string VERSION = "3.06";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -49,6 +49,7 @@ namespace TODOList
 		private bool _hashSortSelected;
 		
 		private int _currentSeverity;
+		private int _todoTabsPreviousIndex = -1;
 
 		// HISTORY TAB ITEMS
 		private readonly List<HistoryItem> _historyItems;
@@ -250,6 +251,9 @@ namespace TODOList
 		}
 		private void updateHandler()
 		{
+			if (_todoTabsPreviousIndex == _todoTabs.SelectedIndex)
+				return;
+			_todoTabsPreviousIndex = _todoTabs.SelectedIndex;
 			if (_todoTabs.Items.Count <= 0)
 				return;
 			if(_todoTabs.SelectedIndex < 0)
@@ -271,7 +275,7 @@ namespace TODOList
 					return;
 				cbHashTags.ItemsSource = HashTags;
 				cbHashTags.Items.Refresh();
-				FixRankings();
+				RefreshTodo();
 			}
 		}
 		private void CreateNewTabs()
@@ -618,8 +622,7 @@ namespace TODOList
 			dlg.ShowDialog();
 			if (!dlg.Result)
 				return;
-			_historyItems.Clear();
-			_incompleteItems.Clear();
+			ClearLists();
 			CreateNewTabs();
 
 			_currentHistoryItem = new HistoryItem("", "");
@@ -815,10 +818,16 @@ namespace TODOList
 		{
 			if(_didMouseSelect)
 				_currentHistoryItemIndex = lbHistory.SelectedIndex;
-			
-			_currentHistoryItem = lbHistory.Items[_currentHistoryItemIndex] as HistoryItem;
-			if (_currentHistoryItem != null)
-				lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+			if (lbHistory.Items.Count == 0)
+				return;
+			if (_currentHistoryItemIndex >= lbHistory.Items.Count)
+				_currentHistoryItemIndex = lbHistory.Items.Count - 1;
+			if (lbHistory.Items[_currentHistoryItemIndex] is HistoryItem hi)
+			{
+				_currentHistoryItem = hi;
+				if (_currentHistoryItem != null)
+					lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+			}
 			
 			RefreshHistory();
 			_didMouseSelect = false;
@@ -899,16 +908,16 @@ namespace TODOList
 		}
 		private void AddNewHistoryItem()
 		{
-			DlgAddNewHistory dlgANH = new DlgAddNewHistory(_currentProjectVersion, _projectVersionIncrement);
-			dlgANH.ShowDialog();
-			if (!dlgANH.Result)
-				return;
+//			DlgAddNewHistory dlgANH = new DlgAddNewHistory(_currentProjectVersion, _projectVersionIncrement);
+//			dlgANH.ShowDialog();
+//			if (!dlgANH.Result)
+//				return;
 
 			_currentProjectVersion += _projectVersionIncrement;
 
 			_currentHistoryItem = new HistoryItem(DateTime.Now)
 			{
-				Title = dlgANH.ResultTitle
+				Title = _currentProjectVersion.ToString()//dlgANH.ResultTitle
 			};
 			_historyItems.Add(_currentHistoryItem);
 			AutoSave();
@@ -1402,7 +1411,6 @@ namespace TODOList
 		}
 		private void CheckForHashTagListChanges()
 		{
-
 			_didHashChange = false;
 			if (_hashTags[0].Count != _prevHashTagList.Count)
 				_didHashChange = true;
@@ -1507,6 +1515,9 @@ namespace TODOList
 					break;
 				case "active":
 					_incompleteItems[tabIndex] = _reverseSort
+						? _incompleteItems[tabIndex].OrderByDescending(o => o.TimeTaken).ToList()
+						: _incompleteItems[tabIndex].OrderBy(o => o.TimeTaken).ToList();
+					_incompleteItems[tabIndex] = _reverseSort
 						? _incompleteItems[tabIndex].OrderByDescending(o => o.IsTimerOn).ToList()
 						: _incompleteItems[tabIndex].OrderBy(o => o.IsTimerOn).ToList();
 					break;
@@ -1547,13 +1558,7 @@ namespace TODOList
 
 			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
-			_incompleteItems.Clear();
-			_masterList.Clear();
-			_hashTags.Clear();
-			_tabHash.Clear();
-			_tabList.Clear();
-			_historyItems.Clear();
-			_hashShortcuts.Clear();
+			ClearLists();
 
 			float version = 0.0f;
 
@@ -1601,6 +1606,16 @@ namespace TODOList
 			dlgYN.ShowDialog();
 			if(dlgYN.Result)
 				AddNewHistoryItem();
+		}
+		private void ClearLists()
+		{
+			_incompleteItems.Clear();
+			_masterList.Clear();
+			_hashTags.Clear();
+			_tabHash.Clear();
+			_tabList.Clear();
+			_historyItems.Clear();
+			_hashShortcuts.Clear();
 		}
 		private void Load2_0SaveFile(StreamReader stream, string line)
 		{
@@ -1729,7 +1744,7 @@ namespace TODOList
 		{
 			SaveFileDialog sfd = new SaveFileDialog
 			{
-				Title = "Select folder to save game in.",
+				Title = "Select folder to save file in.",
 				FileName = GetFileName(),
 				InitialDirectory = GetFilePath(),
 				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
