@@ -14,10 +14,12 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Forms.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using Label = System.Windows.Controls.Label;
 using ListBox = System.Windows.Controls.ListBox;
 using MenuItem = System.Windows.Controls.MenuItem;
 
@@ -29,7 +31,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.06";
+		public const string VERSION = "3.07";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -91,6 +93,9 @@ namespace TODOList
 		[DllImport("user32.dll")]
 		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 		
+//		[DllImport("User32.dll")]
+//		private static extern bool SetCursorPos(int X, int Y);
+		
 		// POMOTIMER
 		private DateTime _pomoTimer;
 		private bool _isPomoTimerOn;
@@ -126,6 +131,24 @@ namespace TODOList
 			: _tabList[_todoTabs.SelectedIndex].Name;
 		public List<HistoryItem> HistoryItems => _historyItems;
 		private string WindowTitle => "EthereaListVCSNotes v" + VERSION + " " + _currentOpenFile;
+		public int PomoWorkTime
+		{
+			get => _pomoWorkTime;
+			set
+			{
+				_pomoWorkTime = value;
+				OnPropertyChanged();
+			}
+		}
+		public int PomoBreakTime
+		{
+			get => _pomoBreakTime;
+			set
+			{
+				_pomoBreakTime = value;
+				OnPropertyChanged();
+			}
+		}
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public  MainWindow()
@@ -168,8 +191,8 @@ namespace TODOList
 			_currentHistoryItemIndex = 0;
 			lbCompletedTodos.SelectedIndex = 0;
 			
-			lblPomoWork.Content = _pomoWorkTime.ToString();
-			lblPomoBreak.Content = _pomoBreakTime.ToString();
+//			lblPomoWork.Content = _pomoWorkTime.ToString();
+//			lblPomoBreak.Content = _pomoBreakTime.ToString();
 			
 			if (_recentFiles.Count > 0)
 				Load(_recentFiles[0]);
@@ -280,6 +303,7 @@ namespace TODOList
 		}
 		private void CreateNewTabs()
 		{
+			AddNewTodoTab("All", false);
 			AddNewTodoTab("Other", false);
 			AddNewTodoTab("Bug", false);
 			AddNewTodoTab("Feature");
@@ -624,6 +648,7 @@ namespace TODOList
 				return;
 			ClearLists();
 			CreateNewTabs();
+			_currentProjectVersion = 0.0f;
 
 			_currentHistoryItem = new HistoryItem("", "");
 			RefreshHistory();
@@ -908,16 +933,11 @@ namespace TODOList
 		}
 		private void AddNewHistoryItem()
 		{
-//			DlgAddNewHistory dlgANH = new DlgAddNewHistory(_currentProjectVersion, _projectVersionIncrement);
-//			dlgANH.ShowDialog();
-//			if (!dlgANH.Result)
-//				return;
-
 			_currentProjectVersion += _projectVersionIncrement;
 
 			_currentHistoryItem = new HistoryItem(DateTime.Now)
 			{
-				Title = _currentProjectVersion.ToString()//dlgANH.ResultTitle
+				Title = "v" + _currentProjectVersion.ToString()
 			};
 			_historyItems.Add(_currentHistoryItem);
 			AutoSave();
@@ -1038,53 +1058,63 @@ namespace TODOList
 						AutoSave();
 					}
 				}
+				RefreshTodo();
+//				Point p = b.PointToScreen(new Point(0d, 0d));;
+//				SetCursorPos((int) p.X + 18, (int) p.Y + 18);
 			}
-			RefreshTodo();
 		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// POMO STUFF //
-		private void PomoTimerStart_OnClick(object sender, EventArgs e)
+		private void PomoTimerToggle_OnClick(object sender, EventArgs e)
 		{
-			_isPomoTimerOn = true;
+			_isPomoTimerOn = !_isPomoTimerOn;
 		}
 		private void PomoTimerPause_OnClick(object sender, EventArgs e)
 		{
 			_isPomoTimerOn = false;
 		}
-		private void PomoTimerStop_OnClick(object sender, EventArgs e)
+		private void PomoTimerReset_OnClick(object sender, EventArgs e)
 		{
-			_isPomoTimerOn = false;
+			_isPomoTimerOn = true;
 			_pomoTimer = DateTime.MinValue;
 			PomoTimeLeft = 0;
 		}
-		private void PomoWorkInc_OnClick(object sender, EventArgs e)
+//		private void PomoWorkInc_OnClick(object sender, EventArgs e)
+//		{
+//			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
+//			PomoWorkTime += value;
+//			lblPomoWork.Content = _pomoWorkTime.ToString();
+//		}
+		private void PomoWork_OnValueChanged(object sender, EventArgs e)
 		{
-			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
-			_pomoWorkTime += value;
-			lblPomoWork.Content = _pomoWorkTime.ToString();
+			PomoWorkTime = (int) iudPomoWork.Value;
 		}
-		private void PomoWorkDec_OnClick(object sender, EventArgs e)
+		private void PomoBreak_OnValueChanged(object sender, EventArgs e)
 		{
-			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
-			_pomoWorkTime -= value;
-			if (_pomoWorkTime <= 0)
-				_pomoWorkTime = value;
-			lblPomoWork.Content = _pomoWorkTime.ToString();
+			PomoBreakTime = (int) iudPomoBreak.Value;
 		}
-		private void PomoBreakInc_OnClick(object sender, EventArgs e)
-		{
-			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
-			_pomoBreakTime += value;
-			lblPomoBreak.Content = _pomoBreakTime.ToString();
-		}
-		private void PomoBreakDec_OnClick(object sender, EventArgs e)
-		{
-			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
-			_pomoBreakTime -= value;
-			if (_pomoBreakTime <= 0)
-				_pomoBreakTime = value;
-			lblPomoBreak.Content = _pomoBreakTime.ToString();
-		}
+//		private void PomoWorkDec_OnClick(object sender, EventArgs e)
+//		{
+//			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
+//			PomoWorkTime -= value;
+//			if (PomoWorkTime <= 0)
+//				PomoWorkTime = value;
+//			lblPomoWork.Content = _pomoWorkTime.ToString();
+//		}
+//		private void PomoBreakInc_OnClick(object sender, EventArgs e)
+//		{
+//			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
+//			PomoBreakTime += value;
+//			lblPomoBreak.Content = _pomoBreakTime.ToString();
+//		}
+//		private void PomoBreakDec_OnClick(object sender, EventArgs e)
+//		{
+//			int value = Convert.ToInt16((string) (sender as Button)?.CommandParameter);
+//			PomoBreakTime -= value;
+//			if (PomoBreakTime <= 0)
+//				PomoBreakTime = value;
+//			lblPomoBreak.Content = _pomoBreakTime.ToString();
+//		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// TO DOs //
 		private void AddItemToMasterList(TodoItem td)
@@ -1273,21 +1303,10 @@ namespace TODOList
 		}
 		private void TimeTakenTimer_OnClick(object sender, EventArgs e)
 		{
-			if (sender is Button b)
+			if (sender is Label l)
 			{
-				TodoItemHolder tlh = b.DataContext as TodoItemHolder;
-
-				if ((string) b.CommandParameter == "start")
-				{
-					if (tlh != null)
-						tlh.TD.IsTimerOn = true;
-				}
-				else if ((string) b.CommandParameter == "stop")
-				{
-					if (tlh != null)
-						tlh.TD.IsTimerOn = false;
-				}
-				
+				TodoItemHolder tlh = l.DataContext as TodoItemHolder;
+				tlh.TD.IsTimerOn = !tlh.TD.IsTimerOn;
 				AutoSave();
 			}
 
@@ -1396,7 +1415,9 @@ namespace TODOList
 		}
 		private void FixRankings()
 		{
-			if (_todoTabs.Items.Count == 0 || _todoTabs.SelectedIndex < 0)
+			if (_todoTabs.Items.Count == 0 || 
+				_todoTabs.SelectedIndex < 0 || 
+				_todoTabs.SelectedIndex >= _todoTabs.Items.Count)
 				return;
 			string currentHash = _tabList[_todoTabs.SelectedIndex].Name;
 			foreach(TodoItemHolder tdih in _incompleteItems[_todoTabs.SelectedIndex])

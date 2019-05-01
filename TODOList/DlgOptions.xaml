@@ -3,6 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 		mc:Ignorable="d"
 		Title="Options" Height="400" Width="380" 
 		Style="{StaticResource {x:Type Window}}" >
@@ -22,15 +23,19 @@
 			</StackPanel >
 			<StackPanel Orientation="Horizontal" >
 				<Label Content="Backup Time" />
-				<TextBox Name="tbBT" Width="50" PreviewTextInput="BT_OnPreviewTextInput" />
+				<xctk:IntegerUpDown Name="iudBackupTime" Minimum="1" />
+
+				<!-- <TextBox Name="tbBT" Width="50" PreviewTextInput="BT_OnPreviewTextInput" /> -->
 			</StackPanel >
 			<StackPanel Orientation="Horizontal" >
 				<Label Content="Current project version" />
-				<TextBox Name="tbCPV" Width="50" PreviewTextInput="CPV_OnPreviewTextInput" />
+				<xctk:SingleUpDown Name="iudCPV" Minimum="0" FormatString="F2" />
+				<!-- <TextBox Name="tbCPV" Width="50" PreviewTextInput="CPV_OnPreviewTextInput" /> -->
 			</StackPanel >
 			<StackPanel Orientation="Horizontal" >
 				<Label Content="Project version increment" />
-				<TextBox Name="tbPVI" Width="50" PreviewTextInput="PVI_OnPreviewTextInput" />
+				<xctk:SingleUpDown Name="iudPVI" Minimum="0.01" ValueChanged="PCI_OnValueChanged" FormatString="F2" />
+				<!-- <TextBox Name="tbPVI" Width="50" PreviewTextInput="PVI_OnPreviewTextInput" /> -->
 			</StackPanel >
 		</StackPanel >
 		<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" >

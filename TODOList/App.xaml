@@ -1,6 +1,7 @@
 ﻿<Application x:Class="TODOList.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wpfTool="http://schemas.xceed.com/wpf/xaml/toolkit"
              StartupUri="MainWindow.xaml" >
     <Application.Resources>
         <ResourceDictionary 
@@ -336,8 +337,39 @@
                 </Setter>
             </Style>
             
-        
-            <!-- Tab stuff-->
+<!-- WPF INTEGER UP DOWN         -->
+            <Style TargetType="{x:Type wpfTool:IntegerUpDown}" >
+                <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource DarkerBaseBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BaseBorderBrush}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
+                <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+                <Setter Property="MinHeight" Value="22" />
+                <Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}"/>
+            </Style >
+            
+<!-- WPF SINGLE UP DOWN         -->
+            <Style TargetType="{x:Type wpfTool:SingleUpDown}" >
+                <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource DarkerBaseBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BaseBorderBrush}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
+                <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+                <Setter Property="MinHeight" Value="22" />
+                <Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}"/>
+            </Style >
+            
+<!-- WPF LONG UP DOWN         -->
+            <Style TargetType="{x:Type wpfTool:LongUpDown}" >
+                <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource DarkerBaseBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BaseBorderBrush}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
+                <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+                <Setter Property="MinHeight" Value="22" />
+                <Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}"/>
+            </Style >            
+ <!-- Tab stuff-->
             <Style TargetType="{x:Type TabControl}">
                 <Setter Property="Padding" Value="4,4,4,4"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>

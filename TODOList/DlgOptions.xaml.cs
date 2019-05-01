@@ -31,9 +31,11 @@ namespace TODOList
 			cbAB.IsChecked = AutoBackup;
 
 			int totalMinutes = BackupTime.Days * 24 * 60 +BackupTime.Hours * 60 + BackupTime.Minutes;
-			tbBT.Text = totalMinutes.ToString();
-			tbCPV.Text = $"{CurrentProjectVersion:0.00}";
-			tbPVI.Text = $"{ProjectVersionIncrement:0.000}"; 
+			iudBackupTime.Value = totalMinutes;
+			iudCPV.Value = CurrentProjectVersion;
+			iudPVI.Value = ProjectVersionIncrement;
+			iudCPV.Increment = ProjectVersionIncrement;
+			iudPVI.Increment = 0.01f;
 			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse()
@@ -49,18 +51,24 @@ namespace TODOList
 		}
 		private void ConvertBackupTime()
 		{
-			int totalMinutes = Convert.ToInt32(tbBT.Text);
+			int totalMinutes = (int) iudBackupTime.Value;
+//			int totalMinutes = Convert.ToInt32(tbBT.Text);
 			int hours = totalMinutes / 60;
 			int minutes = totalMinutes % 60;
 			BackupTime = new TimeSpan(hours, minutes, 0);
 		}
-		private void BT_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void PCI_OnValueChanged(object sender, EventArgs e)
 		{
-			if (!(sender is TextBox tb))
-				return;
-			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
-			e.Handled = !Int32.TryParse(fullText, out _);
+			iudCPV.Increment = iudPVI.Value;
 		}
+//		private void BT_OnValueChanged(object sender, TextCompositionEventArgs e)
+//		{
+////			if (!(sender is TextBox tb))
+////				return;
+////			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
+////			e.Handled = !Int32.TryParse(fullText, out _);
+//			totalMinutes = 
+//		}
 		private void CPV_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
 		{
 			if (!(sender is TextBox tb))
@@ -84,8 +92,8 @@ namespace TODOList
 			if (cbAB.IsChecked != null)
 				AutoBackup = (bool) cbAB.IsChecked;
 			ConvertBackupTime();
-			CurrentProjectVersion = Convert.ToSingle(tbCPV.Text);
-			ProjectVersionIncrement = Convert.ToSingle(tbPVI.Text);
+			CurrentProjectVersion = (float) iudCPV.Value;
+			ProjectVersionIncrement = (float) iudPVI.Value;
 			
 			Result = true;
 			Close();

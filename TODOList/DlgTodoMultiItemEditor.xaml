@@ -38,7 +38,7 @@
 		
 		<StackPanel Orientation="Horizontal" >
 			<CheckBox Content="TODO: " Name="ckTodo" Click="TodoCheckBox_OnClick" Margin="2" Foreground="LightGray" />
-			<TextBox Name="tbTodo" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="100" Width="500" Margin="2" />
+			<TextBox Name="tbTodo" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" KeyboardNavigation.TabIndex="0" Height="200" Width="500" Margin="2" />
 		</StackPanel >
 		
 		<StackPanel Orientation="Horizontal" >
@@ -46,12 +46,12 @@
 				<CheckBox Content="Tags:" Name="ckTags" Click="TagsCheckBox_OnClick" Foreground="LightGray" HorizontalAlignment="Right" Width="72" Margin="2"  />
 				<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
 			</StackPanel >
-			<ListBox Name="lbTags" Height="200" Width="500" Margin="2" KeyboardNavigation.TabIndex="2" >
+			<ListBox Name="lbTags" Height="300" Width="500" Margin="2" KeyboardNavigation.TabIndex="2" >
 				<ListBox.ItemTemplate >
 					<DataTemplate >
-						<StackPanel Orientation="Horizontal" Height="35" >
+						<StackPanel Orientation="Horizontal" Height="30" >
 							<Button Content="X" Click="DeleteTag_OnClick" Width="35" />
-							<TextBox Name="tbTag" Text="{Binding Text}" Width="200" />
+							<TextBox Name="tbTag" Text="{Binding Text}" Width="410" />
 						</StackPanel >
 					</DataTemplate >
 				</ListBox.ItemTemplate >

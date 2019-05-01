@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
@@ -48,47 +49,44 @@
 	
 	
 	<DockPanel TextElement.FontSize="16" TextElement.FontFamily="Source Code Pro">
-		<Menu Name="mnuMain" DockPanel.Dock="Top" FontSize="16" >
-			<MenuItem Header="_File" >
-				<MenuItem Header="New" Click="mnuNew_OnClick" /> 				
-				<Separator />
-				<MenuItem Header="Options" Click="mnuOptions_OnClick" />
-				<Separator />
-				<MenuItem Header="Save" Click="mnuSave_OnClick" />
-				<MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
-				<Separator />
-				<MenuItem Header="Load" Click="mnuLoad_OnClick" />
-				<Separator />
-				<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
-			</MenuItem >
-			<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
-				<MenuItem.ContextMenu>
-					<ContextMenu >
-						<MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
-					</ContextMenu >
-				</MenuItem.ContextMenu>
-			</MenuItem >
-			<MenuItem Header="Help" Click="mnuHelp_OnClick" />
-		</Menu >
-		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" >
-			<Grid >
-				<ProgressBar Name="pbPomo" Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100" BorderBrush="DarkSlateGray" Background="Maroon" Height="30" Width="400" />
-				<Label Name="lblPomo" Width="400" HorizontalContentAlignment="Right" Foreground="Black" FontWeight="SemiBold" FontSize="20" />
-			</Grid >
-			<Button FontFamily="Marlett" FontSize="20" Content="4" Click="PomoTimerStart_OnClick" />
-			<Button FontFamily="Marlett" FontSize="20" Content="7" Click="PomoTimerPause_OnClick" />
-			<Button FontFamily="Marlett" FontSize="20" Content="g" Click="PomoTimerStop_OnClick" />
-			<Label Name="lblPomoWork" Width="100" />
-			<Button Content="+5" Click="PomoWorkInc_OnClick" CommandParameter="5" />
-			<Button Content="+1" Click="PomoWorkInc_OnClick" CommandParameter="1" />
-			<Button Content="-1" Click="PomoWorkDec_OnClick" CommandParameter="1" />
-			<Button Content="-5" Click="PomoWorkDec_OnClick" CommandParameter="5" />
-			<Label Name="lblPomoBreak" Width="100" />
-			<Button Content="+5" Click="PomoBreakInc_OnClick" CommandParameter="5" />
-			<Button Content="+1" Click="PomoBreakInc_OnClick" CommandParameter="1" />
-			<Button Content="-1" Click="PomoBreakDec_OnClick" CommandParameter="1" />
-			<Button Content="-5" Click="PomoBreakDec_OnClick" CommandParameter="5" />
-		</StackPanel >
+		<Grid DockPanel.Dock="Top" >
+			<Grid.ColumnDefinitions >
+				<ColumnDefinition Width="500" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions >
+			<Menu Name="mnuMain" FontSize="16" Grid.Column="0" >
+				<MenuItem Header="_File" >
+					<MenuItem Header="New" Click="mnuNew_OnClick" /> 				
+					<Separator />
+					<MenuItem Header="Load" Click="mnuLoad_OnClick" />
+					<Separator />
+					<MenuItem Header="Save" Click="mnuSave_OnClick" />
+					<MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
+					<Separator />
+					<MenuItem Header="Options" Click="mnuOptions_OnClick" />
+					<Separator />
+					<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
+				</MenuItem >
+				<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
+					<MenuItem.ContextMenu>
+						<ContextMenu >
+							<MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
+						</ContextMenu >
+					</MenuItem.ContextMenu>
+				</MenuItem >
+				<MenuItem Header="Help" Click="mnuHelp_OnClick" />
+			</Menu >
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" >
+				<Grid >
+					<ProgressBar Name="pbPomo" Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100" BorderBrush="DarkSlateGray" Background="Maroon" Height="30" Width="400" />
+					<Label Name="lblPomo" Width="400" MouseUp="PomoTimerToggle_OnClick" MouseDoubleClick="PomoTimerReset_OnClick" HorizontalContentAlignment="Right" Foreground="Black" FontWeight="SemiBold" FontSize="20" />
+				</Grid >
+				<Label Content="Work: " Width="100" />
+				<wpfTool:IntegerUpDown Name="iudPomoWork" Minimum="1" Value="{Binding PomoWorkTime, UpdateSourceTrigger=PropertyChanged}" ValueChanged="PomoWork_OnValueChanged" Width="80" />
+				<Label Content="Break: " Width="100" />
+				<wpfTool:IntegerUpDown Name="iudPomoBreak" Minimum="1" Value="{Binding PomoBreakTime, UpdateSourceTrigger=PropertyChanged}" ValueChanged="PomoBreak_OnValueChanged" Width="80" />
+			</StackPanel >
+		</Grid >
 		
 		<TabControl Name="TabControl" >
 			<!-- VCS History tab -->
@@ -270,11 +268,9 @@
 														<ColumnDefinition Width="25" />
 														<ColumnDefinition Width="25" />
 				
-														<ColumnDefinition Width="60" /> <!-- TIME TAKEN -->
-														<ColumnDefinition Width="40" />
+														<ColumnDefinition Width="85" /> <!-- TIME TAKEN -->
+														<ColumnDefinition Width="65" />
 														
-														<ColumnDefinition Width="25" />
-														<ColumnDefinition Width="25" />
 				
 														<ColumnDefinition Width="3*" /> <!-- T odo -->
 													</Grid.ColumnDefinitions >
@@ -287,7 +283,7 @@
 													<Button Grid.Column="4" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 													<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 													
-													<Label Grid.Column="6" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+													<Label Grid.Column="6" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
 														<Label.Style >
 															<Style >
 																<Style.Triggers >
@@ -303,7 +299,7 @@
 															</Style >
 														</Label.Style >
 													</Label >
-													<Label Grid.Column="7" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+													<Label Grid.Column="7" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
 														<Label.Style >
 															<Style >
 																<Style.Triggers >
@@ -319,10 +315,7 @@
 															</Style >
 														</Label.Style >
 													</Label >
-													<Button Grid.Column="8" FontFamily="Marlett" FontSize="20" Content="4" Click="TimeTakenTimer_OnClick" CommandParameter="start" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-													<Button Grid.Column="9" FontFamily="Marlett" FontSize="20" Content="g" Click="TimeTakenTimer_OnClick" CommandParameter="stop" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-													
-													<TextBlock Grid.Column="10" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+													<TextBlock Grid.Column="8" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
 												</Grid >
 											</DataTemplate >
 										</ListBox.ItemTemplate >

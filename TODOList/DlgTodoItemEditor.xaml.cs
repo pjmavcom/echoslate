@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace TODOList
 {
@@ -33,8 +32,8 @@ namespace TODOList
 			cbSev.SelectedIndex = _currentSeverity;
 			tbTodo.Text = td.Todo;
 			tbNotes.Text = td.Notes;
-			tbRank.Text = td.Rank[_currentListHash].ToString();
-			lblTime.Content = $"{td.TimeTakenInMinutes:00}:{td.TimeTaken.Second:00}";
+			iudRank.Value = td.Rank[_currentListHash];
+			iudTime.Value = _td.TimeTakenInMinutes;
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 
 			_tags = new List<TagHolder>();
@@ -113,63 +112,14 @@ namespace TODOList
 			_tags.Remove(th);
 			lbTags.Items.Refresh();
 		}
-		private void Rank_OnClick(object sender, EventArgs e)
+		private void Rank_OnValueChanged(object sender, EventArgs e)
 		{
-			if (!(sender is Button b))
-				return;
-			
-			string compare = (string) b.CommandParameter;
-			
-			if (compare == "up")
-				_td.Rank[_currentListHash]--;
-			else if (compare == "down")
-				_td.Rank[_currentListHash]++;
-			else if (compare == "top")
-				_td.Rank[_currentListHash] = 0;
-			else if (compare == "bottom")
-				_td.Rank[_currentListHash] = int.MaxValue;
-
+			_td.Rank[_currentListHash] = (int) iudRank.Value;
 			_td.Rank[_currentListHash] = _td.Rank[_currentListHash] > 0 ? _td.Rank[_currentListHash] : 0;
-			tbRank.Text = _td.Rank[_currentListHash].ToString();
 		}
-		private void Rank_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void Time_OnValueChanged(object sender, EventArgs e)
 		{
-			if (!(sender is TextBox tb))
-				return;
-			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
-			e.Handled = !double.TryParse(fullText, out _);
-		}
-		private void Rank_OnTextChange(object sender, EventArgs e)
-		{
-			if (tbRank.Text == "")
-				tbRank.Text = "0";
-			_td.Rank[_currentListHash] = Convert.ToInt32(tbRank.Text);
-		}
-		private void Time_OnClick(object sender, EventArgs e)
-		{
-			if (!(sender is Button b))
-				return;
-			
-			int inc = 0;
-			switch ((string) b.CommandParameter)
-			{
-				case "down10":
-					inc = -10;
-					break;
-				case "down5":
-					inc = -5;
-					break;
-				case "up5":
-					inc = 5;
-					break;
-				case "up10":
-					inc = 10;
-					break;
-			}
-			_td.TimeTaken = _td.TimeTaken.Ticks >= ((-inc) * TimeSpan.TicksPerMinute)
-				? _td.TimeTaken.AddMinutes(inc)
-				: _td.TimeTaken.AddTicks(-_td.TimeTaken.Ticks);
-			lblTime.Content = $"{_td.TimeTakenInMinutes:00}:{_td.TimeTaken.Second:00}";
+			_td.TimeTaken = new DateTime((long) (iudTime.Value * TimeSpan.TicksPerMinute));
 		}
 		private void OK_OnClick(object sender, EventArgs e)
 		{

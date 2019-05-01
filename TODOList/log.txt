@@ -1,3 +1,41 @@
+commit 9e566b730403a645d9aaa8067ef096b2cf9edda3
+Author: Arolyn\Fade <pjmavcom@gmail.com>
+Date:   Tue Apr 30 10:20:43 2019 -0500
+
+    20190410- v3.06 Major Bug fix
+    
+    20190410- v3.06 Major Bug fix
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: -Clicking new crashed. Fixed now.
+    -Cheked for performance increase by virtualizing. Didnt notice
+            anything at all. Leaving it as it was.
+    
+    =Bugs Squashed====================================================================================================
+    --20190430-0m |Time in the editor show 0:5 as 5 seconds instead of 0:05
+            Notes: Fixed
+    --20190430-0m |When the tab editor gets too long, the scroll bar cuts off some of the right side, making a need
+                    for a horizontal scroll bar. Widen this window a bit
+    --20190430-0m |Timers showing 0 even when there is a time there
+            Notes: The TodoItemHolder was grabbing its own TimeTaken field instead of the underlying
+                    TodoItem.TimeTaken
+    --20190430-0m |Reset timer not working
+            Notes: The TodoItemHolder was grabbing its own TimeTaken field instead of the underlying
+                    TodoItem.TimeTaken
+    --20190430-0m |Clicking an item to edit sometimes reorders everything
+            Notes: Fixed this by checking whether the tab changed in updateHandler() and if it did, RefreshTodo(). If
+                    it RefreshTodo()s everytime something changes, and there was no check, you wouldnt be able to
+                    doubleclick to edit or get the right click menu to pop up
+    --20190430-0m |Clicking new crashes. Already have a tab called Other and Bug
+            Notes: Index out of range on the tabs. Checked for Count == 0 and returned
+    
+    =Features Added===================================================================================================
+    --20190430-0m |Sort by timer being active and by time elapsed
+    --20190430-0m |The date and time need to be formatted to be readable
+    --20190430-0m |If the todos box in the editor is filled up, there is no scroll bar. Need to add one and fix notes
+                    and such in each editor as well
+    --20190430-0m |Annoying getting the pop up for new history item every time. Make it automatic
+
 commit 00c9f9b80b9ccb41538b7d7692ce2fffb2a0eb0d
 Author: DESKTOP-FFR887Q\Fade <pjmavcom@gmail.com>
 Date:   Wed Apr 10 01:30:58 2019 -0500
