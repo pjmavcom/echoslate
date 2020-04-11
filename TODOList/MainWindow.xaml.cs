@@ -73,8 +73,8 @@ namespace TODOList
 		private TimeSpan _timeUntilBackup;
 		private int _backupIncrement;
 		private string _historyLogPath;
-		private float _currentProjectVersion;
-		private float _projectVersionIncrement;
+		private double _currentProjectVersion;
+		private double _projectVersionIncrement;
 
 		// WINDOW ITEMS
 		private double top;
@@ -190,16 +190,31 @@ namespace TODOList
 			lbHistory.SelectedIndex = 0;
 			_currentHistoryItemIndex = 0;
 			lbCompletedTodos.SelectedIndex = 0;
+
+			//			lblPomoWork.Content = _pomoWorkTime.ToString();
+			//			lblPomoBreak.Content = _pomoBreakTime.ToString();
+
+			int no_good_recent_files_count = -1;
+			for (int i = 0; i < _recentFiles.Count; i++)
+			{
+				if (File.Exists(_recentFiles[i]))
+				{
+					Load(_recentFiles[i]);
+					break;
+				}
+				else
+					no_good_recent_files_count = i + 1;
+			}
 			
-//			lblPomoWork.Content = _pomoWorkTime.ToString();
-//			lblPomoBreak.Content = _pomoBreakTime.ToString();
-			
-			if (_recentFiles.Count > 0)
-				Load(_recentFiles[0]);
-			else
+			if (no_good_recent_files_count == _recentFiles.Count)
+			{
+				DlgYesNo dlg = new DlgYesNo("No recent file found");
+				dlg.ShowDialog();
 				CreateNewTabs();
+			}
+			else
+				LoadHistory();
 			_timeUntilBackup = _backupTime;
-			LoadHistory();
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
@@ -306,6 +321,7 @@ namespace TODOList
 			AddNewTodoTab("All", false);
 			AddNewTodoTab("Other", false);
 			AddNewTodoTab("Bug", false);
+			AddNewTodoTab("InProgress", false);
 			AddNewTodoTab("Feature");
 		}
 		private void AddNewTodoTab(string name, bool doSave = true)
@@ -648,7 +664,8 @@ namespace TODOList
 				return;
 			ClearLists();
 			CreateNewTabs();
-			_currentProjectVersion = 0.0f;
+			_currentProjectVersion = 0.0d;
+			_projectVersionIncrement = 0.01d;
 
 			_currentHistoryItem = new HistoryItem("", "");
 			RefreshHistory();
@@ -933,7 +950,10 @@ namespace TODOList
 		}
 		private void AddNewHistoryItem()
 		{
+			_currentProjectVersion = Math.Round(_currentProjectVersion, 2);
+			_projectVersionIncrement = Math.Round(_projectVersionIncrement, 2);
 			_currentProjectVersion += _projectVersionIncrement;
+			_currentProjectVersion = Math.Round(_currentProjectVersion, 2);
 
 			_currentHistoryItem = new HistoryItem(DateTime.Now)
 			{

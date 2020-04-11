@@ -29,12 +29,12 @@
 			</StackPanel >
 			<StackPanel Orientation="Horizontal" >
 				<Label Content="Current project version" />
-				<xctk:SingleUpDown Name="iudCPV" Minimum="0" FormatString="F2" />
+				<xctk:DoubleUpDown Name="iudCPV" Minimum="0" FormatString="F2" />
 				<!-- <TextBox Name="tbCPV" Width="50" PreviewTextInput="CPV_OnPreviewTextInput" /> -->
 			</StackPanel >
 			<StackPanel Orientation="Horizontal" >
 				<Label Content="Project version increment" />
-				<xctk:SingleUpDown Name="iudPVI" Minimum="0.01" ValueChanged="PCI_OnValueChanged" FormatString="F2" />
+				<xctk:DoubleUpDown Name="iudPVI" Minimum="0.01" ValueChanged="PCI_OnValueChanged" FormatString="F2" />
 				<!-- <TextBox Name="tbPVI" Width="50" PreviewTextInput="PVI_OnPreviewTextInput" /> -->
 			</StackPanel >
 		</StackPanel >

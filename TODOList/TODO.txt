@@ -14,53 +14,71 @@ Ifwishes
 BackupIncrement
 0
 BackupTime
-10
+5
 AutoBackup
-True
+False
 AutoSave
-True
+False
 CurrentProjectVersion
-3.08
+3.09
 ProjectVersionIncrement
 0.01
 ====================================TODO
-VERSION 3.07|2019-02-20|19:11|-|-|0|False|All # 17,Other # 1,Feature # -1,Bug # -1,Tabs # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|Update version number|
-VERSION 3.07|2019-03-21|14:34|-|-|0|False|All # 20,Other # 2,Feature # -1,Bug # -1,Tabs # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#INTERFACE Make the interface look clean|
-VERSION 3.07|2019-03-12|07:20|-|-|6000000000|False|All # 18,Other # 3,Feature # -1,Bug # 6,Tabs # -1,Oldbugs # 1,Notes # -1,Ui # -1,Ifwishes # -1,|0|#OLDBUGS Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|This works most of the time. Sometimes it doesnt
-VERSION 3.07|2019-03-03|23:51|-|-|6000000000|False|All # 21,Other # 4,Feature # -1,Bug # 7,Tabs # -1,Oldbugs # 2,Notes # -1,Ui # -1,Ifwishes # -1,|0|#OLDBUGS Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
-VERSION 3.07|2019-03-19|15:59|-|-|0|False|All # 22,Other # 5,Feature # -1,Bug # 8,Tabs # -1,Oldbugs # 3,Notes # -1,Ui # -1,Ifwishes # -1,|0|#HISTORY #OLDBUGS When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
-VERSION 3.07|2019-03-24|10:12|-|-|0|False|Bug # 3,All # 14,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #HASHTAGEDITOR If you push enter when entering new text on hashtag, it doesnt get saved. Focus isnt changing and allowing the text to update soon enough. Need to put something in like the preview text things in the editors rank textbox and if it changes, update the tag first|
-VERSION 3.07|2019-03-24|10:16|-|-|0|False|Feature # 10,All # 12,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 1,Ifwishes # -1,|1|#FEATURE #UI I dont like the colors of the severity bar. Maybe its too thick or too green and red and yellow|
-VERSION 3.07|2019-03-24|10:20|-|-|0|False|Feature # 9,All # 11,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 2,Ifwishes # -1,|1|#FEATURE #UI Add the add tag button to the very last tag in the tag editor list|
-VERSION 3.07|2019-03-24|10:21|-|-|0|False|Feature # 8,All # 10,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Move the function thats the same in both editors to one file|
-VERSION 3.07|2019-03-24|10:15|-|-|0|False|Feature # 11,All # 13,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 3,Ifwishes # -1,|1|#FEATURE #UI Maybe when you click the arrows on the rank buttons in the list, it moves the mouse with the item as it moves|
-VERSION 3.07|2019-03-24|10:10|-|-|0|False|Bug # -1,All # 15,Other # -1,Feature # 12,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 4,Ifwishes # -1,|1|#FEATURE #UI Auto select text when adding tabs or new hash tags|
-VERSION 3.07|2019-03-24|09:56|-|-|0|False|Feature # 13,All # 16,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 5,Ifwishes # -1,|1|#FEATURE #UI Tabs with multiple sorting tags|
-VERSION 3.07|2019-03-20|10:35|-|-|0|False|All # 19,Other # 5,Feature # 14,Bug # -1,Tabs # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE #FILEIO Turn save files to binary|
-VERSION 3.07|2019-03-24|10:39|-|-|0|False|Feature # 7,All # 9,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # 1,Ui # -1,Ifwishes # -1,|1|#FEATURE #NOTES Maybe a notes tab, has same sorting features as the todos tab, but these notes do not get onto the vcs history|
-VERSION 3.07|2019-03-24|10:40|-|-|0|False|Feature # 6,All # 8,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # 2,Ui # -1,Ifwishes # -1,|1|#FEATURE #NOTES Have option to transfer to todo tab|
-VERSION 3.07|2019-03-24|10:41|-|-|0|False|Feature # 5,All # 7,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # 1,|1|#DIAGRAMS #FEATURE #IFWISHES Maybe once I figure out nodes and moving stuff around I can have a black board uml diagram type tab set|
-VERSION 3.07|2019-03-24|17:32|-|-|0|False|Bug # -1,All # 6,Other # -1,Feature # 4,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Copy todos|
-VERSION 3.07|2019-03-24|17:33|-|-|0|False|Bug # 2,All # 4,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Still cant add completed todos to other history items, though why would you? When you edit a todo on an old history item, it adds it to the newest todo.|
-VERSION 3.07|2019-03-31|14:10|-|-|0|False|Feature # 3,All # 3,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Online storage of files|
-VERSION 3.07|2019-05-01|07:41|-|-|0|False|Bug # -1,All # 1,Other # -1,Feature # 1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Change file name to whatever project folder its saved in +Todo?|
-VERSION 3.07|2019-05-01|07:41|-|-|0|False|Bug # -1,All # 2,Other # -1,Feature # 2,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Change file extension|
-VERSION 3.07|2019-03-24|17:34|-|-|0|False|Bug # 1,All # 5,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Check when options are changed that it saves when done|
+VERSION 3.07|2019-02-20|19:11|-|-|0|False|All # 25,Other # 1,Feature # -1,Bug # -1,Tabs # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|Update version number|
+VERSION 3.07|2019-03-21|14:34|-|-|0|False|All # 28,Other # 2,Feature # -1,Bug # -1,Tabs # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#INTERFACE Make the interface look clean|
+VERSION 3.07|2019-03-12|07:20|-|-|6000000000|False|All # 26,Other # 3,Feature # -1,Bug # 6,Tabs # -1,Oldbugs # 1,Notes # -1,Ui # -1,Ifwishes # -1,|0|#OLDBUGS Global hotkey Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in|This works most of the time. Sometimes it doesnt
+VERSION 3.07|2019-03-03|23:51|-|-|6000000000|False|All # 29,Other # 4,Feature # -1,Bug # 7,Tabs # -1,Oldbugs # 2,Notes # -1,Ui # -1,Ifwishes # -1,|0|#OLDBUGS Crashes when new is clicked. Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|
+VERSION 3.07|2019-03-19|15:59|-|-|0|False|All # 30,Other # 5,Feature # -1,Bug # 8,Tabs # -1,Oldbugs # 3,Notes # -1,Ui # -1,Ifwishes # -1,|0|#HISTORY #OLDBUGS When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|
+VERSION 3.07|2019-03-24|10:12|-|-|0|False|Bug # 6,All # 22,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #HASHTAGEDITOR If you push enter when entering new text on hashtag, it doesnt get saved. Focus isnt changing and allowing the text to update soon enough. Need to put something in like the preview text things in the editors rank textbox and if it changes, update the tag first|
+VERSION 3.07|2019-03-24|10:16|-|-|0|False|Feature # 13,All # 20,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 4,Ifwishes # -1,|1|#FEATURE #UI I dont like the colors of the severity bar. Maybe its too thick or too green and red and yellow|
+VERSION 3.07|2019-03-24|10:20|-|-|0|False|Feature # 12,All # 19,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 7,Ifwishes # -1,|1|#FEATURE #UI Add the add tag button to the very last tag in the tag editor list|
+VERSION 3.07|2019-03-24|10:21|-|-|0|False|Feature # 11,All # 18,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Move the function thats the same in both editors to one file|
+VERSION 3.07|2019-03-24|10:15|-|-|0|False|Feature # 14,All # 21,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 9,Ifwishes # -1,|1|#FEATURE #UI Maybe when you click the arrows on the rank buttons in the list, it moves the mouse with the item as it moves|
+VERSION 3.07|2019-03-24|10:10|-|-|0|False|Bug # -1,All # 23,Other # -1,Feature # 15,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 10,Ifwishes # -1,|1|#FEATURE #UI Auto select text when adding tabs or new hash tags|
+VERSION 3.07|2019-03-24|09:56|-|-|0|False|Feature # 16,All # 24,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 11,Ifwishes # -1,|1|#FEATURE #UI Tabs with multiple sorting tags|
+VERSION 3.07|2019-03-20|10:35|-|-|0|False|All # 27,Other # 5,Feature # 17,Bug # -1,Tabs # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE #FILEIO Turn save files to binary|
+VERSION 3.07|2019-03-24|10:39|-|-|0|False|Feature # 10,All # 17,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # 1,Ui # -1,Ifwishes # -1,|1|#FEATURE #NOTES Maybe a notes tab, has same sorting features as the todos tab, but these notes do not get onto the vcs history|
+VERSION 3.07|2019-03-24|10:40|-|-|0|False|Feature # 9,All # 16,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # 2,Ui # -1,Ifwishes # -1,|1|#FEATURE #NOTES Have option to transfer to todo tab|
+VERSION 3.07|2019-03-24|10:41|-|-|0|False|Feature # 8,All # 15,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # 1,|1|#DIAGRAMS #FEATURE #IFWISHES Maybe once I figure out nodes and moving stuff around I can have a black board uml diagram type tab set|
+VERSION 3.07|2019-03-24|17:32|-|-|0|False|Bug # -1,All # 14,Other # -1,Feature # 7,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Copy todos|
+VERSION 3.07|2019-03-24|17:33|-|-|0|False|Bug # 5,All # 13,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Still cant add completed todos to other history items, though why would you? When you edit a todo on an old history item, it adds it to the newest todo.|
+VERSION 3.07|2019-03-24|17:34|-|-|0|False|Bug # 4,All # 12,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Check when options are changed that it saves when done|
+VERSION 3.07|2019-03-31|14:10|-|-|0|False|Feature # 6,All # 11,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Online storage of files|
+VERSION 3.07|2019-05-01|07:41|-|-|0|False|Bug # -1,All # 9,Other # -1,Feature # 3,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Change file name to whatever project folder its saved in +Todo?|
+VERSION 3.07|2019-05-01|07:41|-|-|0|False|Bug # -1,All # 10,Other # -1,Feature # 4,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Change file extension|
+VERSION 3.07|2019-05-02|07:07|-|-|0|False|Bug # -1,All # 7,Other # -1,Feature # 5,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Have 3 tabs sorted by severity or 1 tab always sorted by severity|
+VERSION 3.07|2019-05-02|07:09|-|-|0|False|Feature # 2,All # 3,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Maybe a time left till backup somewhere. A status bar at the bottom that shows whether its saved or not?|
+VERSION 3.07|2019-05-02|07:10|-|-|0|False|Feature # -1,All # 4,Other # -1,Bug # 2,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Changing the backup time does not set the timer if its greater than the backup time. If its got 7 minutes left and you set the timer for 5 minutes, it still waits 7 minutes until next round|
+VERSION 3.07|2019-05-02|07:11|-|-|0|False|Bug # -1,All # 5,Other # -1,Feature # 1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Click on progress bar cycles through severity settings?|
+VERSION 3.07|2019-05-02|07:12|-|-|0|False|Feature # -1,All # 6,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE When save is clicked from menu, save a backup file. But not when autosaved|
+VERSION 3.07|2019-05-03|07:50|-|-|0|False|All # 2,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#FEATURE Something status bar says its saved and backedup|
+VERSION 3.07|2019-05-05|10:17|-|-|0|False|All # 1,Other # -1,Feature # -1,Bug # 1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Crash on switching file. Doesnt look like any data lost. Completed a few todos, copied history, deleted a todo then switched|
+VERSION 3.07|2019-05-02|07:06|-|-|0|False|Bug # 3,All # 8,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#BUG Major bug, clicking new file, then switching to another existing file, that file is empty and save. Thanks for backup! Maybe related, asks to save twice when loading new file|Didnt do it for some reason. But I dont think its related to saving twice. Saved 2 different file names, both have the same new file info. Both happened after the data was cleared and the old name was not in the box. Tried again, still not happening...
 ====================================VCS
+NewVCS
+VERSION 3.07|False|20200411|105438|v3.09|
+VCSTodos
+EndVCS
+NewVCS
+VERSION 3.07|True|20190502|070837|v3.08|Had to fix the not even starting up bug if files were not ther. Attempted to fix the new file deleting old file as well, could not find the issue.
+VCSTodos
+VERSION 3.07|2019-05-05|10:16|20200411|104407|0|True|All # 2,Other # -1,Feature # -1,Bug # 1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG I dont think the version is saving correctly, it is current 0.05999999999 Instead of 0.06 On EKT|Converted both _currentProjectVersion and _projectVersionIncrement to doubles and used Math.Round(x, 2)
+VERSION 3.07|2020/04/11|10:28|20200411|102915|0|True|Bug # 1,All # -1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG If none of the recent loads are there, it crashes. Tries to load one of them and gets an exception.|Fixed. Checked if File.Exists for each. Did not delete the files from recent loads so they can be seen.
+EndVCS
 NewVCS
 VERSION 3.07|True|20190430|101938|v3.07 Some more bug fixes|
 VCSTodos
-VERSION 3.07|2019-05-01|07:40|20190501|092104|0|True|Bug # 1,All # 3,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Increases width or height of each edit window so maybe dont need to have the scroll bars for todos and notes.|
+VERSION 3.07|2019-05-01|07:40|20190502|070734|0|True|Bug # 2,All # 4,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Increases width or height of each edit window so maybe dont need to have the scroll bars for todos and notes.|
 VERSION 3.07|2019-05-01|07:36|20190501|080750|0|True|Bug # 2,All # 5,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG New file has old version number in it?|Reset this on new file creation
 VERSION 3.07|2019-05-01|07:36|20190501|080737|0|True|Bug # 2,All # 6,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Version number on history item name doesnt have the v when a new one is added|
 VERSION 3.07|2019-05-01|07:36|20190501|080654|0|True|Bug # 2,All # 7,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Crashed when switching files from a new file to this file. Doesnt crash all the time. Doesnt crash when on history tab unless youve gone to the todo tab. Doesnt always crash when on todo tab. Dont have to select a todo to crash. But crashes when switching files.|Another out of range index, this time in FixRankings()
 VERSION 3.07|2019-05-01|07:40|20190501|080629|0|True|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG No Feature tab on new file? When adding a tab called Feature, says theres already one there. This happens after closing and reopening the app, so probably not getting info from previous files.|Needed to add the All tab before everything else
-VERSION 3.07|2019-03-24|10:14|20190501|130055|0|True|Feature # 12,All # 15,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 2,Ifwishes # -1,|1|#FEATURE #UI Use the numeric updowns and such from wpf extended, can get rid of a few buttons that way in the editors and maybe the main list if they are not too small|
-VERSION 3.07|2019-03-24|10:18|20190501|130047|0|True|Feature # 10,All # 12,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 5,Ifwishes # -1,|1|#FEATURE #UI The editors need to be able to edit the time. Make it round to nearest minute. Make it an integer up down thing and remove those buttons|
-VERSION 3.07|2019-03-24|10:37|20190501|113534|0|True|Feature # 8,All # 10,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 8,Ifwishes # -1,|1|#FEATURE #UI Same idea for the pomo timer. Change the numbers to int up downs, remove the buttons. For the timer, click to start, click to pause, maybe double click to reset and stop?|
-VERSION 3.07|2019-03-24|10:19|20190501|092141|0|True|Feature # 12,All # 13,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 6,Ifwishes # -1,|1|#FEATURE #UI The listboxitem of the tag editor is a bit too tall.|
-VERSION 3.07|2019-03-24|10:49|20190501|092114|0|True|All # 7,Other # -1,Feature # 5,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 1,Ifwishes # -1,|1|#FEATURE #UI The pomo timer should be up with the menu bar, maybe make the menu and the pomo in a stackpanel in the dockpanel top|
-VERSION 3.07|2019-03-24|10:15|20190501|091540|0|True|Feature # 15,All # 18,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 3,Ifwishes # -1,|1|#FEATURE #UI Maybe remove the buttons for the timer and just click on the label itself to start and stop|
+VERSION 3.07|2019-03-24|10:14|20190502|070816|0|True|Feature # 13,All # 21,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 2,Ifwishes # -1,|1|#FEATURE #UI Use the numeric updowns and such from wpf extended, can get rid of a few buttons that way in the editors and maybe the main list if they are not too small|
+VERSION 3.07|2019-03-24|10:15|20190502|070810|0|True|Feature # 12,All # 19,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 3,Ifwishes # -1,|1|#FEATURE #UI Maybe remove the buttons for the timer and just click on the label itself to start and stop|
+VERSION 3.07|2019-03-24|10:18|20190502|070804|0|True|Feature # 11,All # 17,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 5,Ifwishes # -1,|1|#FEATURE #UI The editors need to be able to edit the time. Make it round to nearest minute. Make it an integer up down thing and remove those buttons|
+VERSION 3.07|2019-03-24|10:19|20190502|070759|0|True|Feature # 11,All # 16,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 6,Ifwishes # -1,|1|#FEATURE #UI The listboxitem of the tag editor is a bit too tall.|
+VERSION 3.07|2019-03-24|10:37|20190502|070752|0|True|Feature # 9,All # 13,Other # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 8,Ifwishes # -1,|1|#FEATURE #UI Same idea for the pomo timer. Change the numbers to int up downs, remove the buttons. For the timer, click to start, click to pause, maybe double click to reset and stop?|
+VERSION 3.07|2019-03-24|10:49|20190502|070746|0|True|All # 9,Other # -1,Feature # 6,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # 1,Ifwishes # -1,|1|#FEATURE #UI The pomo timer should be up with the menu bar, maybe make the menu and the pomo in a stackpanel in the dockpanel top|
 EndVCS
 NewVCS
 VERSION 3.07|True|20190410|013034|v3.06 Major Bug fix|-Clicking new crashed. Fixed now.-Cheked for performance increase by virtualizing. Didnt notice anything at all. Leaving it as it was.
@@ -492,8 +510,4 @@ VERSION 3.07|2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG 
 VERSION 3.07|2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Add completed time to list view interface bug|
 VERSION 3.07|2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Edit complete items not working interface bug|
 VERSION 3.07|2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#BUG Save text in notes bug|
-EndVCS
-NewVCS
-VERSION 3.07|False|20190501|130520|v3.08|
-VCSTodos
 EndVCS

@@ -12,11 +12,11 @@ namespace TODOList
 		public bool GlobalHotkeys { get; set; }
 		public bool AutoBackup { get; set; }
 		public TimeSpan BackupTime { get; set; }
-		public float CurrentProjectVersion { get; set; }
-		public float ProjectVersionIncrement { get; set; }
+		public double CurrentProjectVersion { get; set; }
+		public double ProjectVersionIncrement { get; set; }
 		public bool Result;
 		
-		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime, float currentProjectVersion, float projectVersionIncrement)
+		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime, double currentProjectVersion, double projectVersionIncrement)
 		{
 			InitializeComponent();
 			AutoSave = autoSave;

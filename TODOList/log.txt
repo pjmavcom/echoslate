@@ -1,3 +1,39 @@
+commit 88814d9e126a072f0adc5bd91bc733faa910d221
+Author: Arolyn\Fade <pjmavcom@gmail.com>
+Date:   Wed May 1 13:05:47 2019 -0500
+
+    20190430- v3.07 Some more bug fixes
+    
+    20190430- v3.07 Some more bug fixes
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20190501-0m |Increases width or height of each edit window so maybe dont need to have the scroll bars for todos
+                    and notes.
+    --20190501-0m |New file has old version number in it?
+            Notes: Reset this on new file creation
+    --20190501-0m |Version number on history item name doesnt have the v when a new one is added
+    --20190501-0m |Crashed when switching files from a new file to this file. Doesnt crash all the time. Doesnt crash
+                    when on history tab unless youve gone to the todo tab. Doesnt always crash when on todo tab. Dont have
+                    to select a todo to crash. But crashes when switching files.
+            Notes: Another out of range index, this time in FixRankings()
+    --20190501-0m |No Feature tab on new file? When adding a tab called Feature, says theres already one there. This
+                    happens after closing and reopening the app, so probably not getting info from previous files.
+            Notes: Needed to add the All tab before everything else
+    
+    =Features Added===================================================================================================
+    --20190501-0m |Use the numeric updowns and such from wpf extended, can get rid of a few buttons that way in the
+                    editors and maybe the main list if they are not too small
+    --20190501-0m |The editors need to be able to edit the time. Make it round to nearest minute. Make it an integer
+                    up down thing and remove those buttons
+    --20190501-0m |Same idea for the pomo timer. Change the numbers to int up downs, remove the buttons. For the
+                    timer, click to start, click to pause, maybe double click to reset and stop?
+    --20190501-0m |The listboxitem of the tag editor is a bit too tall.
+    --20190501-0m |The pomo timer should be up with the menu bar, maybe make the menu and the pomo in a stackpanel in
+                    the dockpanel top
+    --20190501-0m |Maybe remove the buttons for the timer and just click on the label itself to start and stop
+
 commit 9e566b730403a645d9aaa8067ef096b2cf9edda3
 Author: Arolyn\Fade <pjmavcom@gmail.com>
 Date:   Tue Apr 30 10:20:43 2019 -0500
