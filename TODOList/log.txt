@@ -1,3 +1,22 @@
+commit 2bfb6c9425edd42315b7eba5fc7212ca99558421
+Author: Peter <pjmavcom@gmail.com>
+Date:   Sat Apr 11 10:56:25 2020 -0500
+
+    20190502- v3.08
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Had to fix the not even starting up bug if files were not ther. Attempted to fix the new file
+            deleting old file as well, could not find the issue.
+    
+    
+    =Bugs Squashed====================================================================================================
+    --20200411-0m |I dont think the version is saving correctly, it is current 0.05999999999 Instead of 0.06 On EKT
+            Notes: Converted both _currentProjectVersion and _projectVersionIncrement to doubles and used
+                    Math.Round(x, 2)
+    --20200411-0m |If none of the recent loads are there, it crashes. Tries to load one of them and gets an exception.
+            Notes: Fixed. Checked if File.Exists for each. Did not delete the files from recent loads so they can be
+                    seen.
+
 commit 88814d9e126a072f0adc5bd91bc733faa910d221
 Author: Arolyn\Fade <pjmavcom@gmail.com>
 Date:   Wed May 1 13:05:47 2019 -0500
