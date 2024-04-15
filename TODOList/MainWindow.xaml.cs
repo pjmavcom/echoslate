@@ -30,7 +30,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.14";
+		public const string VERSION = "3.15";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -148,6 +148,7 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
+		private string CurrentNotes => "Testing!";
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public  MainWindow()
@@ -1025,7 +1026,26 @@ namespace TODOList
 			hi.CompletedTodosBugs = tempBug;
 			hi.CompletedTodosFeatures = tempFeature;
 		}
-		
+		private void IncompleteItems_OnSelectionChange(object sender, SelectionChangedEventArgs e)
+		{
+			List<TodoItem> list = new List<TodoItem>();
+			foreach (TodoItemHolder tlh in IncompleteItems)
+				list.Add(tlh.TD);
+			if (lbIncompleteItems.SelectedIndex >= 0)
+			{
+				tbNotes.Text = list[lbIncompleteItems.SelectedIndex].Notes;
+			}
+		}
+		private void Notes_OnSelectionChanged(object sender, RoutedEventArgs e)
+		{
+			List<TodoItem> list = new List<TodoItem>();
+			foreach (TodoItemHolder tlh in IncompleteItems)
+				list.Add(tlh.TD);
+			if (lbIncompleteItems.SelectedIndex >= 0)
+			{
+				list[lbIncompleteItems.SelectedIndex].Notes = tbNotes.Text;
+			}
+		}
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// NEW TO DO //
 		private void SeverityComboBox_OnSelectionChange(object sender, EventArgs e)
 		{
