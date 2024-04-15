@@ -30,7 +30,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.12";
+		public const string VERSION = "3.14";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;

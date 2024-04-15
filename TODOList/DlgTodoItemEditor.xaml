@@ -41,7 +41,7 @@
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" KeyboardNavigation.TabIndex="1" Height="200" Width="462" Margin="2" />
+			<TextBox Name="tbNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" KeyboardNavigation.TabIndex="1" Height="200" Width="462" AcceptsReturn="True" Margin="2" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<StackPanel >

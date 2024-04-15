@@ -31,7 +31,16 @@ namespace TODOList
 
 			cbSev.SelectedIndex = _currentSeverity;
 			tbTodo.Text = td.Todo;
-			tbNotes.Text = td.Notes;
+
+			
+			string tempNote = string.Empty;
+			tempNote = td.Notes;
+			if (tempNote.Contains("/n"))
+			{
+				tempNote = tempNote.Replace("/n", Environment.NewLine);
+			}
+			tbNotes.Text = tempNote;
+			 
 			iudRank.Value = td.Rank[_currentListHash];
 			iudTime.Value = _td.TimeTakenInMinutes;
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";

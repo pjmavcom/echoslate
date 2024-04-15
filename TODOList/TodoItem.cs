@@ -419,6 +419,14 @@ namespace TODOList
 		}
 		public override string ToString()
 		{
+			string notes = _notes;
+			//if (_notes.Contains('\r'))
+			//	notes = "tested1";
+			//if (_notes.Contains('\n'))
+			//	notes = "tested2";
+			if (_notes.Contains(Environment.NewLine))
+				notes = notes.Replace(Environment.NewLine, "/n");
+
 			string result = "VERSION " + MainWindow.VERSION + "|" + 
 							_dateStarted + "|" + 
 							_timeStarted + "|" + 
@@ -429,7 +437,7 @@ namespace TODOList
 							Ranks + "|" + 
 							_severity + "|" + 
 							TagsAndTodoToSave + "|" + 
-							_notes;
+							notes;
 			return result;
 		}
 		public string ToClipboard()
