@@ -30,7 +30,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.15";
+		public const string VERSION = "3.16";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -1034,6 +1034,7 @@ namespace TODOList
 			if (lbIncompleteItems.SelectedIndex >= 0)
 			{
 				tbNotes.Text = list[lbIncompleteItems.SelectedIndex].Notes;
+				tbTodo.Text = list[lbIncompleteItems.SelectedIndex].Todo;
 			}
 		}
 		private void Notes_OnSelectionChanged(object sender, RoutedEventArgs e)

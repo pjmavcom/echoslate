@@ -149,9 +149,9 @@
 						<Grid.RowDefinitions >
 							<RowDefinition Height="35" />
 							<RowDefinition Height="35" />
-							<RowDefinition Height="300" />
-							<RowDefinition Height="300" />
-							<RowDefinition Height="300" />
+							<RowDefinition />
+							<RowDefinition />
+							<RowDefinition />
 							<RowDefinition />
 						</Grid.RowDefinitions >
 						<StackPanel Orientation="Horizontal" Grid.Row="0">
@@ -206,20 +206,23 @@
 				</Grid >
 			</TabItem >
 
-			<TabItem Name="tabTodos" Header="TODOs" HorizontalAlignment="Center" Width="64" >
+			<TabItem Name="tabTodos" Header="TODOs" HorizontalAlignment="Right" Width="64" Height="26" VerticalAlignment="Center" >
 				<Grid >
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1000"/>
+						<ColumnDefinition />
 						<ColumnDefinition Width="500"/>
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions >
-						<RowDefinition >
-						</RowDefinition>
+						<RowDefinition />
 						<RowDefinition Height="100" />
 					</Grid.RowDefinitions >
 					<Grid Grid.Row="0" Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="7*"/>
+							<ColumnDefinition Width="228*"/>
+						</Grid.ColumnDefinitions>
 
-						<TabControl Name="_todoTabs" ItemsSource="{Binding}" SelectionChanged="tabSelectionChanged" >
+						<TabControl Name="_todoTabs" ItemsSource="{Binding}" SelectionChanged="tabSelectionChanged" Grid.ColumnSpan="2" >
 							<TabControl.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
@@ -343,7 +346,16 @@
 						</TabControl >
 					</Grid>
 					<Grid Grid.Row="0" Grid.Column="1" >
-						<TextBox x:Name="tbNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
+						<Grid.RowDefinitions>
+							<RowDefinition Height="60" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+						<Grid Grid.Row="0" >
+							<TextBox x:Name="tbTodo" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
+						</Grid>
+						<Grid Grid.Row="1" >
+							<TextBox x:Name="tbNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
+						</Grid>
 					</Grid>
 
 					<!-- The add, radio buttons, and input field -->
