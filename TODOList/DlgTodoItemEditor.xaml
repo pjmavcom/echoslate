@@ -41,7 +41,7 @@
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="Notes:" HorizontalAlignment="Right" Width="80" Margin="2" />
-			<TextBox Name="tbNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" KeyboardNavigation.TabIndex="1" Height="200" Width="462" Margin="2" />
+			<TextBox Name="tbNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" KeyboardNavigation.TabIndex="1" Height="200" Width="462" Margin="2" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<StackPanel >
@@ -61,7 +61,7 @@
 		</StackPanel >
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
 			<Button Name="btnComplete" Content="Complete" Click="Complete_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="OK" Click="OK_OnClick" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
+			<Button Content="OK" Click="OK_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 			<Button Content="Cancel" IsCancel="True" Click="Cancel_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 	</StackPanel>

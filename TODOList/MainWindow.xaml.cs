@@ -14,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Forms.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -31,7 +30,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.09";
+		public const string VERSION = "3.12";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -194,7 +193,7 @@ namespace TODOList
 			//			lblPomoWork.Content = _pomoWorkTime.ToString();
 			//			lblPomoBreak.Content = _pomoBreakTime.ToString();
 
-			int no_good_recent_files_count = -1;
+			int no_good_recent_files_count = 0;
 			for (int i = 0; i < _recentFiles.Count; i++)
 			{
 				if (File.Exists(_recentFiles[i]))
@@ -658,28 +657,36 @@ namespace TODOList
 		}
 		private void mnuNew_OnClick(object sender, EventArgs e)
 		{
+			AutoSave();
 			DlgYesNo dlg = new DlgYesNo("New file", "Are you sure?");
 			dlg.ShowDialog();
 			if (!dlg.Result)
 				return;
-			ClearLists();
-			CreateNewTabs();
-			_currentProjectVersion = 0.0d;
-			_projectVersionIncrement = 0.01d;
 
-			_currentHistoryItem = new HistoryItem("", "");
-			RefreshHistory();
-			RefreshTodo();
+			if (NewFile())
+			{
+				ClearLists();
+				CreateNewTabs();
+				_currentProjectVersion = 0.00d;
+				_projectVersionIncrement = 0.01d;
 
-			_currentOpenFile = "";
-			Title = WindowTitle;
-			AutoSave();
-			SaveAs();
+				_currentHistoryItem = new HistoryItem("", "");
+				AddNewHistoryItem();
+				RefreshHistory();
+				RefreshTodo();
+
+				_currentOpenFile = "";
+				Title = WindowTitle;
+				Save(_recentFiles[0]);
+			}
 		}
 		private void mnuRemoveFile_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (_recentFilesIndex < 0)
+			{
+				_recentFilesIndex = 0;
 				return;
+			}
 			_recentFiles.RemoveAt(_recentFilesIndex);
 			mnuRecentLoads.Items.Refresh();
 		}
@@ -687,8 +694,10 @@ namespace TODOList
 		{
 			_recentFilesIndex = -1;
 			var mi = e.OriginalSource as TextBlock;
+			//var t = ((TextBlock) e.OriginalSource).Text;
 			if (mi == null)
 				return;
+
 			string path = (string) mi.DataContext;
 			_recentFilesIndex = mnuRecentLoads.Items.IndexOf(path);
 		}
@@ -1032,7 +1041,9 @@ namespace TODOList
 		}
 		private void Add_OnClick(object sender, EventArgs e)
 		{
+			string name = TabNames;
 			TodoItem td = new TodoItem() {Todo = tbNewTodo.Text, Severity = _currentSeverity};
+			td.Tags.Add("#" + name);
 			ExpandHashTags(td);
 			td.Rank[TabNames] = -1;
 			if (td.Severity == 3)
@@ -1780,6 +1791,26 @@ namespace TODOList
 			}
 			if (_autoSave)
 				Save(_recentFiles[0]);
+		}
+		private bool NewFile()
+		{
+			string newFileName = "EToDo.txt";
+			SaveFileDialog sfd = new SaveFileDialog
+			{
+				Title = "Select folder to save file in.",
+				FileName = newFileName,
+				InitialDirectory = GetFilePath(),
+				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+			};
+
+			DialogResult dr = sfd.ShowDialog();
+
+			if (dr != System.Windows.Forms.DialogResult.OK)
+				return false;
+			
+			SortRecentFiles(sfd.FileName);
+			SaveSettings();
+			return true;
 		}
 		private void SaveAs()
 		{
