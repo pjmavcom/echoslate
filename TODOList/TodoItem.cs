@@ -159,7 +159,7 @@ namespace TODOList
 				{
 					result += _tags[i];
 					if (i != _tags.Count)
-						result += Environment.NewLine;
+						result += " ";// Environment.NewLine;
 				}
 				return result;
 			}

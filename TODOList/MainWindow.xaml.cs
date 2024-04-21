@@ -30,7 +30,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE = "yyyMMdd";
 		public const string TIME = "HHmmss";
-		public const string VERSION = "3.16";
+		public const string VERSION = "3.17";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TodoItem> _masterList;
@@ -1045,6 +1045,18 @@ namespace TODOList
 			if (lbIncompleteItems.SelectedIndex >= 0)
 			{
 				list[lbIncompleteItems.SelectedIndex].Notes = tbNotes.Text;
+			}
+		}
+		private void Severity_OnClick(object sender, EventArgs e)
+		{
+			if (sender is Button b)
+			{
+				TodoItemHolder tlh = b.DataContext as TodoItemHolder;
+				int value = tlh.Severity;
+				if (value == 3) { value = 0; }
+				else { value++; }
+				tlh.Severity = value;
+				RefreshTodo();
 			}
 		}
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// NEW TO DO //
