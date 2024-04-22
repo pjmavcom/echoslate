@@ -34,6 +34,12 @@ namespace TODOList
 			get => _td.Severity;
 			set => _td.Severity = value;
 		}
+
+		public int Kanban
+		{
+			get => _td.Kanban;
+			set => _td.Kanban = value;
+		}
 		public bool IsTimerOn => _td.IsTimerOn;
 		public long TimeTakenInMinutes
 		{

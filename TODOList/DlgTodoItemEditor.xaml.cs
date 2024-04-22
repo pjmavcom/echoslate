@@ -50,6 +50,8 @@ namespace TODOList
 				_tags.Add(new TagHolder(tag));
 			lbTags.ItemsSource = _tags;
 			lbTags.Items.Refresh();
+
+			tbKanban.Text = _td.Kanban.ToString();
 			
 			CenterWindowOnMouse();
 		}

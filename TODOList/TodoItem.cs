@@ -28,6 +28,7 @@ namespace TODOList
 		private bool _isTimerOn;
 		private bool _isComplete;
 		private int _severity;
+		private int _kanban;
 		private Dictionary<string, int> _rank;
 		private List<string> _tags;
 	
@@ -73,6 +74,12 @@ namespace TODOList
 		{
 			get => _severity;
 			set => _severity = value;
+		}
+
+		public int Kanban
+		{
+			get => _kanban;
+			set => _kanban = value;
 		}
 		private string DateCompleted
 		{
@@ -196,8 +203,10 @@ namespace TODOList
 				LoadPre2_0(newItem);
 			else if (version < 3.06f)
 				Load2_0(newItem);
-			else
+			else if (version < 3.20f)
 				Load3_06(newItem);
+			else
+				Load3_20(newItem);
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
@@ -286,6 +295,35 @@ namespace TODOList
 			
 			if(pieces.Length > 10)
 				Notes = pieces[10].Trim();
+		}
+
+		private void Load3_20(string newItem)
+		{
+			string[] pieces = newItem.Split('|');
+			_dateStarted = pieces[1].Trim();
+			_timeStarted = pieces[2].Trim();
+			_dateCompleted = pieces[3].Trim();
+			_timeCompleted = pieces[4].Trim();
+
+			TimeTaken = new DateTime(Convert.ToInt64(pieces[5].Trim()));
+
+			_isComplete = Convert.ToBoolean(pieces[6]);
+			
+			string[] rankPieces = pieces[7].Split(',');
+			foreach (string s in rankPieces)
+				if(s != "")
+				{
+					string[] rank = s.Split('#');
+					_rank.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
+				}
+			
+			_severity = Convert.ToInt32(pieces[8]);
+			Todo = pieces[9].Trim();
+			
+			if(pieces.Length > 10)
+				Notes = pieces[10].Trim();
+			if (pieces.Length > 11)
+				Kanban = Convert.ToInt32(pieces[11].Trim());
 		}
 		private void ParseNewTags()
 		{
@@ -437,7 +475,8 @@ namespace TODOList
 							Ranks + "|" + 
 							_severity + "|" + 
 							TagsAndTodoToSave + "|" + 
-							notes;
+							notes + "|" +
+							_kanban;
 			return result;
 		}
 		public string ToClipboard()

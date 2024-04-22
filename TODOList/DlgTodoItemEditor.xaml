@@ -34,6 +34,7 @@
 			<xctk:IntegerUpDown Name="iudRank" Minimum="0" ValueChanged="Rank_OnValueChanged" Width="80" Height="27" />
 			<Label Content="Time: " Margin="2" />
 			<xctk:LongUpDown Name="iudTime" Minimum="0" ValueChanged="Time_OnValueChanged" Width="80" Height="27" />
+			<TextBox Width="50" Name="tbKanban" />
 		</StackPanel >
 		<StackPanel Orientation="Horizontal" >
 			<Label Content="TODO:" HorizontalAlignment="Right" Width="80" Margin="2" />
