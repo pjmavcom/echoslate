@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -28,9 +29,9 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		public const string DATE = "yyyMMdd";
-		public const string TIME = "HHmmss";
-		public const string VERSION = "3.20";
+		public const string DATE_STRING_FORMAT = "yyyyMMdd";
+		public const string TIME_STRING_FORMAT = "HHmmss";
+		public const string PROGRAM_VERSION = "3.21";
 
 		private readonly List<TabItem> _tabList;
 		private readonly List<TabItem> _tabKanbanList;
@@ -40,8 +41,7 @@ namespace TODOList
 		private readonly List<List<string>> _hashTags;
 		private readonly List<string> _tabHash;
 		private static Dictionary<string, string> _hashShortcuts;
-		List<string> _prevHashTagList = new List<string>();
-		
+		private List<string> _prevHashTagList = new List<string>();
 
 		// Sorting
 		private bool _reverseSort;
@@ -55,15 +55,13 @@ namespace TODOList
 		private int _todoTabsPreviousIndex = -1;
 
 		// HISTORY TAB ITEMS
-		private readonly List<HistoryItem> _historyItems;
 		private HistoryItem _currentHistoryItem;
 		private int _currentHistoryItemIndex;
 		private int _currentHistoryItemMouseIndex;
 		private bool _didMouseSelect;
 
 		// FILE IO
-		private const string basePath = @"C:\MyBinaries\";
-		private ObservableCollection<string> _recentFiles;
+		private const string BASE_PATH = @"C:\MyBinaries\";
 		private string _currentOpenFile;
 		private bool _isChanged;
 		private int _recentFilesIndex;
@@ -78,26 +76,23 @@ namespace TODOList
 		private double _projectVersionIncrement;
 
 		// WINDOW ITEMS
-		private double top;
-		private double left;
-		private double height = 1080;
-		private double width = 1920;
+		private double _top;
+		private double _left;
+		private double _height = 1080;
+		private double _width = 1920;
 
 		// HOTKEY STUFF
 		private bool _globalHotkeys;
 		private const int HOTKEY_ID = 9000;
 		private const uint MOD_WIN = 0x0008; //WINDOWS
-		private HwndSource source;
+		private HwndSource _source;
 		private IntPtr _handle;
 		[DllImport("user32.dll")]
 		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 		[DllImport("user32.dll")]
 		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 		
-//		[DllImport("User32.dll")]
-//		private static extern bool SetCursorPos(int X, int Y);
-		
-		// POMOTIMER
+		// Pomo Timer 
 		private DateTime _pomoTimer;
 		private bool _isPomoTimerOn;
 		private bool _isPomoWorkTimerOn = true;
@@ -106,10 +101,9 @@ namespace TODOList
 		private int _pomoTimeLeft;
 		
 		// CONTROLS
-		private ComboBox cbHashTags;
-		private ListBox lbIncompleteItems;
-		private ListBox lbKanbanItems;
-
+		private ComboBox _cbHashTags;
+		private ListBox _lbIncompleteItems;
+		private ListBox _lbKanbanItems;
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		public int PomoTimeLeft
@@ -121,23 +115,22 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
-		public ObservableCollection<string> RecentFiles
-		{
-			get => _recentFiles;
-			set => _recentFiles = value;
-		}
-		private List<TodoItemHolder> IncompleteItems => _incompleteItems[_todoTabs.SelectedIndex];
-		private List<TodoItemHolder> KanbanItems => _kanbanItems[_kanbanTabs.SelectedIndex];
+
+		private ObservableCollection<string> RecentFiles { get; set; }
+
+		private List<TodoItemHolder> IncompleteItems => _incompleteItems[todoTabs.SelectedIndex];
+		private List<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTabs.SelectedIndex];
 	
-		private List<string> HashTags => _hashTags[_todoTabs.SelectedIndex];
-		private string TabNames => _todoTabs.SelectedIndex == -1
+		private List<string> HashTags => _hashTags[todoTabs.SelectedIndex];
+		private string TabNames => todoTabs.SelectedIndex == -1
 			? _tabList[0].Name
-			: _tabList[_todoTabs.SelectedIndex].Name;
-		private string TabKanbanNames => _kanbanTabs.SelectedIndex == -1
-			? _tabKanbanList[0].Name
-			: _tabKanbanList[_kanbanTabs.SelectedIndex].Name;
-		public List<HistoryItem> HistoryItems => _historyItems;
-		private string WindowTitle => "EthereaListVCSNotes v" + VERSION + " " + _currentOpenFile;
+			: _tabList[todoTabs.SelectedIndex].Name;
+		// private string TabKanbanNames => kanbanTabs.SelectedIndex == -1
+		// 	? _tabKanbanList[0].Name
+		// 	: _tabKanbanList[kanbanTabs.SelectedIndex].Name;
+		private string WindowTitle => "EtherealListVCSNotes v" + PROGRAM_VERSION + " " + _currentOpenFile;
+		private List<HistoryItem> HistoryItems { get; }
+
 		public int PomoWorkTime
 		{
 			get => _pomoWorkTime;
@@ -156,12 +149,12 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
-		private string CurrentNotes => "Testing!";
+		// private string CurrentNotes => "Testing!";
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public  MainWindow()
 		{
-			left = 0;
+			_left = 0;
 			InitializeComponent();
 			Closing += Window_Closed;
 			DataContext = this;
@@ -171,10 +164,10 @@ namespace TODOList
 			
 			LoadSettings();
 
-			Top = top;
-			Left = left;
-			Height = height;
-			Width = width;
+			Top = _top;
+			Left = _left;
+			Height = _height;
+			Width = _width;
 			_backupTime = new TimeSpan(0, 5, 0);
 			_backupIncrement = 0;
  		
@@ -191,13 +184,15 @@ namespace TODOList
 			_hashTags = new List<List<string>>();
 			_tabHash = new List<string>();
 			_hashShortcuts = new Dictionary<string, string>();
-			_historyItems = new List<HistoryItem>();
+			HistoryItems = new List<HistoryItem>();
 			_currentHistoryItem = new HistoryItem("", "");
 
-			_todoTabs.ItemsSource = _tabList;
-			_todoTabs.Items.Refresh();
-			_kanbanTabs.ItemsSource = _tabKanbanList;
-			_kanbanTabs.Items.Refresh();
+			todoTabs.ItemsSource = _tabList;
+			todoTabs.Items.Refresh();
+			kanbanTabs.ItemsSource = _tabKanbanList;
+			kanbanTabs.Items.Refresh();
+			mnuRecentLoads.ItemsSource = RecentFiles;
+			lbHistory.ItemsSource = HistoryItems;
 
 			lbHistory.SelectedIndex = 0;
 			_currentHistoryItemIndex = 0;
@@ -206,21 +201,21 @@ namespace TODOList
 			//			lblPomoWork.Content = _pomoWorkTime.ToString();
 			//			lblPomoBreak.Content = _pomoBreakTime.ToString();
 
-			int no_good_recent_files_count = 0;
+			int noGoodRecentFilesCount = 0;
 			CreateKanbanTabs();
 			// _kanbanTabs.SelectedIndex = 0;
-			for (int i = 0; i < _recentFiles.Count; i++)
+			for (int i = 0; i < RecentFiles.Count; i++)
 			{
-				if (File.Exists(_recentFiles[i]))
+				if (File.Exists(RecentFiles[i]))
 				{
-					Load(_recentFiles[i]);
+					Load(RecentFiles[i]);
 					break;
 				}
 				else
-					no_good_recent_files_count = i + 1;
+					noGoodRecentFilesCount = i + 1;
 			}
 			
-			if (no_good_recent_files_count == _recentFiles.Count)
+			if (noGoodRecentFilesCount == RecentFiles.Count)
 			{
 				DlgYesNo dlg = new DlgYesNo("No recent file found");
 				dlg.ShowDialog();
@@ -241,8 +236,8 @@ namespace TODOList
 			base.OnSourceInitialized(e);
 
 			_handle = new WindowInteropHelper(this).Handle;
-			source = HwndSource.FromHwnd(_handle);
-			source?.AddHook(HwndHook);
+			_source = HwndSource.FromHwnd(_handle);
+			_source?.AddHook(HwndHook);
 
 #if DEBUG
 			_autoSave = false;
@@ -256,10 +251,10 @@ namespace TODOList
 		}
 		private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
 		{
-			const int WM_HOTKEY = 0x0312;
+			const int wmHotkey = 0x0312;
 			switch (msg)
 			{
-				case WM_HOTKEY:
+				case wmHotkey:
 					switch (wParam.ToInt32())
 					{
 						case HOTKEY_ID:
@@ -282,12 +277,16 @@ namespace TODOList
 			UnregisterHotKey(_handle, HOTKEY_ID);
 			SaveSettings();
 			if (!_isChanged)
+			{
 				return;
+			}
 
 			DlgYesNo dlg = new DlgYesNo("Close", "Maybe save first?");
 			dlg.ShowDialog();
-			if(dlg.Result)
+			if (dlg.Result)
+			{
 				Save(_currentOpenFile);
+			}
 		}
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -297,67 +296,72 @@ namespace TODOList
 		private void GlobalHotkeysToggle()
 		{
 			if (_globalHotkeys)
+			{
 				RegisterHotKey(_handle, HOTKEY_ID, MOD_WIN, 0x73);
+			}
 			else
+			{
 				UnregisterHotKey(_handle, HOTKEY_ID);
+			}
 		}
-		private void tabSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void TabSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Dispatcher.BeginInvoke(new Action(updateHandler));
+			Dispatcher.BeginInvoke(new Action(UpdateHandler));
 		}
-		private void tabKanbanSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void TabKanbanSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Dispatcher.BeginInvoke(new Action(kanbanUpdateHandler));
+			Dispatcher.BeginInvoke(new Action(KanbanUpdateHandler));
 		}
-		private void kanbanUpdateHandler()
+		private void KanbanUpdateHandler()
 		{
-			if (_kanbanTabs.SelectedIndex < 0)
-				_kanbanTabs.SelectedIndex = 0;
-			
-   			ContentPresenter kanbanContentPresenter = _kanbanTabs.Template.FindName("PART_SelectedContentHost", _kanbanTabs) as ContentPresenter;
-   			{
-   				if (kanbanContentPresenter != null)
-   				{
-   					kanbanContentPresenter.ApplyTemplate();
-   					lbKanbanItems = kanbanContentPresenter.ContentTemplate.FindName("lbKanbanItems", kanbanContentPresenter) as ListBox;
-   			    	if (lbKanbanItems != null)
-   					{
-   	            		lbKanbanItems.ItemsSource = KanbanItems;
-               			lbKanbanItems.Items.Refresh();
-               		}
-   				}
-   			}		
+			if (kanbanTabs.SelectedIndex < 0)
+			{
+				kanbanTabs.SelectedIndex = 0;
+			}
+			if (kanbanTabs.Template.FindName("PART_SelectedContentHost", kanbanTabs) is ContentPresenter kanbanContentPresenter)
+			{
+				kanbanContentPresenter.ApplyTemplate();
+				_lbKanbanItems = kanbanContentPresenter.ContentTemplate.FindName("lbKanbanItems", kanbanContentPresenter) as ListBox;
+				if (_lbKanbanItems != null)
+				{
+					_lbKanbanItems.ItemsSource = KanbanItems;
+					_lbKanbanItems.Items.Refresh();
+				}
+			}
 			RefreshTodo();
 		}
-		private void updateHandler()
+		private void UpdateHandler()
 		{
-			if (_todoTabsPreviousIndex == _todoTabs.SelectedIndex)
-				return;
-			_todoTabsPreviousIndex = _todoTabs.SelectedIndex;
-			if (_todoTabs.Items.Count <= 0)
-				return;
-			if(_todoTabs.SelectedIndex < 0)
-				_todoTabs.SelectedIndex = 0;
-
-			ContentPresenter myContentPresenter = _todoTabs.Template.FindName("PART_SelectedContentHost", _todoTabs) as ContentPresenter;
+			if (_todoTabsPreviousIndex == todoTabs.SelectedIndex)
 			{
-				if (myContentPresenter != null)
-				{
-					myContentPresenter.ApplyTemplate();
-					lbIncompleteItems = myContentPresenter.ContentTemplate.FindName("lbIncompleteItems", myContentPresenter) as ListBox;
-					if (lbIncompleteItems != null)
-                    {
-                    	lbIncompleteItems.ItemsSource = IncompleteItems;
-                    	lbIncompleteItems.Items.Refresh();
-                    }
-
-					cbHashTags = myContentPresenter.ContentTemplate.FindName("cbHashTags", myContentPresenter) as ComboBox;
-				}
-				if (cbHashTags == null)
-					return;
-				cbHashTags.ItemsSource = HashTags;
-				cbHashTags.Items.Refresh();
+				return;
 			}
+			_todoTabsPreviousIndex = todoTabs.SelectedIndex;
+			if (todoTabs.Items.Count <= 0)
+			{
+				return;
+			}
+			if (todoTabs.SelectedIndex < 0)
+			{
+				todoTabs.SelectedIndex = 0;
+			}
+			if (todoTabs.Template.FindName("PART_SelectedContentHost", todoTabs) is ContentPresenter myContentPresenter)
+			{
+				myContentPresenter.ApplyTemplate();
+				_lbIncompleteItems = myContentPresenter.ContentTemplate.FindName("lbIncompleteItems", myContentPresenter) as ListBox;
+				if (_lbIncompleteItems != null)
+                {
+                   	_lbIncompleteItems.ItemsSource = IncompleteItems;
+                   	_lbIncompleteItems.Items.Refresh();
+                }
+				_cbHashTags = myContentPresenter.ContentTemplate.FindName("cbHashTags", myContentPresenter) as ComboBox;
+			}
+			if (_cbHashTags == null)
+			{
+				return;
+			}
+			_cbHashTags.ItemsSource = HashTags;
+			_cbHashTags.Items.Refresh(); 
 			RefreshTodo();
 		}
 		private void CreateNewTabs()
@@ -382,12 +386,10 @@ namespace TODOList
 			ti.Name = name;
 			ti.MinWidth = 100;
 			ti.Padding = new Thickness(10, 5, 10, 5);
-			foreach (TabItem existingTabItem in _tabList)
+			if (_tabList.Any(existingTabItem => existingTabItem.Name == name))
 			{
-				if (existingTabItem.Name != name)
-					continue;
-				DlgYesNo dlg = new DlgYesNo("Already have a tab called " + name);
-				dlg.ShowDialog();
+				DlgYesNo dlgYesNo = new DlgYesNo("Already have a tab called " + name);
+				dlgYesNo.ShowDialog();
 				return;
 			}
 
@@ -400,53 +402,65 @@ namespace TODOList
 				_tabHash.Add(hash);
 			}
 			
-			foreach(TodoItem td in _masterList)
-				if (!td.Rank.ContainsKey(name))
-					td.Rank.Add(name, -1);
+			foreach (var td in _masterList.Where(td => !td.Rank.ContainsKey(name)))
+				td.Rank.Add(name, -1);
 			
 			_incompleteItems.Add(new List<TodoItemHolder>());
 			_hashTags.Add(new List<string>());
 			_tabList.Add(ti);
-			if (doSave)
+			if (!doSave)
 			{
-				RefreshTodo();
-				_todoTabs.Items.Refresh();
-				AutoSave();
+				return;
 			}
+			RefreshTodo();
+			todoTabs.Items.Refresh();
+			AutoSave();
 		}
-		private void AddNewKanbanTab(string name, bool doSave = true)
+		private void AddNewKanbanTab(string name)
 		{
-			TabItem ti = new TabItem();
-			ti.Header = name;
-			ti.Name = name;
-			ti.MinWidth = 100;
-			ti.Padding = new Thickness(10, 5, 10, 5);
-			
+			TabItem ti = new TabItem
+			{
+				Header = name,
+				Name = name,
+				MinWidth = 100,
+				Padding = new Thickness(10, 5, 10, 5)
+			};
+
 			_tabKanbanList.Add(ti);
 		    _kanbanItems.Add(new List<TodoItemHolder>());
-		    _kanbanTabs.Items.Refresh();
+		    kanbanTabs.Items.Refresh();
 		}
-
-		private string GetHashShortcut(string name, string shortcut)
+		private static string GetHashShortcut(string name, string shortcut)
 		{
-			string hashShortcut = shortcut + name[0].ToString().ToLower();
-			string leftover = "";
-			for (int i = 1; i < name.Length; i++)
-				leftover += name[i];
-
-			if (_hashShortcuts.ContainsKey(hashShortcut))
-				return GetHashShortcut(leftover, hashShortcut);
-			return hashShortcut;
+			while (true)
+			{
+				string hashShortcut = shortcut + name[0].ToString().ToLower();
+				string leftover = "";
+				for (int i = 1; i < name.Length; i++)
+				{
+					leftover += name[i];
+				}
+				if (!_hashShortcuts.ContainsKey(hashShortcut))
+				{
+					return hashShortcut;
+				}
+				name = leftover;
+				shortcut = hashShortcut;
+			}
 		}
-		private string UpperFirstLetter(string s)
+		private static string UpperFirstLetter(string s)
 		{
 			string result = "";
 			for (int i = 0; i < s.Length; i++)
 			{
-				if(i == 0)
+				if (i == 0)
+				{
 					result += s[i].ToString().ToUpper();
+				}
 				else
+				{
 					result += s[i];
+				}
 			}
 			return result;
 		}
@@ -459,13 +473,15 @@ namespace TODOList
 				BackupSave();
 			}
 
-			foreach (TodoItem td in _masterList)
-				if (td.IsTimerOn)
-					td.TimeTaken = td.TimeTaken.AddSeconds(1);
-			foreach (var list in _incompleteItems)
-				foreach (TodoItemHolder tlh in list)
-					if (tlh.TD.IsTimerOn)
-						tlh.TimeTaken = tlh.TD.TimeTaken;
+			foreach (var td in _masterList.Where(td => td.IsTimerOn))
+			{
+				td.TimeTaken = td.TimeTaken.AddSeconds(1);
+			}
+
+			foreach (TodoItemHolder itemHolder in from list in _incompleteItems from itemHolder in list where itemHolder.TD.IsTimerOn select itemHolder)
+			{
+				itemHolder.TimeTaken = itemHolder.TD.TimeTaken;
+			}
 
 			lblPomo.Content = $"{_pomoTimer.Ticks / TimeSpan.TicksPerMinute:00}:{_pomoTimer.Second:00}";
 			if (_isPomoTimerOn)
@@ -479,7 +495,9 @@ namespace TODOList
 					PomoTimeLeft = (int)((float) _pomoTimer.Ticks / ticks * 100);
 					pbPomo.Background = Brushes.DarkGreen;
 					if (_pomoTimer.Ticks < ticks)
+					{
 						return;
+					}
 					_isPomoWorkTimerOn = false;
 					_pomoTimer=DateTime.MinValue;
 				}
@@ -488,7 +506,9 @@ namespace TODOList
 					long ticks = _pomoBreakTime * TimeSpan.TicksPerMinute;
 					PomoTimeLeft = (int)((float) (ticks - _pomoTimer.Ticks) / ticks * 100);
 					if (_pomoTimer.Ticks < ticks)
+					{
 						return;
+					}
 					_isPomoWorkTimerOn = true;
 					_pomoTimer=DateTime.MinValue;
 				}
@@ -508,7 +528,9 @@ namespace TODOList
 			string[] pathPieces = _currentOpenFile.Split('\\');
 			string path = "";
 			for (int i = 0; i < pathPieces.Length - 1; i++)
+			{
 				path += pathPieces[i] + "\\";
+			}
 			string gitPath = FindGitDirectory(path);
 			_historyLogPath = path + "log.txt";
 			ProcessStartInfo startInfo = new ProcessStartInfo
@@ -538,90 +560,117 @@ namespace TODOList
 			lbHistoryLog.ItemsSource = log;
 			lbHistoryLog.Items.Refresh();
 		}
-		private string FindGitDirectory(string dir)
+		private static string FindGitDirectory(string dir)
 		{
-			if (dir == Directory.GetDirectoryRoot(dir))
-				return null;
-			List<string> dirs = Directory.GetDirectories(dir).ToList();
-			foreach(string s in dirs)
-				if (s.Contains(".git"))
+			while (true)
+			{
+				if (dir == Directory.GetDirectoryRoot(dir))
+				{
+					return null;
+				}
+
+				List<string> dirs = Directory.GetDirectories(dir).ToList();
+				if (dirs.Any(s => s.Contains(".git")))
+				{
 					return dir;
-			
-			return FindGitDirectory(Directory.GetParent(dir).FullName);
+				}
+				dir = Directory.GetParent(dir)?.FullName;
+			}
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Hotkeys //
-		private void hkSwitchTab(object sender, ExecutedRoutedEventArgs e)
+		private void HkSwitchTab(object sender, ExecutedRoutedEventArgs e)
 		{
-			int index = _todoTabs.SelectedIndex;
-			if ((string) e.Parameter == "right")
+			int index = todoTabs.SelectedIndex;
+			switch ((string) e.Parameter)
 			{
-				if (TabControl.SelectedIndex == 0)
-				{
-					TabControl.SelectedIndex = 1;
+				case "right" when tabControl.SelectedIndex == 0:
+					tabControl.SelectedIndex = 1;
 					return;
-				}
-				index++;
-				if (index >= _todoTabs.Items.Count)
-					index = _todoTabs.Items.Count - 1;
-			}
-			else if ((string) e.Parameter == "left")
-			{
-				index--;
-				if (index < 0)
+				case "right":
 				{
-					index = 0;
-					TabControl.SelectedIndex = 0;
+					index++;
+					if (index >= todoTabs.Items.Count)
+					{
+						index = todoTabs.Items.Count - 1;
+					}
+					break;
+				}
+				case "left":
+				{
+					index--;
+					if (index < 0)
+					{
+						index = 0;
+						tabControl.SelectedIndex = 0;
+					}
+
+					break;
 				}
 			}
-			_todoTabs.SelectedIndex = index;
+			todoTabs.SelectedIndex = index;
 		}
-		private void hkSwitchSeverity(object sender, ExecutedRoutedEventArgs e)
+		private void HkSwitchSeverity(object sender, ExecutedRoutedEventArgs e)
 		{
 			int index = cbSeverity.SelectedIndex;
-			if ((string) e.Parameter == "down")
+			switch ((string) e.Parameter)
 			{
-				index++;
-				if (index >= cbSeverity.Items.Count)
-					index = cbSeverity.Items.Count - 1;
-			}
-			else if ((string) e.Parameter == "up")
-			{
-				index--;
-				if (index < 0)
-					index = 0;
+				case "down":
+				{
+					index++;
+					if (index >= cbSeverity.Items.Count)
+					{
+						index = cbSeverity.Items.Count - 1;
+					}
+					break;
+				}
+				case "up":
+				{
+					index--;
+					if (index < 0)
+					{
+						index = 0;
+					}
+					break;
+				}
 			}
 			cbSeverity.SelectedIndex = index;
 			cbSeverity.Items.Refresh();
 		}
-		private void hkComplete(object sender, ExecutedRoutedEventArgs e)
+
+		private void HkComplete(object sender, ExecutedRoutedEventArgs e)
 		{
 			if (tabHistory.IsSelected)
+			{
 				return;
-
+			}
 			if (tbNewTodo.IsFocused)
 			{
 				QuickComplete();
 				return;
 			}
 
-			TodoItemHolder tlh = (TodoItemHolder) lbIncompleteItems.SelectedItem;
-			if (tlh != null)
+			TodoItemHolder itemHolder = (TodoItemHolder) _lbIncompleteItems.SelectedItem;
+			if (itemHolder != null)
 			{
-				DlgTodoItemEditor tdc = new DlgTodoItemEditor(tlh.TD, TabNames);
-				tdc.ShowDialog();
-				if (tdc.Result)
-					AddItemToMasterList(tdc.ResultTD);
+				DlgTodoItemEditor  dlgTodoItemEditor = new DlgTodoItemEditor(itemHolder.TD, TabNames);
+				dlgTodoItemEditor.ShowDialog();
+				if (dlgTodoItemEditor.Result)
+				{
+					AddItemToMasterList(dlgTodoItemEditor.ResultTD);
+				}
 			}
 			RefreshTodo();
 		}
-		private void hkAdd(object sender, ExecutedRoutedEventArgs e)
+		private void HkAdd(object sender, ExecutedRoutedEventArgs e)
 		{
 			if (tabHistory.IsSelected)
+			{
 				return;
+			}
 			Add_OnClick(sender, e);
 		}
-		private void hkEdit(object sender, EventArgs e)
+		private void HkEdit(object sender, EventArgs e)
 		{
 			if (tbNewTodo.IsFocused)
 			{
@@ -634,9 +683,8 @@ namespace TODOList
 			
 			if(tabTodos.IsSelected)
 			{
-				lb = lbIncompleteItems;
-				foreach (TodoItemHolder tlh in IncompleteItems)
-					list.Add(tlh.TD);
+				lb = _lbIncompleteItems;
+				list.AddRange(IncompleteItems.Select(itemHolder => itemHolder.TD));
 			}
 			else if (tabHistory.IsSelected)
 			{
@@ -646,26 +694,30 @@ namespace TODOList
 		
 			EditItem(lb, list);
 		}
-		private void hkQuickSave(object sender, ExecutedRoutedEventArgs e)
+		private void HkQuickSave(object sender, ExecutedRoutedEventArgs e)
 		{
-			Save(_recentFiles[0]);
+			Save(RecentFiles[0]);
 		}
-		private void hkQuickLoadPrevious(object sender, ExecutedRoutedEventArgs e)
+		private void HkQuickLoadPrevious(object sender, ExecutedRoutedEventArgs e)
 		{
-			if(_recentFiles.Count >= 2)
-				Load(_recentFiles[1]);
+			if (RecentFiles.Count >= 2)
+			{
+				Load(RecentFiles[1]);
+			}
 		}
-		private void hkStartStopTimer(object sender, ExecutedRoutedEventArgs e)
+		private void HkStartStopTimer(object sender, ExecutedRoutedEventArgs e)
 		{
 			if (!tabTodos.IsSelected)
+			{
 				return;
-			int index = lbIncompleteItems.SelectedIndex;
+			}
+			int index = _lbIncompleteItems.SelectedIndex;
 			IncompleteItems[index].TD.IsTimerOn = !IncompleteItems[index].TD.IsTimerOn;
-			lbIncompleteItems.Items.Refresh();
+			_lbIncompleteItems.Items.Refresh();
 		}
 		private void QuickComplete()
 		{
-			TodoItem newtd = new TodoItem
+			TodoItem newTodo = new TodoItem
 			{
 				Todo = tbNewTodo.Text,
 				Severity = _currentSeverity,
@@ -673,7 +725,7 @@ namespace TODOList
 				Rank = {[TabNames] = IncompleteItems.Count}
 			};
 
-			AddItemToMasterList(newtd);
+			AddItemToMasterList(newTodo);
 			AutoSave();
 			RefreshTodo();
 			tbNewTodo.Clear();
@@ -686,7 +738,9 @@ namespace TODOList
 			DlgEditTabs rt = new DlgEditTabs(list);
 			rt.ShowDialog();
 			if (!rt.Result)
+			{
 				return;
+			}
 			_tabList.Clear();
 			_hashShortcuts.Clear();
 			_tabHash.Clear();
@@ -695,20 +749,28 @@ namespace TODOList
 			foreach (string s in rt.ResultList)
 			{
 				if (rt.ResultList.IndexOf(s) < rt.ResultList.Count - 1)
+				{
 					AddNewTodoTab(s, false);
+				}
 				else
+				{
 					AddNewTodoTab(s);
+				}
 			}
 
 			foreach (TodoItem td in _masterList)
+			{
 				CleanTodoHashRanks(td);
+			}
 		}
 		private void mnuOptions_OnClick(object sender, EventArgs e)
 		{
 			DlgOptions options = new DlgOptions(_autoSave, _globalHotkeys, _autoBackup, _backupTime, _currentProjectVersion, _projectVersionIncrement);
 			options.ShowDialog();
 			if (!options.Result)
+			{
 				return;
+			}
 			_autoSave = options.AutoSave;
 			_globalHotkeys = options.GlobalHotkeys;
 			_autoBackup = options.AutoBackup;
@@ -725,24 +787,27 @@ namespace TODOList
 			DlgYesNo dlg = new DlgYesNo("New file", "Are you sure?");
 			dlg.ShowDialog();
 			if (!dlg.Result)
-				return;
-
-			if (NewFile())
 			{
-				ClearLists();
-				CreateNewTabs();
-				_currentProjectVersion = 0.00d;
-				_projectVersionIncrement = 0.01d;
-
-				_currentHistoryItem = new HistoryItem("", "");
-				AddNewHistoryItem();
-				RefreshHistory();
-				RefreshTodo();
-
-				_currentOpenFile = "";
-				Title = WindowTitle;
-				Save(_recentFiles[0]);
+				return;
 			}
+
+			if (!NewFile())
+			{
+				return;
+			}
+			ClearLists();
+			CreateNewTabs();
+			_currentProjectVersion = 0.00d;
+			_projectVersionIncrement = 0.01d;
+
+			_currentHistoryItem = new HistoryItem("", "");
+			AddNewHistoryItem();
+			RefreshHistory();
+			RefreshTodo();
+
+			_currentOpenFile = "";
+			Title = WindowTitle;
+			Save(RecentFiles[0]);
 		}
 		private void mnuRemoveFile_OnClick(object sender, RoutedEventArgs e)
 		{
@@ -751,15 +816,14 @@ namespace TODOList
 				_recentFilesIndex = 0;
 				return;
 			}
-			_recentFiles.RemoveAt(_recentFilesIndex);
+			RecentFiles.RemoveAt(_recentFilesIndex);
 			mnuRecentLoads.Items.Refresh();
 		}
 		private void mnuRecentLoads_OnRMBUp(object sender, MouseButtonEventArgs e)
 		{
 			_recentFilesIndex = -1;
-			var mi = e.OriginalSource as TextBlock;
 			//var t = ((TextBlock) e.OriginalSource).Text;
-			if (mi == null)
+			if (!(e.OriginalSource is TextBlock mi))
 				return;
 
 			string path = (string) mi.DataContext;
@@ -767,18 +831,20 @@ namespace TODOList
 		}
 		private void mnuResetTimer_OnClick(object sender, EventArgs e)
 		{
-			int index = lbIncompleteItems.SelectedIndex;
+			int index = _lbIncompleteItems.SelectedIndex;
 			if (index < 0)
+			{
 				return;
-			TodoItemHolder tlh = IncompleteItems[index];
-			tlh.TimeTaken = new DateTime();
-			tlh.TD.IsTimerOn = false;
-			lbIncompleteItems.Items.Refresh();
+			}
+			TodoItemHolder itemHolder = IncompleteItems[index];
+			itemHolder.TimeTaken = new DateTime();
+			itemHolder.TD.IsTimerOn = false;
+			_lbIncompleteItems.Items.Refresh();
 		}
 		private void mnuResetHistoryCopied_OnClick(object sender, EventArgs e)
 		{
 			int index = lbHistory.SelectedIndex;
-			_historyItems[index].ResetCopied();
+			HistoryItems[index].ResetCopied();
 		}
 		private void mnuQuit_OnClick(object sender, EventArgs e)
 		{
@@ -801,74 +867,91 @@ namespace TODOList
 		private void mnuLoadFiles_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (_recentFilesIndex < 0)
+			{
 				return;
+			}
 			
 			MenuItem mi = (MenuItem) e.OriginalSource;
-			var path = mi.DataContext as string;
-			if (path == null)
+			if (!(mi.DataContext is string path))
+			{
 				return;
+			}
 			
 			if(_isChanged)
 			{
-				DlgYesNo dlg = new DlgYesNo("Close", "Maybe save first?");
-				dlg.ShowDialog();
-				if (dlg.Result)
+				DlgYesNo dlgYesNo = new DlgYesNo("Close", "Maybe save first?");
+				dlgYesNo.ShowDialog();
+				if (dlgYesNo.Result)
+				{
 					Save(_currentOpenFile);
+				}
 			}
 			
 			Load(path);
 		}
 		private void mnuLoad_OnClick(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog
+			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
-				Title = "Open file: ",
+				Title = @"Open file: ",
 				InitialDirectory = GetFilePath(),
-				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+				Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
 			};
 
-			DialogResult dr = ofd.ShowDialog();
+			DialogResult dr = openFileDialog.ShowDialog();
 
 			if (dr != System.Windows.Forms.DialogResult.OK)
+			{
 				return;
+			}
 			
 			if(_isChanged)
 			{
-				DlgYesNo dlg = new DlgYesNo("Close", "Maybe save first?");
-				dlg.ShowDialog();
-				if (dlg.Result)
+				DlgYesNo dlgYesNo = new DlgYesNo("Close", "Maybe save first?");
+				dlgYesNo.ShowDialog();
+				if (dlgYesNo.Result)
+				{
 					Save(_currentOpenFile);
+				}
 			}
 
-			Load(ofd.FileName);
+			Load(openFileDialog.FileName);
 		}
 		private void mnuDelete_OnClick(object sender, EventArgs e)
 		{
-			TodoItem td = IncompleteItems[lbIncompleteItems.SelectedIndex].TD;
+			TodoItem td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
 			RemoveItemFromMasterList(td);
-			IncompleteItems.RemoveAt(lbIncompleteItems.SelectedIndex);
+			IncompleteItems.RemoveAt(_lbIncompleteItems.SelectedIndex);
 			
 			AutoSave();
 			RefreshTodo();
 		}
 		private void mnuEditTodo_OnClick(object sender, EventArgs e)
 		{
-			List<TodoItem> list = new List<TodoItem>();
-			foreach (TodoItemHolder tlh in IncompleteItems)
-					list.Add(tlh.TD);
-			if(lbIncompleteItems.SelectedItems.Count > 1)
-				MultiEditItems(lbIncompleteItems);
+			List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
+			if (_lbIncompleteItems.SelectedItems.Count > 1)
+			{
+				MultiEditItems(_lbIncompleteItems);
+			}
 			else
-				EditItem(lbIncompleteItems, list);
+			{
+				EditItem(_lbIncompleteItems, list);
+			}
 		}
 		private void mnuEditHistoryTodo_OnClick(object sender, EventArgs e)
 		{
-			if(lbCompletedTodos.IsMouseOver)
+			if (lbCompletedTodos.IsMouseOver)
+			{
 				EditItem(lbCompletedTodos, _currentHistoryItem.CompletedTodos);
-			else if(lbCompletedTodosFeatures.IsMouseOver)
+			}
+			else if (lbCompletedTodosFeatures.IsMouseOver)
+			{
 				EditItem(lbCompletedTodosFeatures, _currentHistoryItem.CompletedTodosFeatures);
-			else if(lbCompletedTodosBugs.IsMouseOver)
+			}
+			else if (lbCompletedTodosBugs.IsMouseOver)
+			{
 				EditItem(lbCompletedTodosBugs, _currentHistoryItem.CompletedTodosBugs);
+			}
 			
 			RefreshHistory();
 		}
@@ -880,48 +963,60 @@ namespace TODOList
 		private void mnuKanbanBacklog_OnClick(object sender, EventArgs e)
 		{
 			TodoItem td = null;
-			if (TabControl.SelectedIndex == 1)
+			switch (tabControl.SelectedIndex)
 			{
-				td = IncompleteItems[lbIncompleteItems.SelectedIndex].TD;
+				case 1:
+					td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
+					break;
+				case 2:
+					td = KanbanItems[_lbKanbanItems.SelectedIndex].TD;
+					break;
 			}
-			else if (TabControl.SelectedIndex == 2)
+
+			if (td != null)
 			{
-				td = KanbanItems[lbKanbanItems.SelectedIndex].TD;
+				td.Kanban = 0;
 			}
-			if(td != null)
-	        	td.Kanban = 0;
 			AutoSave();
         	RefreshTodo();		
         }
 		private void mnuKanbanNext_OnClick(object sender, EventArgs e)
     	{
 			TodoItem td = null;
-			if (TabControl.SelectedIndex == 1)
+			switch (tabControl.SelectedIndex)
 			{
-				td = IncompleteItems[lbIncompleteItems.SelectedIndex].TD;
+				case 1:
+					td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
+					break;
+				case 2:
+					td = KanbanItems[_lbKanbanItems.SelectedIndex].TD;
+					break;
 			}
-			else if (TabControl.SelectedIndex == 2)
+
+			if (td != null)
 			{
-				td = KanbanItems[lbKanbanItems.SelectedIndex].TD;
+				td.Kanban = 1;
 			}
-			if(td != null)
-	        	td.Kanban = 1;
         	AutoSave();
         	RefreshTodo();		
     	}
 		private void mnuKanbanCurrent_OnClick(object sender, EventArgs e)
 		{
 			TodoItem td = null;
-			if (TabControl.SelectedIndex == 1)
+			switch (tabControl.SelectedIndex)
 			{
-				td = IncompleteItems[lbIncompleteItems.SelectedIndex].TD;
+				case 1:
+					td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
+					break;
+				case 2:
+					td = KanbanItems[_lbKanbanItems.SelectedIndex].TD;
+					break;
 			}
-			else if (TabControl.SelectedIndex == 2)
+
+			if (td != null)
 			{
-				td = KanbanItems[lbKanbanItems.SelectedIndex].TD;
+				td.Kanban = 2;
 			}
-			if(td != null)
-	        	td.Kanban = 2;
     		AutoSave();
     		RefreshTodo();		
 		}
@@ -953,23 +1048,35 @@ namespace TODOList
 				case Key.Up:
 					_currentHistoryItemIndex--;
 					break;
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
-			
-			if (_currentHistoryItemIndex >= _historyItems.Count)
+
+			if (_currentHistoryItemIndex >= HistoryItems.Count)
+			{
 				_currentHistoryItemIndex = 0;
+			}
+
 			if (_currentHistoryItemIndex < 0)
-				_currentHistoryItemIndex = _historyItems.Count - 1;
-			if (_historyItems.Count == 0)
+			{
+				_currentHistoryItemIndex = HistoryItems.Count - 1;
+			}
+			if (HistoryItems.Count == 0)
 			{
 				_currentHistoryItem = new HistoryItem("", "");
 				return;
 			}
+
 			if (prevIndex == _currentHistoryItemIndex)
+			{
 				return;
+			}
 
 			_currentHistoryItem = lbHistory.Items[_currentHistoryItemIndex] as HistoryItem;
 			if (_currentHistoryItem != null)
+			{
 				lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+			}
 			lbHistory.SelectedIndex = _currentHistoryItemIndex;
 			RefreshHistory();
 		}
@@ -979,17 +1086,27 @@ namespace TODOList
 		}
 		private void HistoryListBox_OnSelectionChange(object sender, SelectionChangedEventArgs e)
 		{
-			if(_didMouseSelect)
+			if (_didMouseSelect)
+			{
 				_currentHistoryItemIndex = lbHistory.SelectedIndex;
+			}
+
 			if (lbHistory.Items.Count == 0)
+			{
 				return;
+			}
+
 			if (_currentHistoryItemIndex >= lbHistory.Items.Count)
+			{
 				_currentHistoryItemIndex = lbHistory.Items.Count - 1;
+			}
 			if (lbHistory.Items[_currentHistoryItemIndex] is HistoryItem hi)
 			{
 				_currentHistoryItem = hi;
 				if (_currentHistoryItem != null)
+				{
 					lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+				}
 			}
 			
 			RefreshHistory();
@@ -998,9 +1115,11 @@ namespace TODOList
 		private void AddTodoToHistory(TodoItem td)
 		{
 			if (_currentHistoryItem.DateAdded == "")
+			{
 				AddNewHistoryItem();
+			}
 			RefreshHistory();
-			_currentHistoryItem = _historyItems[0];
+			_currentHistoryItem = HistoryItems[0];
 			_currentHistoryItem.AddCompletedTodo(td);
 			RefreshHistory();
 			AutoSave();
@@ -1014,24 +1133,30 @@ namespace TODOList
 
 			_currentHistoryItem = new HistoryItem(DateTime.Now)
 			{
-				Title = "v" + _currentProjectVersion.ToString()
+				Title = "v" + _currentProjectVersion
 			};
-			_historyItems.Add(_currentHistoryItem);
+			HistoryItems.Add(_currentHistoryItem);
 			AutoSave();
 			RefreshHistory();
 		}
 		private void RefreshHistory()
 		{
-			List<HistoryItem> temp = _historyItems.OrderByDescending(o => o.DateTimeAdded).ToList();
-			_historyItems.Clear();
+			List<HistoryItem> temp = HistoryItems.OrderByDescending(o => o.DateTimeAdded).ToList();
+			HistoryItems.Clear();
 			foreach (HistoryItem hi in temp)
-				_historyItems.Add(hi);
+			{
+				HistoryItems.Add(hi);
+			}
 
-			if (_historyItems.Count == 0)
+			if (HistoryItems.Count == 0)
+			{
 				_currentHistoryItem = new HistoryItem("", "");
+			}
 
-			if (_historyItems.Count > 0 && _currentHistoryItem.DateAdded == "")
+			if (HistoryItems.Count > 0 && _currentHistoryItem.DateAdded == "")
+			{
 				lbHistory.SelectedIndex = 0;
+			}
 
 			SortCompletedItems(_currentHistoryItem); 
 			
@@ -1049,7 +1174,7 @@ namespace TODOList
 			lbHistory.Items.Refresh();
 			lbHistory.SelectedIndex = index;
 		}
-		private void SortCompletedItems(HistoryItem hi)
+		private static void SortCompletedItems(HistoryItem hi)
 		{
 			List<TodoItem> tempBug = new List<TodoItem>();
 			List<TodoItem> tempFeature = new List<TodoItem>();
@@ -1079,38 +1204,50 @@ namespace TODOList
 		{
 			Button b = sender as Button;
 			TodoItem td = b?.DataContext as TodoItem;
-			DlgYesNo dlgYN = new DlgYesNo("Delete", "Are you sure you want to delete this Todo?");
-			dlgYN.ShowDialog();
-			if (!dlgYN.Result)
+			DlgYesNo dlgYesNo = new DlgYesNo("Delete", "Are you sure you want to delete this Todo?");
+			dlgYesNo.ShowDialog();
+			if (!dlgYesNo.Result)
+			{
 				return;
+			}
 
 			if (td != null)
 			{
 				td.IsComplete = false;
 				AddItemToMasterList(td);
 				RefreshTodo();
-				if(_currentHistoryItem.CompletedTodos.Contains(td))
+				if (_currentHistoryItem.CompletedTodos.Contains(td))
+				{
 					_currentHistoryItem.CompletedTodos.Remove(td);
-				else if(_currentHistoryItem.CompletedTodosBugs.Contains(td))
+				}
+				else if (_currentHistoryItem.CompletedTodosBugs.Contains(td))
+				{
 					_currentHistoryItem.CompletedTodosBugs.Remove(td);
-				else if(_currentHistoryItem.CompletedTodosFeatures.Contains(td))
+				}
+				else if (_currentHistoryItem.CompletedTodosFeatures.Contains(td))
+				{
 					_currentHistoryItem.CompletedTodosFeatures.Remove(td);
+				}
 				AutoSave();
 			}
 			RefreshHistory();
 		}
 		private void DeleteHistory_OnClick(object sender, EventArgs e)
 		{
-			if (_historyItems.Count == 0)
+			if (HistoryItems.Count == 0)
+			{
 				return;
-			DlgYesNo dlgYN = new DlgYesNo("Delete", "Are you sure you want to delete this History Item?");
-			dlgYN.ShowDialog();
-			if (!dlgYN.Result)
+			}
+			DlgYesNo  dlgYesNo = new DlgYesNo("Delete", "Are you sure you want to delete this History Item?");
+			dlgYesNo.ShowDialog();
+			if (!dlgYesNo.Result)
+			{
 				return;
+			}
 			
-			_historyItems.Remove(_currentHistoryItem);
+			HistoryItems.Remove(_currentHistoryItem);
 
-			_currentHistoryItem = _historyItems.Count > 0 ? _historyItems[0] : new HistoryItem("", "");
+			_currentHistoryItem = HistoryItems.Count > 0 ? HistoryItems[0] : new HistoryItem("", "");
 			AutoSave();
 			RefreshHistory();
 		}
@@ -1123,74 +1260,79 @@ namespace TODOList
 			Button b = sender as Button;
 			HistoryItem hi = (HistoryItem) b?.DataContext;
 			if (hi == null)
-				return;
-			int totalTime = 0;
-			foreach (HistoryItem hist in _historyItems)
 			{
-				totalTime += Convert.ToInt32(hist.TotalTime);
+				return;
 			}
+			int totalTime = HistoryItems.Sum(hist => Convert.ToInt32(hist.TotalTime));
 			string time = $"{totalTime / 60:00} : {totalTime % 60:00}";
 			Clipboard.SetText(hi.ToClipboard(time));
 			hi.SetCopied();
 			if (lbHistory.Items.IndexOf(hi) != 0)
+			{
 				return;
-			DlgYesNo dlgYN = new DlgYesNo("New History", "Add a new History Item?");
-			dlgYN.ShowDialog();
-			if (dlgYN.Result)
+			}
+			DlgYesNo dlgYesNo = new DlgYesNo("New History", "Add a new History Item?");
+			dlgYesNo.ShowDialog();
+			if (dlgYesNo.Result)
+			{
 				AddNewHistoryItem();
+			}
 		}
 		private void IncompleteItems_OnSelectionChange(object sender, SelectionChangedEventArgs e)
 		{
-			List<TodoItem> list = new List<TodoItem>();
-			foreach (TodoItemHolder tlh in IncompleteItems)
-				list.Add(tlh.TD);
-			if (lbIncompleteItems.SelectedIndex >= 0)
+			List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
+			if (_lbIncompleteItems.SelectedIndex < 0)
 			{
-				tbNotes.Text = list[lbIncompleteItems.SelectedIndex].Notes;
-				tbTodo.Text = list[lbIncompleteItems.SelectedIndex].Todo;
+				return;
 			}
+			tbNotes.Text = list[_lbIncompleteItems.SelectedIndex].Notes;
+			tbTodo.Text = list[_lbIncompleteItems.SelectedIndex].Todo;
 		}
-
 		private void KanbanItems_OnSelectionChange(object sender, SelectionChangedEventArgs e)
 		{
-			List<TodoItem> list = new List<TodoItem>();
-    		foreach (TodoItemHolder tlh in KanbanItems)
-    			list.Add(tlh.TD);
-    		if (lbKanbanItems.SelectedIndex >= 0)
-    		{
-    			tbNotes.Text = list[lbKanbanItems.SelectedIndex].Notes;
-    			tbTodo.Text = list[lbKanbanItems.SelectedIndex].Todo;
-    		}		
+			List<TodoItem> list = KanbanItems.Select(itemHolder => itemHolder.TD).ToList();
+			if (_lbKanbanItems.SelectedIndex < 0)
+			{
+				return;
+			}
+			tbNotes.Text = list[_lbKanbanItems.SelectedIndex].Notes;
+			tbTodo.Text = list[_lbKanbanItems.SelectedIndex].Todo;
 		}
 		private void Notes_OnSelectionChanged(object sender, RoutedEventArgs e)
 		{
-			List<TodoItem> list = new List<TodoItem>();
-			foreach (TodoItemHolder tlh in IncompleteItems)
-				list.Add(tlh.TD);
-			if (lbIncompleteItems.SelectedIndex >= 0)
+			List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
+			if (_lbIncompleteItems.SelectedIndex >= 0)
 			{
-				list[lbIncompleteItems.SelectedIndex].Notes = tbNotes.Text;
+				list[_lbIncompleteItems.SelectedIndex].Notes = tbNotes.Text;
 			}
 		}
 		private void Severity_OnClick(object sender, EventArgs e)
 		{
-			if (sender is Button b)
+			if (!(sender is Button b))
 			{
-				TodoItemHolder tlh = b.DataContext as TodoItemHolder;
-				int value = tlh.Severity;
+				return;
+			}
+			if (b.DataContext is TodoItemHolder itemHolder)
+			{
+				int value = itemHolder.Severity;
 				if (value == 3) { value = 0; }
 				else { value++; }
-				tlh.Severity = value;
-				RefreshTodo();
+				itemHolder.Severity = value;
 			}
+
+			RefreshTodo();
 		}
 		private void Hashtags_OnSelectionChange(object sender, EventArgs e)
 		{
 			if (HashTags.Count == 0)
+			{
 				return;
+			}
 			_hashToSortBy = HashTags[0];
-			if (cbHashTags.SelectedItem != null)
-				_hashToSortBy = cbHashTags.SelectedItem.ToString();
+			if (_cbHashTags.SelectedItem != null)
+			{
+				_hashToSortBy = _cbHashTags.SelectedItem.ToString();
+			}
 			_hashSortSelected = true;
 			_currentSort = "hash";
 			RefreshTodo();
@@ -1207,10 +1349,14 @@ namespace TODOList
 			if ((string) b?.CommandParameter == "hash")
 			{
 				if (HashTags.Count == 0)
+				{
 					return;
+				}
 				_currentHashTagSortIndex++;
 				if (_currentHashTagSortIndex >= HashTags.Count)
+				{
 					_currentHashTagSortIndex = 0;
+				}
 			}
 
 			_reverseSort = !_reverseSort;
@@ -1219,110 +1365,127 @@ namespace TODOList
 		private List<TodoItemHolder> SortByHashTag(List<TodoItemHolder> list)
 		{
 			if (_didHashChange)
+			{
 				_currentHashTagSortIndex = 0;
+			}
 
 			List<TodoItemHolder> incompleteItems = new List<TodoItemHolder>();
 			List<string> sortedHashTags = new List<string>();
-			
+
 			if (HashTags.Count == 0)
+			{
 				return list;
+			}
 			
 			if (_hashSortSelected)
 			{
 				_currentHashTagSortIndex = 0;
-				foreach (string s in HashTags)
+				foreach (string s in HashTags.TakeWhile(s => !s.Equals(_hashToSortBy)))
 				{
-					if (s.Equals(_hashToSortBy))
-						break;
 					_currentHashTagSortIndex++;
 				}
 			}
 
 			for (int i = 0 + _currentHashTagSortIndex; i < HashTags.Count; i++)
+			{
 				sortedHashTags.Add(HashTags[i]);
+			}
+
 			for (int i = 0; i < _currentHashTagSortIndex; i++)
+			{
 				sortedHashTags.Add(HashTags[i]);
+			}
 
 			List<TodoItemHolder> sortSingleTags = list.ToList();
 			
-			foreach (TodoItemHolder tlh in sortSingleTags)
+			foreach (var itemHolder in sortSingleTags.Where(itemHolder => itemHolder.TD.Tags.Contains(sortedHashTags[0]) && itemHolder.TD.Tags.Count == 1))
 			{
-				if (!tlh.TD.Tags.Contains(sortedHashTags[0]) || tlh.TD.Tags.Count != 1)
-					continue;
-				incompleteItems.Add(tlh);
-				list.Remove(tlh);
+				incompleteItems.Add(itemHolder);
+				list.Remove(itemHolder);
 			}
 			foreach (string s in sortedHashTags)
 			{
 				List<TodoItemHolder> temp = list.ToList();
-				foreach (TodoItemHolder tlh in temp)
+				foreach (TodoItemHolder itemHolder in temp)
 				{
 					List<string> sortedTags = new List<string>();
-					List<string> unsortedTags = tlh.TD.Tags.ToList();
-					foreach (string u in tlh.TD.Tags)
+					List<string> unsortedTags = itemHolder.TD.Tags.ToList();
+					foreach (string u in itemHolder.TD.Tags.Where(u => u == s))
 					{
-						if (u != s)
-							continue;
 						sortedTags.Add(u);
 						unsortedTags.Remove(u);
 					}
 					sortedTags.AddRange(unsortedTags);
-					tlh.TD.Tags = sortedTags;
+					itemHolder.TD.Tags = sortedTags;
 					
-					foreach (string t in tlh.TD.Tags)
+					foreach (string t in itemHolder.TD.Tags.Where(t => s.Equals(t)))
 					{
-						if (!s.Equals(t))
-							continue;
-						incompleteItems.Add(tlh);
-						list.Remove(tlh);
+						incompleteItems.Add(itemHolder);
+						list.Remove(itemHolder);
 					}
 				}
 			}
-			foreach (TodoItemHolder tlh in list)
-				incompleteItems.Add(tlh);
-			
+
+			incompleteItems.AddRange(list);
+
 			return incompleteItems;
 		}
 		private void FixRankings()
 		{
-			if (_todoTabs.Items.Count == 0 || 
-				_todoTabs.SelectedIndex < 0 || 
-				_todoTabs.SelectedIndex >= _todoTabs.Items.Count)
-				return;
-			string currentHash = _tabList[_todoTabs.SelectedIndex].Name;
-			foreach(TodoItemHolder tdih in _incompleteItems[_todoTabs.SelectedIndex])
-				if (!tdih.TD.Rank.ContainsKey(currentHash))
-					tdih.TD.Rank.Add(currentHash, 99);
-			_incompleteItems[_todoTabs.SelectedIndex] = _incompleteItems[_todoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
-			for (int rank = 0; rank < _incompleteItems[_todoTabs.SelectedIndex].Count; rank++)
+			if (todoTabs.Items.Count == 0 ||
+			    todoTabs.SelectedIndex < 0 ||
+			    todoTabs.SelectedIndex >= todoTabs.Items.Count)
 			{
-				_incompleteItems[_todoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
-				_incompleteItems[_todoTabs.SelectedIndex][rank].Rank = _incompleteItems[_todoTabs.SelectedIndex][rank].TD.Rank[currentHash];
+				return;
+			}
+			string currentHash = _tabList[todoTabs.SelectedIndex].Name;
+			foreach (TodoItemHolder itemHolder in _incompleteItems[todoTabs.SelectedIndex].Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
+			{
+				itemHolder.TD.Rank.Add(currentHash, 99);
+			}
+			_incompleteItems[todoTabs.SelectedIndex] = _incompleteItems[todoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
+			for (int rank = 0; rank < _incompleteItems[todoTabs.SelectedIndex].Count; rank++)
+			{
+				_incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
+				_incompleteItems[todoTabs.SelectedIndex][rank].Rank = _incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash];
 			}
 		}
 		private void CheckForHashTagListChanges()
 		{
 			_didHashChange = false;
 			if (_hashTags[0].Count != _prevHashTagList.Count)
+			{
 				_didHashChange = true;
+			}
 			else
+			{
 				for (int i = 0; i < _hashTags[0].Count; i++)
+				{
 					if (_hashTags[0][i] != _prevHashTagList[i])
+					{
 						_didHashChange = true;
+					}
+				}
+			}
 			_prevHashTagList = _hashTags[0].ToList();
 		}
 		private void SortHashTagLists()
 		{
 			for (int i = 0; i < _incompleteItems.Count; i++)
 			{
-				foreach (TodoItemHolder tlh in _incompleteItems[i])
-				foreach (string tag in tlh.TD.Tags)
+				foreach (string tag in _incompleteItems[i].SelectMany(itemHolder => itemHolder.TD.Tags))
 				{
 					if (!_hashTags[i].Contains(tag))
+					{
 						_hashTags[i].Add(tag);
+					}
+
 					if (!_hashTags[0].Contains(tag))
+					{
 						_hashTags[0].Add(tag);
+					}
 				}
+
 				_hashTags[i] = _hashTags[i].OrderBy(o => o).ToList();
 			}
 			for (int i = 1; i < _tabList.Count; i++)
@@ -1333,10 +1496,8 @@ namespace TODOList
 		}
 		private void SortToLists()
 		{
-			List<TodoItem> incompleteItems = new List<TodoItem>();
-			foreach (TodoItem td in _masterList)
-				incompleteItems.Add(td);
-			
+			List<TodoItem> incompleteItems = _masterList.ToList();
+
 			foreach (TodoItem td in incompleteItems)
 			{
 				if (td.IsComplete)
@@ -1347,24 +1508,25 @@ namespace TODOList
 				}
 				bool sortedToTab = false;
 
-				TodoItemHolder tlh = new TodoItemHolder(td);
-				_incompleteItems[0].Add(tlh);
-				
-				_kanbanItems[td.Kanban].Add(tlh);
+				TodoItemHolder itemHolder = new TodoItemHolder(td);
+				_incompleteItems[0].Add(itemHolder);
+				_kanbanItems[td.Kanban].Add(itemHolder);
 
-				foreach (string hash in _tabHash)
+				foreach (int index in from hash in _tabHash where td.Tags.Contains(hash) select _tabHash.IndexOf(hash) + 1)
 				{
-					if (!td.Tags.Contains(hash))
-						continue;
-					int index = _tabHash.IndexOf(hash) + 1;
-					_incompleteItems[index].Add(tlh);
+					_incompleteItems[index].Add(itemHolder);
 					sortedToTab = true;
 				}
 
 				if (sortedToTab)
+				{
 					continue;
-				if(_incompleteItems.Count > 1)
-					_incompleteItems[1].Add(tlh);
+				}
+
+				if (_incompleteItems.Count > 1)
+				{
+					_incompleteItems[1].Add(itemHolder);
+				}
 			}
 		}
 		private void RefreshTodo()
@@ -1375,24 +1537,25 @@ namespace TODOList
 				_hashTags[i].Clear();
 			}
 
-			for (int i = 0; i < _kanbanItems.Count; i++)
+			foreach (List<TodoItemHolder> t in _kanbanItems)
 			{
-				_kanbanItems[i].Clear();
+				t.Clear();
 			}
-			
 
 			SortToLists();
 			SortHashTagLists();
 			CheckForHashTagListChanges();
 			FixRankings();
 		
-			int tabIndex = _todoTabs.SelectedIndex;
+			int tabIndex = todoTabs.SelectedIndex;
 			if (tabIndex < 0 || tabIndex >= _tabList.Count)
+			{
 				return;
+			}
 			
 			switch (_currentSort)
 			{
-				case "sev":
+				case "severity":
 					_incompleteItems[tabIndex] = _reverseSort
 						? _incompleteItems[tabIndex].OrderByDescending(o => o.Severity).ToList()
 						: _incompleteItems[tabIndex].OrderBy(o => o.Severity).ToList();
@@ -1423,32 +1586,35 @@ namespace TODOList
 					break;
 			}
 
-
-			if (lbIncompleteItems != null)
+			if (_lbIncompleteItems != null)
 			{
-				lbIncompleteItems.ItemsSource = IncompleteItems;
-				lbIncompleteItems.Items.Refresh();
+				_lbIncompleteItems.ItemsSource = IncompleteItems;
+				_lbIncompleteItems.Items.Refresh();
 			}
 
-			if (lbKanbanItems != null)
+			if (_lbKanbanItems != null)
 			{
-				lbKanbanItems.ItemsSource = KanbanItems;
-				lbKanbanItems.Items.Refresh();
+				_lbKanbanItems.ItemsSource = KanbanItems;
+				_lbKanbanItems.Items.Refresh();
 			}
-			cbHashTags.ItemsSource = HashTags;
-			cbHashTags.Items.Refresh();
+			_cbHashTags.ItemsSource = HashTags;
+			_cbHashTags.Items.Refresh();
 		}
 		private void SeverityComboBox_OnSelectionChange(object sender, EventArgs e)
 		{
 			if (!(sender is ComboBox cb))
+			{
 				return;
+			}
 			int index = cb.SelectedIndex;
 			_currentSeverity = index;
 		}
 		private void SeverityComboBox_OnIsLoaded(object sender, EventArgs e)
 		{
 			if (sender is ComboBox cb)
+			{
 				cb.SelectedIndex = _currentSeverity;
+			}
 		}
 		private void Add_OnClick(object sender, EventArgs e)
 		{
@@ -1458,7 +1624,9 @@ namespace TODOList
 			ExpandHashTags(td);
 			td.Rank[TabNames] = -1;
 			if (td.Severity == 3)
+			{
 				td.Rank[TabNames] = 0;
+			}
 
 			AddItemToMasterList(td);
 			AutoSave();
@@ -1467,48 +1635,60 @@ namespace TODOList
 		}
 		private void RankAdjust_OnClick(object sender, EventArgs e)
 		{
-			if (sender is Button b)
+			if (!(sender is Button b))
 			{
-				TodoItemHolder tlh = b.DataContext as TodoItemHolder;
-
-				if (IncompleteItems.Count == 0)
-					return;
-				var index = IncompleteItems.IndexOf(tlh);
-				if ((string) b.CommandParameter == "up")
-				{
-					if (index == 0)
-						return;
-					// TODO: Fix this too
-					int newRank = IncompleteItems[index - 1].TD.Rank[TabNames];
-					if (tlh != null)
-					{
-						IncompleteItems[index - 1].TD.Rank[TabNames] = tlh.Rank;
-						tlh.TD.Rank[TabNames] = newRank;
-						AutoSave();
-					}
-				}
-				else if ((string) b.CommandParameter == "down")
-				{
-					if (index >= IncompleteItems.Count - 1)
-						return;
-					// TODO: And this 
-					int newRank = IncompleteItems[index + 1].TD.Rank[TabNames];
-					if (tlh != null)
-					{
-						IncompleteItems[index + 1].TD.Rank[TabNames] = tlh.Rank;
-						tlh.TD.Rank[TabNames] = newRank;
-						AutoSave();
-					}
-				}
-				RefreshTodo();
-//				Point p = b.PointToScreen(new Point(0d, 0d));;
-//				SetCursorPos((int) p.X + 18, (int) p.Y + 18);
+				return;
 			}
+			TodoItemHolder itemHolder = b.DataContext as TodoItemHolder;
+
+			if (IncompleteItems.Count == 0)
+			{
+				return;
+			}
+			int index = IncompleteItems.IndexOf(itemHolder);
+			switch ((string) b.CommandParameter)
+			{
+				case "up" when index == 0:
+					return;
+				// TODO: Fix this too
+				case "up":
+				{
+					int newRank = IncompleteItems[index - 1].TD.Rank[TabNames];
+					if (itemHolder != null)
+					{
+						IncompleteItems[index - 1].TD.Rank[TabNames] = itemHolder.Rank;
+						itemHolder.TD.Rank[TabNames] = newRank;
+						AutoSave();
+					}
+
+					break;
+				}
+				case "down" when index >= IncompleteItems.Count - 1:
+					return;
+				// TODO: And this 
+				case "down":
+				{
+					int newRank = IncompleteItems[index + 1].TD.Rank[TabNames];
+					if (itemHolder != null)
+					{
+						IncompleteItems[index + 1].TD.Rank[TabNames] = itemHolder.Rank;
+						itemHolder.TD.Rank[TabNames] = newRank;
+						AutoSave();
+					}
+
+					break;
+				}
+			}
+			RefreshTodo();
+//				Point p = b.PointToScreen(new Point(0d, 0d));;
+//				SetCursorPosition((int) p.X + 18, (int) p.Y + 18);
 		}
 		private void AddItemToMasterList(TodoItem td)
 		{
 			if (MasterListContains(td) >= 0)
+			{
 				return;
+			}
 
 			CleanTodoHashRanks(td);
 
@@ -1518,52 +1698,63 @@ namespace TODOList
 		{
 			int index = MasterListContains(td);
 			if (index == -1)
+			{
 				return;
+			}
 			
 			_masterList.RemoveAt(index);
 		}
 		private int MasterListContains(TodoItem td)
 		{
 			if (_masterList.Contains(td))
+			{
 				return _masterList.IndexOf(td);
+			}
 			return -1;
 		}
 		private void CleanTodoHashRanks(TodoItem td)
 		{
-			List<string> tabNames = new List<string>();
-			foreach (TabItem ti in _tabList)
-				tabNames.Add(ti.Name);
-			
-			List<string> remove = new List<string>();
-			foreach (KeyValuePair<string, int> kvp in td.Rank)
-				if (!tabNames.Contains(kvp.Key))
-					remove.Add(kvp.Key);
+			List<string> tabNames = _tabList.Select(ti => ti.Name).ToList();
+			List<string> remove = (from pair in td.Rank where !tabNames.Contains(pair.Key) select pair.Key).ToList();
 			foreach (string hash in remove)
+			{
 				td.Rank.Remove(hash);
-			
-			foreach (string name in tabNames)
-				if (!td.Rank.ContainsKey(name))
-					td.Rank.Add(name, -1);
+			}
+
+			foreach (string name in tabNames.Where(name => !td.Rank.ContainsKey(name)))
+			{
+				td.Rank.Add(name, -1);
+			}
 		}
-		private void EditItem(ListBox lb, List<TodoItem> list)
+		private void EditItem(Selector lb, IReadOnlyList<TodoItem> list)
 		{
 			int index = lb.SelectedIndex;
 			if (index < 0)
+			{
 				return;
+			}
 			TodoItem td = list[index];
-			DlgTodoItemEditor tdie = new DlgTodoItemEditor(td, TabNames);
+			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(td, TabNames);
 
-			tdie.ShowDialog();
-			if (tdie.Result)
+			itemEditor.ShowDialog();
+			if (itemEditor.Result)
 			{
 				RemoveItemFromMasterList(td);
-				if(_currentHistoryItem.CompletedTodos.Contains(td))
+				if (_currentHistoryItem.CompletedTodos.Contains(td))
+				{
 					_currentHistoryItem.CompletedTodos.Remove(td);
-				if(_currentHistoryItem.CompletedTodosBugs.Contains(td))
+				}
+
+				if (_currentHistoryItem.CompletedTodosBugs.Contains(td))
+				{
 					_currentHistoryItem.CompletedTodosBugs.Remove(td);
-				if(_currentHistoryItem.CompletedTodosFeatures.Contains(td))
+				}
+
+				if (_currentHistoryItem.CompletedTodosFeatures.Contains(td))
+				{
 					_currentHistoryItem.CompletedTodosFeatures.Remove(td);
-				AddItemToMasterList(tdie.ResultTD);
+				}
+				AddItemToMasterList(itemEditor.ResultTD);
 				AutoSave();
 			}
 
@@ -1576,61 +1767,85 @@ namespace TODOList
 
 			List<string> tags = new List<string>();
 			List<string> commonTagsTemp = new List<string>();
-			foreach (TodoItemHolder tih in lb.SelectedItems)
+			foreach (TodoItemHolder itemHolder in lb.SelectedItems)
 			{
-				foreach(string tag in tih.TD.Tags)
+				foreach(string tag in itemHolder.TD.Tags)
 				{
 					if (!tags.Contains(tag))
+					{
 						tags.Add(tag);
+					}
 					else
 					{
-						if(!commonTagsTemp.Contains(tag))
+						if (!commonTagsTemp.Contains(tag))
+						{
 							commonTagsTemp.Add(tag);
+						}
 					}
 				}
 			}
 			List<string> commonTags = commonTagsTemp.ToList();
-			foreach (TodoItemHolder tih in lb.SelectedItems)
-				foreach (string tag in commonTagsTemp)
-					if (!tih.TD.Tags.Contains(tag))
-						commonTags.Remove(tag);
+			foreach (TodoItemHolder itemHolder in lb.SelectedItems)
+			{
+				foreach (string tag in commonTagsTemp.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
+				{
+					commonTags.Remove(tag);
+				}
+			}
 
 			if (firstTd == null)
-				return;
-			
-			DlgTodoMultiItemEditor tmie = new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
-			tmie.ShowDialog();
-			if (!tmie.Result)
-				return;
-			
-			List<string> tagsToRemove = new List<string>();
-		
-			foreach (string tag in commonTags)
-				if (!tmie.ResultTags.Contains(tag))
-					tagsToRemove.Add(tag);
-
-			foreach (TodoItemHolder tlh in lb.SelectedItems)
 			{
-				if(tmie.ChangeTag)
+				return;
+			}
+			
+			DlgTodoMultiItemEditor dlgTodoMultiItemEditor = new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
+			dlgTodoMultiItemEditor.ShowDialog();
+			if (!dlgTodoMultiItemEditor.Result)
+			{
+				return;
+			}
+			
+			List<string> tagsToRemove = commonTags.Where(tag => !dlgTodoMultiItemEditor.ResultTags.Contains(tag)).ToList();
+
+			foreach (TodoItemHolder itemHolder in lb.SelectedItems)
+			{
+				if(dlgTodoMultiItemEditor.ChangeTag)
 				{
 					foreach (string tag in tagsToRemove)
-						tlh.TD.Tags.Remove(tag);
-					foreach (string tag in tmie.ResultTags)
-						if(!tlh.TD.Tags.Contains(tag.ToUpper()))
-							tlh.TD.Tags.Add(tag.ToUpper());
+					{
+						itemHolder.TD.Tags.Remove(tag);
+					}
+
+					foreach (string tag in dlgTodoMultiItemEditor.ResultTags.Where(tag => !itemHolder.TD.Tags.Contains(tag.ToUpper())))
+					{
+						itemHolder.TD.Tags.Add(tag.ToUpper());
+					}
 				}
-				if(tmie.ChangeRank)
-					tlh.TD.Rank = tmie.ResultTD.Rank;
-				if(tmie.ChangeSev)
-					tlh.TD.Severity = tmie.ResultTD.Severity;
-				if (tmie.ResultIsComplete && tmie.ChangeComplete)
-					tlh.TD.IsComplete = true;
-				if (!tmie.ChangeTodo)
+
+				if (dlgTodoMultiItemEditor.ChangeRank)
+				{
+					itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultTD.Rank;
+				}
+
+				if (dlgTodoMultiItemEditor.ChangeSev)
+				{
+					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultTD.Severity;
+				}
+
+				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.ChangeComplete)
+				{
+					itemHolder.TD.IsComplete = true;
+				}
+
+				if (!dlgTodoMultiItemEditor.ChangeTodo)
+				{
 					continue;
-				tlh.TD.Todo += Environment.NewLine + tmie.ResultTD.Todo;
-				foreach (string tag in tmie.ResultTD.Tags)
-					if(!tlh.TD.Tags.Contains(tag))
-						tlh.TD.Tags.Add(tag);
+				}
+				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTD.Todo;
+				foreach (string tag in dlgTodoMultiItemEditor.ResultTD.Tags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
+				{
+					itemHolder.TD.Tags.Add(tag);
+				}
 			}
 			RefreshTodo();
 		}
@@ -1644,7 +1859,6 @@ namespace TODOList
 		}
 		public static string ExpandHashTagsInString(string todo)
 		{
-			string result = "";
 			string[] pieces = todo.Split(' ');
 
 			List<string> list = new List<string>();
@@ -1655,15 +1869,17 @@ namespace TODOList
 				{
 					string t = s.ToUpper();
 					if (t.Equals("#FEATURES"))
-						t = "#FEATURE";
-					if (t.Equals("#BUGS"))
-						t = "#BUG";
-
-					foreach (KeyValuePair<string, string> kvp in _hashShortcuts)
 					{
-						if (!t.Equals("#" + kvp.Key.ToUpper()))
-							continue;
-						string hash = "#" + kvp.Value;
+						t = "#FEATURE";
+					}
+
+					if (t.Equals("#BUGS"))
+					{
+						t = "#BUG";
+					}
+
+					foreach (string hash in from pair in _hashShortcuts where t.Equals("#" + pair.Key.ToUpper()) select "#" + pair.Value)
+					{
 						s = hash;
 					}
 					s = s.ToLower();
@@ -1671,20 +1887,11 @@ namespace TODOList
 				list.Add(s);
 			}
 
-			foreach (string s in list)
-			{
-				if (s == "")
-					continue;
-				result += s + " ";
-			}
-
-			return result;
+			return list.Where(s => s != "").Aggregate("", (current, s) => current + (s + " "));
 		}
 		private static string ExpandHashTagsInList(List<string> tags)
 		{
-			string result = "";
-			foreach (string s in tags)
-				result += s + " ";
+			string result = tags.Aggregate("", (current, s) => current + (s + " "));
 
 			result = ExpandHashTagsInString(result);
 			return result;
@@ -1693,12 +1900,14 @@ namespace TODOList
 		{
 			if (sender is Label l)
 			{
-				TodoItemHolder tlh = l.DataContext as TodoItemHolder;
-				tlh.TD.IsTimerOn = !tlh.TD.IsTimerOn;
+				if (l.DataContext is TodoItemHolder itemHolder)
+				{
+					itemHolder.TD.IsTimerOn = !itemHolder.TD.IsTimerOn;
+				}
 				AutoSave();
 			}
 
-			lbIncompleteItems.Items.Refresh();
+			_lbIncompleteItems.Items.Refresh();
 		}
 		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// POMO STUFF //
@@ -1706,10 +1915,10 @@ namespace TODOList
 		{
 			_isPomoTimerOn = !_isPomoTimerOn;
 		}
-		private void PomoTimerPause_OnClick(object sender, EventArgs e)
-		{
-			_isPomoTimerOn = false;
-		}
+		// private void PomoTimerPause_OnClick(object sender, EventArgs e)
+		// {
+		// 	_isPomoTimerOn = false;
+		// }
 		private void PomoTimerReset_OnClick(object sender, EventArgs e)
 		{
 			_isPomoTimerOn = true;
@@ -1724,7 +1933,10 @@ namespace TODOList
 //		}
 		private void PomoWork_OnValueChanged(object sender, EventArgs e)
 		{
-			PomoWorkTime = (int) iudPomoWork.Value;
+			if (iudPomoWork.Value != null)
+			{
+				PomoWorkTime = (int)iudPomoWork.Value;
+			}
 		}
 //		private void PomoWorkDec_OnClick(object sender, EventArgs e)
 //		{
@@ -1750,7 +1962,10 @@ namespace TODOList
 //		}
 		private void PomoBreak_OnValueChanged(object sender, EventArgs e)
 		{
-			PomoBreakTime = (int) iudPomoBreak.Value;
+			if (iudPomoBreak.Value != null)
+			{
+				PomoBreakTime = (int)iudPomoBreak.Value;
+			}
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// TO DOs //
@@ -1761,10 +1976,12 @@ namespace TODOList
 		private string GetFilePath()
 		{
 			string result = "";
-			if (_recentFiles.Count == 0)
-				return basePath;
+			if (RecentFiles.Count == 0)
+			{
+				return BASE_PATH;
+			}
 
-			string[] sa = _recentFiles[0].Split('\\');
+			string[] sa = RecentFiles[0].Split('\\');
 			for (int i = 0; i < sa.Length - 1; i++)
 			{
 				result += sa[i] + "\\";
@@ -1773,10 +1990,12 @@ namespace TODOList
 		}
 		private string GetFileName()
 		{
-			if (_recentFiles.Count == 0)
+			if (RecentFiles.Count == 0)
+			{
 				return "";
+			}
 
-			string[] sa = _recentFiles[0].Split('\\');
+			string[] sa = RecentFiles[0].Split('\\');
 			return sa[sa.Length - 1];
 		}
 		private void Load(string path)
@@ -1801,40 +2020,52 @@ namespace TODOList
 				}
 			}
 			else
+			{
 				version = 2.0f;
+			}
 
-			// Heres where versions are loaded
+			// Here's where versions are loaded
 			if (version <= 2.0f)
+			{
 				Load2_0SaveFile(stream, line);
+			}
 			else if (version > 2.0f)
+			{
 				Load2_1SaveFile(stream, line);
+			}
 			
 			stream.Close();
 
 			RefreshTodo();
 			RefreshHistory();
-			_todoTabs.Items.Refresh();
-			_kanbanTabs.Items.Refresh();
+			todoTabs.Items.Refresh();
+			kanbanTabs.Items.Refresh();
 			if (HistoryItems.Count > 0)
 			{
 				lbHistory.SelectedIndex = 0;
 				_currentHistoryItem = HistoryItems[0];
 			}
 			else
+			{
 				_currentHistoryItem = new HistoryItem("", "");
+			}
 			
 			_currentOpenFile = path;
 			Title = WindowTitle;
 
 			_isChanged = false;
 			_currentOpenFile = path;
-			
+
 			if (!_currentHistoryItem.HasBeenCopied)
+			{
 				return;
-			DlgYesNo dlgYN = new DlgYesNo("New History", "Start a new History Item?");
-			dlgYN.ShowDialog();
-			if(dlgYN.Result)
+			}
+			DlgYesNo dlgYesNo = new DlgYesNo("New History", "Start a new History Item?");
+			dlgYesNo.ShowDialog();
+			if (dlgYesNo.Result)
+			{
 				AddNewHistoryItem();
+			}
 		}
 		private void ClearLists()
 		{
@@ -1843,10 +2074,10 @@ namespace TODOList
 			_hashTags.Clear();
 			_tabHash.Clear();
 			_tabList.Clear();
-			_historyItems.Clear();
+			HistoryItems.Clear();
 			_hashShortcuts.Clear();
 		}
-		private void Load2_0SaveFile(StreamReader stream, string line)
+		private void Load2_0SaveFile(TextReader stream, string line)
 		{
 			AddNewTodoTab("All");
 			while (line != null)
@@ -1885,23 +2116,24 @@ namespace TODOList
 			List<string> history = new List<string>();
 			while (line != null)
 			{
-				if (line == "NewVCS")
+				switch (line)
 				{
-					history = new List<string>();
-					line = stream.ReadLine();
-					continue;
+					case "NewVCS":
+						history = new List<string>();
+						line = stream.ReadLine();
+						continue;
+					case "EndVCS":
+						HistoryItems.Add(new HistoryItem(history));
+						line = stream.ReadLine();
+						continue;
+					default:
+						history.Add(line);
+						line = stream.ReadLine();
+						break;
 				}
-				if (line == "EndVCS")
-				{
-					_historyItems.Add(new HistoryItem(history));
-					line = stream.ReadLine();
-					continue;
-				}
-				history.Add(line);
-				line = stream.ReadLine();
 			}
 		}
-		private void Load2_1SaveFile(StreamReader stream, string line)
+		private void Load2_1SaveFile(TextReader stream, string line)
 		{
 			while (line != null)
 			{
@@ -1932,9 +2164,14 @@ namespace TODOList
 			{
 				line = stream.ReadLine();
 				if (line != null && line.Contains("=====VCS"))
+				{
 					break;
+				}
+
 				if (line != null && line.Contains("=====TODO"))
+				{
 					continue;
+				}
 
 				TodoItem td = new TodoItem(line);
 				AddItemToMasterList(td);
@@ -1944,17 +2181,18 @@ namespace TODOList
 			while (line != null)
 			{
 				line = stream.ReadLine();
-				if (line == "NewVCS")
+				switch (line)
 				{
-					history = new List<string>();
-					continue;
+					case "NewVCS":
+						history = new List<string>();
+						continue;
+					case "EndVCS":
+						HistoryItems.Add(new HistoryItem(history));
+						continue;
+					default:
+						history.Add(line);
+						break;
 				}
-				if (line == "EndVCS")
-				{
-					_historyItems.Add(new HistoryItem(history));
-					continue;
-				}
-				history.Add(line);
 			}
 		}
 		private void AutoSave()
@@ -1966,24 +2204,30 @@ namespace TODOList
 				SaveAs();
 				return;
 			}
+
 			if (_autoSave)
-				Save(_recentFiles[0]);
+			{
+				Save(RecentFiles[0]);
+			}
 		}
 		private bool NewFile()
 		{
-			string newFileName = "EToDo.txt";
+			const string newFileName = "EToDo.txt";
+			if (newFileName == null) throw new ArgumentNullException(nameof(newFileName));
 			SaveFileDialog sfd = new SaveFileDialog
 			{
-				Title = "Select folder to save file in.",
+				Title = @"Select folder to save file in.",
 				FileName = newFileName,
 				InitialDirectory = GetFilePath(),
-				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+				Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
 			};
 
 			DialogResult dr = sfd.ShowDialog();
 
 			if (dr != System.Windows.Forms.DialogResult.OK)
+			{
 				return false;
+			}
 			
 			SortRecentFiles(sfd.FileName);
 			SaveSettings();
@@ -1993,16 +2237,18 @@ namespace TODOList
 		{
 			SaveFileDialog sfd = new SaveFileDialog
 			{
-				Title = "Select folder to save file in.",
+				Title = @"Select folder to save file in.",
 				FileName = GetFileName(),
 				InitialDirectory = GetFilePath(),
-				Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+				Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
 			};
 
 			DialogResult dr = sfd.ShowDialog();
 
 			if (dr != System.Windows.Forms.DialogResult.OK)
+			{
 				return;
+			}
 			Save(sfd.FileName);
 		}
 		private void Save(string path)
@@ -2021,11 +2267,13 @@ namespace TODOList
 			StreamWriter stream = new StreamWriter(File.Open(path, FileMode.Create));
 			
 			stream.WriteLine("====================================VERSION");
-			stream.WriteLine(VERSION);
+			stream.WriteLine(PROGRAM_VERSION);
 
 			stream.WriteLine("====================================TABS");
 			foreach (TabItem ti in _tabList)
+			{
 				stream.WriteLine(ti.Name);
+			}
 			
 			stream.WriteLine("====================================FILESETTINGS");
 			stream.WriteLine("BackupIncrement");
@@ -2043,20 +2291,26 @@ namespace TODOList
 			
 			stream.WriteLine("====================================TODO");
 			foreach (TodoItem td in _masterList)
+			{
 				stream.WriteLine(td.ToString());
+			}
 
 			stream.WriteLine("====================================VCS");
-			foreach (HistoryItem hi in _historyItems)
+			foreach (HistoryItem hi in HistoryItems)
+			{
 				stream.Write(hi.ToString());
+			}
 
 			stream.Close();
 		}
 		private void BackupSave()
 		{
 			if (!_autoBackup || !_doBackup)
+			{
 				return;
+			}
 			
-			string path = _recentFiles[0] + ".bak" + _backupIncrement;
+			string path = RecentFiles[0] + ".bak" + _backupIncrement;
 			_backupIncrement++;
 			_backupIncrement = _backupIncrement > 9 ? 0 : _backupIncrement;
 			SaveFile(path);
@@ -2066,12 +2320,14 @@ namespace TODOList
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Settings //
 		private void LoadSettings()
 		{
-			_recentFiles = new ObservableCollection<string>();
+			RecentFiles = new ObservableCollection<string>();
 			float version = 0.0f;
 			
-			string filePath = basePath + "TDHistory.settings";
+			const string filePath = BASE_PATH + "TDHistory.settings";
 			if (!File.Exists(filePath))
+			{
 				SaveSettings();
+			}
 			
 			DlgYesNo dlg;
 			
@@ -2089,11 +2345,11 @@ namespace TODOList
 					Left = 0;
 					Height = 1080;
 					Width = 1920;
-					_recentFiles = new ObservableCollection<string>();
+					RecentFiles = new ObservableCollection<string>();
 					
-					DlgYesNo dlgYN = new DlgYesNo("Corrupted file", "Error with the settings file, create a new one?");
-					dlgYN.ShowDialog();
-					if(dlgYN.Result)
+					DlgYesNo  dlgYesNo = new DlgYesNo("Corrupted file", "Error with the settings file, create a new one?");
+					dlgYesNo.ShowDialog();
+					if(dlgYesNo.Result)
 					{
 						SaveSettings();
 						dlg = new DlgYesNo("New settings file created");
@@ -2114,54 +2370,70 @@ namespace TODOList
 				}
 			}
 
-			// Heres where versions are loaded
+			// Here's where versions are loaded
 			if (version <= 2.0)
+			{
 				LoadV2_0Settings(stream, line);
+			}
 			else if (version > 2.0)
+			{
 				LoadV2_1Settings(stream, line);
+			}
 			
 			stream.Close();
 
-			if (_recentFiles.Count != 0)
+			if (RecentFiles.Count != 0)
+			{
 				return;
+			}
 			dlg = new DlgYesNo("New file created");
 			dlg.ShowDialog();
 		}
-		private void LoadV2_0Settings(StreamReader stream, string line)
+		private void LoadV2_0Settings(TextReader stream, string line)
 		{
 			while (line != null)
 			{
 				if (line == "RECENTFILES" || line == "")
+				{
 					continue;
+				}
+
 				if (line == "WINDOWPOSITION")
+				{
 					break;
+				}
 					
-				_recentFiles.Add(line);
+				RecentFiles.Add(line);
 				line = stream.ReadLine();
 			}
 			
-			top = Convert.ToDouble(stream.ReadLine());
-			left = Convert.ToDouble(stream.ReadLine());
-			height = Convert.ToDouble(stream.ReadLine());
-			width = Convert.ToDouble(stream.ReadLine());
+			_top = Convert.ToDouble(stream.ReadLine());
+			_left = Convert.ToDouble(stream.ReadLine());
+			_height = Convert.ToDouble(stream.ReadLine());
+			_width = Convert.ToDouble(stream.ReadLine());
 		}
-		private void LoadV2_1Settings(StreamReader stream, string line)
+		private void LoadV2_1Settings(TextReader stream, string line)
 		{
 			while (line != null)
 			{
 				line = stream.ReadLine();
 				if (line == "RECENTFILES" || line == "")
+				{
 					continue;
+				}
+
 				if (line == "WINDOWPOSITION")
+				{
 					break;
+				}
 					
-				_recentFiles.Add(line);
+				RecentFiles.Add(line);
 			}
 			
-			top = Convert.ToDouble(stream.ReadLine());
-			left = Convert.ToDouble(stream.ReadLine());
-			height = Convert.ToDouble(stream.ReadLine());
-			width = Convert.ToDouble(stream.ReadLine());
+			_top = Convert.ToDouble(stream.ReadLine());
+			_left = Convert.ToDouble(stream.ReadLine());
+			_height = Convert.ToDouble(stream.ReadLine());
+			_width = Convert.ToDouble(stream.ReadLine());
 			stream.ReadLine();
 			_pomoWorkTime = Convert.ToInt16(stream.ReadLine());
 			_pomoBreakTime = Convert.ToInt16(stream.ReadLine());
@@ -2170,17 +2442,19 @@ namespace TODOList
 		}
 		private void SaveSettings()
 		{
-			string filePath = basePath + "TDHistory.settings";
+			const string filePath = BASE_PATH + "TDHistory.settings";
 			StreamWriter stream = new StreamWriter(File.Open(filePath, FileMode.Create));
 
 			stream.WriteLine("VERSION");
-			stream.WriteLine(VERSION);
+			stream.WriteLine(PROGRAM_VERSION);
 			
 			stream.WriteLine("RECENTFILES");
-			foreach (string s in _recentFiles)
+			foreach (string s in RecentFiles)
 			{
 				if (s == "")
+				{
 					continue;
+				}
 				stream.WriteLine(s);
 			}
 			
@@ -2199,14 +2473,16 @@ namespace TODOList
 		}
 		private void SortRecentFiles(string recent)
 		{
-			if (_recentFiles.Contains(recent))
-				_recentFiles.Remove(recent);
-
-			_recentFiles.Insert(0, recent);
-
-			while (_recentFiles.Count >= 10)
+			if (RecentFiles.Contains(recent))
 			{
-				_recentFiles.RemoveAt(_recentFiles.Count - 1);
+				RecentFiles.Remove(recent);
+			}
+
+			RecentFiles.Insert(0, recent);
+
+			while (RecentFiles.Count >= 10)
+			{
+				RecentFiles.RemoveAt(RecentFiles.Count - 1);
 			}
 		}
 	}

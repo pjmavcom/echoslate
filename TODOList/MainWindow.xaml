@@ -7,11 +7,11 @@
         xmlns:local="clr-namespace:TODOList"
 		mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
-		FocusManager.FocusedElement="{Binding ElementName=lbIncompleteItems}" 
+		FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}" 
 		Style="{StaticResource {x:Type Window}}" >
 
 	<Window.Resources >
-		<local:ProgressBarForegroundConverter x:Key="pbfg" />
+		<local:ProgressBarForegroundConverter x:Key="ProgressBarForegroundConverter" />
 
 		<RoutedUICommand x:Key="Add" Text="Text" />
 		<RoutedUICommand x:Key="Complete" Text="Some Text" />
@@ -24,14 +24,14 @@
 	</Window.Resources >
 
 	<Window.CommandBindings>
-		<CommandBinding Command="{StaticResource Add}" Executed="hkAdd" />
-		<CommandBinding Command="{StaticResource Complete}" Executed="hkComplete" />
-		<CommandBinding Command="{StaticResource Edit}" Executed="hkEdit" />
-		<CommandBinding Command="{StaticResource SwitchTab}" Executed="hkSwitchTab" />
-		<CommandBinding Command="{StaticResource SwitchSeverity}" Executed="hkSwitchSeverity" />
-		<CommandBinding Command="{StaticResource QuickSave}" Executed="hkQuickSave" />
-		<CommandBinding Command="{StaticResource QuickLoadPrevious}" Executed="hkQuickLoadPrevious" />
-		<CommandBinding Command="{StaticResource StartStopTimer}" Executed="hkStartStopTimer" />
+		<CommandBinding Command="{StaticResource Add}" Executed="HkAdd" />
+		<CommandBinding Command="{StaticResource Complete}" Executed="HkComplete" />
+		<CommandBinding Command="{StaticResource Edit}" Executed="HkEdit" />
+		<CommandBinding Command="{StaticResource SwitchTab}" Executed="HkSwitchTab" />
+		<CommandBinding Command="{StaticResource SwitchSeverity}" Executed="HkSwitchSeverity" />
+		<CommandBinding Command="{StaticResource QuickSave}" Executed="HkQuickSave" />
+		<CommandBinding Command="{StaticResource QuickLoadPrevious}" Executed="HkQuickLoadPrevious" />
+		<CommandBinding Command="{StaticResource StartStopTimer}" Executed="HkStartStopTimer" />
 	</Window.CommandBindings>
 
 	<Window.InputBindings>
@@ -67,10 +67,16 @@
 					<Separator />
 					<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
 				</MenuItem >
-				<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding RecentFiles}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
+				<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
 					<MenuItem.ContextMenu>
 						<ContextMenu >
-							<MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"/>
+							<MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
+								<MenuItem.DataContext>
+									<Binding RelativeSource="{RelativeSource Self}">
+										<Binding.Path>PlacementTarget.DataContext</Binding.Path>
+									</Binding>
+								</MenuItem.DataContext>
+							</MenuItem>
 						</ContextMenu >
 					</MenuItem.ContextMenu>
 				</MenuItem >
@@ -88,7 +94,7 @@
 			</StackPanel >
 		</Grid >
 
-		<TabControl Name="TabControl" >
+		<TabControl Name="tabControl" >
 			<!-- VCS History tab -->
 			<TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False" >
 				<Grid >
@@ -109,7 +115,8 @@
 							<Button Content="New" Click="NewHistory_OnClick" Width="90" KeyboardNavigation.IsTabStop="False" />
 							<Button Content="Delete" Click="DeleteHistory_OnClick" Width="90" KeyboardNavigation.IsTabStop="False" />
 						</StackPanel >
-						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding HistoryItems}" KeyDown="HistoryListBox_OnKeyDown" PreviewMouseLeftButtonDown="HistoryListBox_OnMouseDown" SelectionChanged="HistoryListBox_OnSelectionChange" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2" >
+						<ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding }" KeyDown="HistoryListBox_OnKeyDown" PreviewMouseLeftButtonDown="HistoryListBox_OnMouseDown" SelectionChanged="HistoryListBox_OnSelectionChange" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"
+						         Grid.Column="0">
 							<ListBox.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Reset Copied" Click="mnuResetHistoryCopied_OnClick" />
@@ -122,7 +129,7 @@
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="CopyHistory_OnClick" KeyboardNavigation.IsTabStop="False" >
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="CopyHistory_OnClick" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }">
 											<Button.Style >
 												<Style >
 													<Style.Triggers >
@@ -138,7 +145,7 @@
 												</Style >
 											</Button.Style >
 										</Button >
-										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" />
+										<TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" d:DataContext="{d:DesignInstance }" />
 									</Grid >
 								</DataTemplate >
 							</ListBox.ItemTemplate >
@@ -163,7 +170,7 @@
 						<ListBox Grid.Row="3" Name="lbCompletedTodosBugs" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditHistoryTodo_OnClick" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
-									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
 										<Grid.ColumnDefinitions >
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
@@ -177,7 +184,7 @@
 						<ListBox Grid.Row="4" Name="lbCompletedTodosFeatures" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditHistoryTodo_OnClick" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
-									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
 										<Grid.ColumnDefinitions >
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
@@ -191,7 +198,7 @@
 						<ListBox Grid.Row="5" Name="lbCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditHistoryTodo_OnClick" >
 							<ListBox.ItemTemplate >
 								<DataTemplate >
-									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+									<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
 										<Grid.ColumnDefinitions >
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
@@ -223,7 +230,7 @@
 							<ColumnDefinition Width="228*"/>
 						</Grid.ColumnDefinitions>
 
-						<TabControl Name="_todoTabs" ItemsSource="{Binding}" SelectionChanged="tabSelectionChanged" Grid.ColumnSpan="2" >
+						<TabControl Name="todoTabs" ItemsSource="{Binding}" SelectionChanged="TabSelectionChanged" Grid.ColumnSpan="2" >
 							<TabControl.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
@@ -243,15 +250,13 @@
 												<ColumnDefinition Width="301" />
 												<ColumnDefinition Width="161" />
 												<ColumnDefinition Width="101" />
-
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
-
 											</Grid.ColumnDefinitions >
-											<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="Hashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" />
+											<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="Hashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
 											<Button Grid.Column="1" Name="btnSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
 											<Button Grid.Column="3" Name="btnSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 											<Button Grid.Column="4" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
@@ -259,7 +264,8 @@
 										</Grid >
 
 										<!-- The list of incomplete todos -->
-										<ListBox Name="lbIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditTodo_OnClick" SelectionChanged="IncompleteItems_OnSelectionChange" SelectionMode="Extended" >
+										<ListBox Name="lbIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditTodo_OnClick" SelectionChanged="IncompleteItems_OnSelectionChange" SelectionMode="Extended"
+										         d:DataContext="{d:DesignInstance }">
 											<ListBox.ContextMenu >
 												<ContextMenu >
 													<MenuItem Name="cmnuEdit" Header="Edit" Click="mnuEditTodo_OnClick" />
@@ -280,7 +286,7 @@
 											</ListBox.ItemContainerStyle>
 											<ListBox.ItemTemplate >
 												<DataTemplate >
-													<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+													<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
 														<Grid.ColumnDefinitions >
 															<!-- HashTags -->
 															<ColumnDefinition Width="300" />
@@ -313,7 +319,7 @@
 																		<Setter.Value>
 																			<ControlTemplate TargetType="Button">
 																				<!-- Put in your textbox and progress bar and what not -->
-															<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+															<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 															</ControlTemplate>
 															</Setter.Value>
 															</Setter>
@@ -382,7 +388,7 @@
 					</Grid>
 
 					<!-- The add, radio buttons, and input field -->
-					<Grid Grid.Row="1" >
+					<Grid Grid.Row="1" Grid.Column="0">
 						<Grid.ColumnDefinitions >
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="100" />
@@ -418,7 +424,7 @@
 										<ColumnDefinition Width="228*"/>
 									</Grid.ColumnDefinitions>
 			
-									<TabControl Name="_kanbanTabs" ItemsSource="{Binding}" SelectionChanged="tabKanbanSelectionChanged" Grid.ColumnSpan="2" >
+									<TabControl Name="kanbanTabs" ItemsSource="{Binding}" SelectionChanged="TabKanbanSelectionChanged" Grid.ColumnSpan="2" >
 										<TabControl.ContentTemplate >
 											<DataTemplate >
 												<Grid  >
@@ -439,9 +445,9 @@
 															<ColumnDefinition />
 			
 														</Grid.ColumnDefinitions >
-														<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="Hashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" />
+														<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="Hashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
 														<Button Grid.Column="1" Name="btnSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-														<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="sev" KeyboardNavigation.IsTabStop="False" />
+														<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 			
 														<Button Grid.Column="3" Name="btnSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 														<Button Grid.Column="4" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
@@ -449,7 +455,8 @@
 													</Grid >
 			
 													<!-- The list of incomplete todos -->
-													<ListBox Name="lbKanbanItems" ItemsSource="{Binding KanbanItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditTodo_OnClick" SelectionChanged="KanbanItems_OnSelectionChange" SelectionMode="Extended" >
+													<ListBox Name="lbKanbanItems" ItemsSource="{Binding KanbanItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditTodo_OnClick" SelectionChanged="KanbanItems_OnSelectionChange" SelectionMode="Extended"
+													         d:DataContext="{d:DesignInstance }">
 														<ListBox.ContextMenu >
 															<ContextMenu >
 																<MenuItem Name="cmnuEdit" Header="Edit" Click="mnuEditTodo_OnClick" />
@@ -470,7 +477,7 @@
 														</ListBox.ItemContainerStyle>
 														<ListBox.ItemTemplate >
 															<DataTemplate >
-																<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" >
+																<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
 																	<Grid.ColumnDefinitions >
 																		<!-- HashTags -->
 																		<ColumnDefinition Width="300" />
@@ -503,7 +510,7 @@
 																					<Setter.Value>
 																						<ControlTemplate TargetType="Button">
 																							<!-- Put in your textbox and progress bar and what not -->
-																		<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource pbfg}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+																		<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 																		</ControlTemplate>
 																		</Setter.Value>
 																		</Setter>
@@ -572,7 +579,7 @@
 								</Grid>
 			
 								<!-- The add, radio buttons, and input field -->
-								<Grid Grid.Row="1" >
+								<Grid Grid.Row="1" Grid.Column="0">
 									<Grid.ColumnDefinitions >
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="100" />
@@ -592,7 +599,7 @@
 			</TabItem >
 			
 			<!-- VCS Log tab -->
-			<TabItem Name="TabHistoryLog" Header="Log" >
+			<TabItem Name="tabHistoryLog" Header="Log" >
 				<Grid >
 					<Grid.RowDefinitions >
 						<RowDefinition Height="30" />

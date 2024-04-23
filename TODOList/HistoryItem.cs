@@ -66,7 +66,7 @@ namespace TODOList
 		}
 		
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-		public HistoryItem(DateTime dateTime) : this(dateTime.ToString("yyyyMMdd"), dateTime.ToString("HHmmss"))
+		public HistoryItem(DateTime dateTime) : this(dateTime.ToString(MainWindow.DATE_STRING_FORMAT), dateTime.ToString(MainWindow.TIME_STRING_FORMAT))
 		{
 			
 		}
@@ -182,7 +182,7 @@ namespace TODOList
 		public override string ToString()
 		{
 			string result = "NewVCS" + Environment.NewLine; 
-			result += "VERSION " + MainWindow.VERSION + "|" + HasBeenCopied + "|" + DateAdded + "|" + TimeAdded + "|" + Title + "|" + Notes;
+			result += "VERSION " + MainWindow.PROGRAM_VERSION + "|" + HasBeenCopied + "|" + DateAdded + "|" + TimeAdded + "|" + Title + "|" + Notes;
 
 			result += Environment.NewLine + "VCSTodos";
 			foreach (TodoItem td in CompletedTodos)

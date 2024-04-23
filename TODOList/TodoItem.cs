@@ -119,8 +119,8 @@ namespace TODOList
 			set
 			{
 				_isComplete = value;
-				DateCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.DATE) : "-";
-				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME) : "-";
+				DateCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT) : "-";
+				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT) : "-";
 			}
 		}
 		public Dictionary<string, int> Rank
@@ -465,7 +465,7 @@ namespace TODOList
 			if (_notes.Contains(Environment.NewLine))
 				notes = notes.Replace(Environment.NewLine, "/n");
 
-			string result = "VERSION " + MainWindow.VERSION + "|" + 
+			string result = "VERSION " + MainWindow.PROGRAM_VERSION + "|" + 
 							_dateStarted + "|" + 
 							_timeStarted + "|" + 
 							_dateCompleted + "|" + 
