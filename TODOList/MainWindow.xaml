@@ -268,14 +268,15 @@
 										         d:DataContext="{d:DesignInstance }">
 											<ListBox.ContextMenu >
 												<ContextMenu >
-													<MenuItem Name="cmnuEdit" Header="Edit" Click="mnuEditTodo_OnClick" />
-													<MenuItem Name="cmnuDelete" Header="Delete" Click="mnuDelete_OnClick" />
+													<MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
+													<MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
 													<Separator />
 													<MenuItem Name="cmnuResetTimer" Header="Reset Timer" Click="mnuResetTimer_OnClick" />
 													<Separator />
-													<MenuItem Name="cmnuKanbanCurrent" Header="Move to Current" Click="mnuKanbanCurrent_OnClick" />
-													<MenuItem Name="cmnuKanbanNext" Header="Move to Next" Click="mnuKanbanNext_OnClick" />
-													<MenuItem Name="cmnuKanbanBacklog" Header="Move to Backlog" Click="mnuKanbanBacklog_OnClick" />
+													<MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
+													<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
+													<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
+													<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
 												</ContextMenu >
 											</ListBox.ContextMenu >
 											<ListBox.ItemContainerStyle>
@@ -459,15 +460,16 @@
 													         d:DataContext="{d:DesignInstance }">
 														<ListBox.ContextMenu >
 															<ContextMenu >
-																<MenuItem Name="cmnuEdit" Header="Edit" Click="mnuEditTodo_OnClick" />
-																<MenuItem Name="cmnuDelete" Header="Delete" Click="mnuDelete_OnClick" />
+																<MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
+																<MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
 																<Separator />
 																<MenuItem Name="cmnuResetTimer" Header="Reset Timer" Click="mnuResetTimer_OnClick" />
 																<Separator />
-																<MenuItem Name="cmnuKanbanCurrent" Header="Move to Current" Click="mnuKanbanCurrent_OnClick" />
-																<MenuItem Name="cmnuKanbanNext" Header="Move to Next" Click="mnuKanbanNext_OnClick" />
-																<MenuItem Name="cmnuKanbanBacklog" Header="Move to Backlog" Click="mnuKanbanBacklog_OnClick" />
-															</ContextMenu >
+																<MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
+																<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
+																<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
+																<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
+														</ContextMenu >
 														</ListBox.ContextMenu >
 														<ListBox.ItemContainerStyle>
 															<Style TargetType="ListBoxItem">

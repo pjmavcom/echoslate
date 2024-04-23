@@ -43,6 +43,7 @@ namespace TODOList
 		private static Dictionary<string, string> _hashShortcuts;
 		private List<string> _prevHashTagList = new List<string>();
 
+		private string _errorMessage = string.Empty;
 		// Sorting
 		private bool _reverseSort;
 		private string _currentSort = "rank";
@@ -374,6 +375,7 @@ namespace TODOList
 		}
 		private void CreateKanbanTabs()
 		{
+			AddNewKanbanTab("None");
 			AddNewKanbanTab("Backlog");
    			AddNewKanbanTab("Next");
    			AddNewKanbanTab("Current");
@@ -917,27 +919,6 @@ namespace TODOList
 
 			Load(openFileDialog.FileName);
 		}
-		private void mnuDelete_OnClick(object sender, EventArgs e)
-		{
-			TodoItem td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
-			RemoveItemFromMasterList(td);
-			IncompleteItems.RemoveAt(_lbIncompleteItems.SelectedIndex);
-			
-			AutoSave();
-			RefreshTodo();
-		}
-		private void mnuEditTodo_OnClick(object sender, EventArgs e)
-		{
-			List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
-			if (_lbIncompleteItems.SelectedItems.Count > 1)
-			{
-				MultiEditItems(_lbIncompleteItems);
-			}
-			else
-			{
-				EditItem(_lbIncompleteItems, list);
-			}
-		}
 		private void mnuEditHistoryTodo_OnClick(object sender, EventArgs e)
 		{
 			if (lbCompletedTodos.IsMouseOver)
@@ -960,67 +941,161 @@ namespace TODOList
 			DlgHelp dlgH = new DlgHelp();
 			dlgH.ShowDialog();
 		}
-		private void mnuKanbanBacklog_OnClick(object sender, EventArgs e)
+
+		private void mnuDelete_OnClick()
 		{
-			TodoItem td = null;
-			switch (tabControl.SelectedIndex)
+			TodoItem td = GetSelectedTodo();
+			if (td == null)
 			{
-				case 1:
-					td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
-					break;
-				case 2:
-					td = KanbanItems[_lbKanbanItems.SelectedIndex].TD;
-					break;
+				_errorMessage = "Function: mnuDelete_OnClick()" +
+				                "\n\ttd == null\n" +
+				                _errorMessage;
+				return;
 			}
-
-			if (td != null)
-			{
-				td.Kanban = 0;
-			}
-			AutoSave();
-        	RefreshTodo();		
-        }
-		private void mnuKanbanNext_OnClick(object sender, EventArgs e)
-    	{
-			TodoItem td = null;
-			switch (tabControl.SelectedIndex)
-			{
-				case 1:
-					td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
-					break;
-				case 2:
-					td = KanbanItems[_lbKanbanItems.SelectedIndex].TD;
-					break;
-			}
-
-			if (td != null)
-			{
-				td.Kanban = 1;
-			}
-        	AutoSave();
-        	RefreshTodo();		
-    	}
-		private void mnuKanbanCurrent_OnClick(object sender, EventArgs e)
+			RemoveItemFromMasterList(td);
+			RefreshTodo();
+		}
+		private void mnuKanban_OnClick(int kanbanRank)
+   		{
+   			TodoItem td = GetSelectedTodo();
+   			if (td == null)
+   			{
+   				_errorMessage = "\nFunction: mnuKanban_OnClick()" +
+   				                "\n\n" + _errorMessage;
+   				return;
+   			}
+   			td.Kanban = kanbanRank;
+	    }
+		private void MenuEditTodo_OnClick()
 		{
-			TodoItem td = null;
 			switch (tabControl.SelectedIndex)
 			{
 				case 1:
-					td = IncompleteItems[_lbIncompleteItems.SelectedIndex].TD;
+					EditTodo(IncompleteItems, _lbIncompleteItems);
 					break;
 				case 2:
-					td = KanbanItems[_lbKanbanItems.SelectedIndex].TD;
+					EditTodo(KanbanItems, _lbKanbanItems);
+					break;
+				default:
+					_errorMessage = "Function: MenuEditTodo_OnClick()" +
+					                "\n\tNot a valid tabControl.SelectedIndex";
 					break;
 			}
-
-			if (td != null)
+		}
+		private void EditTodo(List<TodoItemHolder> list, ListBox listBox)
+		{
+			if (listBox.SelectedItems.Count > 1)
 			{
-				td.Kanban = 2;
+				MultiEditItems(listBox);
 			}
-    		AutoSave();
-    		RefreshTodo();		
+			else if (listBox.SelectedItems.Count == 1)
+			{
+				List<TodoItem> itemsList = list.Select(itemHolder => itemHolder.TD).ToList();
+				EditItem(listBox, itemsList);
+			}
+			else
+			{
+				_errorMessage = "No selected items!" +
+				                "\nFunction: EditTodo()";
+			}
 		}
 		
+		private void mnuContextMenu_OnClick(object sender, EventArgs e)
+		{
+			MenuItem mi = sender as MenuItem;
+			if (mi == null)
+			{
+				new DlgYesNo("Function: mnuContextMenu_OnClick()" +
+				             "\n\tmi == null").ShowDialog();
+				return;
+			}
+			if (mi.CommandParameter == null)
+			{
+				new DlgYesNo("Function: mnuContextMenu_OnClick()" +
+				             "\n\tNo CommandParameter").ShowDialog();
+				return;
+			}
+
+			string command = mi?.CommandParameter.ToString();
+			switch (command)
+			{
+				case "Edit":
+					MenuEditTodo_OnClick();
+					break;
+				case "Delete":
+					mnuDelete_OnClick();
+					break;
+				case "Kanban0":
+					mnuKanban_OnClick(0);
+					break;
+				case "Kanban1":
+					mnuKanban_OnClick(1);
+					break;
+				case "Kanban2":
+					mnuKanban_OnClick(2);
+					break;
+				case "Kanban3":
+					mnuKanban_OnClick(3);
+					break;
+				default:
+					_errorMessage = "\n\tNo recognized command parameter";
+					break;
+			}
+
+			if (_errorMessage != string.Empty)
+			{
+				new DlgYesNo("Function: mnuContextMenu_OnClick()\n" +
+				                _errorMessage).ShowDialog();
+				return;
+			}
+			AutoSave();
+			RefreshTodo();
+		}
+		private TodoItem GetSelectedTodo()
+		{
+			TodoItem td = null;
+			int index = tabControl.SelectedIndex;
+			string tabName = "";
+			int selectedIndex = -1;
+			switch (index)
+    		{
+    			case 1:
+				    tabName = "IncompleteItems";
+				    selectedIndex = _lbIncompleteItems.SelectedIndex;
+				    if (selectedIndex < 0)
+				    {
+					    break;
+				    }
+    				td = IncompleteItems[selectedIndex].TD;
+    				break;
+    			case 2:
+				    tabName = "KanbanItems";
+				    selectedIndex = _lbKanbanItems.SelectedIndex;
+				    if (selectedIndex < 0)
+				    {
+					    break;
+				    }
+    				td = KanbanItems[selectedIndex].TD;
+    				break;
+			    default:
+				    tabName = "NoTab";
+				    selectedIndex = -1;
+				    break;
+    		}
+
+			if (td != null)
+			{
+				return td;
+			}
+
+			_errorMessage = "Function: GetSelectedTodo()" +
+			                "\n\ttd == null" + 
+			                "\n\tTab: " + tabName + 
+			                "\n\tTabControl.Index: " + index +
+			                "\n\tSelectedIndex: " + selectedIndex;
+			return null;
+		}
+
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// HISTORY TAB //
 		private void Title_OnTextChange(object sender, EventArgs e)
 		{
