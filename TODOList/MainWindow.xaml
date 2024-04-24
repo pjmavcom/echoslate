@@ -230,7 +230,7 @@
 							<ColumnDefinition Width="228*"/>
 						</Grid.ColumnDefinitions>
 
-						<TabControl Name="todoTabs" ItemsSource="{Binding}" SelectionChanged="TabSelectionChanged" Grid.ColumnSpan="2" >
+						<TabControl Name="todoTabs" ItemsSource="{Binding}" SelectionChanged="IncompleteItemsSelectionChanged" Grid.ColumnSpan="2" >
 							<TabControl.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
@@ -254,24 +254,23 @@
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
-											<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="Hashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
+											<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="IncompleteItemsHashtags_OnSelectionChanged" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
 											<Button Grid.Column="1" Name="btnSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 											<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
 											<Button Grid.Column="3" Name="btnSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 											<Button Grid.Column="4" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-
 										</Grid >
 
 										<!-- The list of incomplete todos -->
-										<ListBox Name="lbIncompleteItems" ItemsSource="{Binding IncompleteItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditTodo_OnClick" SelectionChanged="IncompleteItems_OnSelectionChange" SelectionMode="Extended"
+										<ListBox Name="lbIncompleteItems" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
 										         d:DataContext="{d:DesignInstance }">
 											<ListBox.ContextMenu >
 												<ContextMenu >
 													<MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
 													<MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
 													<Separator />
-													<MenuItem Name="cmnuResetTimer" Header="Reset Timer" Click="mnuResetTimer_OnClick" />
+													<MenuItem Header="Reset Timer" Click="mnuContextMenu_OnClick" CommandParameter="ResetTimer"/>
 													<Separator />
 													<MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
 													<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
@@ -320,11 +319,11 @@
 																		<Setter.Value>
 																			<ControlTemplate TargetType="Button">
 																				<!-- Put in your textbox and progress bar and what not -->
-															<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-															</ControlTemplate>
-															</Setter.Value>
-															</Setter>
-															</Style>
+																				<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+																			</ControlTemplate>
+																		</Setter.Value>
+																	</Setter>
+																</Style>
 															</Button.Style>
 														</Button>
 
@@ -411,193 +410,191 @@
 			<!-- VCS Kanban tab -->
 			<TabItem Name="tabKanban" Header="Kanban" HorizontalAlignment="Right" Height="26" VerticalAlignment="Center" >
 				<Grid >
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="3*"/>
-									<ColumnDefinition Width="1*"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions >
-									<RowDefinition />
-									<RowDefinition Height="100" />
-								</Grid.RowDefinitions >
-								<Grid Grid.Row="0" Grid.Column="0">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="7*"/>
-										<ColumnDefinition Width="228*"/>
-									</Grid.ColumnDefinitions>
-			
-									<TabControl Name="kanbanTabs" ItemsSource="{Binding}" SelectionChanged="TabKanbanSelectionChanged" Grid.ColumnSpan="2" >
-										<TabControl.ContentTemplate >
-											<DataTemplate >
-												<Grid  >
-													<Grid.RowDefinitions >
-														<RowDefinition Height="30" />
-														<RowDefinition Height="*" />
-														<!-- <RowDefinition Height="100" /> -->
-													</Grid.RowDefinitions >
-			
-													<Grid >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="3*"/>
+						<ColumnDefinition Width="1*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions >
+						<RowDefinition />
+						<RowDefinition Height="100" />
+					</Grid.RowDefinitions >
+					<Grid Grid.Row="0" Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="7*"/>
+							<ColumnDefinition Width="228*"/>
+						</Grid.ColumnDefinitions>
+
+						<TabControl Name="kanbanTabs" ItemsSource="{Binding}" SelectionChanged="KanbanTabSelectionChanged" Grid.ColumnSpan="2" >
+							<TabControl.ContentTemplate >
+								<DataTemplate >
+									<Grid  >
+										<Grid.RowDefinitions >
+											<RowDefinition Height="30" />
+											<RowDefinition Height="*" />
+											<!-- <RowDefinition Height="100" /> -->
+										</Grid.RowDefinitions >
+
+										<Grid >
+											<Grid.ColumnDefinitions >
+												<ColumnDefinition Width="301" />
+												<ColumnDefinition Width="161" />
+												<ColumnDefinition Width="101" />
+												<ColumnDefinition Width="111" />
+												<ColumnDefinition Width="111" />
+												<ColumnDefinition />
+											</Grid.ColumnDefinitions >
+											<ComboBox Grid.Column="0" Name="cbKanbanHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="KanbanHashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
+											<Button Grid.Column="1" Name="btnKanbanSortDate" Content="Date" Click="KanbanSort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="2" Name="btnKanbanSortSeverity" Content="Severity" Click="KanbanSort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
+
+											<Button Grid.Column="3" Name="btnKanbanSortRank" Content="Rank" Click="KanbanSort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="4" Name="btnKanbanSortActive" Content="Active" Click="KanbanSort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+
+										</Grid >
+
+										<!-- The list of incomplete todos -->
+										<ListBox Name="lbKanbanItems" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+										         d:DataContext="{d:DesignInstance }">
+											<ListBox.ContextMenu >
+												<ContextMenu >
+													<MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
+													<MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
+													<Separator />
+													<MenuItem Header="Reset Timer" Click="mnuContextMenu_OnClick" CommandParameter="ResetTimer" />
+													<Separator />
+													<MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
+													<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
+													<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
+													<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
+											</ContextMenu >
+											</ListBox.ContextMenu >
+											<ListBox.ItemContainerStyle>
+												<Style TargetType="ListBoxItem">
+													<Setter Property="Height" Value="auto" />
+													<Setter Property="Padding" Value="0"/>
+												</Style>
+											</ListBox.ItemContainerStyle>
+											<ListBox.ItemTemplate >
+												<DataTemplate >
+													<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
 														<Grid.ColumnDefinitions >
-															<ColumnDefinition Width="301" />
-															<ColumnDefinition Width="161" />
-															<ColumnDefinition Width="101" />
-			
-															<ColumnDefinition Width="111" />
-															<ColumnDefinition Width="111" />
-															<ColumnDefinition />
-			
+															<!-- HashTags -->
+															<ColumnDefinition Width="300" />
+															<!-- DateTime -->
+															<ColumnDefinition Width="160" />
+
+															<!-- Severity -->
+															<ColumnDefinition Width="90" />
+															<ColumnDefinition Width="20" />
+
+															<!-- RANK -->
+															<ColumnDefinition Width="50" />
+															<ColumnDefinition Width="25" />
+															<ColumnDefinition Width="25" />
+
+															<!-- TIME TAKEN -->
+															<ColumnDefinition Width="65" />
+															<ColumnDefinition Width="45" />
+
+															<!-- Todo -->
+															<ColumnDefinition Width="*" />
 														</Grid.ColumnDefinitions >
-														<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="Hashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
-														<Button Grid.Column="1" Name="btnSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-														<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
-			
-														<Button Grid.Column="3" Name="btnSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-														<Button Grid.Column="4" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-			
-													</Grid >
-			
-													<!-- The list of incomplete todos -->
-													<ListBox Name="lbKanbanItems" ItemsSource="{Binding KanbanItems}" HorizontalContentAlignment="Stretch" Grid.Row="1" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditTodo_OnClick" SelectionChanged="KanbanItems_OnSelectionChange" SelectionMode="Extended"
-													         d:DataContext="{d:DesignInstance }">
-														<ListBox.ContextMenu >
-															<ContextMenu >
-																<MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
-																<MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
-																<Separator />
-																<MenuItem Name="cmnuResetTimer" Header="Reset Timer" Click="mnuResetTimer_OnClick" />
-																<Separator />
-																<MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
-																<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
-																<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
-																<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
-														</ContextMenu >
-														</ListBox.ContextMenu >
-														<ListBox.ItemContainerStyle>
-															<Style TargetType="ListBoxItem">
-																<Setter Property="Height" Value="auto" />
-																<Setter Property="Padding" Value="0"/>
-															</Style>
-														</ListBox.ItemContainerStyle>
-														<ListBox.ItemTemplate >
-															<DataTemplate >
-																<Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
-																	<Grid.ColumnDefinitions >
-																		<!-- HashTags -->
-																		<ColumnDefinition Width="300" />
-																		<!-- DateTime -->
-																		<ColumnDefinition Width="160" />
-			
-																		<!-- Severity -->
-																		<ColumnDefinition Width="90" />
-																		<ColumnDefinition Width="20" />
-			
-																		<!-- RANK -->
-																		<ColumnDefinition Width="50" />
-																		<ColumnDefinition Width="25" />
-																		<ColumnDefinition Width="25" />
-			
-																		<!-- TIME TAKEN -->
-																		<ColumnDefinition Width="65" />
-																		<ColumnDefinition Width="45" />
-			
-																		<!-- Todo -->
-																		<ColumnDefinition Width="*" />
-																	</Grid.ColumnDefinitions >
-																	<TextBlock Grid.Column="0" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-																	<TextBlock Grid.Column="1" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-			
-																	<Button Grid.Column="2" Click="Severity_OnClick" >
-																		<Button.Style>
-																			<Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-																				<Setter Property="Template">
-																					<Setter.Value>
-																						<ControlTemplate TargetType="Button">
-																							<!-- Put in your textbox and progress bar and what not -->
-																		<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-																		</ControlTemplate>
+														<TextBlock Grid.Column="0" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+														<TextBlock Grid.Column="1" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+
+														<Button Grid.Column="2" Click="Severity_OnClick" >
+															<Button.Style>
+																<Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+																	<Setter Property="Template">
+																		<Setter.Value>
+																			<ControlTemplate TargetType="Button">
+																				<!-- Put in your textbox and progress bar and what not -->
+																				<ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black" Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+																			</ControlTemplate>
 																		</Setter.Value>
-																		</Setter>
-																		</Style>
-																		</Button.Style>
-																	</Button>
-			
-			
-																	<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-																	<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-																	<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-			
-																	<Label Grid.Column="7" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-																		<Label.Style >
-																			<Style >
-																				<Style.Triggers >
-																					<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-																						<Setter Property="Label.Background" Value="Lime" />
-																						<Setter Property="Label.Foreground" Value="Black" />
-																					</DataTrigger >
-																					<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-																						<Setter Property="Label.Background" Value="Transparent" />
-																						<Setter Property="Label.Foreground" Value="LightGray" />
-																					</DataTrigger >
-																				</Style.Triggers >
-																			</Style >
-																		</Label.Style >
-																	</Label >
-																	<Label Grid.Column="8" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
-																		<Label.Style >
-																			<Style >
-																				<Style.Triggers >
-																					<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
-																						<Setter Property="Label.Background" Value="Lime" />
-																						<Setter Property="Label.Foreground" Value="Black" />
-																					</DataTrigger >
-																					<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
-																						<Setter Property="Label.Background" Value="Transparent" />
-																						<Setter Property="Label.Foreground" Value="LightGray" />
-																					</DataTrigger >
-																				</Style.Triggers >
-																			</Style >
-																		</Label.Style >
-																	</Label >
-																	<TextBlock Grid.Column="9" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
-																</Grid >
-															</DataTemplate >
-														</ListBox.ItemTemplate >
-													</ListBox >
-												</Grid >
-											</DataTemplate >
-										</TabControl.ContentTemplate >
-									</TabControl >
-								</Grid>
-								<Grid Grid.Row="0" Grid.Column="1" >
-									<Grid.RowDefinitions>
-										<RowDefinition Height="60" />
-										<RowDefinition />
-									</Grid.RowDefinitions>
-									<Grid Grid.Row="0" >
-										<TextBox x:Name="tbTodo2" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
-									</Grid>
-									<Grid Grid.Row="1" >
-										<TextBox x:Name="tbNotes2" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
-									</Grid>
-								</Grid>
-			
-								<!-- The add, radio buttons, and input field -->
-								<Grid Grid.Row="1" Grid.Column="0">
-									<Grid.ColumnDefinitions >
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="100" />
-									</Grid.ColumnDefinitions >
-									<TextBox x:Name="tbNewTodo2" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
-									<StackPanel Grid.Column="1" >
-										<ComboBox Name="cbSeverity2" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
-											<ComboBoxItem Content="None" />
-											<ComboBoxItem Content="Low" IsSelected="True" />
-											<ComboBoxItem Content="Med" />
-											<ComboBoxItem Content="High" />
-										</ComboBox >
-										<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
-									</StackPanel >
-								</Grid >
-							</Grid >
+																	</Setter>
+																</Style>
+															</Button.Style>
+														</Button>
+
+
+														<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+														<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+														<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+
+														<Label Grid.Column="7" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+															<Label.Style >
+																<Style >
+																	<Style.Triggers >
+																		<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
+																			<Setter Property="Label.Background" Value="Lime" />
+																			<Setter Property="Label.Foreground" Value="Black" />
+																		</DataTrigger >
+																		<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
+																			<Setter Property="Label.Background" Value="Transparent" />
+																			<Setter Property="Label.Foreground" Value="LightGray" />
+																		</DataTrigger >
+																	</Style.Triggers >
+																</Style >
+															</Label.Style >
+														</Label >
+														<Label Grid.Column="8" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+															<Label.Style >
+																<Style >
+																	<Style.Triggers >
+																		<DataTrigger Binding="{Binding IsTimerOn}" Value="True" >
+																			<Setter Property="Label.Background" Value="Lime" />
+																			<Setter Property="Label.Foreground" Value="Black" />
+																		</DataTrigger >
+																		<DataTrigger Binding="{Binding IsTimerOn}" Value="False" >
+																			<Setter Property="Label.Background" Value="Transparent" />
+																			<Setter Property="Label.Foreground" Value="LightGray" />
+																		</DataTrigger >
+																	</Style.Triggers >
+																</Style >
+															</Label.Style >
+														</Label >
+														<TextBlock Grid.Column="9" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+													</Grid >
+												</DataTemplate >
+											</ListBox.ItemTemplate >
+										</ListBox >
+									</Grid >
+								</DataTemplate >
+							</TabControl.ContentTemplate >
+						</TabControl >
+					</Grid>
+					<Grid Grid.Row="0" Grid.Column="1" >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="60" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+						<Grid Grid.Row="0" >
+							<TextBox x:Name="tbTodo2" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
+						</Grid>
+						<Grid Grid.Row="1" >
+							<TextBox x:Name="tbNotes2" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
+						</Grid>
+					</Grid>
+
+					<!-- The add, radio buttons, and input field -->
+					<Grid Grid.Row="1" Grid.Column="0">
+						<Grid.ColumnDefinitions >
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="100" />
+						</Grid.ColumnDefinitions >
+						<TextBox x:Name="tbNewTodo2" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+						<StackPanel Grid.Column="1" >
+							<ComboBox Name="cbSeverity2" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
+								<ComboBoxItem Content="None" />
+								<ComboBoxItem Content="Low" IsSelected="True" />
+								<ComboBoxItem Content="Med" />
+								<ComboBoxItem Content="High" />
+							</ComboBox >
+							<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
+						</StackPanel >
+					</Grid >
+				</Grid >
 			</TabItem >
 			
 			<!-- VCS Log tab -->

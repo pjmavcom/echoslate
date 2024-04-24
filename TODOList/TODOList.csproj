@@ -78,6 +78,9 @@
 		<Compile Include="DlgAddNewHistory.xaml.cs">
 		  <DependentUpon>DlgAddNewHistory.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="DlgErrorMessage.xaml.cs">
+		  <DependentUpon>DlgErrorMessage.xaml</DependentUpon>
+		</Compile>
 		<Compile Include="DlgHelp.xaml.cs">
 		  <DependentUpon>DlgHelp.xaml</DependentUpon>
 		</Compile>
@@ -103,6 +106,7 @@
 		  <DependentUpon>DlgTodoMultiItemEditor.xaml</DependentUpon>
 		</Compile>
 		<Page Include="DlgAddNewHistory.xaml" />
+		<Page Include="DlgErrorMessage.xaml" />
 		<Page Include="DlgHelp.xaml" />
 		<Page Include="DlgOptions.xaml" />
 		<Page Include="DlgYesNo.xaml" />
@@ -141,6 +145,9 @@
 		<None Include="packages.config" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Content Include="C:\Users\pjmav\.ideavimrc">
+	    <Link>.ideavimrc</Link>
+	  </Content>
 	  <Content Include="check.ico" />
 	  <Content Include="TODO.txt" />
 	</ItemGroup>

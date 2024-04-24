@@ -1,16 +1,16 @@
-<Window x:Class="TODOList.DlgYesNo"
+<Window x:Class="TODOList.DlgErrorMessage"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		mc:Ignorable="d"
-		Title="DlgYesNo" Height="175" Width="280" 
+		Title="DlgErrorMessage" Height="575" Width="700" 
 		Style="{StaticResource {x:Type Window}}" 
 		ResizeMode="NoResize">
 	<Grid >
 		<StackPanel >
-			<TextBlock Name="WindowMessage" Width="250" Height="100" TextWrapping="WrapWithOverflow" TextAlignment="Center" HorizontalAlignment="Center" />
-			<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+			<TextBlock Name="WindowMessage" Width="680" Height="550" TextWrapping="WrapWithOverflow" TextAlignment="Left" HorizontalAlignment="Center" />
+			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<Button Content="OK" IsDefault="True" Click="Ok_OnClick" Width="100" />
 				<Button Name="btnCancel" Content="Cancel" IsCancel="True" Click="Cancel_OnClick" Width="100" />
 			</StackPanel >
