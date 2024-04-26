@@ -32,7 +32,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.24";
+		public const string PROGRAM_VERSION = "3.25";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -662,7 +662,7 @@ namespace TODOList
 			}
 			
 			tbIncompleteItemsNotes.Text = list[_lbIncompleteItems.SelectedIndex].Notes.Replace("/n", Environment.NewLine);;
-			tbTodo.Text = list[_lbIncompleteItems.SelectedIndex].Todo;
+			tbIncompleteItemsTitle.Text = list[_lbIncompleteItems.SelectedIndex].Todo;
 			e.Handled = true;
 		}
 		private void IncompleteItemsHashtags_OnSelectionChanged(object sender, EventArgs e)
@@ -756,7 +756,7 @@ namespace TODOList
 				return;
 			}
 			tbKanbanNotes.Text = list[_lbKanbanItems.SelectedIndex].Notes.Replace("/n", Environment.NewLine);
-			tbTodo2.Text = list[_lbKanbanItems.SelectedIndex].Todo;
+			tbKanbanTitle.Text = list[_lbKanbanItems.SelectedIndex].Todo;
 			e.Handled = true;
 		}
 		private void KanbanHashtags_OnSelectionChange(object sender, EventArgs e)
@@ -1675,7 +1675,23 @@ namespace TODOList
 					return null;
 			}
 		}
-		private TextBox GetActiveTextBox()
+		private TextBox GetActiveTextBoxTitle()
+		{
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					return tbIncompleteItemsTitle;
+				case 2:
+					return tbKanbanTitle;
+				default:
+					_errorMessage = "Function: GetActiveTextBox()\n" +
+					                "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+					                "\tNot a valid tab with a Title textbox\n" +
+					                _errorMessage;
+					return null;
+			}
+		}
+		private TextBox GetActiveTextBoxNotes()
 		{
 			switch (tabControl.SelectedIndex)
 			{
@@ -1695,7 +1711,7 @@ namespace TODOList
 		{
 			List<TodoItem> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
-			TextBox textBox = GetActiveTextBox();
+			TextBox textBox = GetActiveTextBoxNotes();
 			if (textBox == null || listBox == null || todoItemList == null)
             {
             	_errorMessage = "Function: Notes_OnSelectionChanged()\n" +
@@ -1711,6 +1727,32 @@ namespace TODOList
 			{
 				todoItemList[listBox.SelectedIndex].Notes = textBox.Text;
 			}
+		}
+		private void TodoTitle_OnSelectionChanged(object sender, EventArgs e)
+		{
+			List<TodoItem> todoItemList = GetActiveItemList();
+			ListBox listBox = GetActiveListBox();
+			TextBox textBox = GetActiveTextBoxTitle();
+
+			if (textBox == null || listBox == null || todoItemList == null)
+            {
+            	_errorMessage = "Function: Notes_OnSelectionChanged()\n" +
+            	                "\ttodoItemList == " + todoItemList + "\n" +
+	                            "\tlistBox == " + listBox + "\n" +
+	                            "\ttextBox == " + textBox + "\n" +
+	                            _errorMessage;
+            	new DlgErrorMessage(_errorMessage).ShowDialog();
+	            _errorMessage = string.Empty;
+            	return;
+            }
+
+			if (listBox.SelectedIndex >= 0)
+			{
+				todoItemList[listBox.SelectedIndex].Todo = textBox.Text;
+			}
+
+			RefreshTodo();
+			KanbanRefresh();
 		}
 
 		private void DeleteTodo_OnClick(object sender, EventArgs e)
@@ -2290,7 +2332,7 @@ namespace TODOList
 
 			_lbIncompleteItems.Items.Refresh();
 		}
-		
+
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// POMO STUFF //
 		private void PomoTimerToggle_OnClick(object sender, EventArgs e)
 		{

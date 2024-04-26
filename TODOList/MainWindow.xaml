@@ -380,7 +380,7 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbTodo" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
+							<TextBox x:Name="tbIncompleteItemsTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnSelectionChanged" />
 						</Grid>
 						<Grid Grid.Row="1" >
 							<TextBox x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
@@ -570,7 +570,7 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbTodo2" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
+							<TextBox x:Name="tbKanbanTitle" LostFocus="TodoTitle_OnSelectionChanged"  TextWrapping="WrapWithOverflow" />
 						</Grid>
 						<Grid Grid.Row="1" >
 						<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
