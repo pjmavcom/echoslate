@@ -573,7 +573,7 @@
 							<TextBox x:Name="tbTodo2" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
 						</Grid>
 						<Grid Grid.Row="1" >
-							<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
+						<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
 						</Grid>
 					</Grid>
 

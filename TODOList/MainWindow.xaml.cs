@@ -32,7 +32,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.23";
+		public const string PROGRAM_VERSION = "3.24";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -152,11 +152,8 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
-		// private string CurrentNotes => "Testing!";
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-
-		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Windows METHODS //
 		public  MainWindow()
 		{
 			_left = 0;
@@ -236,9 +233,12 @@ namespace TODOList
 			// IncompleteItemsInitialize();
 			// KanbanInitialize();
 			// RefreshTodo();
+			// KanbanRefresh();
 
 			_timeUntilBackup = _backupTime;
 		}
+
+		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Windows METHODS //
 		protected override void OnSourceInitialized(EventArgs e)
 		{
 			base.OnSourceInitialized(e);
@@ -297,7 +297,6 @@ namespace TODOList
 			}
 		}
 		public event PropertyChangedEventHandler PropertyChanged;
-
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -313,7 +312,6 @@ namespace TODOList
 				UnregisterHotKey(_handle, HOTKEY_ID);
 			}
 		}
-
 		private static string UpperFirstLetter(string s)
 		{
 			string result = "";
@@ -348,7 +346,7 @@ namespace TODOList
 					// Kanban Tab
 					// KanbanSort();
 					// RefreshTodo();
-					// KanbanRefresh();
+					KanbanRefresh();
 					break;
 				case 3:
 					// Log Tab
@@ -662,7 +660,8 @@ namespace TODOList
 			{
 				return;
 			}
-			tbIncompleteItemsNotes.Text = list[_lbIncompleteItems.SelectedIndex].Notes;
+			
+			tbIncompleteItemsNotes.Text = list[_lbIncompleteItems.SelectedIndex].Notes.Replace("/n", Environment.NewLine);;
 			tbTodo.Text = list[_lbIncompleteItems.SelectedIndex].Todo;
 			e.Handled = true;
 		}
@@ -756,7 +755,7 @@ namespace TODOList
 			{
 				return;
 			}
-			tbKanbanNotes.Text = list[_lbKanbanItems.SelectedIndex].Notes;
+			tbKanbanNotes.Text = list[_lbKanbanItems.SelectedIndex].Notes.Replace("/n", Environment.NewLine);
 			tbTodo2.Text = list[_lbKanbanItems.SelectedIndex].Todo;
 			e.Handled = true;
 		}
@@ -832,6 +831,10 @@ namespace TODOList
 				_lbKanbanItems.ItemsSource = KanbanItems;
 				_lbKanbanItems.Items.Refresh();
 			}
+		}
+		private void KanbanFixRankings()
+		{
+			
 		}
 
 		private void SortCompleteTodosToHistory(IEnumerable<TodoItem> todoItemsList)
@@ -1709,7 +1712,7 @@ namespace TODOList
 				todoItemList[listBox.SelectedIndex].Notes = textBox.Text;
 			}
 		}
-		
+
 		private void DeleteTodo_OnClick(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
@@ -1956,10 +1959,6 @@ namespace TODOList
 			}
 		}
 
-		private void KanbanFixRankings()
-		{
-			
-		}
 		private void RefreshTodo()
 		{
 			for (int i = 0; i < _incompleteItems.Count; i++)
@@ -2023,6 +2022,7 @@ namespace TODOList
 				_cbHashTags.ItemsSource = HashTags;
 				_cbHashTags.Items.Refresh();
 			}
+			// tbIncompleteItemsNotes.Text = 
 		}
 		private void SeverityComboBox_OnSelectionChange(object sender, EventArgs e)
 		{
