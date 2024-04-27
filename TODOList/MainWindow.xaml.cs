@@ -32,7 +32,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.25";
+		public const string PROGRAM_VERSION = "3.26";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -77,6 +77,7 @@ namespace TODOList
 		private string _historyLogPath;
 		private double _currentProjectVersion;
 		private double _projectVersionIncrement;
+		private int _previousSessionLastActiveTab;
 
 		// WINDOW ITEMS
 		private double _top;
@@ -236,6 +237,7 @@ namespace TODOList
 			// KanbanRefresh();
 
 			_timeUntilBackup = _backupTime;
+			tabControl.SelectedIndex = _previousSessionLastActiveTab;
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Windows METHODS //
@@ -1635,6 +1637,7 @@ namespace TODOList
 			hi.CompletedTodosBugs = tempBug;
 			hi.CompletedTodosFeatures = tempFeature;
 		}
+		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// TODOS //
 		private List<TodoItem> GetActiveItemList()
 		{
@@ -2710,8 +2713,6 @@ namespace TODOList
 			stream.WriteLine(_autoSave);
 			stream.WriteLine("CurrentProjectVersion");
 			stream.WriteLine(_currentProjectVersion);
-			stream.WriteLine("ProjectVersionIncrement");
-			stream.WriteLine(_projectVersionIncrement);
 			
 			stream.WriteLine("====================================TODO");
 			foreach (TodoItem td in _masterList)
@@ -2863,6 +2864,8 @@ namespace TODOList
 			_pomoBreakTime = Convert.ToInt16(stream.ReadLine());
 			stream.ReadLine();
 			_globalHotkeys = Convert.ToBoolean(stream.ReadLine());
+			stream.ReadLine();
+			_previousSessionLastActiveTab = Convert.ToInt16(stream.ReadLine());
 		}
 		private void SaveSettings()
 		{
@@ -2892,6 +2895,8 @@ namespace TODOList
 			stream.WriteLine(_pomoBreakTime);
 			stream.WriteLine("GLOBALHOTKEYS");
 			stream.WriteLine(_globalHotkeys);
+			stream.WriteLine("PreviousSessionLastActiveTab");
+			stream.WriteLine(tabControl.SelectedIndex);
 			
 			stream.Close();
 		}
