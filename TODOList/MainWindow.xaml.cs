@@ -32,7 +32,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.26";
+		public const string PROGRAM_VERSION = "3.27";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -1710,7 +1710,7 @@ namespace TODOList
 					return null;
 			}
 		}
-		private void Notes_OnSelectionChanged(object sender, RoutedEventArgs e)
+		private void Notes_OnLostFocus(object sender, RoutedEventArgs e)
 		{
 			List<TodoItem> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
@@ -1731,7 +1731,7 @@ namespace TODOList
 				todoItemList[listBox.SelectedIndex].Notes = textBox.Text;
 			}
 		}
-		private void TodoTitle_OnSelectionChanged(object sender, EventArgs e)
+		private void TodoTitle_OnLostFocus(object sender, RoutedEventArgs e)
 		{
 			List<TodoItem> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
@@ -1757,7 +1757,16 @@ namespace TODOList
 			RefreshTodo();
 			KanbanRefresh();
 		}
-
+		private void Notes_OnGotFocus(object sender, RoutedEventArgs e)
+		{
+			TextBox textBox = GetActiveTextBoxNotes();
+			textBox.Select(textBox.Text.Length, 0);
+		}
+		private void TodoTitle_OnGotFocus(object sender, RoutedEventArgs e)
+		{
+			TextBox textBox = GetActiveTextBoxTitle();
+			textBox.Select(textBox.Text.Length, 0);
+		}
 		private void DeleteTodo_OnClick(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
@@ -2713,7 +2722,8 @@ namespace TODOList
 			stream.WriteLine(_autoSave);
 			stream.WriteLine("CurrentProjectVersion");
 			stream.WriteLine(_currentProjectVersion);
-			
+			stream.WriteLine("ProjectVersionIncrement");
+			stream.WriteLine(_projectVersionIncrement);
 			stream.WriteLine("====================================TODO");
 			foreach (TodoItem td in _masterList)
 			{

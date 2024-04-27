@@ -380,10 +380,10 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbIncompleteItemsTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnSelectionChanged" />
+							<TextBox x:Name="tbIncompleteItemsTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus" />
 						</Grid>
 						<Grid Grid.Row="1" >
-							<TextBox x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
+							<TextBox x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" />
 						</Grid>
 					</Grid>
 
@@ -570,10 +570,10 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbKanbanTitle" LostFocus="TodoTitle_OnSelectionChanged"  TextWrapping="WrapWithOverflow" />
+							<TextBox x:Name="tbKanbanTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
 						</Grid>
 						<Grid Grid.Row="1" >
-						<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnSelectionChanged" />
+							<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
 						</Grid>
 					</Grid>
 
