@@ -28,18 +28,20 @@ using TextBox = System.Windows.Controls.TextBox;
 namespace TODOList
 {
 	public partial class MainWindow : INotifyPropertyChanged
-	{
+	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.27";
+		public const string PROGRAM_VERSION = "3.28";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
 		private readonly List<TodoItem> _masterList;
 		private readonly List<List<TodoItemHolder>> _incompleteItems;
 		private readonly List<List<TodoItemHolder>> _kanbanItems;
-		private readonly List<List<string>> _hashTags;
+		private readonly List<string> _kanbanTabHeaders;
+		private readonly List<List<string>> _incompleteItemsHashTags;
+		private readonly List<List<string>> _kanbanHashTags;
 		private readonly List<string> _tabHash;
 		private static Dictionary<string, string> _hashShortcuts;
 		private List<string> _prevHashTagList = new List<string>();
@@ -106,6 +108,7 @@ namespace TODOList
 		
 		// CONTROLS
 		private ComboBox _cbHashTags;
+		private ComboBox _cbKanbanHashTags;
 		private ListBox _lbIncompleteItems;
 		private ListBox _lbKanbanItems;
 
@@ -125,7 +128,9 @@ namespace TODOList
 		private List<TodoItemHolder> IncompleteItems => _incompleteItems[todoTabs.SelectedIndex];
 		private List<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTabs.SelectedIndex];
 	
-		private List<string> HashTags => _hashTags[todoTabs.SelectedIndex];
+		private List<string> KanbanHashTags => _kanbanHashTags[kanbanTabs.SelectedIndex];
+		private List<string> IncompleteItemsHashTags => _incompleteItemsHashTags[todoTabs.SelectedIndex];
+		
 		private string TabNames => todoTabs.SelectedIndex == -1
 			? _incompleteItemsTabsList[0].Name
 			: _incompleteItemsTabsList[todoTabs.SelectedIndex].Name;
@@ -144,6 +149,7 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
+
 		public int PomoBreakTime
 		{
 			get => _pomoBreakTime;
@@ -153,6 +159,7 @@ namespace TODOList
 				OnPropertyChanged();
 			}
 		}
+
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public  MainWindow()
@@ -184,7 +191,9 @@ namespace TODOList
 			_masterList = new List<TodoItem>();
 			_incompleteItems = new List<List<TodoItemHolder>>();
 			_kanbanItems = new List<List<TodoItemHolder>>();
-			_hashTags = new List<List<string>>();
+			_kanbanTabHeaders = new List<string>();
+			_incompleteItemsHashTags = new List<List<string>>();
+			_kanbanHashTags = new List<List<string>>();
 			_tabHash = new List<string>();
 			_hashShortcuts = new Dictionary<string, string>();
 			HistoryItems = new List<HistoryItem>();
@@ -358,7 +367,7 @@ namespace TODOList
 					break;
 			}
 		}
-		
+
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Timers //
 		private void Timer_Tick(object sender, EventArgs e)
 		{
@@ -415,7 +424,7 @@ namespace TODOList
 				lblPomo.Background = Brushes.Transparent;
 			}
 		}
-		
+
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// History //
 		private void LoadHistory()
 		{
@@ -544,20 +553,6 @@ namespace TODOList
 			result = ExpandHashTagsInString(result);
 			return result;
 		}
-		private void HashTagsInitialize()
-		{
-			if (!(todoTabs.Template.FindName("PART_SelectedContentHost", todoTabs) is ContentPresenter hashTagsContentPresenter))
-         	{
-         		return;
-         	}
-         	_cbHashTags = hashTagsContentPresenter.ContentTemplate.FindName("cbHashTags", hashTagsContentPresenter) as ComboBox;
-         	if (_cbHashTags == null)
-         	{
-         		return;
-         	}
-			_cbHashTags.ItemsSource = HashTags; 
-			_cbHashTags.Items.Refresh();
-		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// IncompleteItems //
 		private void IncompleteItemsInitialize()
@@ -600,10 +595,10 @@ namespace TODOList
 
 			if (_cbHashTags == null)
 			{
-				HashTagsInitialize();
+				IncompleteItemsHashTagsInitialize();
 			}
 			
-			RefreshTodo();
+			IncompleteItemsRefresh();
 		}
 		private void IncompleteItemsAddNewTab(string name, bool doSave = true)
 		{
@@ -633,13 +628,13 @@ namespace TODOList
 				td.Rank.Add(name, -1);
 			
 			_incompleteItems.Add(new List<TodoItemHolder>());
-			_hashTags.Add(new List<string>());
+			_incompleteItemsHashTags.Add(new List<string>());
 			_incompleteItemsTabsList.Add(ti);
 			if (!doSave)
 			{
 				return;
 			}
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			todoTabs.Items.Refresh();
 			AutoSave();
 		}
@@ -669,18 +664,105 @@ namespace TODOList
 		}
 		private void IncompleteItemsHashtags_OnSelectionChanged(object sender, EventArgs e)
 		{
-			if (HashTags.Count == 0)
+			if (IncompleteItemsHashTags.Count == 0)
 			{
 				return;
 			}
-			_hashToSortBy = HashTags[0];
+			_hashToSortBy = IncompleteItemsHashTags[0];
 			if (_cbHashTags.SelectedItem != null)
 			{
 				_hashToSortBy = _cbHashTags.SelectedItem.ToString();
 			}
 			_hashSortSelected = true;
 			_currentSort = "hash";
-			RefreshTodo();
+			IncompleteItemsRefresh();
+		}
+		private void IncompleteItemsRefresh()
+		{
+			for (int i = 0; i < _incompleteItems.Count; i++)
+			{
+				_incompleteItems[i].Clear();
+				_incompleteItemsHashTags[i].Clear();
+			}
+
+			IncompleteItemsSortToTabs();
+			SortHashTagLists(_incompleteItems, _incompleteItemsHashTags);
+			IncompleteItemsCountTabItems();
+			CheckForHashTagListChanges();
+			FixRankings();
+		
+			int tabIndex = todoTabs.SelectedIndex;
+			if (tabIndex < 0 || tabIndex >= _incompleteItemsTabsList.Count)
+			{
+				return;
+			}
+			
+			SortLists(_incompleteItems, _incompleteItemsHashTags, tabIndex);
+
+			if (_lbIncompleteItems != null)
+			{
+				_lbIncompleteItems.ItemsSource = IncompleteItems;
+				_lbIncompleteItems.Items.Refresh();
+			}
+
+			if (_cbHashTags != null)
+			{
+				_cbHashTags.ItemsSource = IncompleteItemsHashTags;
+				_cbHashTags.Items.Refresh();
+			}
+		}
+		private void IncompleteItemsSortToTabs()
+		{
+			List<TodoItem> incompleteItems = _masterList.ToList();
+			SortCompleteTodosToHistory(incompleteItems);
+			foreach (TodoItem td in incompleteItems)
+			{
+				bool sortedToTab = false;
+
+				TodoItemHolder itemHolder = new TodoItemHolder(td);
+				_incompleteItems[0].Add(itemHolder);
+
+				// Add to do to all tabs the hash is from...
+				foreach (int index in from hash in _tabHash where td.Tags.Contains(hash) select _tabHash.IndexOf(hash) + 1)
+				{
+					_incompleteItems[index].Add(itemHolder);
+					sortedToTab = true;
+				}
+
+				// ...if sorted to any tab, skip the next step...
+				if (sortedToTab)
+				{
+					continue;
+				}
+
+				// ...of adding to the unsorted tab
+				if (_incompleteItems.Count > 1)
+				{
+					_incompleteItems[1].Add(itemHolder);
+				}
+			}
+		}
+		private void IncompleteItemsHashTagsInitialize()
+		{
+			if (!(todoTabs.Template.FindName("PART_SelectedContentHost", todoTabs) is ContentPresenter hashTagsContentPresenter))
+			{
+				return;
+			}
+			_cbHashTags = hashTagsContentPresenter.ContentTemplate.FindName("cbHashTags", hashTagsContentPresenter) as ComboBox;
+			if (_cbHashTags == null)
+			{
+				return;
+			}
+			_cbHashTags.ItemsSource = IncompleteItemsHashTags; 
+			_cbHashTags.Items.Refresh();
+		}
+		private void IncompleteItemsCountTabItems()
+		{
+			for (int i = 1; i < _incompleteItemsTabsList.Count; i++)
+			{
+				_incompleteItemsTabsList[i].Header = _tabHash[i - 1] + " " + _incompleteItems[i].Count;
+			}
+			_incompleteItemsTabsList[0].Header = "All " + _incompleteItems[0].Count;
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Kanban //
@@ -722,8 +804,11 @@ namespace TODOList
 				KanbanInitialize();
 			}
 
+			if (_cbKanbanHashTags == null)
+			{
+				KanbanHashTagsInitialize();
+			}
 			KanbanRefresh();
-			// RefreshTodo();
 		}
 		private void KanbanAddNewTab(string name)
 		{
@@ -735,6 +820,7 @@ namespace TODOList
 				Padding = new Thickness(10, 5, 10, 5)
 			};
 
+			_kanbanHashTags.Add(new List<string>());
 			_kanbanTabsList.Add(ti);
 			_kanbanItems.Add(new List<TodoItemHolder>());
 			kanbanTabs.Items.Refresh();
@@ -745,10 +831,15 @@ namespace TODOList
 		}
 		private void KanbanCreateTabs()
 		{
-			KanbanAddNewTab("None");
-			KanbanAddNewTab("Backlog");
-			KanbanAddNewTab("Next");
-			KanbanAddNewTab("Current");
+			_kanbanTabHeaders.Add("None");
+			_kanbanTabHeaders.Add("Backlog");
+			_kanbanTabHeaders.Add("Next");
+			_kanbanTabHeaders.Add("Current");
+
+			foreach (string s in _kanbanTabHeaders)
+			{
+				KanbanAddNewTab(s);
+			}
 		}
 		private void KanbanItems_OnSelectionChange(object sender, SelectionChangedEventArgs e)
 		{
@@ -763,9 +854,21 @@ namespace TODOList
 		}
 		private void KanbanHashtags_OnSelectionChange(object sender, EventArgs e)
 		{
-			// TODO: Empty hashtag sorting for kanban view
+			if (KanbanHashTags.Count == 0)
+			{
+				return;
+			}
+			_hashToSortBy = KanbanHashTags[0];
+			if (_cbKanbanHashTags.SelectedItem != null)
+			{
+				_hashToSortBy = _cbKanbanHashTags.SelectedItem.ToString();
+			}
+			_hashSortSelected = true;
+			_currentSort = "hash";
+			KanbanRefresh();
+			
 		}
-		private void KanbanSort()
+		private void KanbanSortToTabs()
 		{
 			List<TodoItem> kanbanItems = _masterList.ToList();
 			SortCompleteTodosToHistory(kanbanItems);
@@ -782,9 +885,12 @@ namespace TODOList
 			for (int i = 0; i < _kanbanItems.Count; i++)
 			{
 				_kanbanItems[i].Clear();
+				_kanbanHashTags[i].Clear();
 			}
 
-			KanbanSort();
+			KanbanSortToTabs();
+			SortHashTagLists(_kanbanItems, _kanbanHashTags);
+			KanbanCountTabItems();
 			KanbanFixRankings();
 
 			int tabIndex = kanbanTabs.SelectedIndex;
@@ -792,51 +898,45 @@ namespace TODOList
 			{
 				return;
 			}
-
-			/*
-			switch (_currentSort)
-			{
-				case "severity":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.Severity).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.Severity).ToList();
-					break;
-				case "date":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.TimeStarted).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.TimeStarted).ToList();
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.DateStarted).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.DateStarted).ToList();
-					break;
-				case "hash":
-					_incompleteItems[tabIndex] = SortByHashTag(_incompleteItems[tabIndex]);
-					break;
-				case "rank":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList();
-					break;
-				case "active":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.TimeTaken).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.TimeTaken).ToList();
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.IsTimerOn).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.IsTimerOn).ToList();
-					break;
-			}
-			*/
+			SortLists(_kanbanItems, _kanbanHashTags, tabIndex);
 			
 			if (_lbKanbanItems != null)
 			{
 				_lbKanbanItems.ItemsSource = KanbanItems;
 				_lbKanbanItems.Items.Refresh();
 			}
+
+			if (_cbKanbanHashTags != null)
+			{
+				_cbKanbanHashTags.ItemsSource = KanbanHashTags;
+				_cbKanbanHashTags.Items.Refresh();
+			}
 		}
 		private void KanbanFixRankings()
 		{
 			
+		}
+		private void KanbanHashTagsInitialize()
+		{
+			if (!(kanbanTabs.Template.FindName("PART_SelectedContentHost", kanbanTabs) is ContentPresenter hashTagsKanbanContentPresenter))
+			{
+				return;
+			}
+			_cbKanbanHashTags = hashTagsKanbanContentPresenter.ContentTemplate.FindName("cbKanbanHashTags", hashTagsKanbanContentPresenter) as ComboBox;
+			if (_cbKanbanHashTags == null)
+			{
+				return;
+			}
+
+			_cbKanbanHashTags.ItemsSource = KanbanHashTags;
+			_cbKanbanHashTags.Items.Refresh();
+		}
+		private void KanbanCountTabItems()
+		{
+			for (int i = 0; i < _kanbanTabsList.Count; i++)
+			{
+				_kanbanTabsList[i].Header = _kanbanTabHeaders[i] + " " + _kanbanItems[i].Count;
+			}
 		}
 
 		private void SortCompleteTodosToHistory(IEnumerable<TodoItem> todoItemsList)
@@ -929,7 +1029,7 @@ namespace TODOList
 					AddItemToMasterList(dlgTodoItemEditor.ResultTD);
 				}
 			}
-			RefreshTodo();
+			IncompleteItemsRefresh();
 		}
 		private void HkAdd(object sender, ExecutedRoutedEventArgs e)
 		{
@@ -996,7 +1096,7 @@ namespace TODOList
 
 			AddItemToMasterList(newTodo);
 			AutoSave();
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			tbNewTodo.Clear();
 		}
 
@@ -1013,7 +1113,7 @@ namespace TODOList
 			_incompleteItemsTabsList.Clear();
 			_hashShortcuts.Clear();
 			_tabHash.Clear();
-			_hashTags.Clear();
+			_incompleteItemsHashTags.Clear();
 			_incompleteItems.Clear();
 			foreach (string s in rt.ResultList)
 			{
@@ -1072,7 +1172,7 @@ namespace TODOList
 			_currentHistoryItem = new HistoryItem("", "");
 			AddNewHistoryItem();
 			RefreshHistory();
-			RefreshTodo();
+			IncompleteItemsRefresh();
 
 			_currentOpenFile = "";
 			Title = WindowTitle;
@@ -1227,7 +1327,7 @@ namespace TODOList
 				return;
 			}
 			RemoveItemFromMasterList(td);
-			RefreshTodo();
+			IncompleteItemsRefresh();
 		}
 		private void mnuKanban_OnClick(int kanbanRank)
    		{
@@ -1328,7 +1428,7 @@ namespace TODOList
 				return;
 			}
 			AutoSave();
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
 
@@ -1637,7 +1737,7 @@ namespace TODOList
 			hi.CompletedTodosBugs = tempBug;
 			hi.CompletedTodosFeatures = tempFeature;
 		}
-		
+
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// TODOS //
 		private List<TodoItem> GetActiveItemList()
 		{
@@ -1754,7 +1854,7 @@ namespace TODOList
 				todoItemList[listBox.SelectedIndex].Todo = textBox.Text;
 			}
 
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
 		private void Notes_OnGotFocus(object sender, RoutedEventArgs e)
@@ -1767,6 +1867,7 @@ namespace TODOList
 			TextBox textBox = GetActiveTextBoxTitle();
 			textBox.Select(textBox.Text.Length, 0);
 		}
+
 		private void DeleteTodo_OnClick(object sender, EventArgs e)
 		{
 			Button b = sender as Button;
@@ -1782,7 +1883,7 @@ namespace TODOList
 			{
 				td.IsComplete = false;
 				AddItemToMasterList(td);
-				RefreshTodo();
+				IncompleteItemsRefresh();
 				KanbanRefresh();
 				if (_currentHistoryItem.CompletedTodos.Contains(td))
 				{
@@ -1814,7 +1915,7 @@ namespace TODOList
 				itemHolder.Severity = value;
 			}
 
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
 
@@ -1827,29 +1928,38 @@ namespace TODOList
 				_reverseSort = false;
 				_currentSort = (string) b?.CommandParameter;
 			}
-			
+
 			if ((string) b?.CommandParameter == "hash")
 			{
-				if (HashTags.Count == 0)
+				List<string> hashTagsList;
+				switch (tabControl.SelectedIndex)
+				{
+					case 1:
+						hashTagsList = IncompleteItemsHashTags;
+						break;
+					case 2:
+						hashTagsList = KanbanHashTags;
+						break;
+					default:
+						return;
+				}
+				if (hashTagsList.Count == 0)
 				{
 					return;
 				}
 				_currentHashTagSortIndex++;
-				if (_currentHashTagSortIndex >= HashTags.Count)
+				if (_currentHashTagSortIndex >= hashTagsList.Count)
 				{
 					_currentHashTagSortIndex = 0;
 				}
 			}
 
+
 			_reverseSort = !_reverseSort;
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private void KanbanSort_OnClick(object sender, EventArgs e)
-		{
-			// TODO: Kanban sorting
-		}
-		private List<TodoItemHolder> SortByHashTag(List<TodoItemHolder> list)
+		private List<TodoItemHolder> SortByHashTag(List<TodoItemHolder> list, List<string> hashTags)
 		{
 			if (_didHashChange)
 			{
@@ -1859,7 +1969,7 @@ namespace TODOList
 			List<TodoItemHolder> incompleteItems = new List<TodoItemHolder>();
 			List<string> sortedHashTags = new List<string>();
 
-			if (HashTags.Count == 0)
+			if (hashTags.Count == 0)
 			{
 				return list;
 			}
@@ -1867,20 +1977,20 @@ namespace TODOList
 			if (_hashSortSelected)
 			{
 				_currentHashTagSortIndex = 0;
-				foreach (string s in HashTags.TakeWhile(s => !s.Equals(_hashToSortBy)))
+				foreach (string s in hashTags.TakeWhile(s => !s.Equals(_hashToSortBy)))
 				{
 					_currentHashTagSortIndex++;
 				}
 			}
 
-			for (int i = 0 + _currentHashTagSortIndex; i < HashTags.Count; i++)
+			for (int i = 0 + _currentHashTagSortIndex; i < hashTags.Count; i++)
 			{
-				sortedHashTags.Add(HashTags[i]);
+				sortedHashTags.Add(hashTags[i]);
 			}
 
 			for (int i = 0; i < _currentHashTagSortIndex; i++)
 			{
-				sortedHashTags.Add(HashTags[i]);
+				sortedHashTags.Add(hashTags[i]);
 			}
 
 			List<TodoItemHolder> sortSingleTags = list.ToList();
@@ -1940,143 +2050,77 @@ namespace TODOList
 		private void CheckForHashTagListChanges()
 		{
 			_didHashChange = false;
-			if (_hashTags[0].Count != _prevHashTagList.Count)
+			if (_incompleteItemsHashTags[0].Count != _prevHashTagList.Count)
 			{
 				_didHashChange = true;
 			}
 			else
 			{
-				for (int i = 0; i < _hashTags[0].Count; i++)
+				for (int i = 0; i < _incompleteItemsHashTags[0].Count; i++)
 				{
-					if (_hashTags[0][i] != _prevHashTagList[i])
+					if (_incompleteItemsHashTags[0][i] != _prevHashTagList[i])
 					{
 						_didHashChange = true;
 					}
 				}
 			}
-			_prevHashTagList = _hashTags[0].ToList();
+			_prevHashTagList = _incompleteItemsHashTags[0].ToList();
 		}
-		private void SortHashTagLists()
+		private void SortHashTagLists(List<List<TodoItemHolder>> todoItemHolderList, List<List<string>> hashTagList)
 		{
-			for (int i = 0; i < _incompleteItems.Count; i++)
+			for (int i = 0; i < todoItemHolderList.Count; i++)
 			{
-				foreach (string tag in _incompleteItems[i].SelectMany(itemHolder => itemHolder.TD.Tags))
+				foreach (string tag in todoItemHolderList[i].SelectMany(itemHolder => itemHolder.TD.Tags))
 				{
-					if (!_hashTags[i].Contains(tag))
+					if (!hashTagList[i].Contains(tag))
 					{
-						_hashTags[i].Add(tag);
+						hashTagList[i].Add(tag);
 					}
 
-					if (!_hashTags[0].Contains(tag))
-					{
-						_hashTags[0].Add(tag);
-					}
-				}
-
-				_hashTags[i] = _hashTags[i].OrderBy(o => o).ToList();
-			}
-			for (int i = 1; i < _incompleteItemsTabsList.Count; i++)
-			{
-				_incompleteItemsTabsList[i].Header = _tabHash[i - 1] + " " + _incompleteItems[i].Count;
-			}
-			_incompleteItemsTabsList[0].Header = "All " + _incompleteItems[0].Count;
-		}
-		private void SortToLists()
-		{
-			List<TodoItem> incompleteItems = _masterList.ToList();
-			SortCompleteTodosToHistory(incompleteItems);
-			foreach (TodoItem td in incompleteItems)
-			{
-				bool sortedToTab = false;
-
-				TodoItemHolder itemHolder = new TodoItemHolder(td);
-				_incompleteItems[0].Add(itemHolder);
-
-				// Add to do to all tabs the hash is from...
-				foreach (int index in from hash in _tabHash where td.Tags.Contains(hash) select _tabHash.IndexOf(hash) + 1)
-				{
-					_incompleteItems[index].Add(itemHolder);
-					sortedToTab = true;
-				}
-
-				// ...if sorted to any tab, skip the next step...
-				if (sortedToTab)
-				{
-					continue;
-				}
-
-				// ...of adding to the unsorted tab
-				if (_incompleteItems.Count > 1)
-				{
-					_incompleteItems[1].Add(itemHolder);
+					hashTagList[i] = hashTagList[i].OrderBy(o => o).ToList();
 				}
 			}
 		}
 
-		private void RefreshTodo()
+		private void SortLists(List<List<TodoItemHolder>> list, List<List<string>> hashTagsList, int tabIndex)
 		{
-			for (int i = 0; i < _incompleteItems.Count; i++)
-			{
-				_incompleteItems[i].Clear();
-				_hashTags[i].Clear();
-			}
-
-			SortToLists();
-			SortHashTagLists();
-			CheckForHashTagListChanges();
-			FixRankings();
-		
-			int tabIndex = todoTabs.SelectedIndex;
-			if (tabIndex < 0 || tabIndex >= _incompleteItemsTabsList.Count)
-			{
-				return;
-			}
-			
 			switch (_currentSort)
 			{
 				case "severity":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.Severity).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.Severity).ToList();
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.Severity).ToList()
+						: list[tabIndex].OrderBy(o => o.Severity).ToList();
 					break;
 				case "date":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.TimeStarted).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.TimeStarted).ToList();
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.DateStarted).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.DateStarted).ToList();
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.TimeStarted).ToList()
+						: list[tabIndex].OrderBy(o => o.TimeStarted).ToList();
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.DateStarted).ToList()
+						: list[tabIndex].OrderBy(o => o.DateStarted).ToList();
 					break;
 				case "hash":
-					_incompleteItems[tabIndex] = SortByHashTag(_incompleteItems[tabIndex]);
+					list[tabIndex] = SortByHashTag(list[tabIndex], hashTagsList[tabIndex]);
 					break;
 				case "rank":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList();
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList()
+						: list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList();
+					break;
+				case "kanban":
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.TD.Kanban).ToList()
+						: list[tabIndex].OrderBy(o => o.TD.Kanban).ToList();
 					break;
 				case "active":
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.TimeTaken).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.TimeTaken).ToList();
-					_incompleteItems[tabIndex] = _reverseSort
-						? _incompleteItems[tabIndex].OrderByDescending(o => o.IsTimerOn).ToList()
-						: _incompleteItems[tabIndex].OrderBy(o => o.IsTimerOn).ToList();
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.TimeTaken).ToList()
+						: list[tabIndex].OrderBy(o => o.TimeTaken).ToList();
+					list[tabIndex] = _reverseSort
+						? list[tabIndex].OrderByDescending(o => o.IsTimerOn).ToList()
+						: list[tabIndex].OrderBy(o => o.IsTimerOn).ToList();
 					break;
 			}
-
-			if (_lbIncompleteItems != null)
-			{
-				_lbIncompleteItems.ItemsSource = IncompleteItems;
-				_lbIncompleteItems.Items.Refresh();
-			}
-
-			if (_cbHashTags != null)
-			{
-				_cbHashTags.ItemsSource = HashTags;
-				_cbHashTags.Items.Refresh();
-			}
-			// tbIncompleteItemsNotes.Text = 
 		}
 		private void SeverityComboBox_OnSelectionChange(object sender, EventArgs e)
 		{
@@ -2108,7 +2152,7 @@ namespace TODOList
 
 			AddItemToMasterList(td);
 			AutoSave();
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 			tbNewTodo.Clear();
 		}
@@ -2158,7 +2202,7 @@ namespace TODOList
 					break;
 				}
 			}
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 //				Point p = b.PointToScreen(new Point(0d, 0d));;
 //				SetCursorPosition((int) p.X + 18, (int) p.Y + 18);
@@ -2238,7 +2282,7 @@ namespace TODOList
 				AutoSave();
 			}
 
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 			RefreshHistory();
 		}
@@ -2328,7 +2372,7 @@ namespace TODOList
 					itemHolder.TD.Tags.Add(tag);
 				}
 			}
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
 		private void TimeTakenTimer_OnClick(object sender, EventArgs e)
@@ -2471,7 +2515,7 @@ namespace TODOList
 			
 			stream.Close();
 
-			RefreshTodo();
+			IncompleteItemsRefresh();
 			KanbanRefresh();
 			RefreshHistory();
 			todoTabs.Items.Refresh();
@@ -2507,7 +2551,7 @@ namespace TODOList
 		{
 			_incompleteItems.Clear();
 			_masterList.Clear();
-			_hashTags.Clear();
+			_incompleteItemsHashTags.Clear();
 			_tabHash.Clear();
 			_incompleteItemsTabsList.Clear();
 			HistoryItems.Clear();

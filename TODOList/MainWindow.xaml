@@ -251,6 +251,7 @@
 												<ColumnDefinition Width="161" />
 												<ColumnDefinition Width="101" />
 												<ColumnDefinition Width="111" />
+												<ColumnDefinition Width="71" />
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
@@ -259,7 +260,8 @@
 											<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
 											<Button Grid.Column="3" Name="btnSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="4" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="4" Name="btnSortKanban" Content="Kanban" Click="Sort_OnClick" CommandParameter="kanban" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="5" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 										</Grid >
 
 										<!-- The list of incomplete todos -->
@@ -301,6 +303,9 @@
 															<ColumnDefinition Width="50" />
 															<ColumnDefinition Width="25" />
 															<ColumnDefinition Width="25" />
+															
+															<!-- KANBAN RANK -->
+															<ColumnDefinition Width="70" />
 
 															<!-- TIME TAKEN -->
 															<ColumnDefinition Width="65" />
@@ -331,8 +336,8 @@
 														<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 														<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 														<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-
-														<Label Grid.Column="7" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+														<Label Grid.Column="7" Content="{Binding Kanban}" Margin="4" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+														<Label Grid.Column="8" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
 															<Label.Style >
 																<Style >
 																	<Style.Triggers >
@@ -348,7 +353,7 @@
 																</Style >
 															</Label.Style >
 														</Label >
-														<Label Grid.Column="8" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
+														<Label Grid.Column="9" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
 															<Label.Style >
 																<Style >
 																	<Style.Triggers >
@@ -364,7 +369,7 @@
 																</Style >
 															</Label.Style >
 														</Label >
-														<TextBlock Grid.Column="9" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+														<TextBlock Grid.Column="10" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
 													</Grid >
 												</DataTemplate >
 											</ListBox.ItemTemplate >
@@ -443,12 +448,12 @@
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
-											<ComboBox Grid.Column="0" Name="cbKanbanHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="KanbanHashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
-											<Button Grid.Column="1" Name="btnKanbanSortDate" Content="Date" Click="KanbanSort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="2" Name="btnKanbanSortSeverity" Content="Severity" Click="KanbanSort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
+											<ComboBox Grid.Column="0" Name="cbKanbanHashTags" ItemsSource="{Binding KanbanHashTags}" SelectionChanged="KanbanHashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
+											<Button Grid.Column="1" Name="btnKanbanSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="2" Name="btnKanbanSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
-											<Button Grid.Column="3" Name="btnKanbanSortRank" Content="Rank" Click="KanbanSort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="4" Name="btnKanbanSortActive" Content="Active" Click="KanbanSort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="3" Name="btnKanbanSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="4" Name="btnKanbanSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 
 										</Grid >
 
@@ -521,7 +526,6 @@
 														<Label Grid.Column="4" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 														<Button Grid.Column="5" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
 														<Button Grid.Column="6" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-
 														<Label Grid.Column="7" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" >
 															<Label.Style >
 																<Style >
@@ -577,7 +581,7 @@
 						</Grid>
 					</Grid>
 
-					<!-- The add, radio buttons, and input field -->
+	
 					<Grid Grid.Row="1" Grid.Column="0">
 						<Grid.ColumnDefinitions >
 							<ColumnDefinition Width="*" />
