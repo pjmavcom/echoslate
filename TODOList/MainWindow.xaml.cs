@@ -33,7 +33,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.31";
+		public const string PROGRAM_VERSION = "3.32";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -346,6 +346,7 @@ namespace TODOList
 					break;
 				case 1:
 					// IncompleteItems (TO DO) Tab
+					IncompleteItemsUpdateHandler();
 					_lbCurrentItems = _lbIncompleteItems;
 					_cbCurrentHashTags = _cbIncompleteItemsHashTags;
 					_currentItems = _incompleteItems;
@@ -353,10 +354,10 @@ namespace TODOList
 					_currentHashTags = _incompleteItemsHashTags;
 					_tbNewTodo = tbNewTodo;
 					_cbSeverity = cbSeverity;
-					IncompleteItemsUpdateHandler();
 					break;
 				case 2:
 					// Kanban Tab
+					KanbanUpdateHandler();
 					_lbCurrentItems = _lbKanbanItems;
 					_cbCurrentHashTags = _cbKanbanHashTags;
 					_currentItems = _kanbanItems;
@@ -364,7 +365,6 @@ namespace TODOList
 					_currentHashTags = _kanbanHashTags;
 					_tbNewTodo = tbKanbanNewTodo;
 					_cbSeverity = cbKanbanSeverity;
-					KanbanUpdateHandler();
 					break;
 				case 3:
 					// Log Tab
@@ -565,6 +565,7 @@ namespace TODOList
 		private void IncompleteItemsTabs_OnLoaded(object sender, EventArgs e)
 		{
 			IncompleteItemsUpdateHandler();
+			SelectActiveTabItems();
 		}
 		private void IncompleteItemsInitialize()
 		{
@@ -785,6 +786,7 @@ namespace TODOList
 		private void KanbanTabs_OnLoaded(object sender, EventArgs e)
 		{
 			KanbanUpdateHandler();
+			SelectActiveTabItems();
 		}
 		private void KanbanInitialize()
 		{
@@ -2177,15 +2179,27 @@ namespace TODOList
 		private void Add_OnClick(object sender, EventArgs e)
 		{
 			string name = TabNames;
+			int kanban = 0;
+			
 			TodoItem td = new TodoItem() {Todo = _tbNewTodo.Text, Severity = _currentSeverity};
-			td.Tags.Add("#" + name);
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					td.Tags.Add("#" + name);
+					break;
+				case 2:
+					td.Kanban = kanbanTabs.SelectedIndex;
+					break;
+				default:
+					break;
+			}
+			
 			ExpandHashTags(td);
 			td.Rank[TabNames] = -1;
 			if (td.Severity == 3)
 			{
 				td.Rank[TabNames] = 0;
 			}
-
 			
 			AddItemToMasterList(td);
 			AutoSave();
