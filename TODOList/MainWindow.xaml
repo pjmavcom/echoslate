@@ -9,7 +9,7 @@
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
 		FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}" 
 		Style="{StaticResource {x:Type Window}}" 
-        Loaded="DelayedStartupLoad" >
+        Loaded="OnLoaded" >
 
 	<Window.Resources >
 		<local:ProgressBarForegroundConverter x:Key="ProgressBarForegroundConverter" />
@@ -231,7 +231,7 @@
 							<ColumnDefinition Width="228*"/>
 						</Grid.ColumnDefinitions>
 
-						<TabControl Name="todoTabs" ItemsSource="{Binding}" SelectionChanged="IncompleteItemsSelectionChanged" Grid.ColumnSpan="2" >
+						<TabControl Name="todoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsSelectionChanged" Grid.ColumnSpan="2" >
 							<TabControl.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
@@ -430,7 +430,7 @@
 							<ColumnDefinition Width="228*"/>
 						</Grid.ColumnDefinitions>
 
-						<TabControl Name="kanbanTabs" ItemsSource="{Binding}" SelectionChanged="KanbanTabSelectionChanged" Grid.ColumnSpan="2" >
+						<TabControl Name="kanbanTabs" ItemsSource="{Binding}" Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTabSelectionChanged" Grid.ColumnSpan="2" >
 							<TabControl.ContentTemplate >
 								<DataTemplate >
 									<Grid  >
@@ -588,9 +588,9 @@
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="100" />
 						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbNewTodo2" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+						<TextBox x:Name="tbKanbanNewTodo" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
 						<StackPanel Grid.Column="1" >
-							<ComboBox Name="cbSeverity2" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
+							<ComboBox Name="cbKanbanSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
 								<ComboBoxItem Content="None" />
 								<ComboBoxItem Content="Low" IsSelected="True" />
 								<ComboBoxItem Content="Med" />
