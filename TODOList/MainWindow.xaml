@@ -8,7 +8,8 @@
 		mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
 		FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}" 
-		Style="{StaticResource {x:Type Window}}" >
+		Style="{StaticResource {x:Type Window}}" 
+        Loaded="DelayedStartupLoad" >
 
 	<Window.Resources >
 		<local:ProgressBarForegroundConverter x:Key="ProgressBarForegroundConverter" />

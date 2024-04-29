@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using Clipboard = System.Windows.Forms.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -32,7 +33,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.29";
+		public const string PROGRAM_VERSION = "3.30";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -210,40 +211,13 @@ namespace TODOList
 			_currentHistoryItemIndex = 0;
 			lbCompletedTodos.SelectedIndex = 0;
 
-
 			//			lblPomoWork.Content = _pomoWorkTime.ToString();
 			//			lblPomoBreak.Content = _pomoBreakTime.ToString();
 
 			KanbanCreateTabs();
-			
-			int noGoodRecentFilesCount = 0;
-			for (int i = 0; i < RecentFiles.Count; i++)
-			{
-				if (File.Exists(RecentFiles[i]))
-				{
-					Load(RecentFiles[i]);
-					break;
-				}
-				else
-				{
-					noGoodRecentFilesCount = i + 1;
-				}
-			}
-
-			if (noGoodRecentFilesCount == RecentFiles.Count)
-			{
-				new DlgErrorMessage("No recent file found").ShowDialog();
-				IncompleteItemsCreateTabs();
-			}
-			else
-			{
-				LoadHistory();
-			}
-
 			_timeUntilBackup = _backupTime;
-			tabControl.SelectedIndex = _previousSessionLastActiveTab;
 		}
-
+		
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Windows METHODS //
 		protected override void OnSourceInitialized(EventArgs e)
 		{
@@ -333,32 +307,6 @@ namespace TODOList
 				}
 			}
 			return result;
-		}
-		private void InitializeWindow()
-		{
-			// _incompleteItemsTabsList = new List<TabItem>();
-			// _kanbanTabsList = new List<TabItem>();
-			// _masterList = new List<TodoItem>();
-			// _incompleteItems = new List<List<TodoItemHolder>>();
-			// _kanbanItems = new List<List<TodoItemHolder>>();
-			// _kanbanTabHeaders = new List<string>();
-			// _incompleteItemsHashTags = new List<List<string>>();
-			// _kanbanHashTags = new List<List<string>>();
-			// _tabHash = new List<string>();
-			// _hashShortcuts = new Dictionary<string, string>();
-			// HistoryItems = new List<HistoryItem>();
-			// _currentHistoryItem = new HistoryItem("", "");
-			//
-			// todoTabs.ItemsSource = _incompleteItemsTabsList;
-			// todoTabs.Items.Refresh();
-			// kanbanTabs.ItemsSource = _kanbanTabsList;
-			// kanbanTabs.Items.Refresh();
-			// mnuRecentLoads.ItemsSource = RecentFiles;
-			// lbHistory.ItemsSource = HistoryItems;
-			//
-			// lbHistory.SelectedIndex = 0;
-			// _currentHistoryItemIndex = 0;
-			// lbCompletedTodos.SelectedIndex = 0;
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Tabs //
@@ -789,7 +737,7 @@ namespace TODOList
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Kanban //
 		private void KanbanInitialize()
 		{
-			if (!(kanbanTabs. Template.FindName("PART_SelectedContentHost", kanbanTabs) is ContentPresenter kanbanContentPresenter))
+			if (!(kanbanTabs.Template.FindName("PART_SelectedContentHost", kanbanTabs) is ContentPresenter kanbanContentPresenter))
 			{
 				return;
 			}
@@ -2468,10 +2416,6 @@ namespace TODOList
 			}
 		}
 
-		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// TO DOs //
-
-		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sorting //
-
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// FileIO //
 		private string GetFilePath()
 		{
@@ -2834,7 +2778,34 @@ namespace TODOList
 			SaveFile(path);
 			_doBackup = false;
 		}
-	
+		private void DelayedStartupLoad(object sender, EventArgs e)
+		{
+			int noGoodRecentFilesCount = 0;
+			for (int i = 0; i < RecentFiles.Count; i++)
+			{
+				if (File.Exists(RecentFiles[i]))
+				{
+					Load(RecentFiles[i]);
+					tabControl.SelectedIndex = _previousSessionLastActiveTab;
+					break;
+				}
+				else
+				{
+					noGoodRecentFilesCount = i + 1;
+				}
+			}
+
+			if (noGoodRecentFilesCount == RecentFiles.Count)
+			{
+				new DlgErrorMessage("No recent file found").ShowDialog();
+				IncompleteItemsCreateTabs();
+			}
+			else
+			{
+				LoadHistory();
+			}
+		}
+		
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Settings //
 		private void LoadSettings()
 		{
