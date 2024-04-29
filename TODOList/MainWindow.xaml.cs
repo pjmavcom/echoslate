@@ -32,7 +32,7 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.28";
+		public const string PROGRAM_VERSION = "3.29";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -240,11 +240,6 @@ namespace TODOList
 				LoadHistory();
 			}
 
-			// IncompleteItemsInitialize();
-			// KanbanInitialize();
-			// RefreshTodo();
-			// KanbanRefresh();
-
 			_timeUntilBackup = _backupTime;
 			tabControl.SelectedIndex = _previousSessionLastActiveTab;
 		}
@@ -338,6 +333,32 @@ namespace TODOList
 				}
 			}
 			return result;
+		}
+		private void InitializeWindow()
+		{
+			// _incompleteItemsTabsList = new List<TabItem>();
+			// _kanbanTabsList = new List<TabItem>();
+			// _masterList = new List<TodoItem>();
+			// _incompleteItems = new List<List<TodoItemHolder>>();
+			// _kanbanItems = new List<List<TodoItemHolder>>();
+			// _kanbanTabHeaders = new List<string>();
+			// _incompleteItemsHashTags = new List<List<string>>();
+			// _kanbanHashTags = new List<List<string>>();
+			// _tabHash = new List<string>();
+			// _hashShortcuts = new Dictionary<string, string>();
+			// HistoryItems = new List<HistoryItem>();
+			// _currentHistoryItem = new HistoryItem("", "");
+			//
+			// todoTabs.ItemsSource = _incompleteItemsTabsList;
+			// todoTabs.Items.Refresh();
+			// kanbanTabs.ItemsSource = _kanbanTabsList;
+			// kanbanTabs.Items.Refresh();
+			// mnuRecentLoads.ItemsSource = RecentFiles;
+			// lbHistory.ItemsSource = HistoryItems;
+			//
+			// lbHistory.SelectedIndex = 0;
+			// _currentHistoryItemIndex = 0;
+			// lbCompletedTodos.SelectedIndex = 0;
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Tabs //
@@ -2485,6 +2506,7 @@ namespace TODOList
 			StreamReader stream = new StreamReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
 			ClearLists();
+			KanbanCreateTabs();
 
 			float version = 0.0f;
 
@@ -2520,6 +2542,9 @@ namespace TODOList
 			RefreshHistory();
 			todoTabs.Items.Refresh();
 			kanbanTabs.Items.Refresh();
+			// _kanbanTabsPreviousIndex = 3;
+			kanbanTabs.SelectedIndex = 3;
+			
 			if (HistoryItems.Count > 0)
 			{
 				lbHistory.SelectedIndex = 0;
@@ -2549,13 +2574,27 @@ namespace TODOList
 		}
 		private void ClearLists()
 		{
-			_incompleteItems.Clear();
 			_masterList.Clear();
+			_incompleteItems.Clear();
+			_kanbanItems.Clear();
 			_incompleteItemsHashTags.Clear();
+			_kanbanHashTags.Clear();
 			_tabHash.Clear();
 			_incompleteItemsTabsList.Clear();
+			_kanbanTabsList.Clear();
+			_kanbanTabHeaders.Clear();
 			HistoryItems.Clear();
 			_hashShortcuts.Clear();
+
+			_lbKanbanItems = null;
+			_lbIncompleteItems = null;
+			_cbHashTags = null;
+			_cbKanbanHashTags = null;
+
+			todoTabs.SelectedIndex = -1;
+			kanbanTabs.SelectedIndex = -1;
+			_todoTabsPreviousIndex = -1;
+			_kanbanTabsPreviousIndex = -1;
 		}
 		private void Load2_0SaveFile(TextReader stream, string line)
 		{
