@@ -1,3 +1,26 @@
+commit 1eecfa96778f062363b7f3c1e1ec7ecff8f06a07
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Apr 30 13:43:50 2024 +0800
+
+    20240430- v3.34 Fixed Rankings
+    
+    20240430- v3.34 Fixed Rankings
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240430-0m |Rank in kanban view is wrong
+            Notes: But only on some views?
+    Adding a new item and viewing it in Kanban view has the wrong ranks
+    I
+                    think it is not fixing ranks because of the kanban tabs are not identified in the save file
+    Do I even
+                    need ranks in Kanban view?
+    Yes...added!
+    
+    =Features Added===================================================================================================
+    --20240430-0m |Added a line separator to the git history log to separate commits
+
 commit 4e582e1de082d1a77e9146f75f9d72ef59eb84bc
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Apr 30 11:11:53 2024 +0800
