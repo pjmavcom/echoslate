@@ -1,3 +1,26 @@
+commit 2ae97b865fa501e88f2f50853d6f1dbef4ff8d17
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Apr 30 17:15:22 2024 +0800
+
+    20240430- v3.35Fixed some notes panel things
+    
+    20240430- v3.35Fixed some notes panel things
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240430-0m |Editing notes or title in side panel and switching tabs does not save new data
+            Notes: Fixed!
+    
+    =Features Added===================================================================================================
+    --20240430-0m |Adding a new todo should load the notes panel to the new one
+            Notes: Ok, got this working/nSolution: Had to add new todos at the bottom of the list, then select the
+                    item in the list box
+    
+    =Other Stuff======================================================================================================
+    --20240430-0m |Refresh notes panel
+            Notes: When an item is deleted, the notes panel doesn't show it
+
 commit 1eecfa96778f062363b7f3c1e1ec7ecff8f06a07
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Apr 30 13:43:50 2024 +0800

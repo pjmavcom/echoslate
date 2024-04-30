@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:TODOList"
-		mc:Ignorable="d"
+        mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
-		FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}" 
-		Style="{StaticResource {x:Type Window}}" 
+        FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}" 
+        Style="{StaticResource {x:Type Window}}" 
         Loaded="OnLoaded" >
 
 	<Window.Resources >
@@ -22,6 +22,13 @@
 		<RoutedUICommand x:Key="QuickSave" Text="And Yet Another Text" />
 		<RoutedUICommand x:Key="QuickLoadPrevious" Text="And Yet Another Another Text" />
 		<RoutedUICommand x:Key="StartStopTimer" Text="And Yet Another Another Text" />
+		
+		<DataTemplate x:Key="NotesPanelHashTagsListBox" > 
+			<StackPanel Orientation="Horizontal" Height="30" >
+				<Button Content="X" Click="DeleteTag_OnClick" Width="35" />
+				<TextBox Text="{Binding Text}" Width="410" LostFocus="NewTag_LostFocus" />
+			</StackPanel >
+		</DataTemplate >
 	</Window.Resources >
 
 	<Window.CommandBindings>
@@ -94,7 +101,6 @@
 				<wpfTool:IntegerUpDown Name="iudPomoBreak" Minimum="1" Value="{Binding PomoBreakTime, UpdateSourceTrigger=PropertyChanged}" ValueChanged="PomoBreak_OnValueChanged" Width="80" />
 			</StackPanel >
 		</Grid >
-
 		<TabControl Name="tabControl" SelectionChanged="TabControl_OnSelectionChanged" >
 			<!-- VCS History tab -->
 			<TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False" >
@@ -221,17 +227,17 @@
 						<ColumnDefinition Width="3*"/>
 						<ColumnDefinition Width="1*"/>
 					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions >
-						<RowDefinition />
-						<RowDefinition Height="100" />
-					</Grid.RowDefinitions >
 					<Grid Grid.Row="0" Grid.Column="0">
-						<Grid.ColumnDefinitions>
+						<!--	<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="7*"/>
 							<ColumnDefinition Width="228*"/>
-						</Grid.ColumnDefinitions>
+						</Grid.ColumnDefinitions>-->
 
-						<TabControl Name="todoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsSelectionChanged" Grid.ColumnSpan="2" >
+						<Grid.RowDefinitions >
+							<RowDefinition />
+							<RowDefinition Height="100" />
+						</Grid.RowDefinitions >
+						<TabControl Grid.Row="0" Grid.Column="0" Name="todoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsSelectionChanged" >
 							<TabControl.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
@@ -379,40 +385,53 @@
 								</DataTemplate >
 							</TabControl.ContentTemplate >
 						</TabControl >
+						<!-- The add, radio buttons, and input field -->
+						<Grid Grid.Row="1" Grid.Column="0">
+							<Grid.ColumnDefinitions >
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="100" />
+							</Grid.ColumnDefinitions >
+							<TextBox x:Name="tbNewTodo" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+							<StackPanel Grid.Column="1" >
+								<ComboBox Name="cbSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
+									<ComboBoxItem Content="None" />
+									<ComboBoxItem Content="Low" IsSelected="True" />
+									<ComboBoxItem Content="Med" />
+									<ComboBoxItem Content="High" />
+								</ComboBox >
+								<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
+							</StackPanel >
+						</Grid >
 					</Grid>
 					<Grid Grid.Row="0" Grid.Column="1" >
 						<Grid.RowDefinitions>
 							<RowDefinition Height="60" />
 							<RowDefinition />
+							<RowDefinition Height="335" />
+							<RowDefinition Height="35" />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbIncompleteItemsTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus" />
+							<TextBox x:Name="tbIncompleteItemsTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
 						</Grid>
 						<Grid Grid.Row="1" >
-							<TextBox x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" />
+							<TextBox x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
 						</Grid>
+						<Grid Grid.Row="2" >
+							<Grid.RowDefinitions>
+								<RowDefinition Height="35" />
+								<RowDefinition Height="300" />
+							</Grid.RowDefinitions>
+							<StackPanel Grid.Row="0" Orientation="Horizontal" >
+								<Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
+								<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
+							</StackPanel >
+							<ListBox Name="lbIncompleteItemsHashTags" Height="300" Margin="2" Grid.Row="1" ItemTemplate="{StaticResource NotesPanelHashTagsListBox}" IsSynchronizedWithCurrentItem="True" />
+						</Grid >
+						<Button Content="Complete" Width="100" Grid.Row="3" Click="TodoComplete_OnClick" />
 					</Grid>
-
-					<!-- The add, radio buttons, and input field -->
-					<Grid Grid.Row="1" Grid.Column="0">
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="100" />
-						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbNewTodo" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
-						<StackPanel Grid.Column="1" >
-							<ComboBox Name="cbSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" />
-								<ComboBoxItem Content="Low" IsSelected="True" />
-								<ComboBoxItem Content="Med" />
-								<ComboBoxItem Content="High" />
-							</ComboBox >
-							<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
-						</StackPanel >
-					</Grid >
 				</Grid >
 			</TabItem >
-		
+
 			<!-- VCS Kanban tab -->
 			<TabItem Name="tabKanban" Header="Kanban" HorizontalAlignment="Right" Height="26" VerticalAlignment="Center" >
 				<Grid >
@@ -420,17 +439,17 @@
 						<ColumnDefinition Width="3*"/>
 						<ColumnDefinition Width="1*"/>
 					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions >
-						<RowDefinition />
-						<RowDefinition Height="100" />
-					</Grid.RowDefinitions >
 					<Grid Grid.Row="0" Grid.Column="0">
-						<Grid.ColumnDefinitions>
+						<Grid.RowDefinitions >
+							<RowDefinition Height="*" />
+							<RowDefinition Height="100" />
+						</Grid.RowDefinitions >
+						<!--<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="7*"/>
 							<ColumnDefinition Width="228*"/>
-						</Grid.ColumnDefinitions>
+						</Grid.ColumnDefinitions>-->
 
-						<TabControl Name="kanbanTabs" ItemsSource="{Binding}" Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTabSelectionChanged" Grid.ColumnSpan="2" >
+						<TabControl Grid.Row="0" Grid.Column="0" Name="kanbanTabs" ItemsSource="{Binding}" Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTabSelectionChanged" >
 							<TabControl.ContentTemplate >
 								<DataTemplate >
 									<Grid  >
@@ -455,7 +474,6 @@
 
 											<Button Grid.Column="3" Name="btnKanbanSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
 											<Button Grid.Column="4" Name="btnKanbanSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
-
 										</Grid >
 
 										<!-- The list of incomplete todos -->
@@ -472,7 +490,7 @@
 													<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
 													<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
 													<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
-											</ContextMenu >
+												</ContextMenu >
 											</ListBox.ContextMenu >
 											<ListBox.ItemContainerStyle>
 												<Style TargetType="ListBoxItem">
@@ -568,11 +586,30 @@
 								</DataTemplate >
 							</TabControl.ContentTemplate >
 						</TabControl >
+						<Grid Grid.Row="1" Grid.Column="0">
+							<Grid.ColumnDefinitions >
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="100" />
+							</Grid.ColumnDefinitions >
+							<TextBox x:Name="tbKanbanNewTodo" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+							<StackPanel Grid.Column="1" >
+								<ComboBox Name="cbKanbanSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
+									<ComboBoxItem Content="None" />
+									<ComboBoxItem Content="Low" IsSelected="True" />
+									<ComboBoxItem Content="Med" />
+									<ComboBoxItem Content="High" />
+								</ComboBox >
+								<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
+							</StackPanel >
+						</Grid >
 					</Grid>
+					
 					<Grid Grid.Row="0" Grid.Column="1" >
 						<Grid.RowDefinitions>
 							<RowDefinition Height="60" />
 							<RowDefinition />
+							<RowDefinition Height="335" />
+							<RowDefinition Height="35" />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
 							<TextBox x:Name="tbKanbanTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
@@ -580,28 +617,24 @@
 						<Grid Grid.Row="1" >
 							<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
 						</Grid>
+						<Grid Grid.Row="2" >
+							<Grid.RowDefinitions>
+								<RowDefinition Height="35" />
+								<RowDefinition Height="300" />
+							</Grid.RowDefinitions>
+							<StackPanel Grid.Row="0" Orientation="Horizontal" >
+								<Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
+								<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
+							</StackPanel >
+							<ListBox Name="lbKanbanHashTags" Height="300" Margin="2" Grid.Row="1" ItemTemplate="{StaticResource NotesPanelHashTagsListBox}" IsSynchronizedWithCurrentItem="True" />
+						</Grid >
+						<Button Content="Complete" Width="100" Grid.Row="3" Click="TodoComplete_OnClick" />
 					</Grid>
 
 	
-					<Grid Grid.Row="1" Grid.Column="0">
-						<Grid.ColumnDefinitions >
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="100" />
-						</Grid.ColumnDefinitions >
-						<TextBox x:Name="tbKanbanNewTodo" Grid.Column="0" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
-						<StackPanel Grid.Column="1" >
-							<ComboBox Name="cbKanbanSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2" >
-								<ComboBoxItem Content="None" />
-								<ComboBoxItem Content="Low" IsSelected="True" />
-								<ComboBoxItem Content="Med" />
-								<ComboBoxItem Content="High" />
-							</ComboBox >
-							<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
-						</StackPanel >
-					</Grid >
 				</Grid >
 			</TabItem >
-			
+
 			<!-- VCS Log tab -->
 			<TabItem Name="tabHistoryLog" Header="Log" >
 				<Grid >
@@ -613,7 +646,6 @@
 					<ListBox Name="lbHistoryLog" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 				</Grid >
 			</TabItem >
-			
 		</TabControl >
 	</DockPanel >
 </Window >
