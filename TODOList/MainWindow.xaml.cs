@@ -23,6 +23,7 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using Label = System.Windows.Controls.Label;
 using ListBox = System.Windows.Controls.ListBox;
 using MenuItem = System.Windows.Controls.MenuItem;
+using TabControl = System.Windows.Controls.TabControl;
 using TextBox = System.Windows.Controls.TextBox;
 
 
@@ -31,7 +32,7 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		public const string PROGRAM_VERSION = "3.33";
+		public const string PROGRAM_VERSION = "3.34";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -39,7 +40,8 @@ namespace TODOList
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
 		private List<TabItem> _currentTabsList;
-		
+		private TabItem _currentSelectedMainTab;
+		private TabControl _currentSelectedSubTab;
 		private readonly List<TodoItem> _masterList;
 		
 		private readonly List<List<TodoItemHolder>> _incompleteItems;
@@ -338,16 +340,20 @@ namespace TODOList
 			_currentItems = null;
 			_currentTabsList = null;
 			_currentHashTags = null;
+			_currentSelectedSubTab = null;
 			
 			int tabIndex = tabControl.SelectedIndex;
 			switch (tabIndex)
 			{
 				case 0:
+					_currentSelectedMainTab = tabHistory;
 					// History Tab
 					break;
 				case 1:
 					// IncompleteItems (TO DO) Tab
 					IncompleteItemsUpdateHandler();
+					_currentSelectedMainTab = tabTodos;
+					_currentSelectedSubTab = todoTabs;
 					_lbCurrentItems = _lbIncompleteItems;
 					_cbCurrentHashTags = _cbIncompleteItemsHashTags;
 					_currentItems = _incompleteItems;
@@ -359,6 +365,8 @@ namespace TODOList
 				case 2:
 					// Kanban Tab
 					KanbanUpdateHandler();
+					_currentSelectedMainTab = tabKanban;
+					_currentSelectedSubTab = kanbanTabs;
 					_lbCurrentItems = _lbKanbanItems;
 					_cbCurrentHashTags = _cbKanbanHashTags;
 					_currentItems = _kanbanItems;
@@ -369,6 +377,7 @@ namespace TODOList
 					break;
 				case 3:
 					// Log Tab
+					_currentSelectedMainTab = tabHistory;
 					break;
 				default:
 					// No tab selected
@@ -465,6 +474,10 @@ namespace TODOList
 			string line = stream.ReadLine();
 			while (line != null)
 			{
+				if (line.Split(' ')[0] == "commit")
+				{
+					log.Add("=====================================================================================" + Environment.NewLine);
+				}
 				log.Add(line);
 				line = stream.ReadLine();
 			}
@@ -707,14 +720,13 @@ namespace TODOList
 			SortHashTagLists(_incompleteItems, _incompleteItemsHashTags);
 			IncompleteItemsCountTabItems();
 			CheckForHashTagListChanges();
-			FixRankings();
+			IncompleteItemsFixRankings();
 		
 			int tabIndex = todoTabs.SelectedIndex;
 			if (tabIndex < 0 || tabIndex >= _incompleteItemsTabsList.Count)
 			{
 				return;
 			}
-			
 			SortLists(_incompleteItems, _incompleteItemsHashTags, tabIndex);
 
 			if (_lbIncompleteItems != null)
@@ -781,6 +793,26 @@ namespace TODOList
 				_incompleteItemsTabsList[i].Header = _tabHash[i - 1] + " " + _incompleteItems[i].Count;
 			}
 			_incompleteItemsTabsList[0].Header = "All " + _incompleteItems[0].Count;
+		}
+		private void IncompleteItemsFixRankings()
+		{
+			if (todoTabs.Items.Count == 0 ||
+			    todoTabs.SelectedIndex < 0 ||
+			    todoTabs.SelectedIndex >= todoTabs.Items.Count)
+			{
+				return;
+			}
+			string currentHash = _incompleteItemsTabsList[todoTabs.SelectedIndex].Name;
+			foreach (TodoItemHolder itemHolder in _incompleteItems[todoTabs.SelectedIndex].Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
+			{
+				itemHolder.TD.Rank.Add(currentHash, 99);
+			}
+			_incompleteItems[todoTabs.SelectedIndex] = _incompleteItems[todoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
+			for (int rank = 0; rank < _incompleteItems[todoTabs.SelectedIndex].Count; rank++)
+			{
+				_incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
+				_incompleteItems[todoTabs.SelectedIndex][rank].Rank = _incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash];
+			}
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Kanban //
@@ -920,7 +952,7 @@ namespace TODOList
 			KanbanSortToTabs();
 			SortHashTagLists(_kanbanItems, _kanbanHashTags);
 			KanbanCountTabItems();
-			KanbanFixRankings();
+			// KanbanFixRankings();
 
 			int tabIndex = kanbanTabs.SelectedIndex;
 			if (tabIndex < 0 || tabIndex >= _kanbanTabsList.Count)
@@ -943,7 +975,28 @@ namespace TODOList
 		}
 		private void KanbanFixRankings()
 		{
-			
+			if (kanbanTabs.Items.Count == 0 ||
+			    kanbanTabs.SelectedIndex < 0 ||
+			    kanbanTabs.SelectedIndex >= kanbanTabs.Items.Count)
+			{
+				return;
+			}
+
+			int tempRank = 1;
+			foreach (TodoItemHolder todoItemHolder in _kanbanItems[kanbanTabs.SelectedIndex])
+			{
+				if (todoItemHolder.TD.KanbanRank == 0)
+				{
+					
+				}
+				todoItemHolder.TD.KanbanRank = tempRank++;
+			}
+			_kanbanItems[kanbanTabs.SelectedIndex] = _kanbanItems[kanbanTabs.SelectedIndex].OrderBy(o => o.TD.KanbanRank).ToList();
+			for (int rank = 0; rank < _kanbanItems[kanbanTabs.SelectedIndex].Count; rank++)
+			{
+				_kanbanItems[kanbanTabs.SelectedIndex][rank].TD.KanbanRank = rank + 1;
+				_kanbanItems[kanbanTabs.SelectedIndex][rank].KanbanRank = _kanbanItems[kanbanTabs.SelectedIndex][rank].TD.KanbanRank;
+			}
 		}
 		private void KanbanHashTagsInitialize()
 		{
@@ -2066,26 +2119,6 @@ namespace TODOList
 
 			return incompleteItems;
 		}
-		private void FixRankings()
-		{
-			if (todoTabs.Items.Count == 0 ||
-			    todoTabs.SelectedIndex < 0 ||
-			    todoTabs.SelectedIndex >= todoTabs.Items.Count)
-			{
-				return;
-			}
-			string currentHash = _incompleteItemsTabsList[todoTabs.SelectedIndex].Name;
-			foreach (TodoItemHolder itemHolder in _incompleteItems[todoTabs.SelectedIndex].Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
-			{
-				itemHolder.TD.Rank.Add(currentHash, 99);
-			}
-			_incompleteItems[todoTabs.SelectedIndex] = _incompleteItems[todoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
-			for (int rank = 0; rank < _incompleteItems[todoTabs.SelectedIndex].Count; rank++)
-			{
-				_incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
-				_incompleteItems[todoTabs.SelectedIndex][rank].Rank = _incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash];
-			}
-		}
 		private void CheckForHashTagListChanges()
 		{
 			_didHashChange = false;
@@ -2142,9 +2175,21 @@ namespace TODOList
 					list[tabIndex] = SortByHashTag(list[tabIndex], hashTagsList[tabIndex]);
 					break;
 				case "rank":
-					list[tabIndex] = _reverseSort
-						? list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList()
-						: list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList();
+					switch (tabControl.SelectedIndex)
+					{
+						case 1:
+							list[tabIndex] = _reverseSort
+								? list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList()
+								: list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList();
+							break;
+						case 2:
+							list[tabIndex] = _reverseSort
+								? list[tabIndex].OrderByDescending(o => o.TD.KanbanRank).ToList()
+								: list[tabIndex].OrderBy(o => o.TD.KanbanRank).ToList();
+							break;
+						default:
+							break;
+					}
 					break;
 				case "kanban":
 					list[tabIndex] = _reverseSort
@@ -2190,6 +2235,7 @@ namespace TODOList
 					break;
 				case 2:
 					td.Kanban = kanbanTabs.SelectedIndex;
+					td.KanbanRank = _lbKanbanItems.Items.Count + 1;
 					break;
 				default:
 					break;
@@ -2216,50 +2262,81 @@ namespace TODOList
 			{
 				return;
 			}
-			TodoItemHolder itemHolder = b.DataContext as TodoItemHolder;
+			TodoItemHolder todoItemHolder = b.DataContext as TodoItemHolder;
+			List<TodoItemHolder> todoItemHolderList = _currentItems[_currentSelectedSubTab.SelectedIndex];
 
-			if (IncompleteItems.Count == 0)
+			if (todoItemHolderList.Count == 0)
 			{
 				return;
 			}
-			int index = IncompleteItems.IndexOf(itemHolder);
+			int index = todoItemHolderList.IndexOf(todoItemHolder);
 			switch ((string) b.CommandParameter)
 			{
 				case "up" when index == 0:
 					return;
-				// TODO: Fix this too
 				case "up":
 				{
-					int newRank = IncompleteItems[index - 1].TD.Rank[TabNames];
-					if (itemHolder != null)
-					{
-						IncompleteItems[index - 1].TD.Rank[TabNames] = itemHolder.Rank;
-						itemHolder.TD.Rank[TabNames] = newRank;
-						AutoSave();
-					}
-
+					RankAdjustUp(todoItemHolder, todoItemHolderList, index);
 					break;
 				}
-				case "down" when index >= IncompleteItems.Count - 1:
+				case "down" when index >= todoItemHolderList.Count - 1:
 					return;
-				// TODO: And this 
 				case "down":
 				{
-					int newRank = IncompleteItems[index + 1].TD.Rank[TabNames];
-					if (itemHolder != null)
-					{
-						IncompleteItems[index + 1].TD.Rank[TabNames] = itemHolder.Rank;
-						itemHolder.TD.Rank[TabNames] = newRank;
-						AutoSave();
-					}
-
+					RankAdjustDown(todoItemHolder, todoItemHolderList, index);
 					break;
 				}
 			}
 			IncompleteItemsRefresh();
 			KanbanRefresh();
-//				Point p = b.PointToScreen(new Point(0d, 0d));;
-//				SetCursorPosition((int) p.X + 18, (int) p.Y + 18);
+		}
+		private void RankAdjustUp(TodoItemHolder todoItemHolder, List<TodoItemHolder> todoItemHolderList, int index)
+		{		
+			if (todoItemHolder == null)
+			{
+				return;
+			}
+
+			int newRank = 0;
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					newRank = todoItemHolderList[index - 1].TD.Rank[TabNames];
+					todoItemHolderList[index - 1].TD.Rank[TabNames] = todoItemHolder.Rank;
+					todoItemHolder.TD.Rank[TabNames] = newRank;
+					break;
+				case 2:
+					newRank = todoItemHolderList[index - 1].TD.KanbanRank;
+					todoItemHolderList[index - 1].TD.KanbanRank = todoItemHolder.KanbanRank;
+					todoItemHolder.TD.KanbanRank = newRank;
+					break;
+			}
+
+			AutoSave();
+		}
+		private void RankAdjustDown(TodoItemHolder todoItemHolder, List<TodoItemHolder> todoItemHolderList, int index)
+		{
+			if (todoItemHolder == null)
+			{
+				return;
+			}
+
+			int newRank = 0;
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					newRank = todoItemHolderList[index + 1].TD.Rank[TabNames];
+					todoItemHolderList[index + 1].TD.Rank[TabNames] = todoItemHolder.Rank;
+					todoItemHolder.TD.Rank[TabNames] = newRank;
+					break;
+				case 2:
+					newRank = todoItemHolderList[index + 1].TD.KanbanRank;
+					todoItemHolderList[index + 1].TD.KanbanRank = todoItemHolder.KanbanRank;
+					todoItemHolder.TD.KanbanRank = newRank;
+					break;
+			}
+
+			AutoSave();
 		}
 		private void AddItemToMasterList(TodoItem td)
 		{

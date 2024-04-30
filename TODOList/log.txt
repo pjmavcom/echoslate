@@ -1,3 +1,20 @@
+commit 4e582e1de082d1a77e9146f75f9d72ef59eb84bc
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Apr 30 11:11:53 2024 +0800
+
+    20240429- v3.33 Fixed the Git log
+    
+    20240429- v3.33 Fixed the Git log
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240430-0m |Log doesn't work
+            Notes: Maybe needs a load button to find the .git directory?
+    Fixed!
+    Solution: I think maybe the command
+                    path had changed? I don't know. I fixed it though by changing the called arguments string.
+
 commit 93c740b7e0b7c201dc56a763812f70d5d32e49cd
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Mon Apr 29 22:52:54 2024 +0800

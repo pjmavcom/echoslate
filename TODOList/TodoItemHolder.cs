@@ -40,6 +40,12 @@ namespace TODOList
 			get => _td.Kanban;
 			set => _td.Kanban = value;
 		}
+
+		public int KanbanRank
+		{
+			get => _td.KanbanRank;
+			set => _td.KanbanRank = value;
+		}
 		public bool IsTimerOn => _td.IsTimerOn;
 		public long TimeTakenInMinutes
 		{

@@ -29,6 +29,7 @@ namespace TODOList
 		private bool _isComplete;
 		private int _severity;
 		private int _kanban;
+		private int _kanbanRank;
 		private Dictionary<string, int> _rank;
 		private List<string> _tags;
 	
@@ -80,6 +81,12 @@ namespace TODOList
 		{
 			get => _kanban;
 			set => _kanban = value;
+		}
+
+		public int KanbanRank
+		{
+			get => _kanbanRank;
+			set => _kanbanRank = value;
 		}
 		private string DateCompleted
 		{
@@ -324,6 +331,8 @@ namespace TODOList
 				Notes = pieces[10].Trim();
 			if (pieces.Length > 11)
 				Kanban = Convert.ToInt32(pieces[11].Trim());
+			if (pieces.Length > 12)
+				KanbanRank = Convert.ToInt32(pieces[12].Trim());
 		}
 		private void ParseNewTags()
 		{
@@ -465,18 +474,19 @@ namespace TODOList
 			if (_notes.Contains(Environment.NewLine))
 				notes = notes.Replace(Environment.NewLine, "/n");
 
-			string result = "VERSION " + MainWindow.PROGRAM_VERSION + "|" + 
-							_dateStarted + "|" + 
-							_timeStarted + "|" + 
-							_dateCompleted + "|" + 
-							_timeCompleted + "|" + 
-							_timeTaken.Ticks + "|" + 
-							_isComplete + "|" + 
-							Ranks + "|" + 
-							_severity + "|" + 
-							TagsAndTodoToSave + "|" + 
-							notes + "|" +
-							_kanban;
+			string result = "VERSION " + MainWindow.PROGRAM_VERSION + "|" +
+			                _dateStarted + "|" +
+			                _timeStarted + "|" +
+			                _dateCompleted + "|" +
+			                _timeCompleted + "|" +
+			                _timeTaken.Ticks + "|" +
+			                _isComplete + "|" +
+			                Ranks + "|" +
+			                _severity + "|" +
+			                TagsAndTodoToSave + "|" +
+			                notes + "|" +
+			                _kanban + "|" +
+			                _kanbanRank;
 			return result;
 		}
 		public string ToClipboard()
