@@ -31,9 +31,10 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
+		public const string PROGRAM_VERSION = "3.33";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
-		public const string PROGRAM_VERSION = "3.32";
+		public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 		private readonly List<TabItem> _kanbanTabsList;
@@ -450,7 +451,7 @@ namespace TODOList
 				FileName = "cmd.exe",
 				WindowStyle = ProcessWindowStyle.Hidden
 			};
-			string args = "/c git --git-dir " + gitPath + "\\.git log > \"" + _historyLogPath + "\"";
+			string args = "/c call \"" + GIT_EXE_PATH + "git\" --git-dir=\"" + gitPath + "\\.git\" log > \"" + _historyLogPath + "\"";
 			startInfo.Arguments = args;
 			Process p = new Process
 			{
