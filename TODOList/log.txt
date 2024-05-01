@@ -1,3 +1,22 @@
+commit d62263014a2d8545e653d497a55545a156097fc3
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 09:57:47 2024 +0800
+
+    20240430- v3.37 Fixed quick complete and duplicate items in history
+    
+    20240430- v3.37 Fixed quick complete and duplicate items in history
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240501-0m |QuickComplete needs to be fixed for both tabs
+            Notes: Fixed
+    --20240501-0m |Duplicate todos being added to history
+            Notes: SortCompleteTodos was being called recursively, before removing the complete from the masterlist.
+                    So I removed from masterlist first, then sorted it
+    --20240501-0m |New todo textbox in Kanban view doesn't clear after adding todo
+            Notes: Easy fix, _tbNewTodo.Clear() was commented out?!
+
 commit 4f1c5db3c670a8a982641e72bd10a02205debe07
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Apr 30 22:55:45 2024 +0800

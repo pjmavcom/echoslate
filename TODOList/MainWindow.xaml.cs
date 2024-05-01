@@ -33,7 +33,7 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		public const string PROGRAM_VERSION = "3.37";
+		public const string PROGRAM_VERSION = "3.38";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -699,6 +699,7 @@ namespace TODOList
 				return;
 			}
 			IncompleteItemsRefresh();
+			todoTabs.ItemsSource = _incompleteItemsTabsList;
 			todoTabs.Items.Refresh();
 			AutoSave();
 		}
@@ -725,6 +726,10 @@ namespace TODOList
 		}
 		private void IncompleteItems_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (todoTabs.SelectedIndex < 0 || todoTabs.SelectedIndex >= _incompleteItems.Count)
+			{
+				todoTabs.SelectedIndex = 0;
+			}
 			List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
 			if (_lbIncompleteItems.SelectedIndex < 0)
 			{
@@ -1277,6 +1282,8 @@ namespace TODOList
 					IncompleteItemsAddNewTab(s);
 				}
 			}
+
+			IncompleteItemsInitialize();
 
 			foreach (TodoItem td in _masterList)
 			{
@@ -2103,7 +2110,7 @@ namespace TODOList
 		}
 		private void UpdateNotes(ListBox listBox, List<TodoItemHolder> todoItemList, TextBox textBox)
 		{
-			if (listBox.SelectedIndex >= 0)
+			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
 			{
 				// todoItemList[listBox.SelectedIndex].TD.Notes = textBox.Text;
 				_currentTodoItemInNotesPanel.Notes = textBox.Text;
@@ -2131,7 +2138,7 @@ namespace TODOList
 		}
 		private void UpdateTitle(ListBox listBox, List<TodoItemHolder> todoItemList, TextBox textBox)
 		{
-			if (listBox.SelectedIndex >= 0)
+			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
 			{
 				// todoItemList[listBox.SelectedIndex].TD.Todo = textBox.Text;
 				_currentTodoItemInNotesPanel.Todo = textBox.Text;
