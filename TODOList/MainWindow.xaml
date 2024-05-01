@@ -26,7 +26,7 @@
 		<DataTemplate x:Key="NotesPanelHashTagsListBox" > 
 			<StackPanel Orientation="Horizontal" Height="30" >
 				<Button Content="X" Click="DeleteTag_OnClick" Width="35" />
-				<TextBox Text="{Binding Text}" Width="410" LostFocus="NewTag_LostFocus" />
+				<TextBox Text="{Binding Text}" Width="250" LostFocus="NewTag_LostFocus" />
 			</StackPanel >
 		</DataTemplate >
 	</Window.Resources >
@@ -228,8 +228,6 @@
 					</Grid >
 				</Grid >
 			</TabItem >
-			
-			<!-- VCS TODOs tab -->
 			<TabItem Name="tabTodos" Header="TODOs" HorizontalAlignment="Right" Width="64" Height="26" VerticalAlignment="Center" >
 				<Grid >
 					<Grid.ColumnDefinitions>
@@ -417,16 +415,32 @@
 					</Grid>
 					<Grid Grid.Row="0" Grid.Column="1" >
 						<Grid.RowDefinitions>
-							<RowDefinition Height="60" />
+							<RowDefinition Height="90" />
 							<RowDefinition />
 							<RowDefinition Height="335" />
 							<RowDefinition Height="35" />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbIncompleteItemsTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
+							<StackPanel Height="90" >
+								<Label Content="Title:" Height="25" />
+								<TextBox x:Name="tbIncompleteItemsTitle" Height="65" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
+							</StackPanel >	
 						</Grid>
 						<Grid Grid.Row="1" >
-							<TextBox x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
+							<Grid.RowDefinitions >
+								<RowDefinition Height="25" />
+								<RowDefinition Height="3*" />
+								<RowDefinition Height="25" />
+								<RowDefinition Height="2*" />
+								<RowDefinition Height="25" />
+								<RowDefinition Height="7*" />
+							</Grid.RowDefinitions >
+							<Label Grid.Row="0" Content="Notes:" />
+							<TextBox Grid.Row="1"  x:Name="tbIncompleteItemsNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
+							<Label Grid.Row="2" Content="Problem:" />
+							<TextBox Grid.Row="3"  x:Name="tbIncompleteItemsProblem" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Problem_OnLostFocus" GotFocus="Problem_OnGotFocus" />
+							<Label Grid.Row="4" Content="Solution:" />
+							<TextBox Grid.Row="5"  x:Name="tbIncompleteItemsSolution" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
 						</Grid>
 						<Grid Grid.Row="2" >
 							<Grid.RowDefinitions>
@@ -444,7 +458,7 @@
 				</Grid >
 			</TabItem >
 
-			<!-- VCS Kanban tab -->
+			<!-- VCS TODOs tab -->
 			<TabItem Name="tabKanban" Header="Kanban" HorizontalAlignment="Right" Height="26" VerticalAlignment="Center" >
 				<Grid >
 					<Grid.ColumnDefinitions>
@@ -621,16 +635,32 @@
 					
 					<Grid Grid.Row="0" Grid.Column="1" >
 						<Grid.RowDefinitions>
-							<RowDefinition Height="60" />
-							<RowDefinition />
+							<RowDefinition Height="90" />
+							<RowDefinition  />
 							<RowDefinition Height="335" />
 							<RowDefinition Height="35" />
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0" >
-							<TextBox x:Name="tbKanbanTitle" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
+							<StackPanel Height="90" >
+								<Label Content="Title:" Height="25" />
+								<TextBox x:Name="tbKanbanTitle" Height="65" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus"  GotFocus="TodoTitle_OnGotFocus" />
+							</StackPanel >	
 						</Grid>
 						<Grid Grid.Row="1" >
-							<TextBox x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
+							<Grid.RowDefinitions >
+								<RowDefinition Height="25" />
+								<RowDefinition Height="3*" />
+								<RowDefinition Height="25" />
+								<RowDefinition Height="2*" />
+								<RowDefinition Height="25" />
+								<RowDefinition Height="7*" />
+							</Grid.RowDefinitions >
+							<Label Grid.Row="0" Content="Notes:" />
+							<TextBox Grid.Row="1"  x:Name="tbKanbanNotes" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
+							<Label Grid.Row="2" Content="Problem:" />
+							<TextBox Grid.Row="3"  x:Name="tbKanbanProblem" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Problem_OnLostFocus" GotFocus="Problem_OnGotFocus" />
+							<Label Grid.Row="4" Content="Solution:" />
+							<TextBox Grid.Row="5"  x:Name="tbKanbanSolution" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
 						</Grid>
 						<Grid Grid.Row="2" >
 							<Grid.RowDefinitions>
@@ -649,6 +679,8 @@
 	
 				</Grid >
 			</TabItem >
+
+			<!-- VCS Kanban tab -->
 
 			<!-- VCS Log tab -->
 			<TabItem Name="tabHistoryLog" Header="Log" >

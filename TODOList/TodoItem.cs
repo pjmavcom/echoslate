@@ -19,6 +19,8 @@ namespace TODOList
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private string _todo;
 		private string _notes;
+		private string _problem;
+		private string _solution;
 		private string _dateStarted;
 		private string _timeStarted;
 		private string _dateCompleted;
@@ -67,7 +69,20 @@ namespace TODOList
 				ParseNotes();
 			}
 		}
-		public string NotesAndTags => "Notes: " + Notes + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
+
+		public string Problem
+		{
+			get => _problem;
+			set => _problem = value;
+		}
+
+		public string Solution
+		{
+			get => _solution;
+			set => _solution = value;
+		}
+			
+		public string NotesAndTags => "Notes: " + Notes + Environment.NewLine + "Problem: " + Problem + Environment.NewLine + "Solution: " + Solution + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
 		public string StartDateTime => _dateStarted + "" + "_" + _timeStarted;
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;
@@ -333,6 +348,10 @@ namespace TODOList
 				Kanban = Convert.ToInt32(pieces[11].Trim());
 			if (pieces.Length > 12)
 				KanbanRank = Convert.ToInt32(pieces[12].Trim());
+			if (pieces.Length > 13)
+				Problem = pieces[13];
+			if (pieces.Length > 14)
+				Solution = pieces[14];
 		}
 		private void ParseNewTags()
 		{
@@ -486,14 +505,20 @@ namespace TODOList
 			                TagsAndTodoToSave + "|" +
 			                notes + "|" +
 			                _kanban + "|" +
-			                _kanbanRank;
+			                _kanbanRank + "|" +
+			                _problem + "|" +
+			                _solution;
 			return result;
 		}
 		public string ToClipboard()
 		{
 			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + BreakLines(_todo);
-			if(_notes != "")
+			if (_notes != "")
 				result += Environment.NewLine + "\tNotes: " + BreakLines(_notes);
+			if (_problem != "")
+				result += Environment.NewLine + "\tProblem: " + BreakLines(_problem);
+			if (_solution != "")
+				result += Environment.NewLine + "\tSolution: " + BreakLines(_solution);
 			return result;
 		}
 		private string BreakLines(string s)

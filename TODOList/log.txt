@@ -1,3 +1,21 @@
+commit c6aa0f31a422224c08895ed94443367ccfeaa542
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 13:20:59 2024 +0800
+
+    20240501- v3.40.0.0 Move items to top and bottom
+    
+    20240501- v3.40.0.0 Move items to top and bottom
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240501-0m |Fixed a bug loading versions
+            Notes: The new version has too many periods and was loading and crashing wrong. Changed the version
+                    parsing to accomodate more decimals
+    
+    =Other Stuff======================================================================================================
+    --20240501-0m |Move item to top and bottom menu commands
+
 commit 9e5ec6e0cb1caf99aca004a745ccb3bf99eb5b5a
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 12:51:03 2024 +0800
