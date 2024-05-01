@@ -294,6 +294,9 @@
 													<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
 													<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
 													<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
+													<Separator />
+													<MenuItem Header="Move to Top" Click="mnuContextMenu_OnClick" CommandParameter="MoveUp" />
+													<MenuItem Header="Move to Bottom" Click="mnuContextMenu_OnClick" CommandParameter="MoveDown" />
 												</ContextMenu >
 											</ListBox.ContextMenu >
 											<ListBox.ItemContainerStyle>
@@ -499,6 +502,9 @@
 													<MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
 													<MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
 													<MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
+													<Separator />
+													<MenuItem Header="Move to Top" Click="mnuContextMenu_OnClick" CommandParameter="MoveUp" />
+													<MenuItem Header="Move to Bottom" Click="mnuContextMenu_OnClick" CommandParameter="MoveDown" />
 												</ContextMenu >
 											</ListBox.ContextMenu >
 											<ListBox.ItemContainerStyle>

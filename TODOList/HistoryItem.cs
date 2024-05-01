@@ -89,8 +89,8 @@ namespace TODOList
 			string[] pieces = newItem[0].Split('|');
 			if (pieces[0].Contains("VERSION"))
 			{
-				string[] versionPieces = pieces[0].Split(' ');
-				version = Convert.ToSingle(versionPieces[1]);
+				string[] versionPieces = pieces[0].Split('.');
+				version = Convert.ToSingle(versionPieces[0].Split(' ')[1]);
 			}
 			else
 				version = 2.0f;

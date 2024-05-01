@@ -34,7 +34,7 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		public const string PROGRAM_VERSION = "3.39";
+		public const string PROGRAM_VERSION = "3.40.1.0";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -1625,6 +1625,12 @@ namespace TODOList
 				case "ResetTimer":
 					ResetTimer();
 					break;
+				case "MoveUp":
+					mnuMoveItemToTop_OnClick();
+					break;
+				case "MoveDown":
+					mnuMoveItemToBottom_OnClick();
+					break;
 				default:
 					_errorMessage = "\n\tNo recognized command parameter";
 					break;
@@ -1639,6 +1645,46 @@ namespace TODOList
 			AutoSave();
 			IncompleteItemsRefresh();
 			KanbanRefresh();
+		}
+		private void mnuMoveItemToBottom_OnClick()
+		{
+			TodoItem todoItem = GetSelectedTodo();
+			if (todoItem == null)
+			{
+				_errorMessage = "\nFunction: mnuMoveItemToBottom_OnClick()" +
+				                "\n\n" + _errorMessage;
+				return;
+			}
+
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					todoItem.Rank[_incompleteItemsTabsList[todoTabs.SelectedIndex].Name] = _lbIncompleteItems.Items.Count + 1; 
+					break;
+				case 2:
+					todoItem.KanbanRank = _lbKanbanItems.Items.Count + 1;
+					break;
+			}
+		}
+		private void mnuMoveItemToTop_OnClick()
+		{
+			TodoItem todoItem = GetSelectedTodo();
+			if (todoItem == null)
+			{
+				_errorMessage = "\nFunction: mnuMoveItemToTop_OnClick()" +
+				                "\n\n" + _errorMessage;
+				return;
+			}
+
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					todoItem.Rank[_incompleteItemsTabsList[todoTabs.SelectedIndex].Name] = 0; 
+					break;
+				case 2:
+					todoItem.KanbanRank = 0;
+					break;
+			}
 		}
 
 		private TodoItemHolder GetSelectedTodoItemHolder()
@@ -2859,7 +2905,7 @@ namespace TODOList
 				line = stream.ReadLine();
 				if (line != null)
 				{
-					string[] versionPieces = line.Split(' ');
+					string[] versionPieces = line.Split('.');
 					version = Convert.ToSingle(versionPieces[0]);
 				}
 			}
@@ -3262,7 +3308,7 @@ namespace TODOList
 				line = stream.ReadLine();
 				if (line != null)
 				{
-					string[] versionPieces = line.Split(' ');
+					string[] versionPieces = line.Split('.');
 					version = Convert.ToSingle(versionPieces[0]);
 				}
 			}

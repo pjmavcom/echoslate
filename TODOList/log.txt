@@ -1,3 +1,21 @@
+commit 9e5ec6e0cb1caf99aca004a745ccb3bf99eb5b5a
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 12:51:03 2024 +0800
+
+    20240501- v3.39 Version numbers updated
+    
+    20240501- v3.39 Version numbers updated
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Features Added===================================================================================================
+    --20240501-0m |Change the increment to include sub versions
+            Notes: Also increase the decimal places to 5 numbers for the sub version and 3 for the main
+                    version
+    Solution: Just removed the increment in favor of incrementing the individual version parts
+    --20240501-0m |Create an alpha and beta mode
+            Notes: Instead of just using the version number and incrementing it.
+
 commit b8367b67ae9242883352b54693d40f9223fce556
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 10:35:19 2024 +0800
