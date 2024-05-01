@@ -84,48 +84,36 @@ namespace TODOList
 			_completedTodos = new List<TodoItem>();
 			CompletedTodosBugs = new List<TodoItem>();
 			CompletedTodosFeatures = new List<TodoItem>();
-
-			float version;
-			string[] pieces = newItem[0].Split('|');
-			if (pieces[0].Contains("VERSION"))
-			{
-				string[] versionPieces = pieces[0].Split('.');
-				version = Convert.ToSingle(versionPieces[0].Split(' ')[1] + "." + versionPieces[1]);
-			}
-			else
-				version = 2.0f;
-			
-			// Heres where versions are loaded
-			if(version <= 2.0f)
-				LoadPre2_0(newItem);
-			if (version > 2.0f)
-				Load2_0(newItem);
+			Load2_0(newItem);
 		}
 		private void Load2_0(List<string> newItem)
 		{
 			string[] pieces = newItem[0].Split('|');
-			_hasBeenCopied = Convert.ToBoolean(pieces[1]);
-			_dateAdded = pieces[2];
-			_timeAdded = pieces[3];
-			_title = pieces[4];
-			_notes = pieces[5];
+			_hasBeenCopied = Convert.ToBoolean(pieces[0]);
+			_dateAdded = pieces[1];
+			_timeAdded = pieces[2];
+			_title = pieces[3];
+			_notes = AddNewLines(pieces[4]);
 			
 			int index = 0;
 			newItem.RemoveAt(0);
 			foreach (string s in newItem)
 			{
 				if (s == "VCSTodos")
+				{
 					break;
-				else
-					index++;
+				}
+				index++;
 			}
 			for (int i = 0; i < index; i++)
 			{
 				_notes += newItem[i] + Environment.NewLine;
 			}
 
-			for(int i = 0; i <= index; i++)
+			for (int i = 0; i <= index; i++)
+			{
 				newItem.RemoveAt(0);
+			}
 			
 			foreach (string s in newItem)
 			{
@@ -133,39 +121,7 @@ namespace TODOList
 				_completedTodos.Add(td);
 			}
 		}
-		private void LoadPre2_0(List<string> newItem)
-		{
-			string[] pieces = newItem[0].Split('|');
-			_hasBeenCopied = true;
-			_dateAdded = pieces[0];
-			_timeAdded = pieces[1];
-			_title = pieces[2];
-			_notes = pieces[3];
-			
-			int index = 0;
-			newItem.RemoveAt(0);
-			foreach (string s in newItem)
-			{
-				if (s == "VCSTodos")
-					break;
-				else
-					index++;
-			}
-			for (int i = 0; i < index; i++)
-			{
-				_notes += newItem[i] + Environment.NewLine;
-			}
-
-			for(int i = 0; i <= index; i++)
-				newItem.RemoveAt(0);
-			
-			foreach (string s in newItem)
-			{
-				TodoItem td = new TodoItem(s);
-				_completedTodos.Add(td);
-			}
-		}
-
+		
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		public void AddCompletedTodo(TodoItem td)
 		{
@@ -182,15 +138,22 @@ namespace TODOList
 		public override string ToString()
 		{
 			string result = "NewVCS" + Environment.NewLine; 
-			result += "VERSION " + MainWindow.PROGRAM_VERSION + "|" + HasBeenCopied + "|" + DateAdded + "|" + TimeAdded + "|" + Title + "|" + Notes;
-
-			result += Environment.NewLine + "VCSTodos";
+			result += HasBeenCopied + "|" + DateAdded + "|" + TimeAdded + "|" + Title + "|" + RemoveNewLines(Notes) + Environment.NewLine;
+			result += "VCSTodos";
 			foreach (TodoItem td in CompletedTodos)
+			{
 				result += Environment.NewLine + td;
+			}
+
 			foreach (TodoItem td in CompletedTodosBugs)
+			{
 				result += Environment.NewLine + td;
+			}
+
 			foreach (TodoItem td in CompletedTodosFeatures)
+			{
 				result += Environment.NewLine + td;
+			}
 			result += Environment.NewLine;
 			result += "EndVCS" + Environment.NewLine;
 			return result;
@@ -245,6 +208,14 @@ namespace TODOList
 				}
 			}
 			return result;
+		}
+		private string AddNewLines(string s)
+		{
+			return s.Replace("/n", Environment.NewLine);
+		}
+		private string RemoveNewLines(string s)
+		{
+			return s.Replace(Environment.NewLine, "/n");
 		}
 		
 		public event PropertyChangedEventHandler PropertyChanged;

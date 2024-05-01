@@ -1,3 +1,18 @@
+commit ec7750f8e5d807d3b487bb12ebe065e327f69512
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 19:21:23 2024 +0800
+
+    20240501- v3.40.3.0 Cleaned up XAML code
+    
+    20240501- v3.40.3.0 Cleaned up XAML code
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Saw a small improvement in speed
+    Next is c code
+    
+    =Other Stuff======================================================================================================
+    --20240501-0m |Cleaned up xaml code
+
 commit 259fbc5eff8836ee9eee1b3a6be62ae69a4bfad4
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 17:45:40 2024 +0800

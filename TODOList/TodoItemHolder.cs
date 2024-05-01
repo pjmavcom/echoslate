@@ -34,35 +34,24 @@ namespace TODOList
 			get => _td.Severity;
 			set => _td.Severity = value;
 		}
-
 		public int Kanban
 		{
 			get => _td.Kanban;
 			set => _td.Kanban = value;
 		}
-
 		public int KanbanRank
 		{
 			get => _td.KanbanRank;
 			set => _td.KanbanRank = value;
 		}
 		public bool IsTimerOn => _td.IsTimerOn;
-		public long TimeTakenInMinutes
-		{
-			get => _td.TimeTakenInMinutes; 
-//			set
-//			{
-//				imeTakenInMinutes = value;
-//				OnPropertyChanged();
-//			}
-		}
+		public long TimeTakenInMinutes => _td.TimeTakenInMinutes; 
 		public DateTime TimeTaken
 		{
-			get => _td.TimeTaken;//_timeTaken;
+			get => _td.TimeTaken;
 			set
 			{
 				_td.TimeTaken = value;
-//				TimeTakenInMinutes = _timeTaken.Ticks / TimeSpan.TicksPerMinute;
 				OnPropertyChanged();
 			}
 		}

@@ -7,25 +7,25 @@ namespace TODOList
 {
 	public partial class DlgTodoItemEditor
 	{
-		private readonly TodoItem _td;
-		public TodoItem ResultTD => _td;
+		private readonly TodoItem _todoItem;
+		public TodoItem ResultTodoItem => _todoItem;
 		public List<string> ResultTags;
 		public bool Result;
 		
 		private int _currentSeverity;
 		private readonly int _previousRank;
-		private List<TagHolder> _tags { get; set; }
+		private List<TagHolder> Tags { get; set; }
 		private string _currentListHash;
 		
 		public DlgTodoItemEditor(TodoItem td, string currentListHash)
 		{
 			InitializeComponent();
 			
-			_td = new TodoItem(td.ToString())
+			_todoItem = new TodoItem(td.ToString())
 			{
 				IsTimerOn = td.IsTimerOn
 			};
-			_currentSeverity = _td.Severity;
+			_currentSeverity = _todoItem.Severity;
 			_currentListHash = currentListHash;
 			_previousRank = td.Rank[_currentListHash];
 
@@ -42,16 +42,16 @@ namespace TODOList
 			tbNotes.Text = tempNote;
 			 
 			iudRank.Value = td.Rank[_currentListHash];
-			iudTime.Value = _td.TimeTakenInMinutes;
+			iudTime.Value = _todoItem.TimeTakenInMinutes;
 			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 
-			_tags = new List<TagHolder>();
+			Tags = new List<TagHolder>();
 			foreach (string tag in td.Tags)
-				_tags.Add(new TagHolder(tag));
-			lbTags.ItemsSource = _tags;
+				Tags.Add(new TagHolder(tag));
+			lbTags.ItemsSource = Tags;
 			lbTags.Items.Refresh();
 
-			tbKanban.Text = _td.Kanban.ToString();
+			tbKanban.Text = _todoItem.Kanban.ToString();
 			
 			CenterWindowOnMouse();
 		}
@@ -72,19 +72,19 @@ namespace TODOList
 		
 			string tempTags = "";
 			ResultTags = new List<string>();
-			foreach(TagHolder th in _tags)
+			foreach(TagHolder th in Tags)
 				if (!ResultTags.Contains(th.Text))
 					ResultTags.Add(th.Text);
 			foreach (string tag in ResultTags)
 				tempTags += tag + " ";
 			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			
-			_td.Tags = new List<string>();
-			_td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
-			_td.Notes = tbNotes.Text;
-			_td.Severity = _currentSeverity;
-			if (_previousRank > _td.Rank[_currentListHash])
-				_td.Rank[_currentListHash]--;
+			_todoItem.Tags = new List<string>();
+			_todoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
+			_todoItem.Notes = tbNotes.Text;
+			_todoItem.Severity = _currentSeverity;
+			if (_previousRank > _todoItem.Rank[_currentListHash])
+				_todoItem.Rank[_currentListHash]--;
 		}
 		private void Severity_OnSelectionChange(object sender, EventArgs e)
 		{
@@ -97,7 +97,7 @@ namespace TODOList
 			bool nameExists = false;
 			do
 			{
-				foreach (TagHolder t in _tags)
+				foreach (TagHolder t in Tags)
 				{
 					if (t.Text == name.ToUpper() + tagNumber ||
 					    t.Text == "#" + name.ToUpper() + tagNumber)
@@ -111,7 +111,7 @@ namespace TODOList
 			} while (nameExists);
 			
 			TagHolder th = new TagHolder(name.ToUpper() + tagNumber);
-			_tags.Add(th);
+			Tags.Add(th);
 			lbTags.Items.Refresh();
 		}
 		private void DeleteTag_OnClick(object sender, EventArgs e)
@@ -120,17 +120,18 @@ namespace TODOList
 				return;
 			
 			TagHolder th = b.DataContext as TagHolder;
-			_tags.Remove(th);
+			Tags.Remove(th);
 			lbTags.Items.Refresh();
 		}
 		private void Rank_OnValueChanged(object sender, EventArgs e)
 		{
-			_td.Rank[_currentListHash] = (int) iudRank.Value;
-			_td.Rank[_currentListHash] = _td.Rank[_currentListHash] > 0 ? _td.Rank[_currentListHash] : 0;
+			_todoItem.Rank[_currentListHash] = (int) iudRank.Value;
+			_todoItem.Rank[_currentListHash] = _todoItem.Rank[_currentListHash] > 0 ? _todoItem.Rank[_currentListHash] : 0;
 		}
 		private void Time_OnValueChanged(object sender, EventArgs e)
 		{
-			_td.TimeTaken = new DateTime((long) (iudTime.Value * TimeSpan.TicksPerMinute));
+			if (iudTime != null)
+				_todoItem.TimeTaken = new DateTime((long)(iudTime.Value * TimeSpan.TicksPerMinute));
 		}
 		private void OK_OnClick(object sender, EventArgs e)
 		{
@@ -142,7 +143,7 @@ namespace TODOList
 		private void Complete_OnClick(object sender, EventArgs e)
 		{
 			Result = true;
-			_td.IsComplete = !_td.IsComplete;
+			_todoItem.IsComplete = !_todoItem.IsComplete;
 			SetTodo();
 			
 			Close();
