@@ -34,7 +34,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        public const string PROGRAM_VERSION = "3.40.2.0";
+        public const string PROGRAM_VERSION = "3.40.3.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -2114,7 +2114,7 @@ namespace TODOList
 
             _currentHistoryItem = new HistoryItem(DateTime.Now)
             {
-                Title = "v" + MakeCurrentVersion()
+                Title = "v" + MakeCurrentVersion() + " "
             };
             HistoryItems.Add(_currentHistoryItem);
             AutoSave();

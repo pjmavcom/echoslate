@@ -82,7 +82,7 @@ namespace TODOList
 			set => _solution = value;
 		}
 			
-		public string NotesAndTags => "Notes: " + Notes + Environment.NewLine + "Problem: " + Problem + Environment.NewLine + "Solution: " + Solution + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
+		public string NotesAndTags => "Notes: "+ Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " + Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
 		public string StartDateTime => _dateStarted + "" + "_" + _timeStarted;
 		public string DateStarted => _dateStarted;
 		public string TimeStarted => _timeStarted;
@@ -200,6 +200,8 @@ namespace TODOList
 			_tags = new List<string>();
 			_todo = "";
 			_notes = "";
+			_problem = "";
+			_solution = "";
 			_dateStarted = DateTime.Now.ToString("yyyy/MM/dd");
 			_timeStarted = DateTime.Now.ToString("HH:mm");
 			_dateCompleted = "-";
@@ -216,7 +218,7 @@ namespace TODOList
 			if (pieces[0].Contains("VERSION"))
 			{
 				string[] versionPieces = pieces[0].Split('.');
-				version = Convert.ToSingle(versionPieces[1]);
+				version = Convert.ToSingle(versionPieces[0].Split(' ')[1] + "." + versionPieces[1]);
 			}
 			else
 				version = 2.0f;
@@ -486,12 +488,19 @@ namespace TODOList
 		public override string ToString()
 		{
 			string notes = _notes;
+			string problem = _problem;
+			string solution = _solution;
 			//if (_notes.Contains('\r'))
 			//	notes = "tested1";
 			//if (_notes.Contains('\n'))
 			//	notes = "tested2";
 			if (_notes.Contains(Environment.NewLine))
 				notes = notes.Replace(Environment.NewLine, "/n");
+			if (_problem.Contains(Environment.NewLine))
+				problem = problem.Replace(Environment.NewLine, "/n");
+			if (_solution.Contains(Environment.NewLine))
+				solution = solution.Replace(Environment.NewLine, "/n");
+				
 
 			string result = "VERSION " + MainWindow.PROGRAM_VERSION + "|" +
 			                _dateStarted + "|" +
@@ -506,19 +515,23 @@ namespace TODOList
 			                notes + "|" +
 			                _kanban + "|" +
 			                _kanbanRank + "|" +
-			                _problem + "|" +
-			                _solution;
+			                problem + "|" +
+			                solution;
 			return result;
 		}
 		public string ToClipboard()
 		{
+			string notes = AddNewLines(_notes);
+			string problem = AddNewLines(_problem);
+			string solution = AddNewLines(_solution);
+			
 			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + BreakLines(_todo);
 			if (_notes != "")
-				result += Environment.NewLine + "\tNotes: " + BreakLines(_notes);
+				result += Environment.NewLine + "\tNotes: " + BreakLines(notes);
 			if (_problem != "")
-				result += Environment.NewLine + "\tProblem: " + BreakLines(_problem);
+				result += Environment.NewLine + "\tProblem: " + BreakLines(problem);
 			if (_solution != "")
-				result += Environment.NewLine + "\tSolution: " + BreakLines(_solution);
+				result += Environment.NewLine + "\tSolution: " + BreakLines(solution);
 			return result;
 		}
 		private string BreakLines(string s)
@@ -543,7 +556,10 @@ namespace TODOList
 			}
 			return result;
 		}
-		
+		private string AddNewLines(string s)
+		{
+			return s.Replace("/n", Environment.NewLine);
+		}
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{

@@ -1,3 +1,35 @@
+commit 527313a6cc79e91f0438af6d2961e0ab08ad5587
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 17:03:24 2024 +0800
+
+    20240501- v3.40.1.0 Added some more notes panel editors
+    
+    20240501- v3.40.1.0 Added some more notes panel editors
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Also moved the functions around and organized it all better
+    
+    =Bugs Squashed====================================================================================================
+    --20240501-0m |The popup not does not show the notes
+            Solution: Refreshed the listbox fixed it
+    --20240501-0m |Editing note or title and immediately click off onto another item doesnt update the view of that
+                    item
+            Notes: The item IS updated, just not showing
+            Problem: The other calls occur before the call to update the note, then the wrong item is selected so it
+                    doesnt update the wanted note
+            Solution: Cached the previous note and edited that on changing something.
+    --20240501-0m |Selecting an item at first start up doesnt select it all the way and throws an error of something
+                    unselected
+            Problem: The selected index of the current listbox is reset on running the load hashtags function.
+            Solution: Added some code to the OnSelectionChanged() functions to check if the current index == the cached
+                    index and to return if it is.
+    Also added some e.Handled = true to those functions
+    
+    =Features Added===================================================================================================
+    --20240501-0m |Bug editor
+            Notes: An editor just for items with the bug tag/nHas a notes, problem and solution section
+            Problem: Didnt have one
+
 commit c6aa0f31a422224c08895ed94443367ccfeaa542
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 13:20:59 2024 +0800
