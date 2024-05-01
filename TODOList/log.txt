@@ -1,3 +1,17 @@
+commit 259fbc5eff8836ee9eee1b3a6be62ae69a4bfad4
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 17:45:40 2024 +0800
+
+    20240501- v3.40.2.0 Fixed a loading bug
+    
+    20240501- v3.40.2.0 Fixed a loading bug
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240501-0m |Fixed a loading bug, the solution field saved a new line to the save file, making it unloadable
+            Problem: The loader didnt know how to load a string that didnt start with info
+
 commit 527313a6cc79e91f0438af6d2961e0ab08ad5587
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 17:03:24 2024 +0800

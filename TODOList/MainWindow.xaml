@@ -64,30 +64,30 @@
 			</Grid.ColumnDefinitions >
 			<Menu Name="mnuMain" FontSize="16" Grid.Column="0" >
 				<MenuItem Header="_File" >
-					<MenuItem Header="New" Click="mnuNew_OnClick" />
-					<Separator />
-					<MenuItem Header="Load" Click="mnuLoad_OnClick" />
-					<Separator />
-					<MenuItem Header="Save" Click="mnuSave_OnClick" />
-					<MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
-					<Separator />
-					<MenuItem Header="Options" Click="mnuOptions_OnClick" />
-					<Separator />
-					<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
-				</MenuItem >
-				<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
-					<MenuItem.ContextMenu>
-						<ContextMenu >
-							<MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
-								<MenuItem.DataContext>
-									<Binding RelativeSource="{RelativeSource Self}">
-										<Binding.Path>PlacementTarget.DataContext</Binding.Path>
-									</Binding>
-								</MenuItem.DataContext>
-							</MenuItem>
-						</ContextMenu >
-					</MenuItem.ContextMenu>
-				</MenuItem >
+				<MenuItem Header="New" Click="mnuNew_OnClick" />
+				<Separator />
+				<MenuItem Header="Load" Click="mnuLoad_OnClick" />
+				<Separator />
+				<MenuItem Header="Save" Click="mnuSave_OnClick" />
+				<MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
+				<Separator />
+				<MenuItem Header="Options" Click="mnuOptions_OnClick" />
+				<Separator />
+				<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
+			</MenuItem >
+			<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
+				<MenuItem.ContextMenu>
+					<ContextMenu >
+						<MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
+							<MenuItem.DataContext>
+								<Binding RelativeSource="{RelativeSource Self}">
+									<Binding.Path>PlacementTarget.DataContext</Binding.Path>
+								</Binding>
+							</MenuItem.DataContext>
+						</MenuItem>
+					</ContextMenu >
+				</MenuItem.ContextMenu>
+			</MenuItem >
 				<MenuItem Header="Help" Click="mnuHelp_OnClick" />
 			</Menu >
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" >
@@ -191,7 +191,7 @@
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
 										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
 									</Grid >
 								</DataTemplate >
@@ -205,7 +205,7 @@
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
 										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
 									</Grid >
 								</DataTemplate >
@@ -219,7 +219,7 @@
 											<ColumnDefinition Width="25" />
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions >
-										<Button Grid.Column="0" Name="btnHDeleteTodo" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
+										<Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
 										<TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
 									</Grid >
 								</DataTemplate >
@@ -269,13 +269,13 @@
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
-											<ComboBox Grid.Column="0" Name="cbHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="IncompleteItemsHashtags_OnSelectionChanged" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
-											<Button Grid.Column="1" Name="btnSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="2" Name="btnSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
+											<ComboBox Grid.Column="0" Name="cbIncompleteItemsHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="IncompleteItemsHashtags_OnSelectionChanged" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
+											<Button Grid.Column="1" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="2" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
-											<Button Grid.Column="3" Name="btnSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="4" Name="btnSortKanban" Content="Kanban" Click="Sort_OnClick" CommandParameter="kanban" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="5" Name="btnSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="3" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="4" Content="Kanban" Click="Sort_OnClick" CommandParameter="kanban" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="5" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 										</Grid >
 
 										<!-- The list of incomplete todos -->
@@ -311,24 +311,19 @@
 															<ColumnDefinition Width="300" />
 															<!-- DateTime -->
 															<ColumnDefinition Width="160" />
-
 															<!-- Severity -->
 															<ColumnDefinition Width="90" />
 															<ColumnDefinition Width="20" />
-
 															<!-- RANK -->
 															<ColumnDefinition Width="50" />
 															<ColumnDefinition Width="25" />
 															<ColumnDefinition Width="25" />
-															
 															<!-- KANBAN RANK -->
 															<ColumnDefinition Width="70" />
-
 															<!-- TIME TAKEN -->
 															<ColumnDefinition Width="65" />
 															<ColumnDefinition Width="45" />
-
-															<!-- Todo -->
+															<!-- To do -->
 															<ColumnDefinition Width="*" />
 														</Grid.ColumnDefinitions >
 														<TextBlock Grid.Column="0" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
@@ -495,11 +490,11 @@
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
 											<ComboBox Grid.Column="0" Name="cbKanbanHashTags" ItemsSource="{Binding KanbanHashTags}" SelectionChanged="KanbanHashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
-											<Button Grid.Column="1" Name="btnKanbanSortDate" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="2" Name="btnKanbanSortSeverity" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="1" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="2" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
-											<Button Grid.Column="3" Name="btnKanbanSortRank" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-											<Button Grid.Column="4" Name="btnKanbanSortActive" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="3" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
+											<Button Grid.Column="4" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
 										</Grid >
 
 										<!-- The list of incomplete todos -->
@@ -683,7 +678,7 @@
 			<!-- VCS Kanban tab -->
 
 			<!-- VCS Log tab -->
-			<TabItem Name="tabHistoryLog" Header="Log" >
+			<TabItem Header="Log" >
 				<Grid >
 					<Grid.RowDefinitions >
 						<RowDefinition Height="30" />

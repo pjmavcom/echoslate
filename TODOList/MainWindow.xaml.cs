@@ -34,7 +34,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        public const string PROGRAM_VERSION = "3.40.3.0";
+        public const string PROGRAM_VERSION = "3.40.4.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -1027,7 +1027,7 @@ namespace TODOList
                 return;
             }
 
-            _cbIncompleteItemsHashTags = hashTagsContentPresenter.ContentTemplate.FindName("cbHashTags", hashTagsContentPresenter) as ComboBox;
+            _cbIncompleteItemsHashTags = hashTagsContentPresenter.ContentTemplate.FindName("cbIncompleteItemsHashTags", hashTagsContentPresenter) as ComboBox;
             if (_cbIncompleteItemsHashTags == null)
             {
                 return;
