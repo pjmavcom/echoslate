@@ -1,3 +1,20 @@
+commit 4f1c5db3c670a8a982641e72bd10a02205debe07
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Apr 30 22:55:45 2024 +0800
+
+    20240430- v3.36 Full notes editor on side completed
+    
+    20240430- v3.36 Full notes editor on side completed
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Features Added===================================================================================================
+    --20240430-0m |Add a COMPLETE button
+            Notes: Add a button to the Notes pane and make it complete the todo
+    --20240430-0m |Make notes pane a full editor
+            Notes: Add everything thats in the editor to this pane/nWhen multiple todos are selected, make it a multi
+                    editor
+
 commit 2ae97b865fa501e88f2f50853d6f1dbef4ff8d17
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Apr 30 17:15:22 2024 +0800

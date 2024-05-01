@@ -33,7 +33,7 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		public const string PROGRAM_VERSION = "3.36";
+		public const string PROGRAM_VERSION = "3.37";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -1073,8 +1073,8 @@ namespace TODOList
 			List<TodoItem> list = _masterList.ToList();
 			foreach (var todoItem in list.Where(todoItem => todoItem.IsComplete))
 			{
-				AddTodoToHistory(todoItem);
 				RemoveItemFromMasterList(todoItem);
+				AddTodoToHistory(todoItem);
 			}
 		}
 
@@ -1225,13 +1225,29 @@ namespace TODOList
 			{
 				Todo = _tbNewTodo.Text,
 				Severity = _currentSeverity,
-				IsComplete = true,
-				Rank = {[TabNames] = IncompleteItems.Count}
+				IsComplete = true
 			};
+			switch (tabControl.SelectedIndex)
+			{
+				case 1:
+					newTodo.Rank[TabNames] = IncompleteItems.Count;
+					newTodo.Tags.Add("#" + TabNames);
+					if (newTodo.Severity == 3)
+					{
+						newTodo.Rank[TabNames] = 0;
+					}
+					break;
+				case 2:
+					newTodo.Kanban = kanbanTabs.SelectedIndex;
+					newTodo.KanbanRank = _lbKanbanItems.Items.Count;
+					break;
+			}
 
+			ExpandHashTags(newTodo);
 			AddItemToMasterList(newTodo);
 			AutoSave();
 			IncompleteItemsRefresh();
+			KanbanRefresh();
 			_tbNewTodo.Clear();
 		}
 
@@ -2425,7 +2441,7 @@ namespace TODOList
 			AutoSave();
 			IncompleteItemsRefresh();
 			KanbanRefresh();
-			// _tbNewTodo.Clear();
+			_tbNewTodo.Clear();
 			RefreshNotes(newIndex - 1);
 		}
 		private void RankAdjust_OnClick(object sender, EventArgs e)
