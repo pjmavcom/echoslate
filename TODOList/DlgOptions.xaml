@@ -27,16 +27,6 @@
 
 				<!-- <TextBox Name="tbBT" Width="50" PreviewTextInput="BT_OnPreviewTextInput" /> -->
 			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Current project version" />
-				<xctk:DoubleUpDown Name="iudCPV" Minimum="0" FormatString="F2" />
-				<!-- <TextBox Name="tbCPV" Width="50" PreviewTextInput="CPV_OnPreviewTextInput" /> -->
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Project version increment" />
-				<xctk:DoubleUpDown Name="iudPVI" Minimum="0.01" ValueChanged="PCI_OnValueChanged" FormatString="F2" />
-				<!-- <TextBox Name="tbPVI" Width="50" PreviewTextInput="PVI_OnPreviewTextInput" /> -->
-			</StackPanel >
 		</StackPanel >
 		<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" >
 			<Button Content="Ok" Width="100" IsDefault="True" Click="Ok_OnClick" />

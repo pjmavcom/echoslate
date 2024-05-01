@@ -12,19 +12,15 @@ namespace TODOList
 		public bool GlobalHotkeys { get; set; }
 		public bool AutoBackup { get; set; }
 		public TimeSpan BackupTime { get; set; }
-		public double CurrentProjectVersion { get; set; }
-		public double ProjectVersionIncrement { get; set; }
 		public bool Result;
 		
-		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime, double currentProjectVersion, double projectVersionIncrement)
+		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime)
 		{
 			InitializeComponent();
 			AutoSave = autoSave;
 			GlobalHotkeys = hotkeys;
 			AutoBackup = autoBackup;
 			BackupTime = backupTime;
-			CurrentProjectVersion = currentProjectVersion;
-			ProjectVersionIncrement = projectVersionIncrement;
 
 			cbAS.IsChecked = AutoSave;
 			cbGHK.IsChecked = GlobalHotkeys;
@@ -32,10 +28,6 @@ namespace TODOList
 
 			int totalMinutes = BackupTime.Days * 24 * 60 +BackupTime.Hours * 60 + BackupTime.Minutes;
 			iudBackupTime.Value = totalMinutes;
-			iudCPV.Value = CurrentProjectVersion;
-			iudPVI.Value = ProjectVersionIncrement;
-			iudCPV.Increment = ProjectVersionIncrement;
-			iudPVI.Increment = 0.01f;
 			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse()
@@ -57,32 +49,6 @@ namespace TODOList
 			int minutes = totalMinutes % 60;
 			BackupTime = new TimeSpan(hours, minutes, 0);
 		}
-		private void PCI_OnValueChanged(object sender, EventArgs e)
-		{
-			iudCPV.Increment = iudPVI.Value;
-		}
-//		private void BT_OnValueChanged(object sender, TextCompositionEventArgs e)
-//		{
-////			if (!(sender is TextBox tb))
-////				return;
-////			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
-////			e.Handled = !Int32.TryParse(fullText, out _);
-//			totalMinutes = 
-//		}
-		private void CPV_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
-		{
-			if (!(sender is TextBox tb))
-				return;
-			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
-			e.Handled = !float.TryParse(fullText, out _);
-		}
-		private void PVI_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
-		{
-			if (!(sender is TextBox tb))
-				return;
-			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
-			e.Handled = !float.TryParse(fullText, out _);
-		}
 		private void Ok_OnClick(object sender, EventArgs e)
 		{
 			if (cbAS.IsChecked != null)
@@ -92,8 +58,6 @@ namespace TODOList
 			if (cbAB.IsChecked != null)
 				AutoBackup = (bool) cbAB.IsChecked;
 			ConvertBackupTime();
-			CurrentProjectVersion = (float) iudCPV.Value;
-			ProjectVersionIncrement = (float) iudPVI.Value;
 			
 			Result = true;
 			Close();

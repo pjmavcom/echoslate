@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
+using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Forms.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Control = System.Windows.Controls.Control;
@@ -33,7 +34,7 @@ namespace TODOList
 	public partial class MainWindow : INotifyPropertyChanged
 	{	
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		public const string PROGRAM_VERSION = "3.38";
+		public const string PROGRAM_VERSION = "3.39";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		public const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -100,8 +101,6 @@ namespace TODOList
 		private TimeSpan _timeUntilBackup;
 		private int _backupIncrement;
 		private string _historyLogPath;
-		private double _currentProjectVersion;
-		private double _projectVersionIncrement;
 		private int _previousSessionLastActiveTab;
 
 		// WINDOW ITEMS
@@ -139,7 +138,52 @@ namespace TODOList
 		private TextBox _tbNewTodo;
 		private ComboBox _cbSeverity;
 
+		private int _versionA;
+		private int _versionB;
+		private int _versionC;
+		private int _versionD;
+
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
+		public int VersionA
+		{
+			get => _versionA;
+			set
+			{
+				_versionA = value;
+				iudVersionA.Value = value;
+			}
+		}
+		public int VersionB
+		{
+			get => _versionB;
+			set
+			{
+				_versionB = value;
+				iudVersionB.Value = value;
+			}
+		}
+		public int VersionC
+		{
+			get => _versionC;
+			set
+			{
+				_versionC = value;
+				iudVersionC.Value = value;
+			}
+		}
+		public int VersionD
+		{
+			get => _versionD;
+			set 
+			{ 
+				_versionD = value;
+				iudVersionD.Value = value;
+			}
+		}
+
+		private bool _isUpdatingCheckBoxes = false;
+
+
 		public int PomoTimeLeft
 		{
 			get => _pomoTimeLeft;
@@ -1292,7 +1336,7 @@ namespace TODOList
 		}
 		private void mnuOptions_OnClick(object sender, EventArgs e)
 		{
-			DlgOptions options = new DlgOptions(_autoSave, _globalHotkeys, _autoBackup, _backupTime, _currentProjectVersion, _projectVersionIncrement);
+			DlgOptions options = new DlgOptions(_autoSave, _globalHotkeys, _autoBackup, _backupTime);
 			options.ShowDialog();
 			if (!options.Result)
 			{
@@ -1302,8 +1346,6 @@ namespace TODOList
 			_globalHotkeys = options.GlobalHotkeys;
 			_autoBackup = options.AutoBackup;
 			_backupTime = options.BackupTime;
-			_currentProjectVersion = options.CurrentProjectVersion;
-			_projectVersionIncrement = options.ProjectVersionIncrement;
 			
 			GlobalHotkeysToggle();
 			AutoSave();
@@ -1324,8 +1366,7 @@ namespace TODOList
 			}
 			ClearLists();
 			IncompleteItemsCreateTabs();
-			_currentProjectVersion = 0.00d;
-			_projectVersionIncrement = 0.01d;
+			ConvertProjectVersion("0.0.0.0");
 
 			_currentHistoryItem = new HistoryItem("", "");
 			AddNewHistoryItem();
@@ -1809,14 +1850,11 @@ namespace TODOList
 		}
 		private void AddNewHistoryItem()
 		{
-			_currentProjectVersion = Math.Round(_currentProjectVersion, 2);
-			_projectVersionIncrement = Math.Round(_projectVersionIncrement, 2);
-			_currentProjectVersion += _projectVersionIncrement;
-			_currentProjectVersion = Math.Round(_currentProjectVersion, 2);
+			UpdateCurrentVersion();
 
 			_currentHistoryItem = new HistoryItem(DateTime.Now)
 			{
-				Title = "v" + _currentProjectVersion
+				Title = "v" + MakeCurrentVersion()
 			};
 			HistoryItems.Add(_currentHistoryItem);
 			AutoSave();
@@ -1856,6 +1894,10 @@ namespace TODOList
 			int index = lbHistory.SelectedIndex;
 			lbHistory.Items.Refresh();
 			lbHistory.SelectedIndex = index;
+			iudVersionA.Value = VersionA;
+			iudVersionB.Value = VersionB;
+			iudVersionC.Value = VersionC;
+			iudVersionD.Value = VersionD;
 		}
 		private void DeleteHistory_OnClick(object sender, EventArgs e)
 		{
@@ -2976,9 +3018,7 @@ namespace TODOList
 			stream.ReadLine();
 			_autoSave = Convert.ToBoolean(stream.ReadLine());
 			stream.ReadLine();
-			_currentProjectVersion = Convert.ToSingle(stream.ReadLine());
-			stream.ReadLine();
-			_projectVersionIncrement = Convert.ToSingle(stream.ReadLine());
+			ConvertProjectVersion(stream.ReadLine());
 			
 			while (line != null)
 			{
@@ -3105,9 +3145,20 @@ namespace TODOList
 			stream.WriteLine("AutoSave");
 			stream.WriteLine(_autoSave);
 			stream.WriteLine("CurrentProjectVersion");
-			stream.WriteLine(_currentProjectVersion);
-			stream.WriteLine("ProjectVersionIncrement");
-			stream.WriteLine(_projectVersionIncrement);
+			int versionCheckBoxChecked = 0;
+			if (cbVersionB.IsChecked == true)
+			{
+				versionCheckBoxChecked = 1;
+			}
+			else if (cbVersionC.IsChecked == true)
+			{
+				versionCheckBoxChecked = 2;
+			}
+			else if (cbVersionD.IsChecked == true)
+			{
+				versionCheckBoxChecked = 3;
+			}
+			stream.WriteLine(MakeCurrentVersion() + "." + versionCheckBoxChecked);
 			stream.WriteLine("====================================TODO");
 			foreach (TodoItem td in _masterList)
 			{
@@ -3333,6 +3384,154 @@ namespace TODOList
 			while (RecentFiles.Count >= 10)
 			{
 				RecentFiles.RemoveAt(RecentFiles.Count - 1);
+			}
+		}
+
+		private void ConvertProjectVersion(string version)
+		{
+			string[] parts = version.Split('.');
+			VersionA = Convert.ToInt16(parts[0]);
+			VersionB = Convert.ToInt16(parts[1]);
+			VersionC = Convert.ToInt16(parts[2]);
+			VersionD = Convert.ToInt16(parts[3]);
+			int checkBoxChecked = Convert.ToInt16(parts[4]);
+			switch (checkBoxChecked)
+			{
+				case 0:
+					cbVersionA.IsChecked = true;
+					break;
+				case 1:
+					cbVersionB.IsChecked = true;
+					break;
+				case 2:
+					cbVersionC.IsChecked = true;
+					break;
+				case 3:
+					cbVersionD.IsChecked = true;
+					break;
+			}
+		}
+		private string MakeCurrentVersion()
+		{
+			return VersionA + "." +
+			       VersionB + "." +
+			       VersionC + "." +
+			       VersionD;
+		}
+		private void UpdateCurrentVersion()
+		{
+			if (cbVersionA.IsChecked == true)
+			{
+				VersionA++;
+			}
+			if (cbVersionB.IsChecked == true)
+			{
+				VersionB++;
+			}
+			if (cbVersionC.IsChecked == true)
+			{
+				VersionC++;
+			}
+			if (cbVersionD.IsChecked == true)
+			{
+				VersionD++;
+			}
+		}
+		private void VersionCheckBox_OnChanged(object sender, EventArgs e)
+		{
+			CheckBox checkBox = sender as CheckBox;
+			if (checkBox == null)
+			{
+				return;
+			}
+
+			if (_isUpdatingCheckBoxes)
+			{
+				return;
+			}
+			_isUpdatingCheckBoxes = true;
+			switch (checkBox.Name)
+			{
+				case "cbVersionA":
+					if (checkBox.IsChecked == true)
+					{
+						cbVersionB.IsChecked = false;
+						cbVersionC.IsChecked = false;
+						cbVersionD.IsChecked = false;
+					}
+					else
+					{
+						cbVersionB.IsChecked = true;
+					}
+					_isUpdatingCheckBoxes = false;
+					break;
+				case "cbVersionB":
+					if (checkBox.IsChecked == true)
+					{
+						cbVersionA.IsChecked = false;
+						cbVersionC.IsChecked = false;
+						cbVersionD.IsChecked = false;
+					}
+					else
+					{
+						cbVersionC.IsChecked = true;
+					}
+					_isUpdatingCheckBoxes = false;
+					break;
+				case "cbVersionC":
+					if (checkBox.IsChecked == true)
+					{
+						cbVersionA.IsChecked = false;
+						cbVersionB.IsChecked = false;
+						cbVersionD.IsChecked = false;
+					}
+					else
+					{
+						cbVersionB.IsChecked = true;
+					}
+					_isUpdatingCheckBoxes = false;
+					break;
+				case "cbVersionD":
+					if (checkBox.IsChecked == true)
+					{
+						cbVersionA.IsChecked = false;
+						cbVersionB.IsChecked = false;
+						cbVersionC.IsChecked = false;
+					}
+					else
+					{
+						cbVersionB.IsChecked = true;
+					}
+					_isUpdatingCheckBoxes = false;
+					break;
+			}
+		}
+		private void Version_OnValueChangedA(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			if (iudVersionA.Value != null)
+			{
+				VersionA = (int)iudVersionA.Value;
+			}
+		}
+		private void Version_OnValueChangedB(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			if (iudVersionB.Value != null)
+			{
+				VersionB = (int)iudVersionB.Value;
+			}
+		}
+		private void Version_OnValueChangedC(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			if (iudVersionC.Value != null)
+			{
+				VersionC = (int)iudVersionC.Value;
+			}
+		}
+		private void Version_OnValueChangedD(object sender, RoutedPropertyChangedEventArgs<object> e)
+		{
+			if (iudVersionD.Value != null)
+			{
+				VersionD = (int)iudVersionD.Value;
 			}
 		}
 	}

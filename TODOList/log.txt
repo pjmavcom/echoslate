@@ -1,3 +1,16 @@
+commit b8367b67ae9242883352b54693d40f9223fce556
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed May 1 10:35:19 2024 +0800
+
+    20240501- v3.38 Fixed deleting Todo tabs bug
+    
+    20240501- v3.38 Fixed deleting Todo tabs bug
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240501-0m |Deleting a tab removes all todos from view
+
 commit d62263014a2d8545e653d497a55545a156097fc3
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 09:57:47 2024 +0800
