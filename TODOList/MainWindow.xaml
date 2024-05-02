@@ -64,17 +64,19 @@
 			</Grid.ColumnDefinitions >
 			<Menu Name="mnuMain" FontSize="16" Grid.Column="0" >
 				<MenuItem Header="_File" >
-				<MenuItem Header="New" Click="mnuNew_OnClick" />
-				<Separator />
-				<MenuItem Header="Load" Click="mnuLoad_OnClick" />
-				<Separator />
-				<MenuItem Header="Save" Click="mnuSave_OnClick" />
-				<MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
-				<Separator />
-				<MenuItem Header="Options" Click="mnuOptions_OnClick" />
-				<Separator />
-				<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
-			</MenuItem >
+					<MenuItem Header="New" Click="mnuNew_OnClick" />
+					<Separator />
+					<MenuItem Header="Load" Click="mnuLoad_OnClick" />
+					<Separator />
+					<MenuItem Header="Save" Click="mnuSave_OnClick" />
+					<MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
+					<Separator />
+					<MenuItem Header="Options" Click="mnuOptions_OnClick" />
+					<Separator />
+					<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
+				</MenuItem >
+							<Label x:Name="lblCount" />
+							<Label x:Name="lblCountb" />
 			<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
 				<MenuItem.ContextMenu>
 					<ContextMenu >
