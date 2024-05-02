@@ -1,3 +1,16 @@
+commit 4b41ab2971d7e763f56ee9c8665c2d213b159527
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 2 17:15:12 2024 +0800
+
+    20240502- v3.40.6.0 Speed...
+    
+    20240502- v3.40.6.0 Speed...
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20240502-0m |Still working on speed...
+
 commit 2f99a29af68ab963efc305c9947169306931cb3a
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu May 2 13:50:51 2024 +0800

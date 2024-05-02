@@ -33,7 +33,7 @@ namespace TODOList
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
         private bool _skipUpdate;
-        private const string PROGRAM_VERSION = "3.40.5.0";
+        private const string PROGRAM_VERSION = "3.40.7.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";

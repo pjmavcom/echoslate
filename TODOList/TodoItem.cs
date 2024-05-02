@@ -17,14 +17,14 @@ namespace TODOList
     public class TodoItem : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private string _todo;
-        private string _notes;
-        private string _problem;
-        private string _solution;
-        private string _dateStarted;
-        private string _timeStarted;
-        private string _dateCompleted;
-        private string _timeCompleted;
+        private string _todo = "";
+        private string _notes = "";
+        private string _problem = "";
+        private string _solution = "";
+        private string _dateStarted = "";
+        private string _timeStarted = "";
+        private string _dateCompleted = "";
+        private string _timeCompleted = "";
         private DateTime _timeTaken;
         private long _timeTakenInMinutes;
         private bool _isTimerOn;
