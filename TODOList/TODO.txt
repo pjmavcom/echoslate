@@ -18,7 +18,7 @@ False
 AutoSave
 False
 CurrentProjectVersion
-3.40.5.0.2
+3.40.7.0.2
 ====================================TODO
 2019-03-21|14:34|-|-|0|False|All # 57,Other # 9,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#INTERFACE Make the interface look clean||1|10||
 2019-03-24|10:16|-|-|0|False|Feature # 30,All # 50,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI I dont like the colors of the severity bar. Maybe its too thick or too green and red and yellow||1|8||
@@ -81,7 +81,16 @@ CurrentProjectVersion
 2024/04/23|16:41|-|-|0|False|All # 20,Other # 4,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed is slow switching tabs||3|2||
 ====================================VCS
 NewVCS
-False|20240501|214621|v3.40.5.0 |
+False|20240502|171500|v3.40.7.0 |
+VCSTodos
+EndVCS
+NewVCS
+True|20240502|135006|v3.40.6.0 Speed...|
+VCSTodos
+2024/05/02|17:14|20240502|171451|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Still working on speed...||3|10||
+EndVCS
+NewVCS
+True|20240501|214621|v3.40.5.0 Fixed a little speed issue|Skipped refreshing if the notes panel hasn't been changed
 VCSTodos
 EndVCS
 NewVCS

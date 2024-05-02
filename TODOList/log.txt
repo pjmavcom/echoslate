@@ -1,3 +1,14 @@
+commit 2f99a29af68ab963efc305c9947169306931cb3a
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 2 13:50:51 2024 +0800
+
+    20240501- v3.40.5.0 Fixed a little speed issue
+    
+    20240501- v3.40.5.0 Fixed a little speed issue
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Skipped refreshing if the notes panel hasn't been changed
+
 commit 30daa8d018f977127366d3a043a8b3bba5773e25
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed May 1 21:46:37 2024 +0800

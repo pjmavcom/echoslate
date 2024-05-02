@@ -75,8 +75,6 @@
 					<Separator />
 					<MenuItem Header="Quit" Click="mnuQuit_OnClick" />
 				</MenuItem >
-							<Label x:Name="lblCount" />
-							<Label x:Name="lblCountb" />
 			<MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp" >
 				<MenuItem.ContextMenu>
 					<ContextMenu >
@@ -246,7 +244,7 @@
 							<RowDefinition />
 							<RowDefinition Height="100" />
 						</Grid.RowDefinitions >
-						<TabControl Grid.Row="0" Grid.Column="0" Name="todoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsSelectionChanged" >
+						<TabControl Grid.Row="0" Grid.Column="0" Name="todoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsTab_OnSelectionChanged" >
 							<TabControl.ContextMenu >
 								<ContextMenu >
 									<MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
@@ -271,7 +269,7 @@
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
-											<ComboBox Grid.Column="0" Name="cbIncompleteItemsHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="IncompleteItemsHashtags_OnSelectionChanged" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
+											<ComboBox Grid.Column="0" Name="cbIncompleteItemsHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="IncompleteItemsHashTags_OnSelectionChanged" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
 											<Button Grid.Column="1" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 											<Button Grid.Column="2" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
@@ -472,7 +470,7 @@
 							<ColumnDefinition Width="228*"/>
 						</Grid.ColumnDefinitions>-->
 
-						<TabControl Grid.Row="0" Grid.Column="0" Name="kanbanTabs" ItemsSource="{Binding}" Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTabSelectionChanged" >
+						<TabControl Grid.Row="0" Grid.Column="0" Name="kanbanTabs" ItemsSource="{Binding}" Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTab_OnSelectionChanged" >
 							<TabControl.ContentTemplate >
 								<DataTemplate >
 									<Grid  >
@@ -491,7 +489,7 @@
 												<ColumnDefinition Width="111" />
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions >
-											<ComboBox Grid.Column="0" Name="cbKanbanHashTags" ItemsSource="{Binding KanbanHashTags}" SelectionChanged="KanbanHashtags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
+											<ComboBox Grid.Column="0" Name="cbKanbanHashTags" ItemsSource="{Binding KanbanHashTags}" SelectionChanged="KanbanHashTags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
 											<Button Grid.Column="1" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
 											<Button Grid.Column="2" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
 
