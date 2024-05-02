@@ -32,7 +32,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.8.0";
+        private const string PROGRAM_VERSION = "3.40.9.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -331,7 +331,7 @@ namespace TODOList
             tbKanbanNewTodo.Width = (mainGridWidth - 100) > 0 ? (mainGridWidth - 100) : 1;
 
             double notesPanelHeight = _windowHeight - _topOfPanelStuffHeight;
-            notesPanelWidth = notesPanelWidth - 100;
+            notesPanelWidth = notesPanelWidth - 30;
             int numLabels = 5;
             double labelsHeight = numLabels * 25;
             double notesPanelTitleHeight = 65;
@@ -356,9 +356,10 @@ namespace TODOList
             tbKanbanProblem.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
             tbIncompleteItemsSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
             tbIncompleteItemsSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
-            tbKanbanSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
             tbKanbanSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
-
+            tbKanbanSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
+            lbKanbanHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            lbIncompleteItemsHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 
 
         }
