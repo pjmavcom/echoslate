@@ -32,11 +32,19 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private bool _skipUpdate;
-        private const string PROGRAM_VERSION = "3.40.7.0";
+        private const string PROGRAM_VERSION = "3.40.8.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
+
+        private int _mainListBoxPanelWidth = 3;
+        private int _notesPanelWidth = 1;
+        private int _tabControlHeight = 0;
+        private int _newTodoPanelHeight = 100;
+        private int _topOfPanelStuffHeight = 110;
+        
+        
+        private bool _skipUpdate;
 
         private readonly List<TabItem> _incompleteItemsTabsList;
 
@@ -145,6 +153,11 @@ namespace TODOList
         private int _versionC;
         private int _versionD;
 
+        private double _windowWidth;
+        private double _windowHeight;
+        private double _windowPreviousWidth;
+        private double _windowPreviousHeight;
+        
         // PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
         private int VersionA
         {
@@ -155,7 +168,6 @@ namespace TODOList
                 iudVersionA.Value = value;
             }
         }
-
         private int VersionB
         {
             get => _versionB;
@@ -165,7 +177,6 @@ namespace TODOList
                 iudVersionB.Value = value;
             }
         }
-
         private int VersionC
         {
             get => _versionC;
@@ -175,7 +186,6 @@ namespace TODOList
                 iudVersionC.Value = value;
             }
         }
-
         private int VersionD
         {
             get => _versionD;
@@ -189,31 +199,15 @@ namespace TODOList
         private bool _isUpdatingCheckBoxes;
         private string  _testIfChanged;
 
-        public int PomoTimeLeft
-        {
-            get => _pomoTimeLeft;
-            set
-            {
-                _pomoTimeLeft = value;
-                OnPropertyChanged();
-            }
-        }
-
         private ObservableCollection<string> RecentFiles { get; set; }
-
-        private List<TodoItemHolder> IncompleteItems => _incompleteItems[todoTabs.SelectedIndex];
-        private List<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTabs.SelectedIndex];
-
-        private List<string> KanbanHashTags => _kanbanHashTags[kanbanTabs.SelectedIndex];
-        private List<string> IncompleteItemsHashTags => _incompleteItemsHashTags[todoTabs.SelectedIndex];
-
-        private string TabNames => todoTabs.SelectedIndex == -1
+        private List<TodoItemHolder> IncompleteItems => _incompleteItems[incompleteItemsTodoTabs.SelectedIndex];
+        private List<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTodoTabs.SelectedIndex];
+        private List<string> KanbanHashTags => _kanbanHashTags[kanbanTodoTabs.SelectedIndex];
+        private List<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
+        private string TabNames => incompleteItemsTodoTabs.SelectedIndex == -1
             ? _incompleteItemsTabsList[0].Name
-            : _incompleteItemsTabsList[todoTabs.SelectedIndex].Name;
+            : _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
 
-        // private string TabKanbanNames => kanbanTabs.SelectedIndex == -1
-        // 	? _tabKanbanList[0].Name
-        // 	: _tabKanbanList[kanbanTabs.SelectedIndex].Name;
         private string WindowTitle => "EtherealListVCSNotes v" + PROGRAM_VERSION + " " + _currentOpenFile;
         private List<HistoryItem> HistoryItems { get; }
 
@@ -226,7 +220,15 @@ namespace TODOList
                 OnPropertyChanged();
             }
         }
-
+        public int PomoTimeLeft
+        {
+            get => _pomoTimeLeft;
+            set
+            {
+                _pomoTimeLeft = value;
+                OnPropertyChanged();
+            }
+        }
         public int PomoBreakTime
         {
             get => _pomoBreakTime;
@@ -243,6 +245,8 @@ namespace TODOList
             _left = 0;
             InitializeComponent();
             Closing += Window_Closed;
+            this.SizeChanged += Window_OnWindowSizeChanged;
+            
             DataContext = this;
 #if DEBUG
             mnuMain.Background = Brushes.Red;
@@ -276,10 +280,10 @@ namespace TODOList
             HistoryItems = new List<HistoryItem>();
             _currentHistoryItem = new HistoryItem("", "");
 
-            todoTabs.ItemsSource = _incompleteItemsTabsList;
-            todoTabs.Items.Refresh();
-            kanbanTabs.ItemsSource = _kanbanTabsList;
-            kanbanTabs.Items.Refresh();
+            incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
+            incompleteItemsTodoTabs.Items.Refresh();
+            kanbanTodoTabs.ItemsSource = _kanbanTabsList;
+            kanbanTodoTabs.Items.Refresh();
             mnuRecentLoads.ItemsSource = RecentFiles;
             lbHistory.ItemsSource = HistoryItems;
 
@@ -296,6 +300,68 @@ namespace TODOList
         }
 
         // METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Windows METHODS //
+        private void Window_OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _windowWidth = e.NewSize.Width;
+            _windowHeight = e.NewSize.Height;
+            _windowPreviousWidth = e.PreviousSize.Width;
+            _windowPreviousHeight = e.PreviousSize.Height;
+
+            int mainPanelDivisions = _mainListBoxPanelWidth + _notesPanelWidth;
+            double mainGridWidth = Math.Floor(_windowWidth / mainPanelDivisions * _mainListBoxPanelWidth);
+            double notesPanelWidth = _windowWidth - mainGridWidth;
+            incompleteItemsMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
+            kanbanMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
+            incompleteItemsNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            kanbanNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            
+            double todoTabsHeight = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
+            incompleteItemsTodoTabs.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+            kanbanTodoTabs.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+            incompleteItemsNewTodoPanel.Height = _newTodoPanelHeight > 0 ? _newTodoPanelHeight : 1;
+            kanbanNewTodoPanel.Height = _newTodoPanelHeight > 0 ? _newTodoPanelHeight : 1;
+            if (_lbIncompleteItems != null)
+                _lbIncompleteItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+            if (_lbKanbanItems != null)
+                _lbKanbanItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+            
+            cbIncompleteItemsSeverity.Width = 100;
+            cbKanbanSeverity.Width = 100;
+            tbIncompleteItemsNewTodo.Width = (mainGridWidth - 100) > 0 ? (mainGridWidth - 100) : 1;
+            tbKanbanNewTodo.Width = (mainGridWidth - 100) > 0 ? (mainGridWidth - 100) : 1;
+
+            double notesPanelHeight = _windowHeight - _topOfPanelStuffHeight;
+            notesPanelWidth = notesPanelWidth - 100;
+            int numLabels = 5;
+            double labelsHeight = numLabels * 25;
+            double notesPanelTitleHeight = 65;
+            double notesPanelHashTagsHeight = 335;
+            double notesPanelCompleteButtonHeight = 35;
+            double notesPanelTextBoxSpaceTotal = notesPanelHeight - labelsHeight - notesPanelTitleHeight - notesPanelHashTagsHeight - notesPanelCompleteButtonHeight;
+            double notesPanelTextBoxDivision = notesPanelTextBoxSpaceTotal / 12;
+            double notesPanelNotesHeight = Math.Floor(notesPanelTextBoxDivision * 3);
+            double notesPanelProblemHeight = Math.Floor(notesPanelTextBoxDivision * 2);
+            double notesPanelSolutionHeight = notesPanelTextBoxSpaceTotal - notesPanelNotesHeight - notesPanelProblemHeight;
+            tbIncompleteItemsTitle.Height = notesPanelTitleHeight > 0 ? notesPanelTitleHeight : 1;
+            tbIncompleteItemsTitle.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbKanbanTitle.Height = notesPanelTitleHeight > 0 ? notesPanelTitleHeight : 1;
+            tbKanbanTitle.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbIncompleteItemsNotes.Height = notesPanelNotesHeight > 0 ? notesPanelNotesHeight : 1;
+            tbIncompleteItemsNotes.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbKanbanNotes.Height = notesPanelNotesHeight > 0 ? notesPanelNotesHeight : 1;
+            tbKanbanNotes.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbIncompleteItemsProblem.Height = notesPanelProblemHeight > 0 ? notesPanelProblemHeight : 1;
+            tbIncompleteItemsProblem.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbKanbanProblem.Height = notesPanelProblemHeight > 0 ? notesPanelProblemHeight : 1;
+            tbKanbanProblem.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbIncompleteItemsSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
+            tbIncompleteItemsSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+            tbKanbanSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
+            tbKanbanSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+
+
+
+        }
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
@@ -449,17 +515,17 @@ namespace TODOList
                 case 1:
                     // IncompleteItems (TO DO) Tab
                     IncompleteItemsUpdateHandler();
-                    _currentSelectedSubTab = todoTabs;
+                    _currentSelectedSubTab = incompleteItemsTodoTabs;
                     _lbCurrentItems = _lbIncompleteItems;
                     _currentItems = _incompleteItems;
-                    _tbNewTodo = tbNewTodo;
-                    _cbSeverity = cbSeverity;
+                    _tbNewTodo = tbIncompleteItemsNewTodo;
+                    _cbSeverity = cbIncompleteItemsSeverity;
                     _lbNotesPanelHashTags = lbIncompleteItemsHashTags;
                     break;
                 case 2:
                     // Kanban Tab
                     KanbanUpdateHandler();
-                    _currentSelectedSubTab = kanbanTabs;
+                    _currentSelectedSubTab = kanbanTodoTabs;
                     _lbCurrentItems = _lbKanbanItems;
                     _currentItems = _kanbanItems;
                     _tbNewTodo = tbKanbanNewTodo;
@@ -784,7 +850,7 @@ namespace TODOList
         }
         private void IncompleteItemsInitialize()
         {
-            if (!(todoTabs.Template.FindName("PART_SelectedContentHost", todoTabs) is ContentPresenter incompleteItemsContentPresenter))
+            if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter incompleteItemsContentPresenter))
                 return;
             incompleteItemsContentPresenter.ApplyTemplate();
             _lbIncompleteItems = incompleteItemsContentPresenter.ContentTemplate.FindName("lbIncompleteItems", incompleteItemsContentPresenter) as ListBox;
@@ -796,6 +862,8 @@ namespace TODOList
             _lbIncompleteItems.Items.Refresh();
             _lbIncompleteItems.SelectionChanged += IncompleteItems_OnSelectionChanged;
             _lbIncompleteItems.UnselectAll();
+            double height = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
+            _lbIncompleteItems.Height = height > 0 ? height : 1;
         }
         private void IncompleteItemsUpdateHandler()
         {
@@ -806,10 +874,10 @@ namespace TODOList
             if (_lbIncompleteItems == null || _cbIncompleteItemsHashTags == null)
                 return;
 
-            if (todoTabs.Items.Count <= 0)
+            if (incompleteItemsTodoTabs.Items.Count <= 0)
                 return;
-            if (todoTabs.SelectedIndex < 0)
-                todoTabs.SelectedIndex = 0;
+            if (incompleteItemsTodoTabs.SelectedIndex < 0)
+                incompleteItemsTodoTabs.SelectedIndex = 0;
 
             IncompleteItemsRefresh();
         }
@@ -849,8 +917,8 @@ namespace TODOList
             }
 
             // IncompleteItemsRefresh();
-            todoTabs.ItemsSource = _incompleteItemsTabsList;
-            todoTabs.Items.Refresh();
+            incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
+            incompleteItemsTodoTabs.Items.Refresh();
             AutoSave();
         }
         private void IncompleteItemsTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -869,7 +937,7 @@ namespace TODOList
             }
 
             Dispatcher.BeginInvoke(new Action(IncompleteItemsUpdateHandler));
-            _previousTodoTabSelectedIndex = todoTabs.SelectedIndex;
+            _previousTodoTabSelectedIndex = incompleteItemsTodoTabs.SelectedIndex;
         }
         private void IncompleteItemsCreateTabs()
         {
@@ -882,8 +950,8 @@ namespace TODOList
         private void IncompleteItems_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             e.Handled = true;
-            if (todoTabs.SelectedIndex < 0 || todoTabs.SelectedIndex >= _incompleteItems.Count)
-                todoTabs.SelectedIndex = 0;
+            if (incompleteItemsTodoTabs.SelectedIndex < 0 || incompleteItemsTodoTabs.SelectedIndex >= _incompleteItems.Count)
+                incompleteItemsTodoTabs.SelectedIndex = 0;
 
             List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
             if (_lbIncompleteItems.SelectedIndex < 0)
@@ -965,7 +1033,7 @@ namespace TODOList
             CheckForHashTagListChanges();
             IncompleteItemsFixRankings();
 
-            int tabIndex = todoTabs.SelectedIndex;
+            int tabIndex = incompleteItemsTodoTabs.SelectedIndex;
             if (tabIndex < 0 || tabIndex >= _incompleteItemsTabsList.Count)
                 return;
 
@@ -985,7 +1053,7 @@ namespace TODOList
         }
         private void IncompleteItemsHashTagsInitialize()
         {
-            if (!(todoTabs.Template.FindName("PART_SelectedContentHost", todoTabs) is ContentPresenter hashTagsContentPresenter))
+            if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter hashTagsContentPresenter))
                 return;
 
             _cbIncompleteItemsHashTags = hashTagsContentPresenter.ContentTemplate.FindName("cbIncompleteItemsHashTags", hashTagsContentPresenter) as ComboBox;
@@ -1004,22 +1072,22 @@ namespace TODOList
         }
         private void IncompleteItemsFixRankings()
         {
-            if (todoTabs.Items.Count == 0 ||
-                todoTabs.SelectedIndex < 0 ||
-                todoTabs.SelectedIndex >= todoTabs.Items.Count)
+            if (incompleteItemsTodoTabs.Items.Count == 0 ||
+                incompleteItemsTodoTabs.SelectedIndex < 0 ||
+                incompleteItemsTodoTabs.SelectedIndex >= incompleteItemsTodoTabs.Items.Count)
             {
                 return;
             }
 
-            string currentHash = _incompleteItemsTabsList[todoTabs.SelectedIndex].Name;
-            foreach (TodoItemHolder itemHolder in _incompleteItems[todoTabs.SelectedIndex].Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
+            string currentHash = _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
+            foreach (TodoItemHolder itemHolder in _incompleteItems[incompleteItemsTodoTabs.SelectedIndex].Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
                 itemHolder.TD.Rank.Add(currentHash, 99);
 
-            _incompleteItems[todoTabs.SelectedIndex] = _incompleteItems[todoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
-            for (int rank = 0; rank < _incompleteItems[todoTabs.SelectedIndex].Count; rank++)
+            _incompleteItems[incompleteItemsTodoTabs.SelectedIndex] = _incompleteItems[incompleteItemsTodoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
+            for (int rank = 0; rank < _incompleteItems[incompleteItemsTodoTabs.SelectedIndex].Count; rank++)
             {
-                _incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
-                _incompleteItems[todoTabs.SelectedIndex][rank].Rank = _incompleteItems[todoTabs.SelectedIndex][rank].TD.Rank[currentHash];
+                _incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
+                _incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].Rank = _incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash];
             }
         }
 
@@ -1032,7 +1100,7 @@ namespace TODOList
         }
         private void KanbanInitialize()
         {
-            if (!(kanbanTabs.Template.FindName("PART_SelectedContentHost", kanbanTabs) is ContentPresenter kanbanContentPresenter))
+            if (!(kanbanTodoTabs.Template.FindName("PART_SelectedContentHost", kanbanTodoTabs) is ContentPresenter kanbanContentPresenter))
                 return;
             kanbanContentPresenter.ApplyTemplate();
             _lbKanbanItems = kanbanContentPresenter.ContentTemplate.FindName("lbKanbanItems", kanbanContentPresenter) as ListBox;
@@ -1044,6 +1112,8 @@ namespace TODOList
             _lbKanbanItems.Items.Refresh();
             _lbKanbanItems.SelectionChanged += KanbanItems_OnSelectionChange;
             _lbKanbanItems.UnselectAll();
+            double height = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
+            _lbKanbanItems.Height = height > 0 ? height : 1;
         }
         private void KanbanUpdateHandler()
         {
@@ -1054,10 +1124,10 @@ namespace TODOList
             if (_lbKanbanItems == null || _cbKanbanHashTags == null)
                 return;
 
-            if (kanbanTabs.Items.Count <= 0)
+            if (kanbanTodoTabs.Items.Count <= 0)
                 return;
-            if (kanbanTabs.SelectedIndex < 0)
-                kanbanTabs.SelectedIndex = 0;
+            if (kanbanTodoTabs.SelectedIndex < 0)
+                kanbanTodoTabs.SelectedIndex = 0;
             
             KanbanRefresh();
         }
@@ -1074,7 +1144,7 @@ namespace TODOList
             _kanbanHashTags.Add(new List<string>());
             _kanbanTabsList.Add(ti);
             _kanbanItems.Add(new List<TodoItemHolder>());
-            kanbanTabs.Items.Refresh();
+            kanbanTodoTabs.Items.Refresh();
         }
         private void KanbanTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1092,7 +1162,7 @@ namespace TODOList
             }
 
             Dispatcher.BeginInvoke(new Action(KanbanUpdateHandler));
-            _previousKanbanTabSelectedIndex = kanbanTabs.SelectedIndex;
+            _previousKanbanTabSelectedIndex = kanbanTodoTabs.SelectedIndex;
         }
         private void KanbanCreateTabs()
         {
@@ -1107,8 +1177,8 @@ namespace TODOList
         private void KanbanItems_OnSelectionChange(object sender, SelectionChangedEventArgs e)
         {
             e.Handled = true;
-            if (kanbanTabs.SelectedIndex < 0 || kanbanTabs.SelectedIndex >= _kanbanItems.Count)
-                kanbanTabs.SelectedIndex = 0;
+            if (kanbanTodoTabs.SelectedIndex < 0 || kanbanTodoTabs.SelectedIndex >= _kanbanItems.Count)
+                kanbanTodoTabs.SelectedIndex = 0;
             
             List<TodoItem> list = KanbanItems.Select(itemHolder => itemHolder.TD).ToList();
             if (_lbKanbanItems.SelectedIndex < 0)
@@ -1170,7 +1240,7 @@ namespace TODOList
             KanbanCountTabItems();
             KanbanFixRankings();
 
-            int tabIndex = kanbanTabs.SelectedIndex;
+            int tabIndex = kanbanTodoTabs.SelectedIndex;
             if (tabIndex < 0 || tabIndex >= _kanbanTabsList.Count)
                 return;
 
@@ -1190,7 +1260,7 @@ namespace TODOList
         }
         private void KanbanHashTagsInitialize()
         {
-            if (!(kanbanTabs.Template.FindName("PART_SelectedContentHost", kanbanTabs) is ContentPresenter hashTagsKanbanContentPresenter))
+            if (!(kanbanTodoTabs.Template.FindName("PART_SelectedContentHost", kanbanTodoTabs) is ContentPresenter hashTagsKanbanContentPresenter))
                 return;
 
             _cbKanbanHashTags = hashTagsKanbanContentPresenter.ContentTemplate.FindName("cbKanbanHashTags", hashTagsKanbanContentPresenter) as ComboBox;
@@ -1223,7 +1293,7 @@ namespace TODOList
         // METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Hotkeys //
         private void HkSwitchTab(object sender, ExecutedRoutedEventArgs e)
         {
-            int index = todoTabs.SelectedIndex;
+            int index = incompleteItemsTodoTabs.SelectedIndex;
             switch ((string)e.Parameter)
             {
                 case "right" when tabControl.SelectedIndex == 0:
@@ -1232,9 +1302,9 @@ namespace TODOList
                 case "right":
                 {
                     index++;
-                    if (index >= todoTabs.Items.Count)
+                    if (index >= incompleteItemsTodoTabs.Items.Count)
                     {
-                        index = todoTabs.Items.Count - 1;
+                        index = incompleteItemsTodoTabs.Items.Count - 1;
                     }
 
                     break;
@@ -1252,7 +1322,7 @@ namespace TODOList
                 }
             }
 
-            todoTabs.SelectedIndex = index;
+            incompleteItemsTodoTabs.SelectedIndex = index;
         }
         private void HkSwitchSeverity(object sender, ExecutedRoutedEventArgs e)
         {
@@ -1400,7 +1470,7 @@ namespace TODOList
 
                     break;
                 case 2:
-                    newTodo.Kanban = kanbanTabs.SelectedIndex;
+                    newTodo.Kanban = kanbanTodoTabs.SelectedIndex;
                     newTodo.KanbanRank = _lbKanbanItems.Items.Count;
                     break;
             }
@@ -1731,7 +1801,7 @@ namespace TODOList
             switch (tabControl.SelectedIndex)
             {
                 case 1:
-                    todoItem.Rank[_incompleteItemsTabsList[todoTabs.SelectedIndex].Name] = 0;
+                    todoItem.Rank[_incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name] = 0;
                     break;
                 case 2:
                     todoItem.KanbanRank = 0;
@@ -1751,7 +1821,7 @@ namespace TODOList
             switch (tabControl.SelectedIndex)
             {
                 case 1:
-                    todoItem.Rank[_incompleteItemsTabsList[todoTabs.SelectedIndex].Name] = _lbIncompleteItems.Items.Count + 1;
+                    todoItem.Rank[_incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name] = _lbIncompleteItems.Items.Count + 1;
                     break;
                 case 2:
                     todoItem.KanbanRank = _lbKanbanItems.Items.Count + 1;
@@ -2163,7 +2233,7 @@ namespace TODOList
                         td.Rank[TabNames] = 0;
                     break;
                 case 2:
-                    td.Kanban = kanbanTabs.SelectedIndex;
+                    td.Kanban = kanbanTodoTabs.SelectedIndex;
                     newIndex = _lbKanbanItems.Items.Count + 1;
                     td.KanbanRank = newIndex;
                     break;
@@ -2674,9 +2744,9 @@ namespace TODOList
             IncompleteItemsRefresh();
             KanbanRefresh();
             RefreshHistory();
-            todoTabs.Items.Refresh();
-            kanbanTabs.Items.Refresh();
-            kanbanTabs.SelectedIndex = 3;
+            incompleteItemsTodoTabs.Items.Refresh();
+            kanbanTodoTabs.Items.Refresh();
+            kanbanTodoTabs.SelectedIndex = 3;
 
             if (HistoryItems.Count > 0)
             {
@@ -2725,8 +2795,8 @@ namespace TODOList
             _cbIncompleteItemsHashTags = null;
             _cbKanbanHashTags = null;
 
-            todoTabs.SelectedIndex = -1;
-            kanbanTabs.SelectedIndex = -1;
+            incompleteItemsTodoTabs.SelectedIndex = -1;
+            kanbanTodoTabs.SelectedIndex = -1;
             // _todoTabsPreviousIndex = -1;
             // _kanbanTabsPreviousIndex = -1;
         }

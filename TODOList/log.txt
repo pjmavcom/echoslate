@@ -1,3 +1,18 @@
+commit 1f97f848b45efdb5466d28ee03b861cf9d08b3da
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 2 19:30:51 2024 +0800
+
+    20240502- v3.40.7.0 Save/load bug
+    
+    20240502- v3.40.7.0 Save/load bug
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240502-0m |Loading and saving old files...
+            Problem: The notes, problem and solution are null
+            Solution: Set them to empty when the todo item is created
+
 commit 4b41ab2971d7e763f56ee9c8665c2d213b159527
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu May 2 17:15:12 2024 +0800
