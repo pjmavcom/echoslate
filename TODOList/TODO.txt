@@ -18,8 +18,16 @@ False
 AutoSave
 False
 CurrentProjectVersion
-3.40.10.0.2
+3.40.11.0.2
 ====================================TODO
+2024/05/01|10:30|-|-|0|False|Bug # 15,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?|Testing
+Testing
+Testing|3|5||
+2024/04/22|22:41|-|-|0|False|Feature # 13,All # 24,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|18||
+2019-05-05|10:17|-|-|0|False|All # 34,Other # -1,Feature # -1,Bug # 9,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Crash on switching file|Doesnt look like any data lost. Completed a few todos, copied history, deleted a todo then switched
+
+UPDATE:
+Again, no data lost. Completed a few TODOS, copied and created a new history, then tried switching to the other file with the hotkey.|1|17||
 2019-03-21|14:34|-|-|0|False|All # 56,Other # 8,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#INTERFACE Make the interface look clean||1|10||
 2019-03-24|10:16|-|-|0|False|Feature # 27,All # 49,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI I dont like the colors of the severity bar. Maybe its too thick or too green and red and yellow||1|8||
 2019-03-24|10:20|-|-|0|False|Feature # 26,All # 48,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 2,Ifwishes # -1,Kanban # -1,|2|#FEATURE #UI Add the add tag button to the very last tag in the tag editor list||1|2||
@@ -39,20 +47,21 @@ CurrentProjectVersion
 2024/04/21|15:52|-|-|0|False|Bug # 8,All # 30,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG Remove recent loads file||1|3||
 2024/04/21|16:08|-|-|0|False|Feature # 15,All # 32,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Open project button||1|4||
 2019-03-31|14:10|-|-|0|False|Feature # 21,All # 41,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 2,Kanban # -1,|1|#FEATURE #IFWISHES Online storage of files||0|9||
-2019-05-05|10:17|-|-|0|False|All # 34,Other # -1,Feature # -1,Bug # 9,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Crash on switching file|Doesnt look like any data lost. Completed a few todos, copied history, deleted a todo then switched/n/nUPDATE:/nAgain, no data lost. Completed a few TODOS, copied and created a new history, then tried switching to the other file with the hotkey.|1|17||
 2019-03-24|10:12|-|-|0|False|Bug # 14,All # 51,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #HASHTAGEDITOR New hashtag|If you push enter when entering new text on hashtag, it doesnt get saved. Focus isnt changing and allowing the text to update soon enough. Need to put something in like the preview text things in the editors rank textbox and if it changes, update the tag first|1|5||
 2019-05-02|07:10|-|-|0|False|Feature # -1,All # 36,Other # -1,Bug # 10,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Backup time|Changing the backup time does not set the timer if its greater than the backup time. If its got 7 minutes left and you set the timer for 5 minutes, it still waits 7 minutes until next round|1|11||
 2019-03-24|17:34|-|-|0|False|Bug # 12,All # 42,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Options changing does not get saved|Check when options are changed that it saves when done|1|12||
 2019-03-24|17:33|-|-|0|False|Bug # 13,All # 43,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Add todos to old history items|Still cant add completed todos to other history items, though why would you? When you edit a todo on an old history item, it adds it to the newest todo.|1|14||
-2019-03-12|07:20|-|-|0|False|All # 54,Other # 3,Feature # -1,Bug # 6,Oldbugs # 1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Global hotkeys|Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in./nThis works most of the time. Sometimes it doesnt|0|12||
+2019-03-12|07:20|-|-|0|False|All # 54,Other # 3,Feature # -1,Bug # 6,Oldbugs # 1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Global hotkeys|Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in.
+This Works most of the time. Sometimes it doesnt|0|12||
 2019-03-03|23:51|-|-|0|False|All # 57,Other # 4,Feature # -1,Bug # 7,Oldbugs # 2,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Crashes when new is clicked|Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|0|15||
 2019-03-19|15:59|-|-|0|False|All # 58,Other # 5,Feature # -1,Bug # 8,Oldbugs # 3,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#HISTORY #OLDBUGS Selecting history items by keyboard|When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|0|16||
 2019-03-24|10:39|-|-|0|False|Feature # 24,All # 46,Other # -1,Bug # -1,Oldbugs # -1,Notes # 2,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE #NOTES Notes tab|Maybe a notes tab, has same sorting features as the todos tab, but these notes do not get onto the vcs history|0|10||
-2024/04/21|22:35|-|-|0|False|Feature # 14,All # 29,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remember previous sort setting|On opening a file, it does not remember the previous sorting mode./nOr just a default sort, on severity? Or rank?/nAn option?|2|2||
+2024/04/21|22:35|-|-|0|False|Feature # 14,All # 29,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remember previous sort setting|On opening a file, it does not remember the previous sorting mode.
+Or Just a default sort, on severity? Or rank?
+An Option?|2|2||
 2019-02-20|19:11|-|-|0|False|All # 28,Other # 7,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|Update version number|Testing|1|1||
-2024/04/22|22:03|-|-|0|False|Kanban # 5,All # 27,Other # -1,Feature # -1,Bug # 7,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|0|#BUG #KANBAN Removing last item from Kanban crashes||3|8||
+2024/04/22|22:03|-|-|0|False|Kanban # 5,All # 27,Other # -1,Feature # -1,Bug # 7,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|0|#BUG #KANBAN Removing last item from Kanban crashes||3|7||
 2024/04/22|22:12|-|-|0|False|Bug # 6,All # 26,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Multiedit doesnt add hashtags?||1|15||
-2024/04/22|22:41|-|-|0|False|Feature # 13,All # 24,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|18||
 2024/04/22|22:42|-|-|0|False|Notes # 1,All # 25,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#NOTES Add a scratch notes tab||0|17||
 2024/04/22|22:46|-|-|0|False|Bug # 5,All # 22,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Start making exceptions and handling errors and crashes better....||3|3||
 2024/04/22|22:47|-|-|0|False|Bug # 4,All # 23,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Sorting on severity and changing the severity by clicking on it makes the todo jump immediately||1|16||
@@ -63,25 +72,30 @@ CurrentProjectVersion
 2024/04/23|12:19|-|-|0|False|Other # 6,All # 21,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#OTHER Update the code variable and function names||1|6||
 2024/04/23|16:41|-|-|0|False|All # 15,Other # 4,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed changing severity is slow||3|2||
 2024/04/23|16:41|-|-|0|False|All # 14,Other # 5,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL Save file with completed history items as a separate file?||1|26||
-2024/04/25|22:57|-|-|0|False|Bug # 3,All # 12,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Editing notes multiple lines does not capitalize the note||3|7||
 2024/04/25|22:58|-|-|0|False|Feature # 8,All # 13,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Make an option to print a list||2|6||
 2024/04/26|21:01|-|-|0|False|Kanban # 1,All # 11,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#KANBAN Make notes window bigger on edit window||1|27||
-2019-05-03|07:50|-|-|0|False|All # 35,Other # -1,Feature # 17,Bug # 0,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Status bar|- [ ] Is the file is saved and backed up or not./n- [ ] Time left until backup|3|4||
+2019-05-03|07:50|-|-|0|False|All # 35,Other # -1,Feature # 17,Bug # 0,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Status bar|- [ ] Is the file is saved and backed up or not.
+- [ ] Time left until backup|3|4||
 2024/04/26|21:25|-|-|0|False|Feature # 7,All # 7,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Save a backup when manual saving||1|21||
 2024/04/26|21:25|-|-|0|False|Feature # 6,All # 8,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Option to load a backup||1|22||
 2024/04/26|21:31|-|-|0|False|Feature # 5,All # 9,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Save settings in a separate file||1|24||
-2024/04/26|21:55|-|-|0|False|Feature # 4,All # 10,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Mini mode|Just show severity and todo/nAt least a scrollbar when not everything can be shown|1|25||
+2024/04/26|21:55|-|-|0|False|Feature # 4,All # 10,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Mini mode|Just show severity and todo
+At least a scrollbar when not everything can be shown|1|25||
 2024/04/27|14:31|-|-|0|False|Feature # 3,All # 6,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Add or remove columns||0|13||
 2024/04/29|19:54|-|-|0|False|Feature # 2,All # 5,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#FEATURE Find Todo function||1|7||
 2024/04/29|22:56|-|-|0|False|All # 4,Other # -1,Feature # -1,Bug # 1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Switching tabs sorts by same hashtag as current tab, but if that tab doesnt have that tag, sorting gets reset?|Also, related probably, switching main tabs with a hash sorting, that hash is selected in the combo box, but isn't sorted by it.|3|6||
 2024/04/30|11:10|-|-|0|False|Feature # 1,All # 3,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Maybe add an option for the git.exe Path||0|14||
 2024/04/30|23:01|-|-|0|False|All # 2,Other # 2,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Does edit window still need to be there?||2|5||
-2024/05/01|10:30|-|-|0|False|Bug # 15,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?||3|5||
 2024/04/23|16:41|-|-|0|False|All # 19,Other # 3,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed is slow switching tabs||3|1||
 ====================================VCS
 NewVCS
-False|20240502|223753|v3.40.10.0 |
+False|20240503|105938|v3.40.11.0 |
 VCSTodos
+EndVCS
+NewVCS
+True|20240502|223753|v3.40.10.0 Fixed capitalizing issues|
+VCSTodos
+2024/04/25|22:57|20240503|105917|0|True|Bug # 3,All # 12,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Editing notes multiple lines does not capitalize the note||3|7||
 EndVCS
 NewVCS
 True|20240502|222453|v3.40.9.0 Fixed notes panel size issues|
@@ -127,8 +141,10 @@ True|20240501|132050|v3.40.1.0 Added some more notes panel editors|Also moved th
 VCSTodos
 2024/05/01|14:21|20240501|170158|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG The popup not does not show the notes||3|11||Refreshed the listbox fixed it
 2024/05/01|14:21|20240501|170136|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Editing note or title and immediately click off onto another item doesnt update the view of that item|The item IS updated, just not showing|3|12|The other calls occur before the call to update the note, then the wrong item is selected so it doesnt update the wanted note|Cached the previous note and edited that on changing something.
-2024/05/01|14:22|20240501|170058|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Selecting an item at first start up doesnt select it all the way and throws an error of something unselected||3|13|The selected index of the current listbox is reset on running the load hashtags function.|Added some code to the OnSelectionChanged() functions to check if the current index == the cached index and to return if it is./nAlso added some e.Handled = true to those functions
-2024/04/26|15:36|20240501|155148|0|True|Feature # 8,All # 14,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Bug editor|An editor just for items with the bug tag/nHas a notes, problem and solution section|3|1|Didnt have one|
+2024/05/01|14:22|20240501|170058|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Selecting an item at first start up doesnt select it all the way and throws an error of something unselected||3|13|The selected index of the current listbox is reset on running the load hashtags function.|Added some code to the OnSelectionChanged() functions to check if the current index == the cached index and to return if it is.
+Also Added some e.Handled = true to those functions
+2024/04/26|15:36|20240501|155148|0|True|Feature # 8,All # 14,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Bug editor|An editor just for items with the bug tag
+Has a notes, problem and solution section|3|1|Didnt have one|
 EndVCS
 NewVCS
 True|20240501|125025|v3.40.0.0 Move items to top and bottom|
@@ -139,7 +155,8 @@ EndVCS
 NewVCS
 True|20240501|103454|v3.39 Version numbers updated|
 VCSTodos
-2024/04/21|22:37|20240501|125001|0|True|Feature # 15,All # 33,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Change the increment to include sub versions|Also increase the decimal places to 5 numbers for the sub version and 3 for the main version/nSolution: Just removed the increment in favor of incrementing the individual version parts|3|2||
+2024/04/21|22:37|20240501|125001|0|True|Feature # 15,All # 33,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Change the increment to include sub versions|Also increase the decimal places to 5 numbers for the sub version and 3 for the main version
+Solution: Just removed the increment in favor of incrementing the individual version parts|3|2||
 2024/04/21|22:36|20240501|124925|0|True|Feature # 16,All # 32,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Create an alpha and beta mode|Instead of just using the version number and incrementing it.|3|1||
 EndVCS
 NewVCS
@@ -152,31 +169,39 @@ True|20240430|225527|v3.37 Fixed quick complete and duplicate items in history|
 VCSTodos
 2024/04/29|19:40|20240501|095624|0|True|Bug # 2,All # 7,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG QuickComplete needs to be fixed for both tabs|Fixed|3|13||
 2024/05/01|09:55|20240501|095603|0|True|Bug # 17,All # -1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Duplicate todos being added to history|SortCompleteTodos was being called recursively, before removing the complete from the masterlist. So I removed from masterlist first, then sorted it|0|1||
-2024/04/30|23:00|20240501|085209|0|True|All # 0,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG New todo textbox in Kanban view doesn't clear after adding todo|Easy fix, _tbNewTodo.Clear() was commented out?!|3|15||
+2024/04/30|23:00|20240501|085209|0|True|All # 0,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG New todo textbox in Kanban view doesn't clear after adding todo|Easy fix, _tbNewTodo.Clear() Was commented out?!|3|15||
 EndVCS
 NewVCS
 True|20240430|171501|v3.36 Full notes editor on side completed|
 VCSTodos
 2024/04/21|22:27|20240430|225145|0|True|Feature # 18,All # 39,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Add a COMPLETE button|Add a button to the Notes pane and make it complete the todo|3|1||
-2024/04/22|22:39|20240430|225139|0|True|Feature # 15,All # 28,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Make notes pane a full editor|Add everything thats in the editor to this pane/nWhen multiple todos are selected, make it a multi editor|3|4||
+2024/04/22|22:39|20240430|225139|0|True|Feature # 15,All # 28,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Make notes pane a full editor|Add everything thats in the editor to this pane
+When multiple todos are selected, make it a multi editor|3|4||
 EndVCS
 NewVCS
 True|20240430|134242|v3.35Fixed some notes panel things|
 VCSTodos
 2024/04/30|14:49|20240430|145542|0|True|All # 0,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Refresh notes panel|When an item is deleted, the notes panel doesn't show it|3|10||
 2024/04/26|22:41|20240430|171405|0|True|Bug # 6,All # 9,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG Editing notes or title in side panel and switching tabs does not save new data|Fixed!|3|4||
-2024/04/21|16:14|20240430|144425|0|True|Feature # 20,All # 52,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Adding a new todo should load the notes panel to the new one|Ok, got this working/nSolution: Had to add new todos at the bottom of the list, then select the item in the list box|3|1||
+2024/04/21|16:14|20240430|144425|0|True|Feature # 20,All # 52,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Adding a new todo should load the notes panel to the new one|Ok, got this working
+Solution: Had to add new todos at the bottom of the list, then select the item in the list box|3|1||
 EndVCS
 NewVCS
 True|20240430|111111|v3.34 Fixed Rankings|
 VCSTodos
-2024/04/22|22:11|20240430|134224|0|True|Kanban # 3,All # 34,Other # -1,Feature # -1,Bug # 13,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#BUG #KANBAN Rank in kanban view is wrong|But only on some views?/nAdding a new item and viewing it in Kanban view has the wrong ranks/nI think it is not fixing ranks because of the kanban tabs are not identified in the save file/nDo I even need ranks in Kanban view?/nYes...added!|3|7||
+2024/04/22|22:11|20240430|134224|0|True|Kanban # 3,All # 34,Other # -1,Feature # -1,Bug # 13,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#BUG #KANBAN Rank in kanban view is wrong|But only on some views?
+Adding A new item and viewing it in Kanban view has the wrong ranks
+I think it is not fixing ranks because of the kanban tabs are not identified in the save file
+Do I even need ranks in Kanban view?
+Yes...added!|3|7||
 2024/04/30|11:23|20240430|112354|0|True|Feature # 38,All # -1,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Added a line separator to the git history log to separate commits||0|0||
 EndVCS
 NewVCS
 True|20240429|225215|v3.33 Fixed the Git log|
 VCSTodos
-2024/04/21|16:14|20240430|111030|0|True|Feature # 20,All # 45,Other # -1,Bug # 16,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #FEATURE Log doesn't work|Maybe needs a load button to find the .git directory?/nFixed!/nSolution: I think maybe the command path had changed? I don't know. I fixed it though by changing the called arguments string.|1|0||
+2024/04/21|16:14|20240430|111030|0|True|Feature # 20,All # 45,Other # -1,Bug # 16,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #FEATURE Log doesn't work|Maybe needs a load button to find the .git Directory?
+Fixed!
+Solution: I think maybe the command path had changed? I don't know. I fixed it though by changing the called arguments string.|1|0||
 EndVCS
 NewVCS
 True|20240429|220513|v3.32 Setting Kanban state automatically|
@@ -186,19 +211,26 @@ EndVCS
 NewVCS
 True|20240429|220412|v3.31 Fixed some bugs...again|
 VCSTodos
-2024/04/29|20:27|20240429|220440|0|True|Bug # 2,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Kanban->Current isn't loading again....|It's working again.../nSolution: Again, used the Loaded event for the tab control and called the update handler.|3|0||
+2024/04/29|20:27|20240429|220440|0|True|Bug # 2,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Kanban->Current isn't loading again....|It's working again...
+Solution: Again, used the Loaded event for the tab control and called the update handler.|3|0||
 2024/04/22|22:10|20240429|220435|0|True|Kanban # 7,All # 30,Other # -1,Feature # -1,Bug # 14,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#KANBAN #BUG Adding item from kanban view crashes||3|0||
 EndVCS
 NewVCS
 True|20240429|171728|v3.3 Kanban Current view is empty on load fixed|
 VCSTodos
-2024/04/29|17:19|20240429|174602|0|True|Bug # 1,All # 0,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG On startup, Kanban->Current is empty|Need to switch tabs to see the list/nFixed!/nSolution: Call the Loaded event for the main window and then load the previous file from there|3|0||
+2024/04/29|17:19|20240429|174602|0|True|Bug # 1,All # 0,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG On startup, Kanban->Current is empty|Need to switch tabs to see the list
+Fixed!
+Solution: Call the Loaded event for the main window and then load the previous file from there|3|0||
 EndVCS
 NewVCS
 True|20240429|152616|v3.29 Recent loads bug fixed|
 VCSTodos
-2024/04/27|10:58|20240429|171559|0|True|All # 3,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL When loading previous session tab, and it is Kanban, autoselect the current tab|But it doesnt populate yet./nFixed!/nSolution: I think it was selected before it was populated and refreshed, and then since the previous index was the same as the selected index, it didn't refresh./nBut setting the previous index to -1, and then the selected index to 3 right before it is finished loading seems to work|3|0||
-2024/04/29|15:30|20240429|170945|0|True|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Switching to a recent load doesnt load lists|Fixed!/nSolution: Cleared all lists, reset index variables of selected windows and tabs|3|0||
+2024/04/27|10:58|20240429|171559|0|True|All # 3,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL When loading previous session tab, and it is Kanban, autoselect the current tab|But it doesnt populate yet.
+Fixed!
+Solution: I think it was selected before it was populated and refreshed, and then since the previous index was the same as the selected index, it didn't refresh.
+But Setting the previous index to -1, and then the selected index to 3 right before it is finished loading seems to work|3|0||
+2024/04/29|15:30|20240429|170945|0|True|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Switching to a recent load doesnt load lists|Fixed!
+Solution: Cleared all lists, reset index variables of selected windows and tabs|3|0||
 EndVCS
 NewVCS
 True|20240427|112445|v3.28 Sorting and Kanban column|
@@ -216,30 +248,50 @@ EndVCS
 NewVCS
 True|20240426|224156|v3.26 Startup on previous tab|
 VCSTodos
-2024/04/21|16:23|20240427|091655|0|True|Feature # 18,All # 47,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Startup on TODO tab|Or Kanban Current tab/nmaybe make an option/nor remember last tab/nSolution: Made it remember the last tab the file was saved on. This is saved in the settings file, saved immediately on exit and loaded on startup|3|0||
+2024/04/21|16:23|20240427|091655|0|True|Feature # 18,All # 47,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Startup on TODO tab|Or Kanban Current tab
+Maybe make an option
+Or remember last tab
+Solution: Made it remember the last tab the file was saved on. This is saved in the settings file, saved immediately on exit and loaded on startup|3|0||
 EndVCS
 NewVCS
 True|20240426|205313|v3.25  Editable note title|
 VCSTodos
-2024/04/21|16:18|20240426|224114|0|True|Feature # 18,All # 45,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Make notes title editable|Added a function to update the title when focus is lost/nAdded a function to retrieve active title text box/nStill a bug if focus is lost when switching tabs, the data is not saved correctly|3|0||
+2024/04/21|16:18|20240426|224114|0|True|Feature # 18,All # 45,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Make notes title editable|Added a function to update the title when focus is lost
+Added a function to retrieve active title text box
+Still a bug if focus is lost when switching tabs, the data is not saved correctly|3|0||
 EndVCS
 NewVCS
 True|20240426|164309|v3.24 Fixed Multiline texts notes|
 VCSTodos
-2024/04/26|15:28|20240426|205257|0|True|Bug # 2,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Now notes are not getting new lines....|Fixed the Kanban tab loading page first bug and now the notes dont add new lines correctly/nI dont know why.../nNew notes typed directly in DO have the new lines. Loaded notes do not./nBut in the TodoItemEditor, they ARE getting new lines..../nAdding a new line in the editor makes the notes panel update with new lines...maybe it's not getting refreshed?/nProblem: I don't know. It used to work, and then it doesn't. Neither does it on older versions that it did work. Maybe something changed in Windows?!?/nSolution: On setting the TextBox.Text property, I replace the "\n" with Environment.NewLine and it works now|0|0||
+2024/04/26|15:28|20240426|205257|0|True|Bug # 2,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Now notes are not getting new lines....|Fixed the Kanban tab loading page first bug and now the notes dont add new lines correctly
+I dont know why...
+New Notes typed directly in DO have the new lines. Loaded notes do not.
+But In the TodoItemEditor, they ARE getting new lines....
+Adding A new line in the editor makes the notes panel update with new lines...maybe It's not getting refreshed?
+Problem: I don't know. It used to work, and then it doesn't. Neither does it on older versions that it did work. Maybe something changed in Windows?!?
+Solution: On setting the TextBox.Text Property, I replace the "\n" with Environment.NewLine And it works now|0|0||
 EndVCS
 NewVCS
 True|20240424|175859|v3.23|Fixing a couple bugs
 VCSTodos
-2024/04/26|15:31|20240426|164254|0|True|Bug # 1,All # 2,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#KANBAN #BUG Selecting the note pane on kanban tab and then selecting a TODO crashes|Only happens on switching the first time./nProblem: the other ListBox was not initialized yet./nSolution: Checked for null and initialized the list box|0|0||
-2024/04/24|18:02|20240426|153546|0|True|Bug # 4,All # 7,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Going to Kanban tab before TODO tab does not sort the items|Check FixRankings()/nCheck RefreshTodo()/nNeither of these functions do both to todoTabs and kanbanTabs items/nFound the problem in RefreshTodo(): Was checking the tabIndex of the IncompleteItems tab for a valid index and returning out early if not found./nSolution: Created a KanbanRefresh() function|0|0||
+2024/04/26|15:31|20240426|164254|0|True|Bug # 1,All # 2,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#KANBAN #BUG Selecting the note pane on kanban tab and then selecting a TODO crashes|Only happens on switching the first time.
+Problem: The other ListBox was not initialized yet.
+Solution: Checked for null and initialized the list box|0|0||
+2024/04/24|18:02|20240426|153546|0|True|Bug # 4,All # 7,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Going to Kanban tab before TODO tab does not sort the items|Check FixRankings()
+Check RefreshTodo()
+Neither of these functions do both to todoTabs and kanbanTabs items
+Found the problem in RefreshTodo(): Was checking the tabIndex of the IncompleteItems tab for a valid index and returning out early if not found.
+Solution: Created a KanbanRefresh() function|0|0||
 EndVCS
 NewVCS
 True|20240422|221839|v3.22|
 VCSTodos
-2024/04/22|22:07|20240424|175631|0|True|Kanban # 5,All # 24,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#KANBAN Add the selected tab state to functions that can be used on either tab as in mnuKanbanCurrent_OnClick() function|Maybe make a universal function that gets the td from whatever function its called from/nAdded a function to GetSelectedTodo() and GetSelectedTodoItemHolder()|0|0||
-2024/04/22|22:00|20240424|175659|0|True|Kanban # 11,All # 24,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#KANBAN Notes panel doesnt work|This works/nStill need it to be a full editor, but works as the TODO tab|0|0||
-2024/04/23|22:24|20240424|175755|0|True|All # 1,Other # -1,Feature # -1,Bug # 2,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#ALL #BUG Selecting an item on Kanban tab is slower than Todos tab|Gives an error and crashes because 'nothing' is selected/nFixed by making all the names of the items different than the ones for the incomplete tab|0|0||
+2024/04/22|22:07|20240424|175631|0|True|Kanban # 5,All # 24,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#KANBAN Add the selected tab state to functions that can be used on either tab as in mnuKanbanCurrent_OnClick() function|Maybe make a universal function that gets the td from whatever function its called from
+Added a function to GetSelectedTodo() and GetSelectedTodoItemHolder()|0|0||
+2024/04/22|22:00|20240424|175659|0|True|Kanban # 11,All # 24,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#KANBAN Notes panel doesnt work|This works
+Still need it to be a full editor, but works as the TODO tab|0|0||
+2024/04/23|22:24|20240424|175755|0|True|All # 1,Other # -1,Feature # -1,Bug # 2,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#ALL #BUG Selecting an item on Kanban tab is slower than Todos tab|Gives an error and crashes because 'nothing' is selected
+Fixed by making all the names of the items different than the ones for the incomplete tab|0|0||
 2024/04/24|13:18|20240424|175502|0|True|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#KANBAN #BUG Cant select an item after seeing the todo tab|Fixed. Added e.Handled = true to the SelectionChanged event|0|0||
 EndVCS
 NewVCS
@@ -259,7 +311,7 @@ NewVCS
 True|20190502|070837|v3.08|Had to fix the not even starting up bug if files were not ther. Attempted to fix the new file deleting old file as well, could not find the issue.
 VCSTodos
 2019-05-05|10:16|20200411|104407|0|True|All # 2,Other # -1,Feature # -1,Bug # 1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG I dont think the version is saving correctly, it is current 0.05999999999 Instead of 0.06 On EKT|Converted both _currentProjectVersion and _projectVersionIncrement to doubles and used Math.Round(x, 2)|0|0||
-2020/04/11|10:28|20200411|102915|0|True|Bug # 1,All # -1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG If none of the recent loads are there, it crashes. Tries to load one of them and gets an exception.|Fixed. Checked if File.Exists for each. Did not delete the files from recent loads so they can be seen.|0|0||
+2020/04/11|10:28|20200411|102915|0|True|Bug # 1,All # -1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG If none of the recent loads are there, it crashes. Tries to load one of them and gets an exception.|Fixed. Checked if File.Exists For each. Did not delete the files from recent loads so they can be seen.|0|0||
 EndVCS
 NewVCS
 True|20190430|101938|v3.07 Some more bug fixes|
@@ -350,14 +402,14 @@ EndVCS
 NewVCS
 True|20190321|173951|v2.04 Most features are done|Working on ranks and bugs next, but changing something big. This is a backup in case I give up on this way
 VCSTodos
-2019-03-20|15:44|20190322|154829|0|True|All # 0,|1|#BUG Lists are slow when theres alot of them. Much faster in release though. May not be an issue, or need a small optimization|Looks like the slow down is not in the sorting but in the viewing or loading of the listboxes. Which is so much slower in debug than release. I checked, the sorting takes 1/10th of a second with about 20 todos to sort in debug mode. looks a lot quicker in release, dont think its a problem really|0|0||
+2019-03-20|15:44|20190322|154829|0|True|All # 0,|1|#BUG Lists are slow when theres alot of them. Much faster in release though. May not be an issue, or need a small optimization|Looks like the slow down is not in the sorting but in the viewing or loading of the listboxes. Which is so much slower in debug than release. I checked, the sorting takes 1/10th of a second with about 20 todos to sort in debug mode. Looks a lot quicker in release, dont think its a problem really|0|0||
 2019-03-21|11:11|20190322|151722|0|True|All # 0,|1|#BUG Hashtag drop down doesnt update when the last of the tags are removed|Already working|0|0||
 2019-03-21|10:17|20190322|151615|0|True|All # 0,|1|#BUG Reset timer does reset timer, but it doesnt show until a refresh|Dont know what the problem was|0|0||
 2019-03-21|07:44|20190322|145141|0|True|All # 0,|1|#BUG Editor is not parsing Notes|This looks like its working|0|0||
 2019-03-22|06:36|20190322|142922|0|True|All # 0,|1|#BUG Dont let All tab have a hash shortcut||0|0||
 2019-03-21|07:50|20190322|140639|0|True|All # 0,|3|#BUG Delete history todo crashes|Think this is already fixed a while ago.|0|0||
 2019-03-21|07:01|20190322|140352|0|True|All # 0,|0|#BUG #FILEIO Save file is missing todos sometimes...cant Figure out why yet. It is saving the _masterList. Ok, so when clicking complete from the todo editor, it only saves the first few todos. May not be an issue with the changes Ive made, but checking it out anyway|Ok, looks like this is fixed in the new version. Saving the _masterList is probably fixing it all|0|0||
-2019-03-21|06:37|20190322|134803|0|True|All # 0,|1|#BUG #SORTING Sorting not working on tab[0]|Wasnt creating a new TodoListHolder for the master list, so it was sorting by other lists attributes, as well as by TD.Rank instead of the TodoListHolders rank|0|0||
+2019-03-21|06:37|20190322|134803|0|True|All # 0,|1|#BUG #SORTING Sorting not working on tab[0]|Wasnt creating a new TodoListHolder for the master list, so it was sorting by other lists attributes, as well as by TD.Rank Instead of the TodoListHolders rank|0|0||
 2019-03-22|06:35|20190322|080740|0|True|All # 0,|1|#BUG #FEATURE Dont let user change All tab.||0|0||
 2019-03-21|11:12|20190322|133608|0|True|All # 0,|1|#FEATURE If a todo only has the one tag that it is sorted by, move that to top of list on sorting by that hashtag||0|0||
 2019-03-20|11:06|20190322|130341|0|True|All # 0,|1|#FEATURE Make a backup system for the files||0|0||
@@ -377,9 +429,9 @@ VCSTodos
 2019-03-21|11:38|20190321|133158|0|True|All # 0,|1|#BUG Hashtag shortcuts added in the new hash tag in the editor are not expanded|This works now|0|0||
 2019-03-20|11:32|20190321|133113|0|True|All # 0,|1|#BUG Adding hash tags in editor, if theres no return, it will combine the lines into one tag.||0|0||
 2019-03-04|01:05|20190321|133058|0|True|All # 0,|0|#BUG Every once in a while a completed Todo is added more than once...|Think I figured this one out|0|0||
-2019-03-21|07:42|20190321|074354|0|True|All # 0,|1|#BUG Settings file isnt loading|Changed the version from 2.02 to 2.03 and it didnt know about 2.03. Changed version to a float. Then since the version was 2.03 TESTING it crashed on conversion. Split(' ') the line and converted only the number.|0|0||
+2019-03-21|07:42|20190321|074354|0|True|All # 0,|1|#BUG Settings file isnt loading|Changed the version from 2.02 To 2.03 And it didnt know about 2.03. Changed version to a float. Then since the version was 2.03 TESTING it crashed on conversion. Split(' ') the line and converted only the number.|0|0||
 2019-03-20|12:24|20190321|070244|0|True|All # 0,|1|#BUG Editing a todo with the master list in place adds a duplicate|Got this fixed somehow...|0|0||
-2019-03-20|16:00|20190321|065555|14360000000|True|All # 0,|3|#BUG Times are not updating|Cant figure this out yet, PropertyChanged is firing...dont know....Oh...Didnt implement INotifyPropertyChanged in the TodoListHolder class....fucking working now|0|0||
+2019-03-20|16:00|20190321|065555|14360000000|True|All # 0,|3|#BUG Times are not updating|Cant figure this out yet, PropertyChanged is firing...dont Know....Oh...Didnt Implement INotifyPropertyChanged in the TodoListHolder class....fucking Working now|0|0||
 2019-03-12|07:59|20190321|144817|0|True|All # 0,|1|#FEATURE #POMO Pomo timer make the red bar reduce based on time left||0|0||
 2019-03-12|07:59|20190321|144805|0|True|All # 0,|1|#FEATURE #POMO Pomo timer, make the bar fill up based on time left, not just green and red on and off||0|0||
 2019-03-12|07:04|20190321|140302|0|True|All # 0,|1|#FEATURE #POMO Save current pomo time settings||0|0||
@@ -410,7 +462,7 @@ VCSTodos
 2019-03-12|07:02|20190320|102619|24600000000|True|All # 0,|1|#BUG How does multiedit work for the todo or notes? Its not adding hashes or anything to them|Somehow parsing tags right out of the list in the multitodoeditor. Added new function in TodoItem ParseNewTags(). It gets the tags and todo and parses it|0|0||
 2019-03-20|14:42|20190320|160028|3000000000|True|All # 0,|1|#FEATURE Make timers black not red then green||0|0||
 2019-03-20|12:35|20190320|155231|0|True|All # 0,|2|#TABS #FEATURE Add an all tab|This slowed down the lists alot, but probably because theres so much to do!!! Seriously, gotta look into this|0|0||
-2019-03-13|16:40|20190320|154928|90090000000|True|All # 0,|2|#TABS #FEATURE Really got to add a master list that has all the items in it. Maybe have a separate list, clicking it edits the item in the real list? Or the other way around. Doing it this way, with a master list, items can be in more than one list. So, make a class that holds a TodoItem and a rank for each list. And then theres the master list that uses the TodoItems rank while the others use the new classes rank.|Ok, got this working. working on the bugs now|0|0||
+2019-03-13|16:40|20190320|154928|90090000000|True|All # 0,|2|#TABS #FEATURE Really got to add a master list that has all the items in it. Maybe have a separate list, clicking it edits the item in the real list? Or the other way around. Doing it this way, with a master list, items can be in more than one list. So, make a class that holds a TodoItem and a rank for each list. And then theres the master list that uses the TodoItems rank while the others use the new classes rank.|Ok, got this working. Working on the bugs now|0|0||
 2019-03-20|10:35|20190320|114450|0|True|All # 0,|1|#FEATURE #EASY Add version to save file to keep from crashing it|Already done|0|0||
 2019-03-19|16:25|20190320|114443|0|True|All # 0,|1|#FEATURE #EASY When debugging, make title bar red or something|Made the menu bar red when debugging, first thing I could name and change|0|0||
 2019-03-13|16:43|20190320|114405|0|True|All # 0,|1|#FEATURE #FILEIO Should have the save file have the version in it somewhere and load based on that version|Already done|0|0||
@@ -418,15 +470,15 @@ EndVCS
 NewVCS
 True|20190311|174537|v2.01 Just bugs to start with|
 VCSTodos
-2019-03-12|05:49|20190319|162459|2910000000|True|All # 0,|1|#HISTORY #BUG After typing something in the name on the history tab, and then clicking copy, the text was not copied. Hadnt been injected in to the class yet|Actually this is working....If it was the Notes I meant, that was because there was a check whether it Contains(""), so notes were never copied to clipboard. If it was the Title, that is working. So...Problem solved|0|0||
+2019-03-12|05:49|20190319|162459|2910000000|True|All # 0,|1|#HISTORY #BUG After typing something in the name on the history tab, and then clicking copy, the text was not copied. Hadnt been injected in to the class yet|Actually this is working....If It was the Notes I meant, that was because there was a check whether it Contains(""), so notes were never copied to clipboard. If it was the Title, that is working. So...Problem Solved|0|0||
 2019-03-12|05:48|20190319|161730|7850000000|True|All # 0,|1|#HISTORY #BUG Completed todos are added to history tab wonky. They are always added to the newest History. Maybe make the new button copy? Or when starting, popup message to start a new History? Or when copying, popup a message|Added MessageBoxes to the Copy button and when starting up. Gonna add a dialog window with a text block to type in a new title when adding a new history item|0|0||
 2019-03-19|16:02|20190319|160645|1210000000|True|All # 0,|1|#HISTORY #BUG Mouse select does not work now on history tab|Added setting _hCurrentHistoryItem back to SelectionChanged event.|0|0||
-2019-03-13|11:31|20190319|155922|88110000000|True|All # 0,|1|#BUG Still a bug moving up and down history list with keyboard|Got this fixed MOSTLY. Small bug now when at the 0 index. Takes 2 keypresses to move...I think its a keyboard tab index thing now, but who knows. Actually had to move vmost of the SelectionChanged event code to OnKeyDown. And then added a mouse event for selecting by mouse and keeping the index|0|0||
+2019-03-13|11:31|20190319|155922|88110000000|True|All # 0,|1|#BUG Still a bug moving up and down history list with keyboard|Got this fixed MOSTLY. Small bug now when at the 0 index. Takes 2 keypresses to move...I Think its a keyboard tab index thing now, but who knows. Actually had to move vmost of the SelectionChanged event code to OnKeyDown. And then added a mouse event for selecting by mouse and keeping the index|0|0||
 2019-03-19|10:32|20190319|110037|15260000000|True|All # 0,|1|#BUG Clicking quicksave with no recent files crashes|Checked for _currentOpenFile == null instead of ""|0|0||
 2019-03-13|16:59|20190319|103406|16910000000|True|All # 0,|1|#BUG Doesnt work when theres no settings file. Get it working as though its on a fresh computer. No saves or settings.|Added some checks for no settings file, started the functions that check for different versions of settings file. Added version to settings file|0|0||
 2019-03-12|07:00|20190319|100458|2600000000|True|All # 0,|1|#BUG Changing tabs does not autosave|Added AutoSave() call to AddNewTodoTab() and RemoveTodoTab(). Also renamed RemoveTab() to RemoveTodoTab()|0|0||
 2019-03-11|17:29|20190319|095923|3000000000|True|All # 0,|1|#BUG Probably gotta do checks on adding tabs with same names|Added a check to look through the names|0|0||
-2019-03-04|01:08|20190312|053733|0|True|All # 0,|0|#BUG Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|I think this was because of the way a file is loaded. Happened when this switched to 2.0 and it crashed because the file format was not updated|0|0||
+2019-03-04|01:08|20190312|053733|0|True|All # 0,|0|#BUG Every once in a while it hangs loading ParseUML todo and crashes. First time thought it was Rider loading the files at the same time, but second time that wasnt the problem.|I think this was because of the way a file is loaded. Happened when this switched to 2.0 And it crashed because the file format was not updated|0|0||
 EndVCS
 NewVCS
 True|20190311|001319|v2.0 !!!|
@@ -494,7 +546,7 @@ VCSTodos
 2019-03-02|18:50|20190302|191309|6000000000|True|All # -1,|1|AutoSave function|Set this so when debugging, AutoSave is off. Everywhere _isChanged is set to true, it calls AutoSave() instead, sets _isChanged to true and if enabled, saves immediately.|0|0||
 2019-03-01|20:12|20190302|185811|3000000000|True|All # -1,|1|Hotkey to start and stop the clock on the selected item||0|0||
 2019-03-01|20:17|20190302|185109|3000000000|True|All # -1,|1|Hotkey to quickly swap previous file. Ctrl+, if possible||0|0||
-2019-03-02|05:25|20190302|184617|6000000000|True|All # -1,|3|#BUG Bug Backspace clearing out the rank in the edit window crashes the app. Dont let this ever be empty?|Simple, wasnt what I thought though. Thought it was in the PreviewTextInput(), but was actually in the tbRank_Changed(). The Convert.ToInt() crashed when theres nothing in the textbox|0|0||
+2019-03-02|05:25|20190302|184617|6000000000|True|All # -1,|3|#BUG Bug Backspace clearing out the rank in the edit window crashes the app. Dont let this ever be empty?|Simple, wasnt what I thought though. Thought it was in the PreviewTextInput(), but was actually in the tbRank_Changed(). The Convert.ToInt() Crashed when theres nothing in the textbox|0|0||
 EndVCS
 NewVCS
 True|20190227|021625|1.5|Just some more quick easy things
@@ -536,7 +588,7 @@ VCSTodos
 2019-02-23|12:09|20190225|235236|3010000000|True|All # -1,|1|Maybe fix what changes the files to prompt saving||0|0||
 2019-02-25|23:36|20190226|001843|0|True|All # -1,|2|Update History notes immediatly instead of when focus is lost|Used TextChanged event for the text boxes|0|0||
 2019-02-23|12:03|20190226|001850|0|True|All # -1,|1|#UI Ui Add title field to History tab, keep notes but not in the left side list||0|0||
-2019-02-23|12:17|20190226|011929|0|True|All # -1,|1|Figure out a better header/separator in the code to search by|Umm...Got rid of these|0|0||
+2019-02-23|12:17|20190226|011929|0|True|All # -1,|1|Figure out a better header/separator in the code to search by|Umm...Got Rid of these|0|0||
 2019-02-23|12:16|20190226|011934|0|True|All # -1,|1|Resort functions, make em easier to read. Like reorder the functions and organize them or something||0|0||
 EndVCS
 NewVCS
@@ -548,7 +600,7 @@ EndVCS
 NewVCS
 True|20190223|104926|v1.4. Couple quick UI fixes|
 VCSTodos
-2019-02-23|09:22|20190223|105133|0|True|All # -1,|1|#SORT #HASHTAGS #LIST #ON #LEFT #SIDE. Sort hashtags list on left side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags field, cuz cant modify a list while iterating|0|0||
+2019-02-23|09:22|20190223|105133|0|True|All # -1,|1|#SORT #HASHTAGS #LIST #ON #LEFT #SIDE. Sort hashtags list on left side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags Field, cuz cant modify a list while iterating|0|0||
 2019-02-23|09:22|20190223|105200|0|True|All # -1,|1|#SORT Change sort buttons to stretch across the window at top for sorting||0|0||
 EndVCS
 NewVCS
@@ -576,7 +628,7 @@ EndVCS
 NewVCS
 True|20190220|203647|v1.2a- Bugs and timers.|
 VCSTodos
-2019-02-20|20:26|20190221|114006|0|True|All # 1,|3|#BUG Bug when double clicking buttons, doesnt know what to do|Fixed by getting listbox.selectedindex, and if its out of bounds, return from function. So double clicking on buttons doesnt do anything. But you can still right click a button and get the correct index. That works correctly|0|0||
+2019-02-20|20:26|20190221|114006|0|True|All # 1,|3|#BUG Bug when double clicking buttons, doesnt know what to do|Fixed by getting listbox.selectedindex, And if its out of bounds, return from function. So double clicking on buttons doesnt do anything. But you can still right click a button and get the correct index. That works correctly|0|0||
 2019-02-21|11:20|20190221|122620|0|True|All # 11,|1|#NOTES When complete, edit notes text|Just added new window, TodoItemComplete, copied from TodoItemEditor with some controls removed.|0|0||
 2019-02-20|20:38|20190221|122655|0|True|All # 10,|1|Change rank in edit screen|Easy enough, sort already fixes duplicate ranks|0|0||
 2019-02-17|13:27|20190221|134809|0|True|All # 3,|3|#TIMERS Add timers to items or history. Only goes up when this app is open?|Timers only go up when they are clicked active. Active is not saved when saving, have to restart timer again when opened|0|0||
@@ -585,7 +637,7 @@ VCSTodos
 2019-02-21|13:44|20190221|135119|0|True|All # 3,|2|#SORT Add sort by active||0|0||
 2019-02-21|13:45|20190221|141335|300000000|True|All # 2,|2|#COLOR Change text color when time is active|Used data binding again on the labels. Check it out|0|0||
 2019-02-21|16:07|20190221|162501|0|True|All # -1,|1|#TIMER Show timer in edit windows||0|0||
-2019-02-21|16:25|20190221|162640|0|True|All # -1,|1|#BUG Bug when editing an item and saving, rank is messed up|FIXED- When combining double click edit, I had set the rank to the lists count. This happened on either edit. Now the rank is set to int.max when the item is complete|0|0||
+2019-02-21|16:25|20190221|162640|0|True|All # -1,|1|#BUG Bug when editing an item and saving, rank is messed up|FIXED- When combining double click edit, I had set the rank to the lists count. This happened on either edit. Now the rank is set to int.max When the item is complete|0|0||
 2019-02-17|17:57|20190221|203331|0|True|All # -1,|1|#HASHTAGS View resorts hashtags list to left of todo notes|Easy to see list of individual hashtags now|0|0||
 2019-02-21|20:49|20190221|205009|0|True|All # -1,|1|#HASHTAGS Add tooltip of hashtags|Simple enough, tooltip property of grid in data template|0|0||
 2019-02-21|13:46|20190221|210334|0|True|All # -1,|2|#TIMER Timer tick is messing up lag some...|Increased interval to 5 seconds. Then bound the data so it updates itself. Had to modify some properties of TodoItem to get it done right|0|0||
@@ -615,7 +667,7 @@ VCSTodos
 2019-02-17|14:35|20190217|192017|0|True|All # 0,|2|Able to edit todos on history tab|Refactored mnuTEdit to work with both history and todo list items|0|0||
 2019-02-17|19:20|20190217|193420|0|True|All # 0,|1|Add Complete button to editor window|Test|0|0||
 2019-02-17|19:34|20190217|194740|0|True|All # 0,|1|Remove complete button from editor window if invoked from history?|Done. Made a switch based on IsComplete. Moves between lists based on that, sets button based on that|0|0||
-2019-02-17|13:30|20190217|201044|0|True|All # 0,|2|#COPY Clicking copy button creates a new history item if its the most recent history item|Simple really, though showed a bug where the right side of history is still there from a previous item after loading a list without something there...simple fix of checking if historylist.count == 0 and setting currenthistoryitem to new if it is|0|0||
+2019-02-17|13:30|20190217|201044|0|True|All # 0,|2|#COPY Clicking copy button creates a new history item if its the most recent history item|Simple really, though showed a bug where the right side of history is still there from a previous item after loading a list without something there...simple Fix of checking if historylist.count == 0 and setting currenthistoryitem to new if it is|0|0||
 2019-02-17|13:35|20190217|203436|0|True|All # 0,|2|Make dashs show up on every line of the notes, or not at all on the first one|Not so easy to make this look great, but its tolerable for text|0|0||
 EndVCS
 NewVCS

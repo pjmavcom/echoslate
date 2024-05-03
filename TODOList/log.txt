@@ -1,3 +1,16 @@
+commit 13f9c98a467bc7afaa3b89080f293d6d0823891b
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 2 22:38:07 2024 +0800
+
+    20240502- v3.40.9.0 Fixed notes panel size issues
+    
+    20240502- v3.40.9.0 Fixed notes panel size issues
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20240502-0m |Fixed NotesPanel size issues
+
 commit a93dd51d967abcd21be021774e28f354306ad667
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu May 2 22:25:29 2024 +0800

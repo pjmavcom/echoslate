@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using static System.Globalization.CultureInfo;
 
 namespace TODOList
 {
@@ -38,11 +39,10 @@ namespace TODOList
         // PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
         public string Todo
         {
-            get => _todo;
+            get => AddNewLines(_todo);
             set
             {
-                _todo = value;
-                ParseTodo();
+                _todo = ParseNotes(value);
                 ParseNewTags();
             }
         }
@@ -58,27 +58,23 @@ namespace TODOList
                 }
 
                 result += _todo;
-                return result;
+                return AddNewLines(result);
             }
         }
         public string Notes
         {
-            get => _notes;
-            set
-            {
-                _notes = value;
-                ParseNotes();
-            }
+            get => AddNewLines(_notes);
+            set => _notes = ParseNotes(value);
         }
         public string Problem
         {
-            get => _problem;
-            set => _problem = value;
+            get => AddNewLines(_problem);
+            set => _problem = ParseNotes(value);
         }
         public string Solution
         {
-            get => _solution;
-            set => _solution = value;
+            get => AddNewLines(_solution);
+            set => _solution = ParseNotes(value);
         }
         public string NotesAndTags => "Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
                                       Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
@@ -170,9 +166,7 @@ namespace TODOList
                 if (_tags.Count != 0)
                     result = _tags[0];
                 for (int i = 1; i < _tags.Count; i++)
-                {
                     result += Environment.NewLine + _tags[i];
-                }
 
                 return result;
             }
@@ -321,32 +315,35 @@ namespace TODOList
 
             _todo = tempTodo.Trim();
         }
-        private void ParseNotes()
+        private string ParseNotes(string notesToParse)
         {
-            string[] pieces = _notes.Split(' ');
+            string[] pieces = notesToParse.Split(' ');
             List<string> list = new List<string>();
             for (int index = 0; index < pieces.Length; index++)
             {
                 string s = pieces[index];
                 if (index == 0 ||
-                    index > 0 && pieces[index - 1].Contains(". ") ||
-                    index > 0 && pieces[index - 1].Contains("? ") ||
+                    index > 0 && pieces[index - 1].Contains(".") ||
+                    index > 0 && pieces[index - 1].Contains("?") ||
                     list.Count == 0)
                 {
                     s = UpperFirstLetter(s);
                 }
 
+                if (s.Contains("/n") || s.Contains(Environment.NewLine))
+                    s = UpperFirstLetterOfNewLine(s);
                 list.Add(s);
             }
 
             string tempNotes = "";
             foreach (string s in list)
             {
-                if (s == "") continue;
+                if (s == "")
+                    continue;
                 tempNotes += s + " ";
             }
 
-            _notes = tempNotes.Trim();
+            return tempNotes.Trim();
         }
         private void ParseTodo()
         {
@@ -392,33 +389,37 @@ namespace TODOList
 
             return result;
         }
+        private string UpperFirstLetterOfNewLine(string s)
+        {
+            s = RemoveNewLines(s);
+            string[] parts = s.Split('/');
+            string newString = string.Empty;
+            int count = 0;
+            foreach (string part in parts)
+            {
+                if (count == 0)
+                {
+                    count++;
+                    newString += part;
+                    continue;
+                }
+                if (part[0] == 'n')
+                    newString += "/n" + UpperFirstLetter(part.Remove(0, 1));
+                else
+                    newString += "/" + part;
+            }
+            return newString;
+        }
         public override string ToString()
         {
             string notes = _notes;
             string problem = _problem;
             string solution = _solution;
-            //if (_notes.Contains('\r'))
-            //	notes = "tested1";
-            //if (_notes.Contains('\n'))
-            //	notes = "tested2";
-            if (_notes.Contains(Environment.NewLine))
-            {
-                notes = notes.Replace(Environment.NewLine, "/n");
-            }
+            notes = AddNewLines(notes);
+            problem = AddNewLines(problem);
+            solution = AddNewLines(solution);
 
-            if (_problem.Contains(Environment.NewLine))
-            {
-                problem = problem.Replace(Environment.NewLine, "/n");
-            }
-
-            if (_solution.Contains(Environment.NewLine))
-            {
-                solution = solution.Replace(Environment.NewLine, "/n");
-            }
-
-
-            string result = /* "VERSION " + MainWindow.PROGRAM_VERSION + "|" +
-                            */_dateStarted + "|" +
+            string result = _dateStarted + "|" +
                               _timeStarted + "|" +
                               _dateCompleted + "|" +
                               _timeCompleted + "|" +
@@ -442,19 +443,11 @@ namespace TODOList
 
             string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + BreakLines(_todo);
             if (_notes != "")
-            {
                 result += Environment.NewLine + "\tNotes: " + BreakLines(notes);
-            }
-
             if (_problem != "")
-            {
                 result += Environment.NewLine + "\tProblem: " + BreakLines(problem);
-            }
-
             if (_solution != "")
-            {
                 result += Environment.NewLine + "\tSolution: " + BreakLines(solution);
-            }
 
             return result;
         }
@@ -469,9 +462,7 @@ namespace TODOList
                 currentCharCount += word.Length + 1;
 
                 if (currentCharCount <= charLimit)
-                {
                     result += word + " ";
-                }
                 else
                 {
                     currentCharCount = 0;
@@ -484,6 +475,10 @@ namespace TODOList
         private string AddNewLines(string s)
         {
             return s.Replace("/n", Environment.NewLine);
+        }
+        private string RemoveNewLines(string s)
+        {
+            return s.Replace(Environment.NewLine, "/n");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
