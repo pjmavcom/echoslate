@@ -225,6 +225,11 @@ namespace TODOList
         private void Load3_20(string newItem)
         {
             string[] pieces = newItem.Split('|');
+            if (pieces.Length < 13)
+            {
+                new DlgErrorMessage("This save file is corrupted! A todo did not load!" + Environment.NewLine + newItem).ShowDialog();
+                return;
+            }
             _dateStarted = pieces[0].Trim();
             _timeStarted = pieces[1].Trim();
             _dateCompleted = pieces[2].Trim();
@@ -415,9 +420,9 @@ namespace TODOList
             string notes = _notes;
             string problem = _problem;
             string solution = _solution;
-            notes = AddNewLines(notes);
-            problem = AddNewLines(problem);
-            solution = AddNewLines(solution);
+            notes = RemoveNewLines(notes);
+            problem = RemoveNewLines(problem);
+            solution = RemoveNewLines(solution);
 
             string result = _dateStarted + "|" +
                               _timeStarted + "|" +

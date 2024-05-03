@@ -1,3 +1,16 @@
+commit 15297b8762f96353bd0dc2e6387d0f45dadfd486
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri May 3 10:59:59 2024 +0800
+
+    20240502- v3.40.10.0 Fixed capitalizing issues
+    
+    20240502- v3.40.10.0 Fixed capitalizing issues
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240503-0m |Editing notes multiple lines does not capitalize the note
+
 commit 13f9c98a467bc7afaa3b89080f293d6d0823891b
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu May 2 22:38:07 2024 +0800
