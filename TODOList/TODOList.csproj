@@ -97,6 +97,9 @@
 		</Compile>
 		<Compile Include="TabItemHolder.cs" />
 		<Compile Include="TagHolder.cs" />
+		<Compile Include="TagPicker.xaml.cs">
+		  <DependentUpon>TagPicker.xaml</DependentUpon>
+		</Compile>
 		<Compile Include="TodoItem.cs" />
 		<Compile Include="DlgTodoItemEditor.xaml.cs">
 		  <DependentUpon>DlgTodoItemEditor.xaml</DependentUpon>
@@ -125,6 +128,7 @@
 		<Page Include="DlgEditTabs.xaml" />
 		<Page Include="DlgTodoItemEditor.xaml" />
 		<Page Include="DlgTodoMultiItemEditor.xaml" />
+		<Page Include="TagPicker.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Properties\AssemblyInfo.cs">

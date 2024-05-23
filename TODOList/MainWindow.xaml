@@ -363,9 +363,9 @@
 						<TextBox x:Name="tbIncompleteItemsSolution" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
 						<StackPanel Height="35" Orientation="Horizontal" >
 							<Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
-							<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
+							<Button Content="Edit Tags" Width="72" Height="35" Click="AddTag_OnClick"/>
 						</StackPanel >
-						<ListBox Name="lbIncompleteItemsHashTags" Height="300" HorizontalAlignment="Left" Margin="3" ItemTemplate="{StaticResource NotesPanelHashTagsListBox}" IsSynchronizedWithCurrentItem="True" />
+						<ListBox Name="lbIncompleteItemsHashTags" ItemsSource="{Binding}" Height="300" HorizontalAlignment="Left" Margin="3" IsSynchronizedWithCurrentItem="True" />
 						<Button Content="Complete" Height="35" Width="100" Click="TodoComplete_OnClick" />
 					</StackPanel >
 				</StackPanel >
@@ -495,9 +495,9 @@
 						<TextBox x:Name="tbKanbanSolution" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
 						<StackPanel Orientation="Horizontal" >
 							<Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
-							<Button Content="Add Tag" Width="72" Height="35" Click="AddTag_OnClick"/>
+							<Button Content="Edit Tags" Width="72" Height="35" Click="AddTag_OnClick"/>
 						</StackPanel >
-						<ListBox Name="lbKanbanHashTags" Height="300" HorizontalAlignment="Left" Margin="3" ItemTemplate="{StaticResource NotesPanelHashTagsListBox}" IsSynchronizedWithCurrentItem="True" />
+						<ListBox Name="lbKanbanHashTags" ItemsSource="{Binding}" Height="300" HorizontalAlignment="Left" Margin="3"  IsSynchronizedWithCurrentItem="True" />
 						<Button Content="Complete" Height="35" Width="100" Click="TodoComplete_OnClick" />
 					</StackPanel >
 				</StackPanel >

@@ -1,3 +1,22 @@
+commit 5f92eca1c494da7ab4581ccc772cc419c345a158
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri May 3 11:19:34 2024 +0800
+
+    20240503- v3.40.11.0 Save file is fixed again
+    
+    20240503- v3.40.11.0 Save file is fixed again
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240503-0m |Added an error message if a todo doesnt load.
+            Notes: It doesnt crash on load anymore and says theres an error in the file.
+    Should Close and edit the
+                    file to fix it
+    --20240503-0m |Save file wont load
+            Problem: Save file is getting new lines added to it
+            Solution: Before writing the item to the save file, removed all new lines
+
 commit 15297b8762f96353bd0dc2e6387d0f45dadfd486
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri May 3 10:59:59 2024 +0800

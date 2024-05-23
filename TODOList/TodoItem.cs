@@ -156,8 +156,13 @@ namespace TODOList
         public List<string> Tags
         {
             get => _tags;
-            set => _tags = value;
+            set
+            {
+                _tags = value;
+                ParseNewTags();
+            }
         }
+
         private string TagsList
         {
             get
@@ -318,6 +323,7 @@ namespace TODOList
                 tempTodo += s + " ";
             }
 
+            _tags.Sort();
             _todo = tempTodo.Trim();
         }
         private string ParseNotes(string notesToParse)

@@ -32,7 +32,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.11.0";
+        private const string PROGRAM_VERSION = "3.40.12.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -88,7 +88,7 @@ namespace TODOList
         private bool _hashSortSelected;
 
         private int _currentSeverity;
-        private readonly List<TagHolder> _notesPanelHashTags;
+        private readonly List<string> _notesPanelHashTags;
         private ListBox _lbNotesPanelHashTags;
 
         // HISTORY TAB ITEMS
@@ -290,7 +290,7 @@ namespace TODOList
             lbHistory.SelectedIndex = 0;
             _currentHistoryItemIndex = 0;
             lbCompletedTodos.SelectedIndex = 0;
-            _notesPanelHashTags = new List<TagHolder>();
+            _notesPanelHashTags = new List<string>();
 
             //			lblPomoWork.Content = _pomoWorkTime.ToString();
             //			lblPomoBreak.Content = _pomoBreakTime.ToString();
@@ -1012,8 +1012,8 @@ namespace TODOList
         }
         private void IncompleteItemsRefresh()
         {
-            if (tabControl.SelectedIndex != 1)
-                return;
+            // if (tabControl.SelectedIndex != 1)
+                // return;
             
             if (_skipUpdate)
             {
@@ -2184,7 +2184,7 @@ namespace TODOList
             _currentTodoItemInNotesPanel.Tags.Clear();
             foreach (TagHolder tagHolder in _lbNotesPanelHashTags.Items)
             {
-                _currentTodoItemInNotesPanel.Tags.Add(tagHolder.Text);
+                _currentTodoItemInNotesPanel.Tags.Add(tagHolder.Text.ToUpper());
             }
 
             NotesPanelLoadHashTags();
@@ -3555,7 +3555,7 @@ namespace TODOList
 
             _notesPanelHashTags.Clear();
             foreach (string tag in _currentTodoItemInNotesPanel.Tags)
-                _notesPanelHashTags.Add(new TagHolder(tag));
+                _notesPanelHashTags.Add(tag);
 
             _lbNotesPanelHashTags.ItemsSource = _notesPanelHashTags;
             _lbNotesPanelHashTags.Items.Refresh();
@@ -3609,7 +3609,25 @@ namespace TODOList
         }
         private void AddTag_OnClick(object sender, EventArgs e)
         {
-            string name = "#NEWTAG";
+            if (_currentTodoItemInNotesPanel == null)
+                return;
+            
+            IncompleteItemsRefresh();
+            
+            TagPicker tp = new TagPicker();
+            tp.LoadTags(_incompleteItemsHashTags[0], _notesPanelHashTags);
+            tp.ShowDialog();
+            if (tp.Result == false)
+                return;
+            
+            _currentTodoItemInNotesPanel.Tags = tp.NewTags;
+            _lbNotesPanelHashTags.ItemsSource = _currentTodoItemInNotesPanel.Tags;
+            _lbNotesPanelHashTags.Items.Refresh();
+            KanbanRefresh();
+            IncompleteItemsRefresh();
+
+            /*
+            string name = "#";
             int tagNumber = 0;
             bool nameExists = false;
             do
@@ -3632,6 +3650,7 @@ namespace TODOList
             _notesPanelHashTags.Add(th);
             _lbNotesPanelHashTags.Items.Refresh();
             AddNewTagsToTodo();
+            */
         }
         private void NewTag_LostFocus(object sender, RoutedEventArgs e)
         {
