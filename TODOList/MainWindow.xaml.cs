@@ -32,7 +32,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.12.0";
+        private const string PROGRAM_VERSION = "3.40.13.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -559,16 +559,12 @@ namespace TODOList
             {
                 case 1:
                     if (_lbIncompleteItems == null)
-                    {
                         IncompleteItemsInitialize();
-                    }
 
                     return _lbIncompleteItems;
                 case 2:
                     if (_lbKanbanItems == null)
-                    {
                         KanbanInitialize();
-                    }
 
                     return _lbKanbanItems;
                 default:
@@ -2159,17 +2155,11 @@ namespace TODOList
                 IncompleteItemsRefresh();
                 KanbanRefresh();
                 if (_currentHistoryItem.CompletedTodos.Contains(td))
-                {
                     _currentHistoryItem.CompletedTodos.Remove(td);
-                }
                 else if (_currentHistoryItem.CompletedTodosBugs.Contains(td))
-                {
                     _currentHistoryItem.CompletedTodosBugs.Remove(td);
-                }
                 else if (_currentHistoryItem.CompletedTodosFeatures.Contains(td))
-                {
                     _currentHistoryItem.CompletedTodosFeatures.Remove(td);
-                }
 
                 AutoSave();
             }
@@ -2713,32 +2703,8 @@ namespace TODOList
             ClearLists();
             KanbanCreateTabs();
 
-            // float version = 0.0f;
-
             string line = stream.ReadLine();
-            /*if (line != null && line.Contains("=====VERSION"))
-            {
-                line = stream.ReadLine();
-                if (line != null)
-                {
-                    string[] versionPieces = line.Split('.');
-                    version = Convert.ToSingle(versionPieces[0]);
-                }
-            }
-            else
-            {
-                version = 2.0f;
-            }
-
-            // Here's where versions are loaded
-            if (version <= 2.0f)
-            {
-                Load2_0SaveFile(stream, line);
-            }
-            else if (version > 2.0f)
-            {*/
             Load2_1SaveFile(stream, line);
-            // }
 
             stream.Close();
 
@@ -3612,45 +3578,39 @@ namespace TODOList
             if (_currentTodoItemInNotesPanel == null)
                 return;
             
-            IncompleteItemsRefresh();
+            SortHashTagLists(_incompleteItems, _incompleteItemsHashTags);
             
-            TagPicker tp = new TagPicker();
-            tp.LoadTags(_incompleteItemsHashTags[0], _notesPanelHashTags);
+            List<string> selectedTags = new List<string>();
+            foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
+                foreach (string tag in tdi.TD.Tags.Where(tag => !selectedTags.Contains(tag)))
+                    selectedTags.Add(tag);
+
+            bool multi = _lbCurrentItems.SelectedItems.Count > 1;
+            TagPicker tp = new TagPicker(multi);
+            tp.LoadTags(_incompleteItemsHashTags[0], selectedTags);
             tp.ShowDialog();
             if (tp.Result == false)
                 return;
             
-            _currentTodoItemInNotesPanel.Tags = tp.NewTags;
+            if (_lbCurrentItems.SelectedItems.Count > 1)
+            {
+                if (tp.Multi)
+                    foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
+                        tdi.TD.Tags = tp.NewTags;
+                else
+                    foreach (string s in tp.NewTags)
+                        foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
+                            tdi.TD.AddTag(s);
+            }
+            else
+            {
+                _currentTodoItemInNotesPanel.Tags = tp.NewTags;
+            }
+            
             _lbNotesPanelHashTags.ItemsSource = _currentTodoItemInNotesPanel.Tags;
             _lbNotesPanelHashTags.Items.Refresh();
-            KanbanRefresh();
             IncompleteItemsRefresh();
-
-            /*
-            string name = "#";
-            int tagNumber = 0;
-            bool nameExists = false;
-            do
-            {
-                foreach (TagHolder t in _notesPanelHashTags)
-                {
-                    if (t.Text == name.ToUpper() + tagNumber ||
-                        t.Text == "#" + name.ToUpper() + tagNumber)
-                    {
-                        tagNumber++;
-                        nameExists = true;
-                        break;
-                    }
-
-                    nameExists = false;
-                }
-            } while (nameExists);
-
-            TagHolder th = new TagHolder(name.ToUpper() + tagNumber);
-            _notesPanelHashTags.Add(th);
-            _lbNotesPanelHashTags.Items.Refresh();
-            AddNewTagsToTodo();
-            */
+            KanbanRefresh();
         }
         private void NewTag_LostFocus(object sender, RoutedEventArgs e)
         {

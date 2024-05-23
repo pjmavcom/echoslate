@@ -1,3 +1,31 @@
+commit 15289faab56595c83d941c5b991b0642e90eb65a
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 23 09:23:30 2024 +0800
+
+    20240503- v3.40.12.0 Tag editor added!
+    
+    20240503- v3.40.12.0 Tag editor added!
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240523-0m |New hashtag
+            Notes: If you push enter when entering new text on hashtag, it doesnt get saved. Focus isnt changing and
+                    allowing the text to update soon enough. Need to put something in like the preview text things in the
+                    editors rank textbox and if it changes, update the tag first
+            Problem: Fixed with the new tag editor
+    --20240522-0m |Tags added in editor window do not get capitalized
+            Solution: Simply ToUpper() the text as it goes into the TodoItem
+    
+    =Features Added===================================================================================================
+    --20240523-0m |Auto select text when adding tabs or new hash tags
+            Notes: Not needed with the new tag editor.
+    --20240523-0m |Add the add tag button to the very last tag in the tag editor list
+            Notes: This doesnt need to be done anymore with the new tag editor.
+    --20240523-0m |Add tag list to choose from
+            Notes: Added a new window for tags. Better than the old tag editor. I think the old editor can be removed
+                    now. As well as the TagHolder class.
+
 commit 5f92eca1c494da7ab4581ccc772cc419c345a158
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri May 3 11:19:34 2024 +0800

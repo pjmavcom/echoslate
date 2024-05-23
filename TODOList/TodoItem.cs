@@ -491,6 +491,12 @@ namespace TODOList
         {
             return s.Replace(Environment.NewLine, "/n");
         }
+        public void AddTag(string tag)
+        {
+            if (!_tags.Contains(tag) && tag != string.Empty)
+                _tags.Add(tag);
+            ParseNewTags();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

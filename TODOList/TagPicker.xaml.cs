@@ -6,17 +6,23 @@ namespace TODOList
 	public partial class TagPicker : Window
 	{
 		private List<string> _tags;
+		private List<string> _originalTags;
+		private List<string> _originalTagHolders;
 		private List<string> _previousTags;
 		public List<string> NewTags;
 		public bool Result;
+		public bool Multi;
 		
 		
-		public TagPicker()
+		public TagPicker(bool multi = false)
 		{
 			InitializeComponent();
 			NewTags = new List<string>();
 			_previousTags = new List<string>();
 			CenterWindowOnMouse();
+			cbMulti.IsEnabled = multi ? true : false;
+			cbMulti.Visibility = multi ? Visibility.Visible : Visibility.Hidden;
+			cbMulti.IsChecked = multi ? true : false;
 		}
 		private void CenterWindowOnMouse()
 		{
@@ -31,17 +37,24 @@ namespace TODOList
 		}
 		public void LoadTags(List<string> tags, List<string> th)
 		{
+			if (tags == null || th == null)
+				return;
+			_originalTags = tags;
+			_originalTagHolders = th;
 			_tags = tags;
 			lbTags.ItemsSource = _tags;
 			lbTags.Items.Refresh();
 
-			foreach (string s in th)
+			if (!Multi)
 			{
-				int index = _tags.IndexOf(s);
-				_previousTags.Add(s);
-				
-				if (index >= 0)
-					lbTags.SelectedItems.Add(lbTags.Items.GetItemAt(index));
+				foreach (string s in th)
+				{
+					int index = _tags.IndexOf(s);
+					_previousTags.Add(s);
+					
+					if (index >= 0)
+						lbTags.SelectedItems.Add(lbTags.Items.GetItemAt(index));
+				}
 			}
 		}
 		private void btnCancel_OnClick(object sender, RoutedEventArgs e)
@@ -54,6 +67,9 @@ namespace TODOList
 			foreach (object tag in lbTags.SelectedItems)
 				NewTags.Add(tag.ToString());
 			Result = true;
+			if (cbMulti.IsChecked != null)
+				Multi = (bool)cbMulti.IsChecked;
+			
 			Close();
 		}
 		private void btnNewTag_OnClick(object sender, RoutedEventArgs e)
@@ -77,9 +93,14 @@ namespace TODOList
 				if (index >= 0)
 					lbTags.SelectedItems.Add(lbTags.Items.GetItemAt(index));
 			}
-			
-
 		}
-		
+		private void cbMulti_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (cbMulti.IsChecked == true)
+				LoadTags(_originalTags, _originalTagHolders);
+			else
+				lbTags.SelectedIndex = -1;
+			lbTags.Items.Refresh();
+		}
 	}
 }

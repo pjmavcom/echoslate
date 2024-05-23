@@ -18,74 +18,77 @@ False
 AutoSave
 False
 CurrentProjectVersion
-3.40.12.0.2
+3.40.13.0.2
 ====================================TODO
-2024/05/01|10:30|-|-|0|False|Bug # 14,All # 5,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?||3|5||
-2024/04/22|22:41|-|-|0|False|Feature # 15,All # 27,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|18||
-2019-05-05|10:17|-|-|0|False|All # 37,Other # -1,Feature # -1,Bug # 8,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Crash on switching file|Doesnt look like any data lost. Completed a few todos, copied history, deleted a todo then switched/nUPDATE:/nAgain, no data lost. Completed a few TODOS, copied and created a new history, then tried switching to the other file with the hotkey.|1|17||
-2019-03-21|14:34|-|-|0|False|All # 59,Other # 8,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#INTERFACE Make the interface look clean||1|10||
-2019-03-24|10:16|-|-|0|False|Feature # 29,All # 52,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI I dont like the colors of the severity bar. Maybe its too thick or too green and red and yellow||1|8||
-2019-03-24|10:20|-|-|0|False|Feature # 28,All # 51,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 2,Ifwishes # -1,Kanban # -1,|2|#FEATURE #UI Add the add tag button to the very last tag in the tag editor list||1|2||
-2019-03-24|10:21|-|-|0|False|Feature # 27,All # 50,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Move the function thats the same in both editors to one file||0|1||
-2019-03-24|10:15|-|-|0|False|Feature # 30,All # 53,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 3,Ifwishes # -1,Kanban # -1,|0|#FEATURE #UI Maybe when you click the arrows on the rank buttons in the list, it moves the mouse with the item as it moves||0|2||
-2019-03-24|10:10|-|-|0|False|Bug # -1,All # 55,Other # -1,Feature # 31,Oldbugs # -1,Notes # -1,Ui # 4,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI Auto select text when adding tabs or new hash tags||1|9||
-2019-03-24|09:56|-|-|0|False|Feature # 32,All # 56,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 5,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI Tabs with multiple sorting tags||0|3||
-2019-03-20|10:35|-|-|0|False|All # 58,Other # 5,Feature # 33,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #FILEIO Turn save files to binary||0|4||
-2019-03-24|17:32|-|-|0|False|Bug # -1,All # 47,Other # -1,Feature # 24,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Copy todos||0|5||
-2019-05-01|07:41|-|-|0|False|Bug # -1,All # 34,Other # -1,Feature # 20,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Change file name to whatever project folder its saved in +Todo?||2|1||
-2019-05-01|07:41|-|-|0|False|Bug # -1,All # 43,Other # -1,Feature # 21,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Change file extension||0|6||
-2019-05-02|07:07|-|-|0|False|Bug # -1,All # 41,Other # -1,Feature # 22,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Have 3 tabs sorted by severity or 1 tab always sorted by severity||0|7||
-2019-05-02|07:12|-|-|0|False|Feature # 18,All # 40,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE When save is clicked from menu, save a backup file. But not when autosaved||1|13||
-2019-05-02|07:06|-|-|0|False|Bug # 10,All # 42,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Major bug, clicking new file, then switching to another existing file, that file is empty and save. Thanks for backup! Maybe related, asks to save twice when loading new file|Didnt do it for some reason. But I dont think its related to saving twice. Saved 2 different file names, both have the same new file info. Both happened after the data was cleared and the old name was not in the box. Tried again, still not happening...|1|19||
-2019-03-24|10:41|-|-|0|False|Feature # 25,All # 48,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 4,Kanban # -1,|1|#DIAGRAMS #FEATURE #IFWISHES Nodes UML diagrams|Maybe once I figure out nodes and moving stuff around I can have a black board uml diagram type tab set|0|8||
-2024/04/21|15:20|-|-|0|False|Ifwishes # 3,All # 36,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Kanban # -1,|1|#IFWISHES Todo list checkboxes|Make the notes section on the right display as a todo list with checkboxes|1|23||
-2024/04/21|15:52|-|-|0|False|Bug # 7,All # 33,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG Remove recent loads file||1|3||
-2024/04/21|16:08|-|-|0|False|Feature # 17,All # 35,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Open project button||1|4||
-2019-03-31|14:10|-|-|0|False|Feature # 23,All # 44,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 2,Kanban # -1,|1|#FEATURE #IFWISHES Online storage of files||0|9||
-2019-03-24|10:12|-|-|0|False|Bug # 13,All # 54,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #HASHTAGEDITOR New hashtag|If you push enter when entering new text on hashtag, it doesnt get saved. Focus isnt changing and allowing the text to update soon enough. Need to put something in like the preview text things in the editors rank textbox and if it changes, update the tag first|1|5||
-2019-05-02|07:10|-|-|0|False|Feature # -1,All # 39,Other # -1,Bug # 9,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Backup time|Changing the backup time does not set the timer if its greater than the backup time. If its got 7 minutes left and you set the timer for 5 minutes, it still waits 7 minutes until next round|1|11||
-2019-03-24|17:34|-|-|0|False|Bug # 11,All # 45,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Options changing does not get saved|Check when options are changed that it saves when done|1|12||
-2019-03-24|17:33|-|-|0|False|Bug # 12,All # 46,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Add todos to old history items|Still cant add completed todos to other history items, though why would you? When you edit a todo on an old history item, it adds it to the newest todo.|1|14||
-2019-03-12|07:20|-|-|0|False|All # 57,Other # 3,Feature # -1,Bug # 6,Oldbugs # 1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Global hotkeys|Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in./nThis Works most of the time. Sometimes it doesnt|0|12||
-2019-03-03|23:51|-|-|0|False|All # 60,Other # 4,Feature # -1,Bug # 7,Oldbugs # 2,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Crashes when new is clicked|Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|0|15||
-2019-03-19|15:59|-|-|0|False|All # 61,Other # 5,Feature # -1,Bug # 8,Oldbugs # 3,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#HISTORY #OLDBUGS Selecting history items by keyboard|When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|0|16||
-2019-03-24|10:39|-|-|0|False|Feature # 26,All # 49,Other # -1,Bug # -1,Oldbugs # -1,Notes # 2,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE #NOTES Notes tab|Maybe a notes tab, has same sorting features as the todos tab, but these notes do not get onto the vcs history|0|10||
-2024/04/21|22:35|-|-|0|False|Feature # 16,All # 32,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remember previous sort setting|On opening a file, it does not remember the previous sorting mode./nOr Just a default sort, on severity? Or rank?/nAn Option?|2|2||
-2019-02-20|19:11|-|-|0|False|All # 31,Other # 7,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|Update version number|Testing|1|1||
-2024/04/22|22:03|-|-|0|False|Kanban # 5,All # 30,Other # -1,Feature # -1,Bug # 6,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|0|#BUG #KANBAN Removing last item from Kanban crashes||3|8||
-2024/04/22|22:12|-|-|0|False|Bug # 5,All # 29,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Multiedit doesnt add hashtags?||1|15||
-2024/04/22|22:42|-|-|0|False|Notes # 1,All # 28,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#NOTES Add a scratch notes tab||0|17||
-2024/04/22|22:46|-|-|0|False|Bug # 4,All # 25,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Start making exceptions and handling errors and crashes better....||3|7||
-2024/04/22|22:47|-|-|0|False|Bug # 3,All # 26,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Sorting on severity and changing the severity by clicking on it makes the todo jump immediately||1|16||
-2024/04/23|11:45|-|-|0|False|Feature # 14,All # 19,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Due dates||2|4||
-2024/04/23|11:45|-|-|0|False|Feature # 13,All # 20,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Milestones||2|3||
-2024/04/23|11:45|-|-|0|False|Feature # 12,All # 21,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #HASHTAGEDITOR #OLDBUGS Fix the PomoTimer||1|20||
-2024/04/23|11:45|-|-|0|False|Feature # 11,All # 23,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 1,Kanban # -1,|1|#FEATURE #IFWISHES Add a music player||0|11||
-2024/04/23|12:19|-|-|0|False|Other # 6,All # 24,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#OTHER Update the code variable and function names||1|6||
-2024/04/23|16:41|-|-|0|False|All # 18,Other # 4,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed changing severity is slow||3|3||
-2024/04/23|16:41|-|-|0|False|All # 17,Other # 5,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL Save file with completed history items as a separate file?||1|26||
-2024/04/25|22:58|-|-|0|False|Feature # 10,All # 16,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Make an option to print a list||2|6||
-2024/04/26|21:01|-|-|0|False|Kanban # 1,All # 15,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#KANBAN Make notes window bigger on edit window||1|27||
-2019-05-03|07:50|-|-|0|False|All # 38,Other # -1,Feature # 19,Bug # 0,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Status bar|- [ ] Is the file is saved and backed up or not./n- [ ] Time left until backup|3|2||
-2024/04/26|21:25|-|-|0|False|Feature # 9,All # 11,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Save a backup when manual saving||1|21||
-2024/04/26|21:25|-|-|0|False|Feature # 8,All # 12,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Option to load a backup||1|22||
-2024/04/26|21:31|-|-|0|False|Feature # 7,All # 13,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Save settings in a separate file||1|24||
-2024/04/26|21:55|-|-|0|False|Feature # 6,All # 14,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Mini mode|Just show severity and todo/nAt least a scrollbar when not everything can be shown|1|25||
-2024/04/27|14:31|-|-|0|False|Feature # 5,All # 10,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Add or remove columns||0|13||
-2024/04/29|19:54|-|-|0|False|Feature # 4,All # 9,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#FEATURE Find Todo function||1|7||
-2024/04/29|22:56|-|-|0|False|All # 8,Other # -1,Feature # -1,Bug # 2,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Switching tabs sorts by same hashtag as current tab, but if that tab doesnt have that tag, sorting gets reset?|Also, related probably, switching main tabs with a hash sorting, that hash is selected in the combo box, but isn't sorted by it.|3|4||
-2024/04/30|11:10|-|-|0|False|Feature # 3,All # 7,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Maybe add an option for the git.exe Path||0|14||
-2024/04/30|23:01|-|-|0|False|All # 6,Other # 2,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Does edit window still need to be there?||2|5||
-2024/04/23|16:41|-|-|0|False|All # 22,Other # 3,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed is slow switching tabs||3|6||
-2024/05/22|19:48|-|-|0|False|All # 4,Other # -1,Feature # 2,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Add tag list to choose from||3|1||
+2024/05/01|10:30|-|-|0|False|Bug # 14,All # 4,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?||3|4||
+2024/04/22|22:41|-|-|0|False|Feature # 15,All # 26,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|13||
+2019-05-05|10:17|-|-|0|False|All # 36,Other # -1,Feature # -1,Bug # 8,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Crash on switching file|Doesnt look like any data lost. Completed a few todos, copied history, deleted a todo then switched/nUPDATE:/nAgain, no data lost. Completed a few TODOS, copied and created a new history, then tried switching to the other file with the hotkey.|1|12||
+2019-03-21|14:34|-|-|0|False|All # 54,Other # 8,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#INTERFACE Make the interface look clean||1|7||
+2019-03-24|10:16|-|-|0|False|Feature # 29,All # 49,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI I dont like the colors of the severity bar. Maybe its too thick or too green and red and yellow||1|6||
+2019-03-24|10:21|-|-|0|False|Feature # 27,All # 48,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Move the function thats the same in both editors to one file||0|1||
+2019-03-24|10:15|-|-|0|False|Feature # 30,All # 50,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 3,Ifwishes # -1,Kanban # -1,|0|#FEATURE #UI Maybe when you click the arrows on the rank buttons in the list, it moves the mouse with the item as it moves||0|2||
+2019-03-24|09:56|-|-|0|False|Feature # 32,All # 51,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 5,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI Tabs with multiple sorting tags||0|3||
+2019-03-20|10:35|-|-|0|False|All # 53,Other # 5,Feature # 33,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #FILEIO Turn save files to binary||0|4||
+2019-03-24|17:32|-|-|0|False|Bug # -1,All # 45,Other # -1,Feature # 24,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Copy todos||0|5||
+2019-05-01|07:41|-|-|0|False|Bug # -1,All # 33,Other # -1,Feature # 20,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Change file name to whatever project folder its saved in +Todo?||2|3||
+2019-05-01|07:41|-|-|0|False|Bug # -1,All # 42,Other # -1,Feature # 21,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Change file extension||0|6||
+2019-05-02|07:07|-|-|0|False|Bug # -1,All # 40,Other # -1,Feature # 22,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Have 3 tabs sorted by severity or 1 tab always sorted by severity||0|7||
+2019-05-02|07:12|-|-|0|False|Feature # 18,All # 39,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE When save is clicked from menu, save a backup file. But not when autosaved||1|10||
+2019-05-02|07:06|-|-|0|False|Bug # 10,All # 41,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Major bug, clicking new file, then switching to another existing file, that file is empty and save. Thanks for backup! Maybe related, asks to save twice when loading new file|Didnt do it for some reason. But I dont think its related to saving twice. Saved 2 different file names, both have the same new file info. Both happened after the data was cleared and the old name was not in the box. Tried again, still not happening...|1|14||
+2019-03-24|10:41|-|-|0|False|Feature # 25,All # 46,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 4,Kanban # -1,|1|#DIAGRAMS #FEATURE #IFWISHES Nodes UML diagrams|Maybe once I figure out nodes and moving stuff around I can have a black board uml diagram type tab set|0|8||
+2024/04/21|15:20|-|-|0|False|Ifwishes # 3,All # 35,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Kanban # -1,|1|#IFWISHES Todo list checkboxes|Make the notes section on the right display as a todo list with checkboxes|1|18||
+2024/04/21|15:52|-|-|0|False|Bug # 7,All # 32,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG Remove recent loads file||1|2||
+2024/04/21|16:08|-|-|0|False|Feature # 17,All # 34,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Open project button||1|3||
+2019-03-31|14:10|-|-|0|False|Feature # 23,All # 43,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 2,Kanban # -1,|1|#FEATURE #IFWISHES Online storage of files||0|9||
+2019-05-02|07:10|-|-|0|False|Feature # -1,All # 38,Other # -1,Bug # 9,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Backup time|Changing the backup time does not set the timer if its greater than the backup time. If its got 7 minutes left and you set the timer for 5 minutes, it still waits 7 minutes until next round|1|8||
+2019-03-24|17:34|-|-|0|False|Bug # 11,All # 44,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Options changing does not get saved|Check when options are changed that it saves when done|1|9||
+2019-03-12|07:20|-|-|0|False|All # 52,Other # 3,Feature # -1,Bug # 6,Oldbugs # 1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Global hotkeys|Tried again and same result. Check whether the global hotkey activates the window the enter hotkey actuates in./nThis Works most of the time. Sometimes it doesnt|0|12||
+2019-03-03|23:51|-|-|0|False|All # 55,Other # 4,Feature # -1,Bug # 7,Oldbugs # 2,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#OLDBUGS Crashes when new is clicked|Cannot figure out how to reproduce. Thought it was when switching files, then clicking new.|0|15||
+2019-03-19|15:59|-|-|0|False|All # 56,Other # 5,Feature # -1,Bug # 8,Oldbugs # 3,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#HISTORY #OLDBUGS Selecting history items by keyboard|When selecting history items by keyboard, when at the 0 index, takes 2 key presses to move. Maybe something with the tabindex?|0|16||
+2019-03-24|10:39|-|-|0|False|Feature # 26,All # 47,Other # -1,Bug # -1,Oldbugs # -1,Notes # 2,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE #NOTES Notes tab|Maybe a notes tab, has same sorting features as the todos tab, but these notes do not get onto the vcs history|0|10||
+2024/04/21|22:35|-|-|0|False|Feature # 16,All # 31,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remember previous sort setting|On opening a file, it does not remember the previous sorting mode./nOr Just a default sort, on severity? Or rank?/nAn Option?|2|4||
+2019-02-20|19:11|-|-|0|False|All # 30,Other # 7,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|Update version number|Testing|1|1||
+2024/04/22|22:03|-|-|0|False|Kanban # 5,All # 29,Other # -1,Feature # -1,Bug # 6,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|0|#BUG #KANBAN Removing last item from Kanban crashes||3|7||
+2024/04/22|22:42|-|-|0|False|Notes # 1,All # 27,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#NOTES Add a scratch notes tab||0|17||
+2024/04/22|22:46|-|-|0|False|Bug # 4,All # 24,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Start making exceptions and handling errors and crashes better....||3|6||
+2024/04/22|22:47|-|-|0|False|Bug # 3,All # 25,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Sorting on severity and changing the severity by clicking on it makes the todo jump immediately||1|11||
+2024/04/23|11:45|-|-|0|False|Feature # 14,All # 18,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Due dates||2|6||
+2024/04/23|11:45|-|-|0|False|Feature # 13,All # 19,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Milestones||2|5||
+2024/04/23|11:45|-|-|0|False|Feature # 12,All # 20,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE #HASHTAGEDITOR #OLDBUGS Fix the PomoTimer||1|15||
+2024/04/23|11:45|-|-|0|False|Feature # 11,All # 22,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # 1,Kanban # -1,|1|#FEATURE #IFWISHES Add a music player||0|11||
+2024/04/23|12:19|-|-|0|False|Other # 6,All # 23,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#OTHER Update the code variable and function names||1|4||
+2024/04/23|16:41|-|-|0|False|All # 17,Other # 4,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed changing severity is slow||3|2||
+2024/04/23|16:41|-|-|0|False|All # 16,Other # 5,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL Save file with completed history items as a separate file?||1|21||
+2024/04/25|22:58|-|-|0|False|Feature # 10,All # 15,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Make an option to print a list||2|7||
+2024/04/26|21:01|-|-|0|False|Kanban # 1,All # 14,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#KANBAN Make notes window bigger on edit window||1|22||
+2019-05-03|07:50|-|-|0|False|All # 37,Other # -1,Feature # 19,Bug # 0,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#FEATURE Status bar|- [ ] Is the file is saved and backed up or not./n- [ ] Time left until backup|3|1||
+2024/04/26|21:25|-|-|0|False|Feature # 9,All # 10,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Save a backup when manual saving||1|16||
+2024/04/26|21:25|-|-|0|False|Feature # 8,All # 11,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Option to load a backup||1|17||
+2024/04/26|21:31|-|-|0|False|Feature # 7,All # 12,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Save settings in a separate file||1|19||
+2024/04/26|21:55|-|-|0|False|Feature # 6,All # 13,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Mini mode|Just show severity and todo/nAt least a scrollbar when not everything can be shown|1|20||
+2024/04/27|14:31|-|-|0|False|Feature # 5,All # 9,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Add or remove columns||0|13||
+2024/04/29|19:54|-|-|0|False|Feature # 4,All # 8,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#FEATURE Find Todo function||1|5||
+2024/04/29|22:56|-|-|0|False|All # 7,Other # -1,Feature # -1,Bug # 2,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Switching tabs sorts by same hashtag as current tab, but if that tab doesnt have that tag, sorting gets reset?|Also, related probably, switching main tabs with a hash sorting, that hash is selected in the combo box, but isn't sorted by it.|3|3||
+2024/04/30|11:10|-|-|0|False|Feature # 3,All # 6,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Maybe add an option for the git.exe Path||0|14||
+2024/04/30|23:01|-|-|10000000|False|All # 5,Other # 2,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Does edit window still need to be there?||3|8||
+2024/04/23|16:41|-|-|0|False|All # 21,Other # 3,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#ALL Speed is slow switching tabs||3|5||
 2024/05/22|20:00|-|-|0|False|All # 3,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Multiselect and move to Kanban doesnt work||3|9||
-2024/05/22|21:18|-|-|0|False|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG Changing name on tab crashed the program||2|0||
-2024/05/22|21:19|-|-|0|False|Feature # 1,All # 2,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #FEATURE Bugs should get automatically added to the Kanban Next panel||2|0||
+2024/05/22|21:18|-|-|0|False|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG Changing name on tab crashed the program||2|1||
+2024/05/22|21:19|-|-|0|False|Feature # 1,All # 2,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #FEATURE Bugs should get automatically added to the Kanban Next panel||2|2||
 ====================================VCS
 NewVCS
-False|20240503|111925|v3.40.12.0 |
+False|20240523|092318|v3.40.13.0 |
 VCSTodos
+2024/04/22|22:12|20240523|144241|0|True|Bug # 5,All # 28,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Multiedit doesnt add hashtags?|Probably going to remove the multi-edit window for simple menu command, like move to top or bottom, etc.|2|8||Made the edit tags window accept multiple todo items
+EndVCS
+NewVCS
+True|20240503|111925|v3.40.12.0 Tag editor added!|
+VCSTodos
+2019-03-24|10:12|20240523|091929|0|True|Bug # 13,All # 54,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#BUG #HASHTAGEDITOR New hashtag|If you push enter when entering new text on hashtag, it doesnt get saved. Focus isnt changing and allowing the text to update soon enough. Need to put something in like the preview text things in the editors rank textbox and if it changes, update the tag first|1|4|Fixed with the new tag editor|
 2024/05/22|19:49|20240522|211747|0|True|All # 2,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Tags added in editor window do not get capitalized||3|1||Simply ToUpper() the text as it goes into the TodoItem
+2019-03-24|10:10|20240523|091947|0|True|Bug # -1,All # 55,Other # -1,Feature # 31,Oldbugs # -1,Notes # -1,Ui # 4,Ifwishes # -1,Kanban # -1,|1|#FEATURE #UI Auto select text when adding tabs or new hash tags|Not needed with the new tag editor.|1|7||
+2019-03-24|10:20|20240523|091913|0|True|Feature # 28,All # 51,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # 2,Ifwishes # -1,Kanban # -1,|2|#FEATURE #UI Add the add tag button to the very last tag in the tag editor list|This doesnt need to be done anymore with the new tag editor.|3|2||
+2024/05/22|19:48|20240523|091828|0|True|All # 4,Other # -1,Feature # 2,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#FEATURE Add tag list to choose from|Added a new window for tags. Better than the old tag editor. I think the old editor can be removed now. As well as the TagHolder class.|3|1||
 EndVCS
 NewVCS
 True|20240503|105938|v3.40.11.0 Save file is fixed again|
@@ -202,7 +205,7 @@ NewVCS
 True|20240429|220412|v3.31 Fixed some bugs...again|
 VCSTodos
 2024/04/29|20:27|20240429|220440|0|True|Bug # 2,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG Kanban->Current isn't loading again....|It's working again.../nSolution: Again, used the Loaded event for the tab control and called the update handler.|3|0||
-2024/04/22|22:10|20240429|220435|0|True|Kanban # 7,All # 30,Other # -1,Feature # -1,Bug # 14,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#KANBAN #BUG Adding item from kanban view crashes||3|0||
+2024/04/22|22:10|20240429|220435|0|True|Kanban # 7,All # 30,Other # -1,Feature # -1,Bug # 14,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #KANBAN Adding item from kanban view crashes||3|0||
 EndVCS
 NewVCS
 True|20240429|171728|v3.3 Kanban Current view is empty on load fixed|
@@ -246,7 +249,7 @@ EndVCS
 NewVCS
 True|20240424|175859|v3.23|Fixing a couple bugs
 VCSTodos
-2024/04/26|15:31|20240426|164254|0|True|Bug # 1,All # 2,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#KANBAN #BUG Selecting the note pane on kanban tab and then selecting a TODO crashes|Only happens on switching the first time./nProblem: The other ListBox was not initialized yet./nSolution: Checked for null and initialized the list box|0|0||
+2024/04/26|15:31|20240426|164254|0|True|Bug # 1,All # 2,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG #KANBAN Selecting the note pane on kanban tab and then selecting a TODO crashes|Only happens on switching the first time./nProblem: The other ListBox was not initialized yet./nSolution: Checked for null and initialized the list box|0|0||
 2024/04/24|18:02|20240426|153546|0|True|Bug # 4,All # 7,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG Going to Kanban tab before TODO tab does not sort the items|Check FixRankings()/nCheck RefreshTodo()/nNeither of these functions do both to todoTabs and kanbanTabs items/nFound the problem in RefreshTodo(): Was checking the tabIndex of the IncompleteItems tab for a valid index and returning out early if not found./nSolution: Created a KanbanRefresh() function|0|0||
 EndVCS
 NewVCS
@@ -255,7 +258,7 @@ VCSTodos
 2024/04/22|22:07|20240424|175631|0|True|Kanban # 5,All # 24,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#KANBAN Add the selected tab state to functions that can be used on either tab as in mnuKanbanCurrent_OnClick() function|Maybe make a universal function that gets the td from whatever function its called from/nAdded a function to GetSelectedTodo() and GetSelectedTodoItemHolder()|0|0||
 2024/04/22|22:00|20240424|175659|0|True|Kanban # 11,All # 24,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|3|#KANBAN Notes panel doesnt work|This works/nStill need it to be a full editor, but works as the TODO tab|0|0||
 2024/04/23|22:24|20240424|175755|0|True|All # 1,Other # -1,Feature # -1,Bug # 2,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|2|#ALL #BUG Selecting an item on Kanban tab is slower than Todos tab|Gives an error and crashes because 'nothing' is selected/nFixed by making all the names of the items different than the ones for the incomplete tab|0|0||
-2024/04/24|13:18|20240424|175502|0|True|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#KANBAN #BUG Cant select an item after seeing the todo tab|Fixed. Added e.Handled = true to the SelectionChanged event|0|0||
+2024/04/24|13:18|20240424|175502|0|True|Bug # 1,All # 1,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG #KANBAN Cant select an item after seeing the todo tab|Fixed. Added e.Handled = true to the SelectionChanged event|0|0||
 EndVCS
 NewVCS
 True|20240421|122741|v3.20|Working on Kanban view. Its working now, but not adding any todos. Just saving for the night.
@@ -309,13 +312,13 @@ NewVCS
 True|20190324|063752|v3.05|
 VCSTodos
 2019-03-25|07:32|20190410|012328|120000000|True|All # 4,Other # -1,Feature # -1,Bug # 3,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG Not updating capital letters when editing todo.|Added a ParseTodo() to TodoItem that capitalizes sentences|0|0||
-2019-03-24|09:42|20190410|004018|0|True|Bug # 5,All # 26,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#RANK #BUG Ranks not correct on this tab. Got 1, 2, 2, 3...and This one is...1. Resetting did not fix it. Dont think its getting ranks from a different tab either|Fixed FixRankings()|0|0||
-2019-03-24|09:57|20190410|004007|0|True|Feature # -1,All # 24,Other # -1,Bug # 5,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#RANK #BUG New items are being added to top of list, probably because setting rank to -1 instead of max. If a new item is created, set rank to -1 except for the tab its on, then set it to max. Might be the issue with the ranks being messed up, but then why doesnt FixRanks fix it?|Fixed FixRankings(), now just sets the ranking for the current tab and the public property of Rank is set correctly now. Rank (the property) was being set for each tab, and after last tab set it to whatever, thats what was shown. Setting new item ranks to 99 just so they can be read in the text file. After that many items, who cares about 99 items?|0|0||
-2019-03-24|07:54|20190410|003750|0|True|Feature # -1,All # 29,Other # -1,Bug # 7,Tabs # 1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#TABS #BUG The tabs are still crashing when a new one is created with a hash tag a TodoItem has|Think I fixed this while fixing tabs.|0|0||
-2019-03-24|07:57|20190410|003748|0|True|Tabs # 1,All # 28,Other # -1,Feature # -1,Bug # 9,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#TABS #BUG Need a function to go through the todo items after all tabs are there and find new hashes and remove old ones. I think the problem is still FixRankings()|Think I fixed this while fixing tabs. Dont think FixRankings() had anything to do with this|0|0||
-2019-03-24|09:46|20190409|234040|0|True|Feature # -1,All # 26,Other # -1,Bug # 6,Oldbugs # -1,Tabs # 1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#TABS #BUG Put more space between tabs. Give it a wider margin, text is too close together or tabs too small, something|When new tabs are made, set MinWidth and Padding for each|0|0||
-2019-03-24|10:07|20190409|231431|0|True|Bug # 5,All # 24,Other # -1,Feature # -1,Oldbugs # -1,Tabs # 2,Notes # -1,Ui # -1,Ifwishes # -1,|1|#TABS #BUG Clicking a tab crashed the program. Maybe because it still had birdrage tabs loaded and it was beyond the index of this lists tabs. Maybe fixing the tabs loading will solve this problem|Fixed when tabs loading fixed|0|0||
-2019-03-24|10:44|20190409|231357|0|True|All # 8,Other # -1,Feature # -1,Bug # 4,Oldbugs # -1,Tabs # 1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#TABS #BUG If switching files, have to switch tabs to reload the todos in that tab. Might be fixed when tabs are fixed. Hmm looks like the first tab is not defaulted to? Even when restarting, the tabs items are empty as though no tabs are selected. Maybe set a default if this isnt fixed with tabs fixes|Fixed when tabs loading fixed|0|0||
+2019-03-24|09:42|20190410|004018|0|True|Bug # 5,All # 26,Other # -1,Feature # -1,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #RANK Ranks not correct on this tab. Got 1, 2, 2, 3...and This one is...1. Resetting did not fix it. Dont think its getting ranks from a different tab either|Fixed FixRankings()|0|0||
+2019-03-24|09:57|20190410|004007|0|True|Feature # -1,All # 24,Other # -1,Bug # 5,Oldbugs # -1,Tabs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #RANK New items are being added to top of list, probably because setting rank to -1 instead of max. If a new item is created, set rank to -1 except for the tab its on, then set it to max. Might be the issue with the ranks being messed up, but then why doesnt FixRanks fix it?|Fixed FixRankings(), now just sets the ranking for the current tab and the public property of Rank is set correctly now. Rank (the property) was being set for each tab, and after last tab set it to whatever, thats what was shown. Setting new item ranks to 99 just so they can be read in the text file. After that many items, who cares about 99 items?|0|0||
+2019-03-24|07:54|20190410|003750|0|True|Feature # -1,All # 29,Other # -1,Bug # 7,Tabs # 1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #TABS The tabs are still crashing when a new one is created with a hash tag a TodoItem has|Think I fixed this while fixing tabs.|0|0||
+2019-03-24|07:57|20190410|003748|0|True|Tabs # 1,All # 28,Other # -1,Feature # -1,Bug # 9,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #TABS Need a function to go through the todo items after all tabs are there and find new hashes and remove old ones. I think the problem is still FixRankings()|Think I fixed this while fixing tabs. Dont think FixRankings() had anything to do with this|0|0||
+2019-03-24|09:46|20190409|234040|0|True|Feature # -1,All # 26,Other # -1,Bug # 6,Oldbugs # -1,Tabs # 1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #TABS Put more space between tabs. Give it a wider margin, text is too close together or tabs too small, something|When new tabs are made, set MinWidth and Padding for each|0|0||
+2019-03-24|10:07|20190409|231431|0|True|Bug # 5,All # 24,Other # -1,Feature # -1,Oldbugs # -1,Tabs # 2,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #TABS Clicking a tab crashed the program. Maybe because it still had birdrage tabs loaded and it was beyond the index of this lists tabs. Maybe fixing the tabs loading will solve this problem|Fixed when tabs loading fixed|0|0||
+2019-03-24|10:44|20190409|231357|0|True|All # 8,Other # -1,Feature # -1,Bug # 4,Oldbugs # -1,Tabs # 1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #TABS If switching files, have to switch tabs to reload the todos in that tab. Might be fixed when tabs are fixed. Hmm looks like the first tab is not defaulted to? Even when restarting, the tabs items are empty as though no tabs are selected. Maybe set a default if this isnt fixed with tabs fixes|Fixed when tabs loading fixed|0|0||
 2019-03-24|07:55|20190409|230943|0|True|Tabs # 5,All # 32,Other # -1,Feature # -1,Bug # 13,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,|1|#BUG #TABS When loading different file, tabs are not reset. The file is saving and loading with the new file, so no data lost|Cleared and refreshed tabs during load|0|0||
 EndVCS
 NewVCS
@@ -359,8 +362,8 @@ VCSTodos
 2019-03-23|06:33|20190323|084322|0|True|All # 10,Other # 9,Feature # -1,Bug # 4,Cleanup # -1,|1|#BUG Need to verify tab names are 1 word||0|0||
 2019-03-23|10:23|20190323|121631|0|True|Feature # 1,All # 1,Other # -1,Bug # -1,Cleanup # -1,|1|#FEATURE Add a tab for the current history log||0|0||
 2019-03-23|08:46|20190323|101200|0|True|Feature # 2,All # 10,Other # 11,Bug # -1,Cleanup # -1,Options # 1,|1|#FEATURE #OPTIONS Make a window for options||0|0||
-2019-03-23|08:46|20190323|101157|0|True|Feature # 2,All # 10,Other # 10,Bug # -1,Cleanup # -1,Options # 1,|1|#FEATURE #AUTOSAVE #OPTIONS Have a setting for frequency||0|0||
-2019-03-23|08:45|20190323|092716|0|True|Feature # 1,All # 10,Other # -1,Bug # -1,Cleanup # -1,|1|#FEATURE #AUTOSAVE Should check if theres a change at all before saving a backup.||0|0||
+2019-03-23|08:46|20190323|101157|0|True|Feature # 2,All # 10,Other # 10,Bug # -1,Cleanup # -1,Options # 1,|1|#AUTOSAVE #FEATURE #OPTIONS Have a setting for frequency||0|0||
+2019-03-23|08:45|20190323|092716|0|True|Feature # 1,All # 10,Other # -1,Bug # -1,Cleanup # -1,|1|#AUTOSAVE #FEATURE Should check if theres a change at all before saving a backup.||0|0||
 EndVCS
 NewVCS
 True|20190321|173951|v2.04 Most features are done|Working on ranks and bugs next, but changing something big. This is a backup in case I give up on this way
@@ -378,11 +381,11 @@ VCSTodos
 2019-03-20|11:06|20190322|130341|0|True|All # 0,|1|#FEATURE Make a backup system for the files||0|0||
 2019-03-20|09:55|20190322|123921|0|True|All # 0,|1|#FEATURE Edit time or +/- 10 minute buttons as well||0|0||
 2019-03-19|16:16|20190322|112010|0|True|All # 0,|1|#FEATURE Put save and new and other windows in center of window location|Created a new dialog window for this, DlgYesNo, got rid of all MessageBoxes|0|0||
-2019-03-12|07:12|20190322|100708|0|True|All # 0,|1|#WINDOW #FEATURE In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well||0|0||
-2019-03-12|07:03|20190322|100702|12000000000|True|All # 0,|1|#WINDOW #FEATURE Add help menu with hotkey shortcuts||0|0||
+2019-03-12|07:12|20190322|100708|0|True|All # 0,|1|#FEATURE #WINDOW In tag editor windows, have to click exactly at end of previous tag then push enter to add a new tag. Maybe make this a list and have add remove buttons. Probably want hotkeys as well||0|0||
+2019-03-12|07:03|20190322|100702|12000000000|True|All # 0,|1|#FEATURE #WINDOW Add help menu with hotkey shortcuts||0|0||
 2019-03-12|07:02|20190322|092559|36000000000|True|All # 0,|1|#FEATURE Multiedit tags, remove if they all have the same tag or add||0|0||
-2019-03-19|16:18|20190322|075223|0|True|All # 0,|1|#WINDOW #FEATURE #HISTORY The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|Just made the text all selected when it starts, can type right over it if necessary|0|0||
-2019-03-19|16:14|20190322|071024|0|True|All # 0,|1|#WINDOW #FEATURE #HISTORY Make a new history dialog you can put a title into|Repurposed the AddTab dialog and renamed all dialogs with Dlg in front|0|0||
+2019-03-19|16:18|20190322|075223|0|True|All # 0,|1|#FEATURE #HISTORY #WINDOW The new history dialog, have it increment the version numbers automatically. Have an option checked for that, might not need it in all uses. Save that option to the file, not the settings file|Just made the text all selected when it starts, can type right over it if necessary|0|0||
+2019-03-19|16:14|20190322|071024|0|True|All # 0,|1|#FEATURE #HISTORY #WINDOW Make a new history dialog you can put a title into|Repurposed the AddTab dialog and renamed all dialogs with Dlg in front|0|0||
 2019-03-12|05:56|20190322|065135|0|True|All # 0,|2|#FEATURE #TABS Move tabs left and right||0|0||
 2019-03-12|06:59|20190322|065133|72000000000|True|All # 0,|2|#FEATURE #TABS #WINDOW Edit tabs window instead of add remove menus|Had a problem to start, couldnt hide the up and down buttons for the ones that couldnt move. I had the wrong list bound, else it wouldve only taken an hour|0|0||
 EndVCS
@@ -405,10 +408,10 @@ VCSTodos
 2019-03-12|07:09|20190321|133225|72000000000|True|All # 0,|1|#FEATURE Can I make the shortcuts for hashtags dynamic? First letter or two of the header?|Yes|0|0||
 2019-03-12|05:41|20190321|110819|12620000000|True|All # 0,|1|#EASY #FEATURE Option to remove global hotkeys. Add bool to menu to toggle as I did with autosave|Now have it Register and Unregister hotkeys when this checkbox in the menu is checked. May need to add an options menu soon|0|0||
 2019-03-20|11:07|20190321|103355|0|True|All # 0,|1|#FEATURE #FILEIO Version the todos and history items and error check the strings going in||0|0||
-2019-03-21|09:11|20190321|103237|9320000000|True|All # 0,|1|#HISTORY #FEATURE In history tab, right click to reset _hasBeenCopied|That took longer than it shouldve. Was a problem with the SelectionChanged event for that list box. Always resetting the index. Commented that line out, and moving up and down by keyboard still works, and the reset copied works. Shrug|0|0||
-2019-03-20|10:04|20190321|100953|1730000000|True|All # 0,|1|#HISTORY #EASY #FEATURE If the current history item is empty or not completed/copied, dont ask to start a new one at startup|Checks whether the current history item HasBeenCopied or not|0|0||
-2019-03-20|10:05|20190321|100631|0|True|All # 0,|1|#HISTORY #FEATURE Make a tag on the history item that shows whether it was copied or not and make it visible somewhere||0|0||
-2019-03-12|07:04|20190321|100622|38680000000|True|All # 0,|1|#HISTORY #FEATURE No way to tell if youve saved a history or not|Changed the color of the button to green when its been copied. Older versioned files are set to true by default. Alsot versioned the save file, TodoItems and HistoryItems|0|0||
+2019-03-21|09:11|20190321|103237|9320000000|True|All # 0,|1|#FEATURE #HISTORY In history tab, right click to reset _hasBeenCopied|That took longer than it shouldve. Was a problem with the SelectionChanged event for that list box. Always resetting the index. Commented that line out, and moving up and down by keyboard still works, and the reset copied works. Shrug|0|0||
+2019-03-20|10:04|20190321|100953|1730000000|True|All # 0,|1|#EASY #FEATURE #HISTORY If the current history item is empty or not completed/copied, dont ask to start a new one at startup|Checks whether the current history item HasBeenCopied or not|0|0||
+2019-03-20|10:05|20190321|100631|0|True|All # 0,|1|#FEATURE #HISTORY Make a tag on the history item that shows whether it was copied or not and make it visible somewhere||0|0||
+2019-03-12|07:04|20190321|100622|38680000000|True|All # 0,|1|#FEATURE #HISTORY No way to tell if youve saved a history or not|Changed the color of the button to green when its been copied. Older versioned files are set to true by default. Alsot versioned the save file, TodoItems and HistoryItems|0|0||
 2019-03-12|05:40|20190321|080446|0|True|All # 0,|2|#FEATURE #TABS Add number of todos to tab names||0|0||
 2019-03-12|07:03|20190321|080422|0|True|All # 0,|1|#EASY #FEATURE Probably could remove recent saves and quick save from the menu bar||0|0||
 2019-03-13|16:41|20190321|080303|5040000000|True|All # 0,|1|#EASY #FEATURE Add total number of todos to title bar||0|0||
@@ -420,22 +423,22 @@ NewVCS
 True|20190319|165723|v2.02 Working on master lists and all those other features|
 VCSTodos
 2019-03-20|10:34|20190320|105409|0|True|All # 0,|1|#BUG If the settings file is corrupted or wrong, it wont even start up|Already fixed this. But now, itll set a default size and position.|0|0||
-2019-03-19|10:41|20190320|103941|0|True|All # 0,|1|#SETTINGS #BUG Add window size to settings file|Already does this, had it messed up on Surface|0|0||
+2019-03-19|10:41|20190320|103941|0|True|All # 0,|1|#BUG #SETTINGS Add window size to settings file|Already does this, had it messed up on Surface|0|0||
 2019-03-19|10:41|20190320|102639|0|True|All # 0,|1|#BUG Add todo file to vcs files|This is already done. Dont know why the surface didnt get it...|0|0||
 2019-03-12|07:02|20190320|102619|24600000000|True|All # 0,|1|#BUG How does multiedit work for the todo or notes? Its not adding hashes or anything to them|Somehow parsing tags right out of the list in the multitodoeditor. Added new function in TodoItem ParseNewTags(). It gets the tags and todo and parses it|0|0||
 2019-03-20|14:42|20190320|160028|3000000000|True|All # 0,|1|#FEATURE Make timers black not red then green||0|0||
-2019-03-20|12:35|20190320|155231|0|True|All # 0,|2|#TABS #FEATURE Add an all tab|This slowed down the lists alot, but probably because theres so much to do!!! Seriously, gotta look into this|0|0||
-2019-03-13|16:40|20190320|154928|90090000000|True|All # 0,|2|#TABS #FEATURE Really got to add a master list that has all the items in it. Maybe have a separate list, clicking it edits the item in the real list? Or the other way around. Doing it this way, with a master list, items can be in more than one list. So, make a class that holds a TodoItem and a rank for each list. And then theres the master list that uses the TodoItems rank while the others use the new classes rank.|Ok, got this working. Working on the bugs now|0|0||
-2019-03-20|10:35|20190320|114450|0|True|All # 0,|1|#FEATURE #EASY Add version to save file to keep from crashing it|Already done|0|0||
-2019-03-19|16:25|20190320|114443|0|True|All # 0,|1|#FEATURE #EASY When debugging, make title bar red or something|Made the menu bar red when debugging, first thing I could name and change|0|0||
+2019-03-20|12:35|20190320|155231|0|True|All # 0,|2|#FEATURE #TABS Add an all tab|This slowed down the lists alot, but probably because theres so much to do!!! Seriously, gotta look into this|0|0||
+2019-03-13|16:40|20190320|154928|90090000000|True|All # 0,|2|#FEATURE #TABS Really got to add a master list that has all the items in it. Maybe have a separate list, clicking it edits the item in the real list? Or the other way around. Doing it this way, with a master list, items can be in more than one list. So, make a class that holds a TodoItem and a rank for each list. And then theres the master list that uses the TodoItems rank while the others use the new classes rank.|Ok, got this working. Working on the bugs now|0|0||
+2019-03-20|10:35|20190320|114450|0|True|All # 0,|1|#EASY #FEATURE Add version to save file to keep from crashing it|Already done|0|0||
+2019-03-19|16:25|20190320|114443|0|True|All # 0,|1|#EASY #FEATURE When debugging, make title bar red or something|Made the menu bar red when debugging, first thing I could name and change|0|0||
 2019-03-13|16:43|20190320|114405|0|True|All # 0,|1|#FEATURE #FILEIO Should have the save file have the version in it somewhere and load based on that version|Already done|0|0||
 EndVCS
 NewVCS
 True|20190311|174537|v2.01 Just bugs to start with|
 VCSTodos
-2019-03-12|05:49|20190319|162459|2910000000|True|All # 0,|1|#HISTORY #BUG After typing something in the name on the history tab, and then clicking copy, the text was not copied. Hadnt been injected in to the class yet|Actually this is working....If It was the Notes I meant, that was because there was a check whether it Contains(""), so notes were never copied to clipboard. If it was the Title, that is working. So...Problem Solved|0|0||
-2019-03-12|05:48|20190319|161730|7850000000|True|All # 0,|1|#HISTORY #BUG Completed todos are added to history tab wonky. They are always added to the newest History. Maybe make the new button copy? Or when starting, popup message to start a new History? Or when copying, popup a message|Added MessageBoxes to the Copy button and when starting up. Gonna add a dialog window with a text block to type in a new title when adding a new history item|0|0||
-2019-03-19|16:02|20190319|160645|1210000000|True|All # 0,|1|#HISTORY #BUG Mouse select does not work now on history tab|Added setting _hCurrentHistoryItem back to SelectionChanged event.|0|0||
+2019-03-12|05:49|20190319|162459|2910000000|True|All # 0,|1|#BUG #HISTORY After typing something in the name on the history tab, and then clicking copy, the text was not copied. Hadnt been injected in to the class yet|Actually this is working....If It was the Notes I meant, that was because there was a check whether it Contains(""), so notes were never copied to clipboard. If it was the Title, that is working. So...Problem Solved|0|0||
+2019-03-12|05:48|20190319|161730|7850000000|True|All # 0,|1|#BUG #HISTORY Completed todos are added to history tab wonky. They are always added to the newest History. Maybe make the new button copy? Or when starting, popup message to start a new History? Or when copying, popup a message|Added MessageBoxes to the Copy button and when starting up. Gonna add a dialog window with a text block to type in a new title when adding a new history item|0|0||
+2019-03-19|16:02|20190319|160645|1210000000|True|All # 0,|1|#BUG #HISTORY Mouse select does not work now on history tab|Added setting _hCurrentHistoryItem back to SelectionChanged event.|0|0||
 2019-03-13|11:31|20190319|155922|88110000000|True|All # 0,|1|#BUG Still a bug moving up and down history list with keyboard|Got this fixed MOSTLY. Small bug now when at the 0 index. Takes 2 keypresses to move...I Think its a keyboard tab index thing now, but who knows. Actually had to move vmost of the SelectionChanged event code to OnKeyDown. And then added a mouse event for selecting by mouse and keeping the index|0|0||
 2019-03-19|10:32|20190319|110037|15260000000|True|All # 0,|1|#BUG Clicking quicksave with no recent files crashes|Checked for _currentOpenFile == null instead of ""|0|0||
 2019-03-13|16:59|20190319|103406|16910000000|True|All # 0,|1|#BUG Doesnt work when theres no settings file. Get it working as though its on a fresh computer. No saves or settings.|Added some checks for no settings file, started the functions that check for different versions of settings file. Added version to settings file|0|0||
@@ -563,7 +566,7 @@ EndVCS
 NewVCS
 True|20190223|104926|v1.4. Couple quick UI fixes|
 VCSTodos
-2019-02-23|09:22|20190223|105133|0|True|All # -1,|1|#SORT #HASHTAGS #LIST #ON #LEFT #SIDE. Sort hashtags list on left side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags Field, cuz cant modify a list while iterating|0|0||
+2019-02-23|09:22|20190223|105133|0|True|All # -1,|1|#HASHTAGS #LEFT #LIST #ON #SIDE. #SORT Sort hashtags list on left side. Make text or label, but not drop down. And resort it in the sort loop for the current hash being sorted by|Wasnt hard. Had to make a copy of the td.Tags Field, cuz cant modify a list while iterating|0|0||
 2019-02-23|09:22|20190223|105200|0|True|All # -1,|1|#SORT Change sort buttons to stretch across the window at top for sorting||0|0||
 EndVCS
 NewVCS
@@ -612,7 +615,7 @@ VCSTodos
 2019-02-20|19:11|20190220|202208|0|True|All # 4,|2|#RANK Sort by rank|Add new code in sort function|0|0||
 2019-02-20|19:12|20190220|202218|0|True|All # 4,|2|#RANK Add rank field to todo items||0|0||
 2019-02-20|19:15|20190220|202222|0|True|All # 4,|2|#RANK Show rank in display||0|0||
-2019-02-20|20:25|20190220|203254|0|True|All # 10,|1|#SORT #RANK Set default sort order to rank||0|0||
+2019-02-20|20:25|20190220|203254|0|True|All # 10,|1|#RANK #SORT Set default sort order to rank||0|0||
 2019-02-20|20:35|20190220|203639|0|True|All # 11,|1|#NOTES If theres no notes dont print them out||0|0||
 2019-02-20|19:12|20190220|202214|0|True|All # 4,|2|#RANK Add buttons for rank||0|0||
 EndVCS
@@ -650,16 +653,16 @@ VCSTodos
 2019-02-10|06:58|20190210|120522|0|True|All # 0,|2|#SORTING Default to sorting by severity||0|0||
 2019-02-10|11:09|20190210|120543|0|True|All # 0,|1|#CODE Default sort order is backwards? Need to sort by highest severity first code||0|0||
 2019-02-09|15:20|20190210|140203|0|True|All # 0,|3|#HOTKEYS Hotkeys for global new todo text box||0|0||
-2019-02-09|15:21|20190210|140238|0|True|All # 0,|2|#SORTING #INTERFACE Sort by bugs, or have a bugs list window sorting interface||0|0||
+2019-02-09|15:21|20190210|140238|0|True|All # 0,|2|#INTERFACE #SORTING Sort by bugs, or have a bugs list window sorting interface||0|0||
 2019-02-09|17:40|20190210|142611|0|True|All # 0,|2|Add popup to save before closing||0|0||
 2019-02-10|11:05|20190210|142653|0|True|All # 0,|1|#INTERFACE Make severity a dropdown list interface||0|0||
 2019-02-09|15:19|20190210|142707|0|True|All # 0,|2|Colors for severity. This works if its not in dark mode...||0|0||
-2019-02-10|11:06|20190210|143557|0|True|All # 0,|1|SIZING...#INTERFACE #TODOITEM IZING...#INTERFACE ZING...#INTERFACE ING...#INTERFACE NG...#INTERFACE G...#INTERFACE ...#INTERFACE ..#INTERFACE .#INTERFACE #INTERFACE Edit todo box is not good interface Todoitem||0|0||
+2019-02-10|11:06|20190210|143557|0|True|All # 0,|1|#INTERFACE #TODOITEM .#INTERFACE ..#INTERFACE ...#INTERFACE G...#INTERFACE ING...#INTERFACE IZING...#INTERFACE NG...#INTERFACE SIZING...#INTERFACE ZING...#INTERFACE Edit todo box is not good interface Todoitem||0|0||
 2019-02-10|11:06|20190210|143558|0|True|All # 0,|1|TodoEdit box default ok button||0|0||
 2019-02-10|06:57|20190210|151458|0|True|All # 0,|2|#HASHTAGS #INTERFACE Add dropdown for hashtags sorting interface||0|0||
 2019-02-09|17:42|20190210|151517|0|True|All # 0,|1|Show hashtags to side of todo and which one it is sorting by||0|0||
 2019-02-10|07:00|20190210|153035|0|True|All # 0,|1|Window remember position when closing?||0|0||
-2019-02-09|15:29|20190210|110142|0|True|All # 0,|1|#INTERFACE #BUG Still a right click context menu on the history items todos interface bug||0|0||
+2019-02-09|15:29|20190210|110142|0|True|All # 0,|1|#BUG #INTERFACE Still a right click context menu on the history items todos interface bug||0|0||
 EndVCS
 NewVCS
 True|20190209|152143|Working on ease of use items now|
@@ -694,11 +697,11 @@ VCSTodos
 2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#FILEIO Save to txt file, or make file easily readable fileio||0|0||
 2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE Multiline input interface||0|0||
 2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE Edit entire TodoItem- Made new window pop up for it interface||0|0||
-2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#SORTING #HASHTAGS Extract hashtags for sorting sorting hashtags||0|0||
-2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#SORTING #HASHTAGS Sorting by those hashtags sorting hashtags||0|0||
-2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #HISTORY When a todo is completed, copy to VCS History as something done to most recent history item interface history||0|0||
+2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#HASHTAGS #SORTING Extract hashtags for sorting sorting hashtags||0|0||
+2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#HASHTAGS #SORTING Sorting by those hashtags sorting hashtags||0|0||
+2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#HISTORY #INTERFACE When a todo is completed, copy to VCS History as something done to most recent history item interface history||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#TODOITEM Redesigned TodoItem- added separate date and time fields todoitem||0|0||
-2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #FILEIO Reorder fields in the text file interface fileio||0|0||
+2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#FILEIO #INTERFACE Reorder fields in the text file interface fileio||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE Remove up/down buttons interface||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE Separate Lists of complete and incomplete. Interface||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#FILEIO #INTERFACE #SORTING Separate incomplete and complete at sorting so they can be inserted as one list fileio interface sorting||0|0||
@@ -708,15 +711,15 @@ VCSTodos
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|Add pointer to most recent history list||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#HISTORYITEM Create new history item historyitem||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#HISTORYITEM #SORTING Refresh and sort history items historyitem sorting||0|0||
-2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #HISTORYITEM Change visible history item in listbox interface historyitem||0|0||
+2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#HISTORYITEM #INTERFACE Change visible history item in listbox interface historyitem||0|0||
 2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE History tab- add buttons for add and delete new history items interface||0|0||
 2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#FILEIO Export to text file fileio||0|0||
 2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#FILEIO Import from text fileio||0|0||
 2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE Delete todo from history item interface||0|0||
-2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #HISTORYITEM Only add to most recent History Item interface historyitem||0|0||
+2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#HISTORYITEM #INTERFACE Only add to most recent History Item interface historyitem||0|0||
 2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE Copy button interface||0|0||
-2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize interface bug||0|0||
-2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Add completed time to list view interface bug||0|0||
-2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#INTERFACE #BUG Edit complete items not working interface bug||0|0||
+2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#BUG #INTERFACE Fix text wrapping and size of todo item in listbox. See MHT on prioritizing wrap over autosize interface bug||0|0||
+2019-02-07|11:22|20190209|112231|0|True|All # 0,|1|#BUG #INTERFACE Add completed time to list view interface bug||0|0||
+2019-02-08|11:22|20190209|112231|0|True|All # 0,|1|#BUG #INTERFACE Edit complete items not working interface bug||0|0||
 2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#BUG Save text in notes bug||0|0||
 EndVCS
