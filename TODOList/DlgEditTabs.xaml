@@ -4,11 +4,26 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		mc:Ignorable="d"
-		Title="Edit Tab" Height="600" Width="420" 
+		Title="Edit Tab" Height="496" Width="300" 
 		FocusManager.FocusedElement="{Binding ElementName=lbTabs}"
 		Style="{StaticResource {x:Type Window}}" >
-	
-	<Grid TextElement.FontSize="16" >
+	<StackPanel >
+		<ListBox Name="lbTabs" ItemsSource="{Binding}" SelectionMode="Multiple" Height="350" />
+		<StackPanel Orientation="Horizontal" Height="30" >
+			<Button Name="btnNewTab" Content="New Tab" Width="84" Click="btnNewTab_OnClick" Margin="2,0,2,0"/>
+			<TextBox Name="tbNewTab" Width="192" Margin="2,0,2,0" KeyUp="tbNewTab_OnKeyUp" />
+		</StackPanel >
+		<StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
+			<Button Name="btnDelete" Content="Delete" Width="88" Click="btnDelete_OnClick" Margin="2,0,2,0" />
+			<Button Name="btnMoveUp" Content="/\" Width="88" Click="btnMoveUp_OnClick" Margin="2,0,2,0" />
+			<Button Name="btnMoveDown" Content="\/" Width="88" Click="btnMoveDown_OnClick" Margin="2,0,2,0" />
+		</StackPanel >
+		<StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
+			<Button Name="btnOk" Content="Ok" Width="138" Click="btnOk_OnClick" Margin="2,0,2,0" />
+			<Button Name="btnCancel" Content="Cancel" Width="138" Click="btnCancel_OnClick" Margin="2,0,2,0" />
+		</StackPanel >
+	</StackPanel >	
+<!--	<Grid TextElement.FontSize="16" >
 		<Grid.RowDefinitions >
 			<RowDefinition />
 			<RowDefinition Height="35" />
@@ -57,4 +72,5 @@
 			<Button Content="Cancel" Click="Cancel_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
 		</StackPanel >
 	</Grid>
+-->
 </Window>

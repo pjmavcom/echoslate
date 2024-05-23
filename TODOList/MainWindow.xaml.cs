@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Forms.Clipboard;
@@ -32,7 +33,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.13.0";
+        private const string PROGRAM_VERSION = "3.40.14.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -733,9 +734,7 @@ namespace TODOList
             while (line != null)
             {
                 if (line.Split(' ')[0] == "commit")
-                {
                     log.Add("=====================================================================================" + Environment.NewLine);
-                }
 
                 log.Add(line);
                 line = stream.ReadLine();
@@ -775,14 +774,10 @@ namespace TODOList
                 string hashShortcut = shortcut + name[0].ToString().ToLower();
                 string leftover = "";
                 for (int i = 1; i < name.Length; i++)
-                {
                     leftover += name[i];
-                }
 
                 if (!_hashShortcuts.ContainsKey(hashShortcut))
-                {
                     return hashShortcut;
-                }
 
                 name = leftover;
                 shortcut = hashShortcut;
@@ -847,20 +842,28 @@ namespace TODOList
         }
         private void IncompleteItemsInitialize()
         {
-            if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter incompleteItemsContentPresenter))
-                return;
-            incompleteItemsContentPresenter.ApplyTemplate();
-            _lbIncompleteItems = incompleteItemsContentPresenter.ContentTemplate.FindName("lbIncompleteItems", incompleteItemsContentPresenter) as ListBox;
-            if (_lbIncompleteItems == null)
-                return;
+            Application.Current.Dispatcher.Invoke(
+                async () =>
+                {
+                    if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter incompleteItemsContentPresenter))
+                        return;
 
-            IncompleteItemsSortToTabs();
-            _lbIncompleteItems.ItemsSource = IncompleteItems;
-            _lbIncompleteItems.Items.Refresh();
-            _lbIncompleteItems.SelectionChanged += IncompleteItems_OnSelectionChanged;
-            _lbIncompleteItems.UnselectAll();
-            double height = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
-            _lbIncompleteItems.Height = height > 0 ? height : 1;
+                    // if (incompleteItemsContentPresenter.ContentTemplate == null)
+                    incompleteItemsContentPresenter.ApplyTemplate();
+                    if (incompleteItemsContentPresenter.ContentTemplate == null)
+                        return;
+                    _lbIncompleteItems = incompleteItemsContentPresenter.ContentTemplate.FindName("lbIncompleteItems", incompleteItemsContentPresenter) as ListBox;
+                    if (_lbIncompleteItems == null)
+                        return;
+
+                    IncompleteItemsSortToTabs();
+                    _lbIncompleteItems.ItemsSource = IncompleteItems;
+                    _lbIncompleteItems.Items.Refresh();
+                    _lbIncompleteItems.SelectionChanged += IncompleteItems_OnSelectionChanged;
+                    _lbIncompleteItems.UnselectAll();
+                    double height = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
+                    _lbIncompleteItems.Height = height > 0 ? height : 1;
+                }, DispatcherPriority.ApplicationIdle);
         }
         private void IncompleteItemsUpdateHandler()
         {
@@ -1097,20 +1100,24 @@ namespace TODOList
         }
         private void KanbanInitialize()
         {
-            if (!(kanbanTodoTabs.Template.FindName("PART_SelectedContentHost", kanbanTodoTabs) is ContentPresenter kanbanContentPresenter))
-                return;
-            kanbanContentPresenter.ApplyTemplate();
-            _lbKanbanItems = kanbanContentPresenter.ContentTemplate.FindName("lbKanbanItems", kanbanContentPresenter) as ListBox;
-            if (_lbKanbanItems == null)
-                return;
+            Application.Current.Dispatcher.Invoke(
+                async () =>
+                {
+                    if (!(kanbanTodoTabs.Template.FindName("PART_SelectedContentHost", kanbanTodoTabs) is ContentPresenter kanbanContentPresenter))
+                        return;
+                    kanbanContentPresenter.ApplyTemplate();
+                    _lbKanbanItems = kanbanContentPresenter.ContentTemplate.FindName("lbKanbanItems", kanbanContentPresenter) as ListBox;
+                    if (_lbKanbanItems == null)
+                        return;
 
-            KanbanSortToTabs();
-            _lbKanbanItems.ItemsSource = KanbanItems;
-            _lbKanbanItems.Items.Refresh();
-            _lbKanbanItems.SelectionChanged += KanbanItems_OnSelectionChange;
-            _lbKanbanItems.UnselectAll();
-            double height = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
-            _lbKanbanItems.Height = height > 0 ? height : 1;
+                    KanbanSortToTabs();
+                    _lbKanbanItems.ItemsSource = KanbanItems;
+                    _lbKanbanItems.Items.Refresh();
+                    _lbKanbanItems.SelectionChanged += KanbanItems_OnSelectionChange;
+                    _lbKanbanItems.UnselectAll();
+                    double height = _windowHeight - _newTodoPanelHeight - _topOfPanelStuffHeight;
+                    _lbKanbanItems.Height = height > 0 ? height : 1;
+                }, DispatcherPriority.ApplicationIdle);
         }
         private void KanbanUpdateHandler()
         {
@@ -1609,7 +1616,8 @@ namespace TODOList
             List<TabItem> list = _incompleteItemsTabsList.ToList();
             DlgEditTabs rt = new DlgEditTabs(list);
             rt.ShowDialog();
-            if (!rt.Result) return;
+            if (!rt.Result)
+                return;
 
             _incompleteItemsTabsList.Clear();
             _hashShortcuts.Clear();
@@ -1619,18 +1627,15 @@ namespace TODOList
             foreach (string s in rt.ResultList)
             {
                 if (rt.ResultList.IndexOf(s) < rt.ResultList.Count - 1)
-                {
                     IncompleteItemsAddNewTab(s, false);
-                }
                 else
-                {
                     IncompleteItemsAddNewTab(s);
-                }
             }
-
+            IncompleteItemsRefresh();
             IncompleteItemsInitialize();
 
-            foreach (TodoItem td in _masterList) CleanTodoHashRanks(td);
+            foreach (TodoItem td in _masterList)
+                CleanTodoHashRanks(td);
         }
 
         // History Item Context menus
