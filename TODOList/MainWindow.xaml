@@ -349,7 +349,7 @@
 									<ComboBoxItem Content="High" />
 								</ComboBox >
 								<Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
-							</StackPanel >
+								</StackPanel >
 						</StackPanel >
 					</StackPanel >
 					<StackPanel x:Name="incompleteItemsNotesPanel" >

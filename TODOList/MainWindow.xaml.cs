@@ -33,7 +33,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.14.0";
+        private const string PROGRAM_VERSION = "3.40.15.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -1780,15 +1780,12 @@ namespace TODOList
         }
         private void mnuKanban_OnClick(int kanbanRank)
         {
-            TodoItem td = GetSelectedTodo();
-            if (td == null)
-            {
-                _errorMessage = "\nFunction: mnuKanban_OnClick()" +
-                                "\n\n" + _errorMessage;
-                return;
-            }
+            if (_lbCurrentItems.SelectedItems.Count >= 1)
+                foreach (TodoItemHolder todo in _lbCurrentItems.SelectedItems)
+                    todo.Kanban = kanbanRank;
 
-            td.Kanban = kanbanRank;
+            IncompleteItemsRefresh();
+            KanbanRefresh();
         }
         private void mnuMoveItemToTop_OnClick()
         {
@@ -2245,12 +2242,13 @@ namespace TODOList
         }
         private void RankAdjust_OnClick(object sender, EventArgs e)
         {
-            if (!(sender is Button b)) return;
-
+            if (!(sender is Button b))
+                return;
             TodoItemHolder todoItemHolder = b.DataContext as TodoItemHolder;
             List<TodoItemHolder> todoItemHolderList = _currentItems[_currentSelectedSubTab.SelectedIndex];
 
-            if (todoItemHolderList.Count == 0) return;
+            if (todoItemHolderList.Count == 0)
+                return;
 
             int index = todoItemHolderList.IndexOf(todoItemHolder);
             switch ((string)b.CommandParameter)

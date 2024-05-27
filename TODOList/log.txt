@@ -1,3 +1,33 @@
+commit da6dc5c26b0d46ccad67f89c865633e092a52fa0
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 23 19:16:03 2024 +0800
+
+    20240523- v3.40.14.0 Made a working tab editor
+    
+    20240523- v3.40.14.0 Made a working tab editor
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240523-0m |Changing name on tab crashed the program
+            Solution: Made a new tab editor window
+
+commit 550f59b3668a94688a1f0bf7a0652aa212df8524
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu May 23 15:00:34 2024 +0800
+
+    20240523- v3.40.13.0 Multi Tag Editor
+    
+    20240523- v3.40.13.0 Multi Tag Editor
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20240523-0m |Multiedit doesnt add hashtags?
+            Notes: Probably going to remove the multi-edit window for simple menu command, like move to top or bottom,
+                    etc.
+            Solution: Made the edit tags window accept multiple todo items
+
 commit 15289faab56595c83d941c5b991b0642e90eb65a
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu May 23 09:23:30 2024 +0800
