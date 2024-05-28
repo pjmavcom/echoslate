@@ -252,7 +252,7 @@
 										</StackPanel >
 
 										<!-- The list of incomplete todos -->
-										<ListBox Name="lbIncompleteItems" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended" d:DataContext="{d:DesignInstance }">
+										<ListBox x:Name="lbIncompleteItems" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended" d:DataContext="{d:DesignInstance }" >
 											<ListBox.ContextMenu >
 												<ContextMenu >
 													<MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />

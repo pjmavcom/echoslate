@@ -1,3 +1,17 @@
+commit 8a7d72515f574b875e2d85d0d4d0be65b07fb6b2
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Mon May 27 12:27:58 2024 +0800
+
+    20240523- v3.40.15.0 Move multiple items in Kanban
+    
+    20240523- v3.40.15.0 Move multiple items in Kanban
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20240527-0m |Multiselect and move to Kanban doesnt work
+            Solution: Adjusted Kanban level on all selected items
+
 commit da6dc5c26b0d46ccad67f89c865633e092a52fa0
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu May 23 19:16:03 2024 +0800

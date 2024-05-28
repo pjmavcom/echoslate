@@ -9,7 +9,7 @@
 		ResizeMode="NoResize">
 	<Grid >
 		<StackPanel >
-			<TextBlock Name="WindowMessage" Width="680" Height="550" TextWrapping="WrapWithOverflow" TextAlignment="Left" HorizontalAlignment="Center" />
+			<TextBlock Name="WindowMessage" Width="680" Height="512" TextWrapping="WrapWithOverflow" TextAlignment="Left" HorizontalAlignment="Center" />
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<Button Content="OK" IsDefault="True" Click="Ok_OnClick" Width="100" />
 				<Button Name="btnCancel" Content="Cancel" IsCancel="True" Click="Cancel_OnClick" Width="100" />
