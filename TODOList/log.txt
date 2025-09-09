@@ -1,3 +1,21 @@
+commit f016cbdf2d5282411232895f4b9f356301b6f876
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue May 28 13:04:16 2024 +0800
+
+    20240527- v3.40.16.0 Simple bug fixes
+    
+    20240527- v3.40.16.0 Simple bug fixes
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: I was going to make it so the list box items can be deselected, but I coded it to always be
+            selected...dont know why lol. This might be why moving the items doesnt work?
+    
+    =Bugs Squashed====================================================================================================
+    --20240528-0m |Fixed error on first startup, autosaving a file when no recent files are there
+    
+    =Other Stuff======================================================================================================
+    --20240528-0m |Fixed DlgYesNo and DlgErrorMessage sizes
+
 commit 8a7d72515f574b875e2d85d0d4d0be65b07fb6b2
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Mon May 27 12:27:58 2024 +0800

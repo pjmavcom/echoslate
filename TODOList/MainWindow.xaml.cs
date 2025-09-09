@@ -33,7 +33,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.16.0";
+        private const string PROGRAM_VERSION = "3.40.18.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -191,7 +191,7 @@ namespace TODOList
         private string _testIfChanged;
 
         private ObservableCollection<string> RecentFiles { get; set; }
-        private List<TodoItemHolder> IncompleteItems => _incompleteItems[incompleteItemsTodoTabs.SelectedIndex];
+        private List<TodoItemHolder> IncompleteItems => _incompleteItems[incompleteItemsTodoTabs.SelectedIndex == -1 ? 0 : incompleteItemsTodoTabs.SelectedIndex];
         private List<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTodoTabs.SelectedIndex];
         private List<string> KanbanHashTags => _kanbanHashTags[kanbanTodoTabs.SelectedIndex];
         private List<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
@@ -2745,7 +2745,7 @@ namespace TODOList
 
             if (_autoSave)
             {
-                if (RecentFiles.Count > 1)
+                if (RecentFiles.Count >= 1)
                     Save(RecentFiles[0]);
                 else
                     SaveAs();
