@@ -1,3 +1,22 @@
+commit 69e6f64dd8c53676456a726cf086173159234537
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Sep 9 11:34:56 2025 +0800
+
+    20240528- v3.40.18.0
+    
+    20240528- v3.40.18.0
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Fixed a few small bugs.
+    
+    =Other Stuff======================================================================================================
+    --20250909-0m |SaveAs() appears after every change
+            Problem: AutoSave() uses SaveAs() if there is only 1 file in the recent files list.
+            Solution: Changed >1 to >= 1 in the AutoSave() check for more than one recent file.
+    --20250909-0m |Crashing after adding a new tab
+            Problem: Index for the current tab gets reset to -1, throwing an out of range exception.
+            Solution: Set a check, if -1 set it to 0.
+
 commit f016cbdf2d5282411232895f4b9f356301b6f876
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue May 28 13:04:16 2024 +0800

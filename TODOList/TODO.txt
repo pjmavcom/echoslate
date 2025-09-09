@@ -18,7 +18,7 @@ False
 AutoSave
 False
 CurrentProjectVersion
-3.40.17.0.2
+3.40.20.0.2
 ====================================TODO
 2024/05/01|10:30|-|-|0|False|Bug # 11,All # 3,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?||3|5||
 2024/04/22|22:41|-|-|0|False|Feature # 14,All # 25,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|13||
@@ -76,8 +76,19 @@ CurrentProjectVersion
 2024/05/27|10:28|-|-|0|False|All # 1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|Move MOVE buttons to bottom pane and remove from ListBox|Code it like the EditTags panel|3|1||
 ====================================VCS
 NewVCS
-False|20240528|130402|v3.40.17.0 |
+False|20250909|131555|v3.40.20.0 Not auto saving|
 VCSTodos
+EndVCS
+NewVCS
+True|20250909|131144|v3.40.19.0 Hotkeys not working|
+VCSTodos
+2025/09/09|13:12|20250909|131545|0|True|All # 55,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL Hotkeys not working|Moving to the next tab didn't work, but now it does?/nFound That moving to the previous tab will throw an error.|0|0|I don't know what the original problem was, it seems to work fine./nBut For moving to the previous tab, was getting an out of bounds error for some reason in HkSwitchTabs().|Commented out the line for tabControl.SelectedIndex And no more error...
+EndVCS
+NewVCS
+True|20240528|130402|v3.40.18.0 Fixed a few small bugs|
+VCSTodos
+2025/09/09|13:09|20250909|130957|0|True|All # 55,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL SaveAs() appears after every change||0|0|AutoSave() uses SaveAs() if there is only 1 file in the recent files list.|Changed >1 to >= 1 in the AutoSave() check for more than one recent file.
+2025/09/09|13:10|20250909|131043|0|True|All # 55,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#ALL Crashing after adding a new tab||0|0|Index for the current tab gets reset to -1, throwing an out of range exception.|Set a check, if -1 set it to 0.
 EndVCS
 NewVCS
 True|20240527|122726|v3.40.16.0 Simple bug fixes|I was going to make it so the list box items can be deselected, but I coded it to always be selected...dont know why lol. This might be why moving the items doesnt work?

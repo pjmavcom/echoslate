@@ -19,7 +19,7 @@
 		<RoutedUICommand x:Key="Edit" Text="Another Text" />
 		<RoutedUICommand x:Key="SwitchTab" Text="Yet Another Text" />
 		<RoutedUICommand x:Key="SwitchSeverity" Text="And Yet Another Text" />
-		<RoutedUICommand x:Key="QuickSave" Text="And Yet Another Text" />
+		<RoutedUICommand x:Key="QuickSave" Text="And Yet Another x2 Text" />
 		<RoutedUICommand x:Key="QuickLoadPrevious" Text="And Yet Another Another Text" />
 		<RoutedUICommand x:Key="StartStopTimer" Text="And Yet Another Another Text" />
 		

@@ -33,7 +33,7 @@ namespace TODOList
     public partial class MainWindow : INotifyPropertyChanged
     {
         // FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-        private const string PROGRAM_VERSION = "3.40.18.0";
+        private const string PROGRAM_VERSION = "3.40.19.0";
         public const string DATE_STRING_FORMAT = "yyyyMMdd";
         public const string TIME_STRING_FORMAT = "HHmmss";
         private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -1248,7 +1248,7 @@ namespace TODOList
                     if (index < 0)
                     {
                         index = 0;
-                        tabControl.SelectedIndex = 0;
+                        // tabControl.SelectedIndex = 0;
                     }
 
                     break;
