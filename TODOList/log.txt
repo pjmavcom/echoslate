@@ -1,3 +1,23 @@
+commit 5d6a5f94aee73748e434240b837aecf01468de07
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Sep 9 13:17:49 2025 +0800
+
+    20250909- v3.40.19.0 Hotkeys not working
+    
+    20250909- v3.40.19.0 Hotkeys not working
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20250909-0m |Hotkeys not working
+            Notes: Moving to the next tab didn't work, but now it does?
+    Found That moving to the previous tab will
+                    throw an error.
+            Problem: I don't know what the original problem was, it seems to work fine.
+    But For moving to the previous
+                    tab, was getting an out of bounds error for some reason in HkSwitchTabs().
+            Solution: Commented out the line for tabControl.SelectedIndex And no more error...
+
 commit 69e6f64dd8c53676456a726cf086173159234537
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Sep 9 11:34:56 2025 +0800
