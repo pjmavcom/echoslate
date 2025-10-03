@@ -171,7 +171,7 @@
 						<StackPanel Orientation="Horizontal" Grid.Row="0">
 							<Label Content="Version: " Margin="2" />
 							<CheckBox Name="cbVersionA" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="A"/>
-							<wpfTool:IntegerUpDown Name="iudVersionA" Minimum="1" ValueChanged="Version_OnValueChangedA" Width="80" />
+							<wpfTool:IntegerUpDown Name="iudVersionA" Minimum="0" ValueChanged="Version_OnValueChangedA" Width="80" />
 							<CheckBox Name="cbVersionB" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="B"/>
 							<wpfTool:IntegerUpDown Name="iudVersionB" Minimum="0" ValueChanged="Version_OnValueChangedB" Width="80" />
 							<CheckBox Name="cbVersionC" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="C"/>

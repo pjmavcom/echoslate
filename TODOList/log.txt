@@ -1,3 +1,17 @@
+commit 15f892d01620dbf8903576794b976b7ea4b042c3
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu Oct 2 21:48:44 2025 +0800
+
+    20250909- v3.40.20.0
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Quick bug fix.
+    
+    =Bugs Squashed====================================================================================================
+    --20251002-0m |Crashes on load if most recent file does not exist.
+            Problem: Tries to load a file that doesnt exist and crashes
+            Solution: If it cant find the file, run the SaveAs dialog and choose a new file
+
 commit 5d6a5f94aee73748e434240b837aecf01468de07
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Sep 9 13:17:49 2025 +0800

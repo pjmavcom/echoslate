@@ -31,7 +31,7 @@ using TextBox = System.Windows.Controls.TextBox;
 namespace TODOList {
 	public partial class MainWindow : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		private const string PROGRAM_VERSION = "3.40.20.0";
+		private const string PROGRAM_VERSION = "3.40.20.1";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
