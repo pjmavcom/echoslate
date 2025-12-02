@@ -1,3 +1,21 @@
+commit 27cc3d8fa47a37cf9fd86aaabc903f52b34974e3
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Dec 2 18:54:06 2025 +0800
+
+    20251003- v3.40.21.1 Working on bugs and logging
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Getting ready for release. Next feature will be to split the interface into user controls
+    
+    =Bugs Squashed====================================================================================================
+    --20251202-0m |Crashes when trying to create a new settings file
+            Problem: The stream was not being closed before opening it again.
+    
+    =Other Stuff======================================================================================================
+    --20251202-0m |Check RecentFiles for non existing files and remove them
+            Solution: Easy check if File.Exists Before adding to the list.
+    --20251202-0m |Add Log class
+
 commit e8501685af4080ff1513e4eb5ed1d7ab1cebce5e
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Oct 3 13:36:36 2025 +0800

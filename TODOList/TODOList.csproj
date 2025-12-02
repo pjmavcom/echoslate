@@ -109,6 +109,12 @@
 		<Compile Include="DlgTodoMultiItemEditor.xaml.cs">
 		  <DependentUpon>DlgTodoMultiItemEditor.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="UserControls\IncompleteItemsNotesPanel.xaml.cs">
+		  <DependentUpon>IncompleteItemsNotesPanel.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="UserControls\IncompleteItemsTab.xaml.cs">
+		  <DependentUpon>IncompleteItemsTab.xaml</DependentUpon>
+		</Compile>
 		<Page Include="DlgAddNewHistory.xaml" />
 		<Page Include="DlgErrorMessage.xaml" />
 		<Page Include="DlgHelp.xaml" />
@@ -130,6 +136,8 @@
 		<Page Include="DlgTodoItemEditor.xaml" />
 		<Page Include="DlgTodoMultiItemEditor.xaml" />
 		<Page Include="TagPicker.xaml" />
+		<Page Include="UserControls\IncompleteItemsNotesPanel.xaml" />
+		<Page Include="UserControls\IncompleteItemsTab.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Properties\AssemblyInfo.cs">

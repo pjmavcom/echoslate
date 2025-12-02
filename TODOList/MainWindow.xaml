@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:TODOList"
+        xmlns:userControls="clr-namespace:TODOList.UserControls"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="1080" Width="1920"
         FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}"
@@ -14,27 +15,27 @@
     <Window.Resources>
         <!-- Shows the real bounds of EVERY container in bright colours -->
         <!-- <Style TargetType="Panel">                     -->
-            <!-- <Setter Property="Background" Value="#20FF0000" />   -->
-            <!-- <Setter Property="Margin" Value="3" /> -->
+        <!-- <Setter Property="Background" Value="#20FF0000" />   -->
+        <!-- <Setter Property="Margin" Value="3" /> -->
         <!-- </Style> -->
 
         <!-- <Style TargetType="Border">             -->
-            <!-- <Setter Property="Background" Value="#2000FF00" /> -->
-            <!-- <Setter Property="BorderBrush" Value="Orange" /> -->
-            <!-- <Setter Property="BorderThickness" Value="2" /> -->
+        <!-- <Setter Property="Background" Value="#2000FF00" /> -->
+        <!-- <Setter Property="BorderBrush" Value="Orange" /> -->
+        <!-- <Setter Property="BorderThickness" Value="2" /> -->
         <!-- </Style> -->
 
         <!-- <Style TargetType="Grid"> -->
-            <!-- <Setter Property="Background" Value="#200000FF" />  -->
-            <!-- <Setter Property="ShowGridLines" Value="True" />    -->
+        <!-- <Setter Property="Background" Value="#200000FF" />  -->
+        <!-- <Setter Property="ShowGridLines" Value="True" />    -->
         <!-- </Style> -->
 
         <!-- Don’t colour the ListBox itself or its items – we want to see the items -->
         <!-- <Style TargetType="ListBox"> -->
-            <!-- <Setter Property="Background" Value="Transparent" /> -->
+        <!-- <Setter Property="Background" Value="Transparent" /> -->
         <!-- </Style> -->
         <!-- <Style TargetType="ListBoxItem"> -->
-            <!-- <Setter Property="Background" Value="Transparent" /> -->
+        <!-- <Setter Property="Background" Value="Transparent" /> -->
         <!-- </Style> -->
         <local:ProgressBarForegroundConverter x:Key="ProgressBarForegroundConverter" />
 
@@ -256,7 +257,7 @@
             <TabItem Name="tabTodos" Header="TODOs" HorizontalAlignment="Right" Width="64" Height="26" VerticalAlignment="Center">
                 <!-- VCS TODOs tab -->
                 <StackPanel Orientation="Horizontal">
-                    <StackPanel x:Name="incompleteItemsMainGrid">
+                    <StackPanel x:Name="incompleteItemsMainGrid" Grid.Column="1">
                         <TabControl Name="incompleteItemsTodoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsTab_OnSelectionChanged">
                             <TabControl.ContextMenu>
                                 <ContextMenu>
@@ -384,22 +385,7 @@
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel x:Name="incompleteItemsNotesPanel">
-                        <Label Content="Title:" Height="25" />
-                        <TextBox x:Name="tbIncompleteItemsTitle" Height="65" HorizontalAlignment="Left" Margin="3" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus" GotFocus="TodoTitle_OnGotFocus" />
-                        <Label Height="25" Content="Notes:" />
-                        <TextBox x:Name="tbIncompleteItemsNotes" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
-                        <Label Height="25" Content="Problem:" />
-                        <TextBox x:Name="tbIncompleteItemsProblem" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Problem_OnLostFocus" GotFocus="Problem_OnGotFocus" />
-                        <Label Height="25" Content="Solution:" />
-                        <TextBox x:Name="tbIncompleteItemsSolution" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
-                        <StackPanel Height="35" Orientation="Horizontal">
-                            <Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
-                            <Button Content="Edit Tags" Width="72" Height="35" Click="AddTag_OnClick" />
-                        </StackPanel>
-                        <ListBox Name="lbIncompleteItemsHashTags" ItemsSource="{Binding}" Height="300" HorizontalAlignment="Left" Margin="3" IsSynchronizedWithCurrentItem="True" />
-                        <Button Content="Complete" Height="35" Width="100" Click="TodoComplete_OnClick" />
-                    </StackPanel>
+                    <userControls:IncompleteItemsNotesPanel x:Name="ucIncompleteItemsNotesPanel" Grid.Column="1" />
                 </StackPanel>
             </TabItem>
             <TabItem Name="tabKanban" Header="Kanban" HorizontalAlignment="Right" Height="26" VerticalAlignment="Center">

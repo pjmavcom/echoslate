@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using TODOList.UserControls;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -43,7 +44,11 @@ namespace TODOList {
 
 		const string SETTINGS_FILENAME = "Echoslate.settings";
 
-		private bool _skipUpdate;
+		public static MainWindow GetActiveWindow() {
+			return (MainWindow)Application.Current.MainWindow;
+		}
+
+		public bool _skipUpdate;
 
 		private readonly List<TabItem> _incompleteItemsTabsList;
 
@@ -72,7 +77,7 @@ namespace TODOList {
 		private int _previousTodoTabSelectedIndex;
 		private int _previousKanbanTabSelectedIndex;
 
-		private string _errorMessage = string.Empty;
+		public string _errorMessage = string.Empty;
 
 		// Sorting
 		private bool _reverseSort;
@@ -133,6 +138,7 @@ namespace TODOList {
 		private int _pomoTimeLeft;
 
 		// CONTROLS
+		private IncompleteItemsNotesPanel _incompleteItemsNotesPanel;
 		private ComboBox _cbIncompleteItemsHashTags;
 		private ComboBox _cbKanbanHashTags;
 		private ListBox _lbIncompleteItems;
@@ -180,7 +186,7 @@ namespace TODOList {
 		}
 
 		private bool _isUpdatingCheckBoxes;
-		private string _testIfChanged;
+		public string _testIfChanged;
 
 		private ObservableCollection<string> RecentFiles { get; set; }
 		private List<TodoItemHolder> IncompleteItems =>
@@ -298,7 +304,7 @@ namespace TODOList {
 			double notesPanelWidth = _windowWidth - mainGridWidth;
 			incompleteItemsMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
 			kanbanMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
-			incompleteItemsNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			// _incompleteItemsNotesPanel.incompleteItemsNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			kanbanNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 
 			double todoTabsHeight = _windowHeight - NEW_TODO_PANEL_HEIGHT - TOP_OF_PANEL_STUFF_HEIGHT;
@@ -307,8 +313,6 @@ namespace TODOList {
 			incompleteItemsNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
 			kanbanNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
 
-			_lbIncompleteItems = this.FindName("lbIncompleteItems") as ListBox;
-			
 			if (_lbIncompleteItems != null)
 				_lbIncompleteItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
 			if (_lbKanbanItems != null)
@@ -333,24 +337,24 @@ namespace TODOList {
 			double notesPanelProblemHeight = Math.Floor(notesPanelTextBoxDivision * 2);
 			double notesPanelSolutionHeight =
 				notesPanelTextBoxSpaceTotal - notesPanelNotesHeight - notesPanelProblemHeight;
-			tbIncompleteItemsTitle.Height = notesPanelTitleHeight > 0 ? notesPanelTitleHeight : 1;
-			tbIncompleteItemsTitle.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsTitle.Height = notesPanelTitleHeight > 0 ? notesPanelTitleHeight : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsTitle.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			tbKanbanTitle.Height = notesPanelTitleHeight > 0 ? notesPanelTitleHeight : 1;
 			tbKanbanTitle.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
-			tbIncompleteItemsNotes.Height = notesPanelNotesHeight > 0 ? notesPanelNotesHeight : 1;
-			tbIncompleteItemsNotes.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsNotes.Height = notesPanelNotesHeight > 0 ? notesPanelNotesHeight : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsNotes.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			tbKanbanNotes.Height = notesPanelNotesHeight > 0 ? notesPanelNotesHeight : 1;
 			tbKanbanNotes.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
-			tbIncompleteItemsProblem.Height = notesPanelProblemHeight > 0 ? notesPanelProblemHeight : 1;
-			tbIncompleteItemsProblem.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsProblem.Height = notesPanelProblemHeight > 0 ? notesPanelProblemHeight : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsProblem.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			tbKanbanProblem.Height = notesPanelProblemHeight > 0 ? notesPanelProblemHeight : 1;
 			tbKanbanProblem.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
-			tbIncompleteItemsSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
-			tbIncompleteItemsSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			tbKanbanSolution.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			tbKanbanSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
 			lbKanbanHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
-			lbIncompleteItemsHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			// _incompleteItemsNotesPanel.lbIncompleteItemsHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			Log.Print("Window resized successfully.");
 		}
 		protected override void OnSourceInitialized(EventArgs e) {
@@ -429,8 +433,10 @@ namespace TODOList {
 			return result;
 		}
 		private void OnLoaded(object sender, EventArgs e) {
+			_incompleteItemsNotesPanel = ucIncompleteItemsNotesPanel;
 			SelectActiveTabItems();
 			DelayedStartupLoad();
+			
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Tabs //
@@ -441,10 +447,10 @@ namespace TODOList {
 
 			switch (_previousMainTabSelectedIndex) {
 				case 1: //"TODOs":
-					UpdateNotes(_lbIncompleteItems, tbIncompleteItemsNotes);
-					UpdateTitle(_lbIncompleteItems, tbIncompleteItemsTitle);
-					UpdateProblem(_lbIncompleteItems, tbIncompleteItemsProblem);
-					UpdateSolution(_lbIncompleteItems, tbIncompleteItemsSolution);
+					UpdateNotes(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsNotes);
+					UpdateTitle(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsTitle);
+					UpdateProblem(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsProblem);
+					UpdateSolution(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsSolution);
 					break;
 				case 2: //"Kanban":
 					UpdateNotes(_lbKanbanItems, tbKanbanNotes);
@@ -478,7 +484,7 @@ namespace TODOList {
 					_currentItems = _incompleteItems;
 					_tbNewTodo = tbIncompleteItemsNewTodo;
 					_cbSeverity = cbIncompleteItemsSeverity;
-					_lbNotesPanelHashTags = lbIncompleteItemsHashTags;
+					_lbNotesPanelHashTags = _incompleteItemsNotesPanel.lbIncompleteItemsHashTags;
 					break;
 				case 2:
 					// Kanban Tab
@@ -495,7 +501,7 @@ namespace TODOList {
 					break;
 			}
 		}
-		private List<TodoItemHolder> GetActiveItemList() {
+		public List<TodoItemHolder> GetActiveItemList() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
 					return IncompleteItems;
@@ -508,7 +514,7 @@ namespace TODOList {
 					return null;
 			}
 		}
-		private ListBox GetActiveListBox() {
+		public ListBox GetActiveListBox() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
 					if (_lbIncompleteItems == null)
@@ -526,10 +532,10 @@ namespace TODOList {
 					return null;
 			}
 		}
-		private TextBox GetActiveTextBoxTitle() {
+		public TextBox GetActiveTextBoxTitle() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					return tbIncompleteItemsTitle;
+					return _incompleteItemsNotesPanel.tbIncompleteItemsTitle;
 				case 2:
 					return tbKanbanTitle;
 				default:
@@ -543,7 +549,7 @@ namespace TODOList {
 		private TextBox GetActiveTextBoxNotes() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					return tbIncompleteItemsNotes;
+					return _incompleteItemsNotesPanel.tbIncompleteItemsNotes;
 				case 2:
 					return tbKanbanNotes;
 				default:
@@ -557,7 +563,7 @@ namespace TODOList {
 		private TextBox GetActiveTextBoxProblem() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					return tbIncompleteItemsProblem;
+					return _incompleteItemsNotesPanel.tbIncompleteItemsProblem;
 				case 2:
 					return tbKanbanProblem;
 				default:
@@ -571,7 +577,7 @@ namespace TODOList {
 		private TextBox GetActiveTextBoxSolution() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					return tbIncompleteItemsSolution;
+					return _incompleteItemsNotesPanel.tbIncompleteItemsSolution;
 				case 2:
 					return tbKanbanSolution;
 				default:
@@ -856,10 +862,10 @@ namespace TODOList {
 
 			_currentTodoItemInNotesPanelIndex = _lbIncompleteItems.SelectedIndex;
 			_currentTodoItemInNotesPanel = list[_currentTodoItemInNotesPanelIndex];
-			tbIncompleteItemsNotes.Text = _currentTodoItemInNotesPanel.Notes.Replace("/n", Environment.NewLine);
-			tbIncompleteItemsTitle.Text = _currentTodoItemInNotesPanel.Todo;
-			tbIncompleteItemsProblem.Text = _currentTodoItemInNotesPanel.Problem;
-			tbIncompleteItemsSolution.Text = _currentTodoItemInNotesPanel.Solution;
+			_incompleteItemsNotesPanel.tbIncompleteItemsNotes.Text = _currentTodoItemInNotesPanel.Notes.Replace("/n", Environment.NewLine);
+			_incompleteItemsNotesPanel.tbIncompleteItemsTitle.Text = _currentTodoItemInNotesPanel.Todo;
+			_incompleteItemsNotesPanel.tbIncompleteItemsProblem.Text = _currentTodoItemInNotesPanel.Problem;
+			_incompleteItemsNotesPanel.tbIncompleteItemsSolution.Text = _currentTodoItemInNotesPanel.Solution;
 			NotesPanelLoadHashTags();
 		}
 		private void IncompleteItemsHashTags_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -897,7 +903,7 @@ namespace TODOList {
 					_incompleteItems[1].Add(itemHolder);
 			}
 		}
-		private void IncompleteItemsRefresh() {
+		public void IncompleteItemsRefresh() {
 			if (_skipUpdate) {
 				_skipUpdate = false;
 				return;
@@ -1098,7 +1104,7 @@ namespace TODOList {
 				_kanbanItems[kanbanIndex].Add(new TodoItemHolder(todoItem));
 			}
 		}
-		private void KanbanRefresh() {
+		public void KanbanRefresh() {
 			if (tabControl.SelectedIndex != 2)
 				return;
 			if (_skipUpdate) {
@@ -2932,27 +2938,27 @@ namespace TODOList {
 		}
 
 		// Notes Panel stuff
-		private void TodoTitle_OnGotFocus(object sender, RoutedEventArgs e) {
+		public void TodoTitle_OnGotFocus(object sender, RoutedEventArgs e) {
 			TextBox textBox = GetActiveTextBoxTitle();
 			textBox.Select(textBox.Text.Length, 0);
 			_testIfChanged = textBox.Text;
 		}
-		private void Notes_OnGotFocus(object sender, RoutedEventArgs e) {
+		public void Notes_OnGotFocus(object sender, RoutedEventArgs e) {
 			TextBox textBox = GetActiveTextBoxNotes();
 			textBox.Select(textBox.Text.Length, 0);
 			_testIfChanged = textBox.Text;
 		}
-		private void Problem_OnGotFocus(object sender, RoutedEventArgs e) {
+		public void Problem_OnGotFocus(object sender, RoutedEventArgs e) {
 			TextBox textBox = GetActiveTextBoxProblem();
 			textBox.Select(textBox.Text.Length, 0);
 			_testIfChanged = textBox.Text;
 		}
-		private void Solution_OnGotFocus(object sender, RoutedEventArgs e) {
+		public void Solution_OnGotFocus(object sender, RoutedEventArgs e) {
 			TextBox textBox = GetActiveTextBoxSolution();
 			textBox.Select(textBox.Text.Length, 0);
 			_testIfChanged = textBox.Text;
 		}
-		private void TodoTitle_OnLostFocus(object sender, RoutedEventArgs e) {
+		public void TodoTitle_OnLostFocus(object sender, RoutedEventArgs e) {
 			List<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxTitle();
@@ -2977,7 +2983,7 @@ namespace TODOList {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private void Notes_OnLostFocus(object sender, RoutedEventArgs e) {
+		public void Notes_OnLostFocus(object sender, RoutedEventArgs e) {
 			List<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxNotes();
@@ -3002,7 +3008,7 @@ namespace TODOList {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private void Problem_OnLostFocus(object sender, RoutedEventArgs e) {
+		public void Problem_OnLostFocus(object sender, RoutedEventArgs e) {
 			List<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxProblem();
@@ -3027,7 +3033,7 @@ namespace TODOList {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private void Solution_OnLostFocus(object sender, RoutedEventArgs e) {
+		public void Solution_OnLostFocus(object sender, RoutedEventArgs e) {
 			List<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxSolution();
@@ -3053,21 +3059,21 @@ namespace TODOList {
 			KanbanRefresh();
 		}
 		private void NotesPanelUpdate() {
-			UpdateNotes(_lbIncompleteItems, tbIncompleteItemsNotes);
-			UpdateTitle(_lbIncompleteItems, tbIncompleteItemsTitle);
-			UpdateProblem(_lbIncompleteItems, tbIncompleteItemsProblem);
-			UpdateSolution(_lbIncompleteItems, tbIncompleteItemsSolution);
+			UpdateNotes(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsNotes);
+			UpdateTitle(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsTitle);
+			UpdateProblem(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsProblem);
+			UpdateSolution(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsSolution);
 			NotesPanelLoadHashTags();
 		}
 		private void UpdateNotes(ListBox listBox, TextBox textBox) {
 			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
 				_currentTodoItemInNotesPanel.Notes = textBox.Text;
 		}
-		private void UpdateTitle(ListBox listBox, TextBox textBox) {
+		public void UpdateTitle(ListBox listBox, TextBox textBox) {
 			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
 				_currentTodoItemInNotesPanel.Todo = textBox.Text;
 		}
-		private void UpdateProblem(ListBox listBox, TextBox textBox) {
+		public void UpdateProblem(ListBox listBox, TextBox textBox) {
 			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
 				_currentTodoItemInNotesPanel.Problem = textBox.Text;
 		}
@@ -3087,7 +3093,7 @@ namespace TODOList {
 			_lbNotesPanelHashTags.ItemsSource = _notesPanelHashTags;
 			_lbNotesPanelHashTags.Items.Refresh();
 		}
-		private void TodoComplete_OnClick(object sender, EventArgs e) {
+		public void TodoComplete_OnClick(object sender, EventArgs e) {
 			TodoComplete();
 		}
 		private void TodoComplete() {
@@ -3130,7 +3136,7 @@ namespace TODOList {
 			KanbanRefresh();
 			IncompleteItemsRefresh();
 		}
-		private void AddTag_OnClick(object sender, EventArgs e) {
+		public void AddTag_OnClick(object sender, EventArgs e) {
 			if (_currentTodoItemInNotesPanel == null)
 				return;
 
