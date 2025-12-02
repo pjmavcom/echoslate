@@ -1,3 +1,17 @@
+commit e8501685af4080ff1513e4eb5ed1d7ab1cebce5e
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Oct 3 13:36:36 2025 +0800
+
+    20251002- v3.40.20.1 -Allowing zero version number
+    
+    20251002- v3.40.20.1 -Allowing zero version number
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Just a quickie new feature allowing a version to be zero
+    
+    =Features Added===================================================================================================
+    --20251003-0m |Allow the first version number to be zero
+
 commit 15f892d01620dbf8903576794b976b7ea4b042c3
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu Oct 2 21:48:44 2025 +0800

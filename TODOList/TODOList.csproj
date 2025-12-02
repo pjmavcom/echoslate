@@ -91,6 +91,7 @@
 		  <DependentUpon>DlgYesNo.xaml</DependentUpon>
 		</Compile>
 		<Compile Include="HistoryItem.cs" />
+		<Compile Include="Log.cs" />
 		<Compile Include="ProgressBarForegroundConverter.cs" />
 		<Compile Include="DlgEditTabs.xaml.cs">
 		  <DependentUpon>DlgEditTabs.xaml</DependentUpon>

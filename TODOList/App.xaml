@@ -1738,6 +1738,8 @@
             
             <!-- Listbox stuff-->
             <Style TargetType="{x:Type ListBox}">
+                <!-- DELETE THIS LATER -->
+                <!-- <Setter Property="Background" Value="#33FF0000" /> -->
                 <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush2}"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource BaseBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="{DynamicResource DefaultBorderThickness}"/>
@@ -1773,6 +1775,8 @@
             </Style>
             
             <Style TargetType="ListBoxItem">
+                <!-- DELETE THIS LATER -->
+                <!-- <Setter Property="Background" Value="#3300FF00" />   -->
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="Padding" Value="5,2" />
                 <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -1841,4 +1845,5 @@
 
         </ResourceDictionary>
 	</Application.Resources>
+    
 </Application>

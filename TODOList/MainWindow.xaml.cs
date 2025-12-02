@@ -41,6 +41,7 @@ namespace TODOList {
 		private const int NEW_TODO_PANEL_HEIGHT = 100;
 		private const int TOP_OF_PANEL_STUFF_HEIGHT = 110;
 
+		const string SETTINGS_FILENAME = "Echoslate.settings";
 
 		private bool _skipUpdate;
 
@@ -92,6 +93,7 @@ namespace TODOList {
 		private bool _didMouseSelect;
 
 		// FILE IO
+		// TODO Change this path to where the EXE is.
 		private const string BASE_PATH = @"C:\MyBinaries\";
 		private string _currentOpenFile;
 		private bool _isChanged;
@@ -191,7 +193,7 @@ namespace TODOList {
 									   ? _incompleteItemsTabsList[0].Name
 									   : _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
 
-		private string WindowTitle => "EtherealListVCSNotes v" + PROGRAM_VERSION + " " + _currentOpenFile;
+		private string WindowTitle => "Echoslate v" + PROGRAM_VERSION + " " + _currentOpenFile;
 		private List<HistoryItem> HistoryItems { get; }
 
 		public int PomoWorkTime {
@@ -218,14 +220,24 @@ namespace TODOList {
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public MainWindow() {
+			Log.Initialize();
+
+			// Keep the app on screen. For changing from a multi monitor to a single monitor situation
 			_left = 0;
 			InitializeComponent();
 			Closing += Window_Closed;
-			this.SizeChanged += Window_OnWindowSizeChanged;
-
+			SizeChanged += Window_OnWindowSizeChanged;
 			DataContext = this;
+			Log.Print("Window Initialized");
+
 #if DEBUG
-            mnuMain.Background = Brushes.Red;
+			this.PreviewKeyDown += (s, e) => {
+				if (e.Key == Key.Escape) {
+					Log.Print("ESC pressed closing app (debug shortcut)");
+					Application.Current.Shutdown();
+				}
+			};
+			mnuMain.Background = Brushes.Red;
 #endif
 
 			LoadSettings();
@@ -234,6 +246,7 @@ namespace TODOList {
 			Left = _left;
 			Height = _height;
 			Width = _width;
+
 			_backupTime = new TimeSpan(0, 5, 0);
 			_backupIncrement = 0;
 
@@ -278,6 +291,7 @@ namespace TODOList {
 		private void Window_OnWindowSizeChanged(object sender, SizeChangedEventArgs e) {
 			_windowWidth = e.NewSize.Width;
 			_windowHeight = e.NewSize.Height;
+			Log.Print($"Window size changed to {_windowWidth}x{_windowHeight}");
 
 			int mainPanelDivisions = MAIN_LIST_BOX_PANEL_WIDTH + NOTES_PANEL_WIDTH;
 			double mainGridWidth = Math.Floor(_windowWidth / mainPanelDivisions * MAIN_LIST_BOX_PANEL_WIDTH);
@@ -292,6 +306,9 @@ namespace TODOList {
 			kanbanTodoTabs.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
 			incompleteItemsNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
 			kanbanNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
+
+			_lbIncompleteItems = this.FindName("lbIncompleteItems") as ListBox;
+			
 			if (_lbIncompleteItems != null)
 				_lbIncompleteItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
 			if (_lbKanbanItems != null)
@@ -334,6 +351,7 @@ namespace TODOList {
 			tbKanbanSolution.Height = notesPanelSolutionHeight > 0 ? notesPanelSolutionHeight : 1;
 			lbKanbanHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			lbIncompleteItemsHashTags.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
+			Log.Print("Window resized successfully.");
 		}
 		protected override void OnSourceInitialized(EventArgs e) {
 			base.OnSourceInitialized(e);
@@ -342,13 +360,6 @@ namespace TODOList {
 			_source = HwndSource.FromHwnd(_handle);
 			_source?.AddHook(HwndHook);
 
-#if DEBUG
-            _autoSave = false;
-            _autoBackup = false;
-#else
-			_autoSave = true;
-			_autoBackup = true;
-#endif
 
 			GlobalHotkeysToggle();
 		}
@@ -376,14 +387,25 @@ namespace TODOList {
 		}
 		private void Window_Closed(object sender, CancelEventArgs e) {
 			UnregisterHotKey(_handle, HOTKEY_ID);
+
+			Log.Print("Saving settings...");
 			SaveSettings();
-			if (!_isChanged)
+			Log.Print("Settings saved.");
+
+			if (!_isChanged) {
+				Log.Print("Shutting down...");
+				Log.Shutdown();
 				return;
+			}
 
 			DlgYesNo dlg = new DlgYesNo("Close", "Maybe save first?");
 			dlg.ShowDialog();
-			if (dlg.Result)
+			if (dlg.Result) {
 				Save(_currentOpenFile);
+			}
+
+			Log.Print("Shutting down...");
+			Log.Shutdown();
 		}
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
@@ -729,36 +751,28 @@ namespace TODOList {
 			SelectActiveTabItems();
 		}
 		private void IncompleteItemsInitialize() {
-			Application.Current.Dispatcher.Invoke(
-												  async () => {
-													  if (!(incompleteItemsTodoTabs.Template
-																   .FindName("PART_SelectedContentHost",
-																			 incompleteItemsTodoTabs) is
-																ContentPresenter
-																incompleteItemsContentPresenter))
-														  return;
+			Application.Current.Dispatcher.Invoke(async () => {
+				if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter incompleteItemsContentPresenter)) {
+					return;
+				}
 
-													  incompleteItemsContentPresenter.ApplyTemplate();
-													  if (incompleteItemsContentPresenter.ContentTemplate == null)
-														  return;
-													  _lbIncompleteItems =
-														  incompleteItemsContentPresenter.ContentTemplate
-															 .FindName("lbIncompleteItems",
-																	   incompleteItemsContentPresenter) as ListBox;
-													  if (_lbIncompleteItems == null)
-														  return;
+				incompleteItemsContentPresenter.ApplyTemplate();
+				if (incompleteItemsContentPresenter.ContentTemplate == null) {
+					return;
+				}
+				_lbIncompleteItems = incompleteItemsContentPresenter.ContentTemplate.FindName("lbIncompleteItems", incompleteItemsContentPresenter) as ListBox;
+				if (_lbIncompleteItems == null) {
+					return;
+				}
 
-													  IncompleteItemsSortToTabs();
-													  _lbIncompleteItems.ItemsSource = IncompleteItems;
-													  _lbIncompleteItems.Items.Refresh();
-													  _lbIncompleteItems.SelectionChanged +=
-														  IncompleteItems_OnSelectionChanged;
-													  _lbIncompleteItems.UnselectAll();
-													  double height =
-														  _windowHeight - NEW_TODO_PANEL_HEIGHT -
-														  TOP_OF_PANEL_STUFF_HEIGHT;
-													  _lbIncompleteItems.Height = height > 0 ? height : 1;
-												  }, DispatcherPriority.ApplicationIdle);
+				IncompleteItemsSortToTabs();
+				_lbIncompleteItems.ItemsSource = IncompleteItems;
+				_lbIncompleteItems.Items.Refresh();
+				_lbIncompleteItems.SelectionChanged += IncompleteItems_OnSelectionChanged;
+				_lbIncompleteItems.UnselectAll();
+				double height = _windowHeight - NEW_TODO_PANEL_HEIGHT - TOP_OF_PANEL_STUFF_HEIGHT;
+				_lbIncompleteItems.Height = height > 0 ? height : 1;
+			}, DispatcherPriority.ApplicationIdle);
 		}
 		private void IncompleteItemsUpdateHandler() {
 			if (_lbIncompleteItems == null)
@@ -967,7 +981,7 @@ namespace TODOList {
 			Application.Current.Dispatcher.Invoke(
 												  async () => {
 													  if (!(kanbanTodoTabs.Template.FindName("PART_SelectedContentHost",
-																	kanbanTodoTabs) is ContentPresenter
+																							 kanbanTodoTabs) is ContentPresenter
 																kanbanContentPresenter))
 														  return;
 													  kanbanContentPresenter.ApplyTemplate();
@@ -1270,6 +1284,11 @@ namespace TODOList {
 			int index = _lbIncompleteItems.SelectedIndex;
 			IncompleteItems[index].TD.IsTimerOn = !IncompleteItems[index].TD.IsTimerOn;
 			_lbIncompleteItems.Items.Refresh();
+		}
+		private void HKEscape(object sender, ExecutedRoutedEventArgs e) {
+#if DEBUG
+			Close();
+#endif
 		}
 		private void QuickComplete() {
 			TodoItem newTodo = new TodoItem {
@@ -2501,6 +2520,13 @@ namespace TODOList {
 						break;
 				}
 			}
+#if DEBUG
+			_autoSave = false;
+			_autoBackup = false;
+#else
+			_autoSave = true;
+			_autoBackup = true;
+#endif
 		}
 		private void AutoSave() {
 			_isChanged = true;
@@ -2536,6 +2562,7 @@ namespace TODOList {
 			return true;
 		}
 		private void SaveAs() {
+			Log.Print("Saving file as...");
 			SaveFileDialog sfd = new SaveFileDialog {
 														Title = @"Select folder to save file in.",
 														FileName = GetFileName(),
@@ -2544,43 +2571,34 @@ namespace TODOList {
 													};
 
 			DialogResult dr = sfd.ShowDialog();
-
-			if (dr != System.Windows.Forms.DialogResult.OK)
+			if (dr != System.Windows.Forms.DialogResult.OK) {
+				Log.Warn("File not saved. Continuing...");
 				return;
+			}
 
-			Save(sfd.FileName);
+			SaveFile(sfd.FileName);
 		}
 		private void Save(string path) {
+			Log.Print($"Saving file {path}");
 			if (!File.Exists(path)) {
-				new DlgErrorMessage("File not found, choose a new location.").ShowDialog();
-				SaveFileDialog sfd = new SaveFileDialog {
-															Title = @"Select folder to save file in.",
-															FileName = GetFileName(),
-															InitialDirectory = GetFilePath(),
-															Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
-														};
-				DialogResult dr = sfd.ShowDialog();
-				path = sfd.FileName;
+				Log.Warn($"Can not find file: {path}");
+				SaveAs();
+				return;
 			}
-			SortRecentFiles(path);
-			SaveSettings();
 			SaveFile(path);
-
-			_currentOpenFile = path;
-			Title = WindowTitle;
-			_currentOpenFile = path;
-			_isChanged = false;
 		}
 		private void SaveFile(string path) {
-			// if (!File.Exists(path)) {
-			// new DlgErrorMessage("File not found").ShowDialog();
-			// return;
-			// }
+			SortRecentFiles(path);
+			SaveSettings();
+
+			Log.Print("Opening stream...");
 			StreamWriter stream = new StreamWriter(File.Open(path, FileMode.Create));
+			Log.Print("Writing TABS...");
 			stream.WriteLine("====================================TABS");
 			foreach (TabItem ti in _incompleteItemsTabsList)
 				stream.WriteLine(ti.Name);
 
+			Log.Print("Writing FILESETTINGS...");
 			stream.WriteLine("====================================FILESETTINGS");
 			stream.WriteLine("BackupIncrement");
 			stream.WriteLine(_backupIncrement);
@@ -2598,17 +2616,26 @@ namespace TODOList {
 				versionCheckBoxChecked = 2;
 			else if (cbVersionD.IsChecked == true)
 				versionCheckBoxChecked = 3;
-
 			stream.WriteLine(MakeCurrentVersion() + "." + versionCheckBoxChecked);
+
+			Log.Print("Writing TODOs...");
 			stream.WriteLine("====================================TODO");
 			foreach (TodoItem td in _masterList)
 				stream.WriteLine(td.ToString());
 
+			Log.Print("Writing VCS Items...");
 			stream.WriteLine("====================================VCS");
 			foreach (HistoryItem hi in HistoryItems)
 				stream.Write(hi.ToString());
 
 			stream.Close();
+			Log.Print("Saving complete.");
+
+			_currentOpenFile = path;
+			Title = WindowTitle;
+			// Why is this here twice? Needs to be above so Title will be correct after changing a file name, but after?
+			// _currentOpenFile = path;
+			_isChanged = false;
 		}
 		private void BackupSave() {
 			if (!_autoBackup || !_doBackup)
@@ -2642,75 +2669,122 @@ namespace TODOList {
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Settings //
 		private void LoadSettings() {
+			// TODO Check recent files for non existing files
 			RecentFiles = new ObservableCollection<string>();
 
-			const string filePath = BASE_PATH + "TDHistory.settings";
-			if (!File.Exists(filePath))
+			const string filePath = BASE_PATH + SETTINGS_FILENAME;
+			if (!File.Exists(filePath)) {
+				Log.Print("Settings file does not exist. Creating new settings file.");
 				SaveSettings();
-
-			DlgYesNo dlg;
-
+			}
 			StreamReader stream = new StreamReader(File.Open(filePath, FileMode.Open));
+
+			Log.Print($"Loading settings file: {filePath}");
+			if (LoadV2_1Settings(stream)) {
+				Log.Print("v2.1 settings loaded.");
+			} else {
+				stream.Close();
+				FixCorruptedSettingsFile();
+			}
+			stream.Close();
+		}
+		private void FixCorruptedSettingsFile() {
+			Log.Print("Previous settings file corrupted. Create a new settings?");
+			DlgYesNo dlgYesNo = new DlgYesNo("Corrupted or missing file",
+											 "Error with the settings file, create a new one?");
+			dlgYesNo.ShowDialog();
+			if (dlgYesNo.Result) {
+				SaveSettings();
+				Log.Print("YES- Created new settings file.");
+				DlgYesNo dlg;
+				dlg = new DlgYesNo("New settings file created");
+				dlg.ShowDialog();
+			} else {
+				Log.Print("NO- Not creating new settings file.");
+			}
+		}
+		private bool LoadV2_1Settings(StreamReader stream) {
 			string line = stream.ReadLine();
 			if (line != "RECENTFILES") {
 				Top = 0;
 				Left = 0;
 				Height = 1080;
 				Width = 1920;
-				RecentFiles = new ObservableCollection<string>();
+				return false;
+			}
 
-				DlgYesNo dlgYesNo = new DlgYesNo("Corrupted or missing file",
-												 "Error with the settings file, create a new one?");
-				dlgYesNo.ShowDialog();
-				if (dlgYesNo.Result) {
-					SaveSettings();
-					dlg = new DlgYesNo("New settings file created");
-					dlg.ShowDialog();
+			Log.Print("Reading RECENTFILES...");
+			while (line != null) {
+				line = stream.ReadLine();
+				if (line == "RECENTFILES" || line == "") {
+					continue;
+				}
+				if (line == "WINDOWPOSITION") {
+					break;
+				}
+
+				if (File.Exists(line)) {
+					RecentFiles.Add(line);
+					Log.Print($"Added {line} to RecentFiles");
+				} else {
+					Log.Warn($"File does not exist: {line}");
 				}
 			}
 
-			LoadV2_1Settings(stream, line);
-			stream.Close();
-
-			if (RecentFiles.Count != 0)
-				return;
-
-			dlg = new DlgYesNo("New file created");
-			dlg.ShowDialog();
-		}
-		private void LoadV2_1Settings(TextReader stream, string line) {
-			while (line != null) {
-				line = stream.ReadLine();
-				if (line == "RECENTFILES" || line == "")
-					continue;
-
-				if (line == "WINDOWPOSITION")
-					break;
-
-				RecentFiles.Add(line);
+			if (line == "WINDOWPOSITION") {
+				Log.Print("Reading WINDOWPOSITION...");
+				_top = Convert.ToDouble(stream.ReadLine());
+				_left = Convert.ToDouble(stream.ReadLine());
+				_height = Convert.ToDouble(stream.ReadLine());
+				_width = Convert.ToDouble(stream.ReadLine());
+				Log.Print($"Set window position: ({_top}, {_left}) and size: ({_height}, {_width})");
+			} else {
+				Log.Error("WINDOWPOSITION could not be found.");
+				return false;
 			}
 
-			_top = Convert.ToDouble(stream.ReadLine());
-			_left = Convert.ToDouble(stream.ReadLine());
-			_height = Convert.ToDouble(stream.ReadLine());
-			_width = Convert.ToDouble(stream.ReadLine());
-			stream.ReadLine();
-			_pomoWorkTime = Convert.ToInt16(stream.ReadLine());
-			_pomoBreakTime = Convert.ToInt16(stream.ReadLine());
-			stream.ReadLine();
-			_globalHotkeys = Convert.ToBoolean(stream.ReadLine());
-			stream.ReadLine();
-			_previousSessionLastActiveTab = Convert.ToInt16(stream.ReadLine());
+			line = stream.ReadLine();
+			if (line == "POMOTIMERSETTINGS") {
+				Log.Print("Reading POMOTIMERSETTINGS...");
+				_pomoWorkTime = Convert.ToInt16(stream.ReadLine());
+				_pomoBreakTime = Convert.ToInt16(stream.ReadLine());
+				Log.Print($"Pomodoro timer set to {_pomoWorkTime} / {_pomoBreakTime}");
+			} else {
+				Log.Error("POMOTIMERSETTINGS could not be found.");
+				return false;
+			}
+
+			line = stream.ReadLine();
+			if (line == "GLOBALHOTKEYS") {
+				Log.Print("Reading GLOBALHOTKEYS...");
+				_globalHotkeys = Convert.ToBoolean(stream.ReadLine());
+				Log.Print($"Global hotkeys set to: {_globalHotkeys}");
+			} else {
+				Log.Error("GLOBALHOTKEYS could not be found.");
+				return false;
+			}
+
+			line = stream.ReadLine();
+			if (line == "PREVIOUSSESSIONLASTACTIVETAB") {
+				Log.Print("Reading PREVIOUSSESSIONLASTACTIVETAB...");
+				_previousSessionLastActiveTab = Convert.ToInt16(stream.ReadLine());
+				Log.Print($"Previous tab set to {_previousSessionLastActiveTab}");
+			} else {
+				Log.Error("PREVIOUSSESSIONLASTACTIVETAB could not be found.");
+				return false;
+			}
+
+			return true;
 		}
 		private void SaveSettings() {
-			const string filePath = BASE_PATH + "TDHistory.settings";
+			const string filePath = BASE_PATH + SETTINGS_FILENAME;
 			StreamWriter stream = new StreamWriter(File.Open(filePath, FileMode.Create));
 
 			stream.WriteLine("RECENTFILES");
 			foreach (string s in RecentFiles) {
-				if (s == "")
+				if (s == "") {
 					continue;
-
+				}
 				stream.WriteLine(s);
 			}
 
@@ -2724,18 +2798,22 @@ namespace TODOList {
 			stream.WriteLine(_pomoBreakTime);
 			stream.WriteLine("GLOBALHOTKEYS");
 			stream.WriteLine(_globalHotkeys);
-			stream.WriteLine("PreviousSessionLastActiveTab");
+			stream.WriteLine("PREVIOUSSESSIONLASTACTIVETAB");
 			stream.WriteLine(tabControl.SelectedIndex);
 
 			stream.Close();
 		}
 		private void SortRecentFiles(string recent) {
-			if (RecentFiles.Contains(recent))
+			Log.Print($"Sorting {recent} to top of list.");
+			if (RecentFiles.Contains(recent)) {
 				RecentFiles.Remove(recent);
+			}
 			RecentFiles.Insert(0, recent);
 
-			while (RecentFiles.Count >= 10)
+			while (RecentFiles.Count >= 10) {
+				Log.Print($"Removing excess file: {RecentFiles[RecentFiles.Count - 1]}");
 				RecentFiles.RemoveAt(RecentFiles.Count - 1);
+			}
 		}
 
 		// Version stuff
