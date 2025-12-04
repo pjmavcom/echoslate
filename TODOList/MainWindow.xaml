@@ -2,19 +2,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:TODOList"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:userControls="clr-namespace:TODOList.UserControls"
-        mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="1080" Width="1920"
+        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        Title="{Binding WindowTitle}"
+        Width="1920"
+        Height="1080"
         FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}"
+        Loaded="OnLoaded"
         Style="{StaticResource {x:Type Window}}"
-        Loaded="OnLoaded">
+        mc:Ignorable="d">
 
     <Window.Resources>
-        <!-- Shows the real bounds of EVERY container in bright colours -->
-        <!-- <Style TargetType="Panel">                     -->
+        <!--  Shows the real bounds of EVERY container in bright colours  -->
+        <!-- <Style TargetType="Panel">                         f-->
         <!-- <Setter Property="Background" Value="#20FF0000" />   -->
         <!-- <Setter Property="Margin" Value="3" /> -->
         <!-- </Style> -->
@@ -30,7 +32,7 @@
         <!-- <Setter Property="ShowGridLines" Value="True" />    -->
         <!-- </Style> -->
 
-        <!-- Don’t colour the ListBox itself or its items – we want to see the items -->
+        <!--  Don’t colour the ListBox itself or its items – we want to see the items  -->
         <!-- <Style TargetType="ListBox"> -->
         <!-- <Setter Property="Background" Value="Transparent" /> -->
         <!-- </Style> -->
@@ -49,9 +51,13 @@
         <RoutedUICommand x:Key="StartStopTimer" Text="And Yet Another Another Text" />
 
         <DataTemplate x:Key="NotesPanelHashTagsListBox">
-            <StackPanel Orientation="Horizontal" Height="30">
-                <Button Content="X" Click="DeleteTag_OnClick" Width="35" />
-                <TextBox Text="{Binding Text}" Width="250" LostFocus="NewTag_LostFocus" />
+            <StackPanel Height="30" Orientation="Horizontal">
+                <Button Width="35"
+                        Click="DeleteTag_OnClick"
+                        Content="X" />
+                <TextBox Width="250"
+                         LostFocus="NewTag_LostFocus"
+                         Text="{Binding Text}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -68,42 +74,68 @@
     </Window.CommandBindings>
 
     <Window.InputBindings>
-        <KeyBinding Key="Enter" Modifiers="Alt" Command="{StaticResource Add}" />
-        <KeyBinding Key="Enter" Modifiers="Control" Command="{StaticResource Complete}" />
+        <KeyBinding Key="Enter"
+                    Command="{StaticResource Add}"
+                    Modifiers="Alt" />
+        <KeyBinding Key="Enter"
+                    Command="{StaticResource Complete}"
+                    Modifiers="Control" />
         <KeyBinding Key="Enter" Command="{StaticResource Edit}" />
-        <KeyBinding Key="Divide" Command="{StaticResource SwitchTab}" CommandParameter="left" />
-        <KeyBinding Key="Multiply" Command="{StaticResource SwitchTab}" CommandParameter="right" />
-        <KeyBinding Key="Subtract" Command="{StaticResource SwitchSeverity}" CommandParameter="up" />
-        <KeyBinding Key="Add" Command="{StaticResource SwitchSeverity}" CommandParameter="down" />
-        <KeyBinding Key="S" Modifiers="Control" Command="{StaticResource QuickSave}" />
-        <KeyBinding Key="OemComma" Modifiers="Control" Command="{StaticResource QuickLoadPrevious}" />
-        <KeyBinding Key="P" Modifiers="Control" Command="{StaticResource StartStopTimer}" />
+        <KeyBinding Key="Divide"
+                    Command="{StaticResource SwitchTab}"
+                    CommandParameter="left" />
+        <KeyBinding Key="Multiply"
+                    Command="{StaticResource SwitchTab}"
+                    CommandParameter="right" />
+        <KeyBinding Key="Subtract"
+                    Command="{StaticResource SwitchSeverity}"
+                    CommandParameter="up" />
+        <KeyBinding Key="Add"
+                    Command="{StaticResource SwitchSeverity}"
+                    CommandParameter="down" />
+        <KeyBinding Key="S"
+                    Command="{StaticResource QuickSave}"
+                    Modifiers="Control" />
+        <KeyBinding Key="OemComma"
+                    Command="{StaticResource QuickLoadPrevious}"
+                    Modifiers="Control" />
+        <KeyBinding Key="P"
+                    Command="{StaticResource StartStopTimer}"
+                    Modifiers="Control" />
     </Window.InputBindings>
 
 
-    <DockPanel TextElement.FontSize="16" TextElement.FontFamily="Source Code Pro">
+    <DockPanel TextElement.FontFamily="Source Code Pro" TextElement.FontSize="16">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="500" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Menu Name="mnuMain" FontSize="16" Grid.Column="0">
+            <Menu Name="mnuMain"
+                  Grid.Column="0"
+                  FontSize="16">
                 <MenuItem Header="_File">
-                    <MenuItem Header="New" Click="mnuNew_OnClick" />
+                    <MenuItem Click="mnuNew_OnClick" Header="New" />
                     <Separator />
-                    <MenuItem Header="Load" Click="mnuLoad_OnClick" />
+                    <MenuItem Click="mnuLoad_OnClick" Header="Load" />
                     <Separator />
-                    <MenuItem Header="Save" Click="mnuSave_OnClick" />
-                    <MenuItem Header="SaveAs" Click="mnuSaveAs_OnClick" />
+                    <MenuItem Click="mnuSave_OnClick" Header="Save" />
+                    <MenuItem Click="mnuSaveAs_OnClick" Header="SaveAs" />
                     <Separator />
-                    <MenuItem Header="Options" Click="mnuOptions_OnClick" />
+                    <MenuItem Click="mnuOptions_OnClick" Header="Options" />
                     <Separator />
-                    <MenuItem Header="Quit" Click="mnuQuit_OnClick" />
+                    <MenuItem Click="mnuQuit_OnClick" Header="Quit" />
                 </MenuItem>
-                <MenuItem Name="mnuRecentLoads" Header="Recent Loads" ItemsSource="{Binding}" Click="mnuLoadFiles_OnClick" MouseRightButtonUp="mnuRecentLoads_OnRMBUp">
+                <MenuItem Name="mnuRecentLoads"
+                          Click="mnuLoadFiles_OnClick"
+                          Header="Recent Loads"
+                          ItemsSource="{Binding}"
+                          MouseRightButtonUp="mnuRecentLoads_OnRMBUp">
                     <MenuItem.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Remove" Click="mnuRemoveFile_OnClick" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}">
+                            <MenuItem Click="mnuRemoveFile_OnClick"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
+                                      Header="Remove">
                                 <MenuItem.DataContext>
                                     <Binding RelativeSource="{RelativeSource Self}">
                                         <Binding.Path>PlacementTarget.DataContext</Binding.Path>
@@ -113,22 +145,48 @@
                         </ContextMenu>
                     </MenuItem.ContextMenu>
                 </MenuItem>
-                <MenuItem Header="Help" Click="mnuHelp_OnClick" />
+                <MenuItem Click="mnuHelp_OnClick" Header="Help" />
             </Menu>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+            <StackPanel Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
                 <Grid>
-                    <ProgressBar Name="pbPomo" Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100" BorderBrush="DarkSlateGray" Background="Maroon" Height="30" Width="400" />
-                    <Label Name="lblPomo" Width="400" MouseUp="PomoTimerToggle_OnClick" MouseDoubleClick="PomoTimerReset_OnClick" HorizontalContentAlignment="Right" Foreground="Black" FontWeight="SemiBold" FontSize="20" />
+                    <ProgressBar Name="pbPomo"
+                                 Width="400"
+                                 Height="30"
+                                 Background="Maroon"
+                                 BorderBrush="DarkSlateGray"
+                                 Maximum="100"
+                                 Minimum="0"
+                                 Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Name="lblPomo"
+                           Width="400"
+                           HorizontalContentAlignment="Right"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="Black"
+                           MouseDoubleClick="PomoTimerReset_OnClick"
+                           MouseUp="PomoTimerToggle_OnClick" />
                 </Grid>
-                <Label Content="Work: " Width="100" />
-                <wpfTool:IntegerUpDown Name="iudPomoWork" Minimum="1" Value="{Binding PomoWorkTime, UpdateSourceTrigger=PropertyChanged}" ValueChanged="PomoWork_OnValueChanged" Width="80" />
-                <Label Content="Break: " Width="100" />
-                <wpfTool:IntegerUpDown Name="iudPomoBreak" Minimum="1" Value="{Binding PomoBreakTime, UpdateSourceTrigger=PropertyChanged}" ValueChanged="PomoBreak_OnValueChanged" Width="80" />
+                <Label Width="100" Content="Work: " />
+                <wpfTool:IntegerUpDown Name="iudPomoWork"
+                                       Width="80"
+                                       Minimum="1"
+                                       ValueChanged="PomoWork_OnValueChanged"
+                                       Value="{Binding PomoWorkTime, UpdateSourceTrigger=PropertyChanged}" />
+                <Label Width="100" Content="Break: " />
+                <wpfTool:IntegerUpDown Name="iudPomoBreak"
+                                       Width="80"
+                                       Minimum="1"
+                                       ValueChanged="PomoBreak_OnValueChanged"
+                                       Value="{Binding PomoBreakTime, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Grid>
         <TabControl Name="tabControl" SelectionChanged="TabControl_OnSelectionChanged">
-            <TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False">
-                <!-- VCS History tab -->
+            <TabItem Name="tabHistory"
+                     Header="History"
+                     KeyboardNavigation.IsTabStop="False">
+                <!--  VCS History tab  -->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" />
@@ -143,16 +201,31 @@
                             <RowDefinition Height="35" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2">
-                            <Button Content="New" Click="NewHistory_OnClick" Width="90" KeyboardNavigation.IsTabStop="False" />
-                            <Button Content="Delete" Click="DeleteHistory_OnClick" Width="90" KeyboardNavigation.IsTabStop="False" />
+                        <StackPanel Grid.Row="0"
+                                    Grid.ColumnSpan="2"
+                                    Orientation="Horizontal">
+                            <Button Width="90"
+                                    Click="NewHistory_OnClick"
+                                    Content="New"
+                                    KeyboardNavigation.IsTabStop="False" />
+                            <Button Width="90"
+                                    Click="DeleteHistory_OnClick"
+                                    Content="Delete"
+                                    KeyboardNavigation.IsTabStop="False" />
                         </StackPanel>
-                        <ListBox Grid.Row="1" Name="lbHistory" ItemsSource="{Binding }" KeyDown="HistoryListBox_OnKeyDown" PreviewMouseLeftButtonDown="HistoryListBox_OnMouseDown" SelectionChanged="HistoryListBox_OnSelectionChange" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"
-                                 Grid.Column="0">
+                        <ListBox Name="lbHistory"
+                                 Grid.Row="1"
+                                 Grid.Column="0"
+                                 Grid.ColumnSpan="2"
+                                 ItemsSource="{Binding}"
+                                 KeyDown="HistoryListBox_OnKeyDown"
+                                 PreviewMouseLeftButtonDown="HistoryListBox_OnMouseDown"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 SelectionChanged="HistoryListBox_OnSelectionChange">
                             <ListBox.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Reset Copied" Click="mnuResetHistoryCopied_OnClick" />
+                                    <MenuItem Click="mnuResetHistoryCopied_OnClick" Header="Reset Copied" />
                                 </ContextMenu>
                             </ListBox.ContextMenu>
                             <ListBox.ItemTemplate>
@@ -162,7 +235,13 @@
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="1" Click="CopyHistory_OnClick" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }">
+                                        <Button Grid.Column="0"
+                                                d:DataContext="{d:DesignInstance}"
+                                                Click="CopyHistory_OnClick"
+                                                Content="1"
+                                                FontFamily="Marlett"
+                                                FontSize="20"
+                                                KeyboardNavigation.IsTabStop="False">
                                             <Button.Style>
                                                 <Style>
                                                     <Style.Triggers>
@@ -178,7 +257,10 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
-                                        <TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap" d:DataContext="{d:DesignInstance }" />
+                                        <TextBlock Grid.Column="1"
+                                                   d:DataContext="{d:DesignInstance}"
+                                                   Text="{Binding Title}"
+                                                   TextWrapping="Wrap" />
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -194,59 +276,143 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal" Grid.Row="0">
-                            <Label Content="Version: " Margin="2" />
-                            <CheckBox Name="cbVersionA" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="A" />
-                            <wpfTool:IntegerUpDown Name="iudVersionA" Minimum="0" ValueChanged="Version_OnValueChangedA" Width="80" />
-                            <CheckBox Name="cbVersionB" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="B" />
-                            <wpfTool:IntegerUpDown Name="iudVersionB" Minimum="0" ValueChanged="Version_OnValueChangedB" Width="80" />
-                            <CheckBox Name="cbVersionC" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="C" />
-                            <wpfTool:IntegerUpDown Name="iudVersionC" Minimum="0" ValueChanged="Version_OnValueChangedC" Width="80" />
-                            <CheckBox Name="cbVersionD" IsChecked="{Binding VersionAUpdate}" Checked="VersionCheckBox_OnChanged" Unchecked="VersionCheckBox_OnChanged" CommandParameter="D" />
-                            <wpfTool:IntegerUpDown Name="iudVersionD" Minimum="0" ValueChanged="Version_OnValueChangedD" Width="80" />
-                            <Label Content="Time: " Margin="2" />
-                            <Label Name="lblHTotalTime" Margin="2" Width="40" />
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Label Margin="2" Content="Version: " />
+                            <CheckBox Name="cbVersionA"
+                                      Checked="VersionCheckBox_OnChanged"
+                                      CommandParameter="A"
+                                      IsChecked="{Binding VersionAUpdate}"
+                                      Unchecked="VersionCheckBox_OnChanged" />
+                            <wpfTool:IntegerUpDown Name="iudVersionA"
+                                                   Width="80"
+                                                   Minimum="0"
+                                                   ValueChanged="Version_OnValueChangedA" />
+                            <CheckBox Name="cbVersionB"
+                                      Checked="VersionCheckBox_OnChanged"
+                                      CommandParameter="B"
+                                      IsChecked="{Binding VersionAUpdate}"
+                                      Unchecked="VersionCheckBox_OnChanged" />
+                            <wpfTool:IntegerUpDown Name="iudVersionB"
+                                                   Width="80"
+                                                   Minimum="0"
+                                                   ValueChanged="Version_OnValueChangedB" />
+                            <CheckBox Name="cbVersionC"
+                                      Checked="VersionCheckBox_OnChanged"
+                                      CommandParameter="C"
+                                      IsChecked="{Binding VersionAUpdate}"
+                                      Unchecked="VersionCheckBox_OnChanged" />
+                            <wpfTool:IntegerUpDown Name="iudVersionC"
+                                                   Width="80"
+                                                   Minimum="0"
+                                                   ValueChanged="Version_OnValueChangedC" />
+                            <CheckBox Name="cbVersionD"
+                                      Checked="VersionCheckBox_OnChanged"
+                                      CommandParameter="D"
+                                      IsChecked="{Binding VersionAUpdate}"
+                                      Unchecked="VersionCheckBox_OnChanged" />
+                            <wpfTool:IntegerUpDown Name="iudVersionD"
+                                                   Width="80"
+                                                   Minimum="0"
+                                                   ValueChanged="Version_OnValueChangedD" />
+                            <Label Margin="2" Content="Time: " />
+                            <Label Name="lblHTotalTime"
+                                   Width="40"
+                                   Margin="2" />
                         </StackPanel>
-                        <TextBox Grid.Row="1" Name="tbHTitle" TextWrapping="NoWrap" TextChanged="Title_OnTextChange" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
-                        <TextBox Grid.Row="2" Name="tbHNotes" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="Notes_OnTextChange" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-                        <ListBox Grid.Row="3" Name="lbCompletedTodosBugs" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditHistoryTodo_OnClick">
+                        <TextBox Name="tbHTitle"
+                                 Grid.Row="1"
+                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                 TextChanged="Title_OnTextChange"
+                                 TextWrapping="NoWrap" />
+                        <TextBox Name="tbHNotes"
+                                 Grid.Row="2"
+                                 AcceptsReturn="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 TextChanged="Notes_OnTextChange"
+                                 TextWrapping="Wrap" />
+                        <ListBox Name="lbCompletedTodosBugs"
+                                 Grid.Row="3"
+                                 HorizontalContentAlignment="Stretch"
+                                 MouseDoubleClick="mnuEditHistoryTodo_OnClick"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
+                                    <Grid Margin="0,2"
+                                          d:DataContext="{d:DesignInstance}"
+                                          ToolTip="{Binding NotesAndTags}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
-                                        <TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+                                        <Button Grid.Column="0"
+                                                Click="DeleteTodo_OnClick"
+                                                Content="r"
+                                                FontFamily="Marlett"
+                                                FontSize="20"
+                                                KeyboardNavigation.IsTabStop="False" />
+                                        <TextBlock Grid.Column="1"
+                                                   Margin="4"
+                                                   Text="{Binding Todo}"
+                                                   TextAlignment="Left"
+                                                   TextWrapping="Wrap" />
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <ListBox Grid.Row="4" Name="lbCompletedTodosFeatures" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditHistoryTodo_OnClick">
+                        <ListBox Name="lbCompletedTodosFeatures"
+                                 Grid.Row="4"
+                                 HorizontalContentAlignment="Stretch"
+                                 MouseDoubleClick="mnuEditHistoryTodo_OnClick"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
+                                    <Grid Margin="0,2"
+                                          d:DataContext="{d:DesignInstance}"
+                                          ToolTip="{Binding NotesAndTags}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
-                                        <TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+                                        <Button Grid.Column="0"
+                                                Click="DeleteTodo_OnClick"
+                                                Content="r"
+                                                FontFamily="Marlett"
+                                                FontSize="20"
+                                                KeyboardNavigation.IsTabStop="False" />
+                                        <TextBlock Grid.Column="1"
+                                                   Margin="4"
+                                                   Text="{Binding Todo}"
+                                                   TextAlignment="Left"
+                                                   TextWrapping="Wrap" />
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <ListBox Grid.Row="5" Name="lbCompletedTodos" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="mnuEditHistoryTodo_OnClick">
+                        <ListBox Name="lbCompletedTodos"
+                                 Grid.Row="5"
+                                 HorizontalContentAlignment="Stretch"
+                                 MouseDoubleClick="mnuEditHistoryTodo_OnClick"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
+                                    <Grid Margin="0,2"
+                                          d:DataContext="{d:DesignInstance}"
+                                          ToolTip="{Binding NotesAndTags}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" FontFamily="Marlett" FontSize="20" Content="r" Click="DeleteTodo_OnClick" KeyboardNavigation.IsTabStop="False" />
-                                        <TextBlock Grid.Column="1" Text="{Binding Todo}" TextAlignment="Left" TextWrapping="Wrap" Margin="4" />
+                                        <Button Grid.Column="0"
+                                                Click="DeleteTodo_OnClick"
+                                                Content="r"
+                                                FontFamily="Marlett"
+                                                FontSize="20"
+                                                KeyboardNavigation.IsTabStop="False" />
+                                        <TextBlock Grid.Column="1"
+                                                   Margin="4"
+                                                   Text="{Binding Todo}"
+                                                   TextAlignment="Left"
+                                                   TextWrapping="Wrap" />
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -254,47 +420,104 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Name="tabTodos" Header="TODOs" HorizontalAlignment="Right" Width="64" Height="26" VerticalAlignment="Center">
-                <!-- VCS TODOs tab -->
+            <TabItem Name="tabTodos"
+                     Width="64"
+                     Height="26"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Header="TODOs">
+                <!--  VCS TODOs tab  -->
                 <StackPanel Orientation="Horizontal">
                     <StackPanel x:Name="incompleteItemsMainGrid" Grid.Column="1">
-                        <TabControl Name="incompleteItemsTodoTabs" ItemsSource="{Binding}" Loaded="IncompleteItemsTabs_OnLoaded" SelectionChanged="IncompleteItemsTab_OnSelectionChanged">
+                        <TabControl Name="incompleteItemsTodoTabs"
+                                    ItemsSource="{Binding}"
+                                    Loaded="IncompleteItemsTabs_OnLoaded"
+                                    SelectionChanged="IncompleteItemsTab_OnSelectionChanged">
                             <TabControl.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Edit Tabs" Click="mnuEditTabs_OnClick" />
+                                    <MenuItem Click="mnuEditTabs_OnClick" Header="Edit Tabs" />
                                 </ContextMenu>
                             </TabControl.ContextMenu>
                             <TabControl.ContentTemplate>
 
                                 <DataTemplate>
                                     <StackPanel>
-                                        <StackPanel Orientation="Horizontal" Height="30">
-                                            <ComboBox Width="301" Name="cbIncompleteItemsHashTags" ItemsSource="{Binding HashTags}" SelectionChanged="IncompleteItemsHashTags_OnSelectionChanged" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
-                                            <Button Width="161" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="101" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
+                                        <StackPanel Height="30" Orientation="Horizontal">
+                                            <ComboBox Name="cbIncompleteItemsHashTags"
+                                                      Width="301"
+                                                      d:DataContext="{d:DesignInstance}"
+                                                      ItemsSource="{Binding HashTags}"
+                                                      KeyboardNavigation.IsTabStop="False"
+                                                      SelectionChanged="IncompleteItemsHashTags_OnSelectionChanged" />
+                                            <Button Width="161"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="date"
+                                                    Content="Date"
+                                                    KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="101"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="severity"
+                                                    Content="Severity"
+                                                    KeyboardNavigation.IsTabStop="False" />
 
-                                            <Button Width="111" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="71" Content="Kanban" Click="Sort_OnClick" CommandParameter="kanban" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="111" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="111"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="rank"
+                                                    Content="Rank"
+                                                    KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="71"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="kanban"
+                                                    Content="Kanban"
+                                                    KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="111"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="active"
+                                                    Content="Active"
+                                                    KeyboardNavigation.IsTabStop="False" />
                                         </StackPanel>
 
-                                        <!-- The list of incomplete todos -->
+                                        <!--  The list of incomplete todos  -->
                                         <DockPanel LastChildFill="True">
-                                            <ListBox x:Name="lbIncompleteItems" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended" d:DataContext="{d:DesignInstance }">
+                                            <ListBox x:Name="lbIncompleteItems"
+                                                     HorizontalContentAlignment="Stretch"
+                                                     d:DataContext="{d:DesignInstance}"
+                                                     ItemsSource="{Binding}"
+                                                     KeyboardNavigation.TabIndex="0"
+                                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                     SelectionMode="Extended">
                                                 <ListBox.ContextMenu>
                                                     <ContextMenu>
-                                                        <MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
-                                                        <MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="Edit"
+                                                                  Header="Edit" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="Delete"
+                                                                  Header="Delete" />
                                                         <Separator />
-                                                        <MenuItem Header="Reset Timer" Click="mnuContextMenu_OnClick" CommandParameter="ResetTimer" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="ResetTimer"
+                                                                  Header="Reset Timer" />
                                                         <Separator />
-                                                        <MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
-                                                        <MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
-                                                        <MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
-                                                        <MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="Kanban3"
+                                                                  Header="Set Kanban: Current" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="Kanban2"
+                                                                  Header="Set Kanban: Next" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="Kanban1"
+                                                                  Header="Set Kanban: Backlog" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="Kanban0"
+                                                                  Header="Set Kanban: None" />
                                                         <Separator />
-                                                        <MenuItem Header="Move to Top" Click="mnuContextMenu_OnClick" CommandParameter="MoveUp" />
-                                                        <MenuItem Header="Move to Bottom" Click="mnuContextMenu_OnClick" CommandParameter="MoveDown" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="MoveUp"
+                                                                  Header="Move to Top" />
+                                                        <MenuItem Click="mnuContextMenu_OnClick"
+                                                                  CommandParameter="MoveDown"
+                                                                  Header="Move to Bottom" />
                                                     </ContextMenu>
                                                 </ListBox.ContextMenu>
                                                 <ListBox.ItemContainerStyle>
@@ -305,31 +528,83 @@
                                                 </ListBox.ItemContainerStyle>
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal" ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
-                                                            <TextBlock Width="300" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                            <TextBlock Width="160" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+                                                        <StackPanel Margin="0,2"
+                                                                    d:DataContext="{d:DesignInstance}"
+                                                                    Orientation="Horizontal"
+                                                                    ToolTip="{Binding NotesAndTags}">
+                                                            <TextBlock Width="300"
+                                                                       VerticalAlignment="Top"
+                                                                       KeyboardNavigation.IsTabStop="False"
+                                                                       Text="{Binding TagsSorted}"
+                                                                       TextWrapping="WrapWithOverflow" />
+                                                            <TextBlock Width="160"
+                                                                       Height="30"
+                                                                       Margin="4"
+                                                                       VerticalAlignment="Top"
+                                                                       Foreground="Red"
+                                                                       KeyboardNavigation.IsTabStop="False"
+                                                                       Text="{Binding StartDateTime}" />
                                                             <Button Width="90" Click="Severity_OnClick">
                                                                 <Button.Style>
                                                                     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                                                                         <Setter Property="Template">
                                                                             <Setter.Value>
                                                                                 <ControlTemplate TargetType="Button">
-                                                                                    <!-- Put in your textbox and progress bar and what not -->
-                                                                                    <ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black"
-                                                                                                 Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top"
-                                                                                                 KeyboardNavigation.IsTabStop="False" />
+                                                                                    <!--  Put in your textbox and progress bar and what not  -->
+                                                                                    <ProgressBar Height="30"
+                                                                                                 VerticalAlignment="Top"
+                                                                                                 Background="Black"
+                                                                                                 BorderBrush="DarkSlateGray"
+                                                                                                 Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}"
+                                                                                                 KeyboardNavigation.IsTabStop="False"
+                                                                                                 Maximum="3"
+                                                                                                 Minimum="0"
+                                                                                                 Value="{Binding Severity}" />
                                                                                 </ControlTemplate>
                                                                             </Setter.Value>
                                                                         </Setter>
                                                                     </Style>
                                                                 </Button.Style>
                                                             </Button>
-                                                            <Label Width="50" Content="{Binding Rank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                            <Button Width="25" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                            <Button Width="25" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                            <Label Width="70" Content="{Binding Kanban}" Margin="4" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                            <Label Width="65" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top"
-                                                                   KeyboardNavigation.IsTabStop="False">
+                                                            <Label Width="50"
+                                                                   Height="30"
+                                                                   Margin="4"
+                                                                   VerticalAlignment="Top"
+                                                                   Content="{Binding Rank}"
+                                                                   KeyboardNavigation.IsTabStop="False" />
+                                                            <Button Width="25"
+                                                                    Height="30"
+                                                                    VerticalAlignment="Top"
+                                                                    Click="RankAdjust_OnClick"
+                                                                    CommandParameter="down"
+                                                                    Content="6"
+                                                                    FontFamily="Marlett"
+                                                                    FontSize="20"
+                                                                    KeyboardNavigation.IsTabStop="False" />
+                                                            <Button Width="25"
+                                                                    Height="30"
+                                                                    VerticalAlignment="Top"
+                                                                    Click="RankAdjust_OnClick"
+                                                                    CommandParameter="up"
+                                                                    Content="5"
+                                                                    FontFamily="Marlett"
+                                                                    FontSize="20"
+                                                                    KeyboardNavigation.IsTabStop="False" />
+                                                            <Label Width="70"
+                                                                   Height="30"
+                                                                   Margin="4"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Top"
+                                                                   Content="{Binding Kanban}"
+                                                                   KeyboardNavigation.IsTabStop="False" />
+                                                            <Label Width="65"
+                                                                   Height="30"
+                                                                   VerticalAlignment="Top"
+                                                                   HorizontalContentAlignment="Right"
+                                                                   Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                                                   ContentStringFormat="{}{0:00.## :}"
+                                                                   KeyboardNavigation.IsTabStop="False"
+                                                                   MouseUp="TimeTakenTimer_OnClick">
                                                                 <Label.Style>
                                                                     <Style>
                                                                         <Style.Triggers>
@@ -345,8 +620,14 @@
                                                                     </Style>
                                                                 </Label.Style>
                                                             </Label>
-                                                            <Label Width="45" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top"
-                                                                   KeyboardNavigation.IsTabStop="False">
+                                                            <Label Width="45"
+                                                                   Height="30"
+                                                                   VerticalAlignment="Top"
+                                                                   HorizontalContentAlignment="Left"
+                                                                   Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}"
+                                                                   ContentStringFormat="{}{0:00.##}"
+                                                                   KeyboardNavigation.IsTabStop="False"
+                                                                   MouseUp="TimeTakenTimer_OnClick">
                                                                 <Label.Style>
                                                                     <Style>
                                                                         <Style.Triggers>
@@ -362,7 +643,10 @@
                                                                     </Style>
                                                                 </Label.Style>
                                                             </Label>
-                                                            <TextBlock Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+                                                            <TextBlock Margin="4,0"
+                                                                       Text="{Binding Todo}"
+                                                                       TextAlignment="Left"
+                                                                       TextWrapping="WrapWithOverflow" />
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
@@ -372,52 +656,113 @@
                                 </DataTemplate>
                             </TabControl.ContentTemplate>
                         </TabControl>
-                        <StackPanel Orientation="Horizontal" x:Name="incompleteItemsNewTodoPanel">
-                            <TextBox x:Name="tbIncompleteItemsNewTodo" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+                        <StackPanel x:Name="incompleteItemsNewTodoPanel" Orientation="Horizontal">
+                            <TextBox x:Name="tbIncompleteItemsNewTodo"
+                                     KeyboardNavigation.TabIndex="1"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     TextWrapping="WrapWithOverflow" />
                             <StackPanel>
-                                <ComboBox Name="cbIncompleteItemsSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2">
+                                <ComboBox Name="cbIncompleteItemsSeverity"
+                                          KeyboardNavigation.TabIndex="2"
+                                          Loaded="SeverityComboBox_OnIsLoaded"
+                                          SelectionChanged="SeverityComboBox_OnSelectionChange"
+                                          Unloaded="SeverityComboBox_OnIsLoaded">
                                     <ComboBoxItem Content="None" />
                                     <ComboBoxItem Content="Low" IsSelected="True" />
                                     <ComboBoxItem Content="Med" />
                                     <ComboBoxItem Content="High" />
                                 </ComboBox>
-                                <Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
+                                <Button Click="Add_OnClick"
+                                        Content="Add"
+                                        KeyboardNavigation.TabIndex="3" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
                     <userControls:IncompleteItemsNotesPanel x:Name="ucIncompleteItemsNotesPanel" Grid.Column="1" />
                 </StackPanel>
             </TabItem>
-            <TabItem Name="tabKanban" Header="Kanban" HorizontalAlignment="Right" Height="26" VerticalAlignment="Center">
-                <!-- VCS Kanban tab -->
+            <TabItem Name="tabKanban"
+                     Height="26"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Header="Kanban">
+                <!--  VCS Kanban tab  -->
                 <StackPanel Orientation="Horizontal">
                     <StackPanel x:Name="kanbanMainGrid">
-                        <TabControl Name="kanbanTodoTabs" ItemsSource="{Binding}" Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTab_OnSelectionChanged">
+                        <TabControl Name="kanbanTodoTabs"
+                                    ItemsSource="{Binding}"
+                                    Loaded="KanbanTabs_OnLoaded"
+                                    SelectionChanged="KanbanTab_OnSelectionChanged">
                             <TabControl.ContentTemplate>
                                 <DataTemplate>
                                     <StackPanel>
                                         <StackPanel Height="30" Orientation="Horizontal">
-                                            <ComboBox Width="301" Name="cbKanbanHashTags" ItemsSource="{Binding KanbanHashTags}" SelectionChanged="KanbanHashTags_OnSelectionChange" KeyboardNavigation.IsTabStop="False" d:DataContext="{d:DesignInstance }" />
-                                            <Button Width="161" Content="Date" Click="Sort_OnClick" CommandParameter="date" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="101" Content="Severity" Click="Sort_OnClick" CommandParameter="severity" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="111" Content="Rank" Click="Sort_OnClick" CommandParameter="rank" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="111" Content="Active" Click="Sort_OnClick" CommandParameter="active" KeyboardNavigation.IsTabStop="False" />
+                                            <ComboBox Name="cbKanbanHashTags"
+                                                      Width="301"
+                                                      d:DataContext="{d:DesignInstance}"
+                                                      ItemsSource="{Binding KanbanHashTags}"
+                                                      KeyboardNavigation.IsTabStop="False"
+                                                      SelectionChanged="KanbanHashTags_OnSelectionChange" />
+                                            <Button Width="161"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="date"
+                                                    Content="Date"
+                                                    KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="101"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="severity"
+                                                    Content="Severity"
+                                                    KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="111"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="rank"
+                                                    Content="Rank"
+                                                    KeyboardNavigation.IsTabStop="False" />
+                                            <Button Width="111"
+                                                    Click="Sort_OnClick"
+                                                    CommandParameter="active"
+                                                    Content="Active"
+                                                    KeyboardNavigation.IsTabStop="False" />
                                         </StackPanel>
-                                        <ListBox Name="lbKanbanItems" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended" d:DataContext="{d:DesignInstance }">
+                                        <ListBox Name="lbKanbanItems"
+                                                 HorizontalContentAlignment="Stretch"
+                                                 d:DataContext="{d:DesignInstance}"
+                                                 ItemsSource="{Binding}"
+                                                 KeyboardNavigation.TabIndex="0"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                 SelectionMode="Extended">
                                             <ListBox.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Edit" Click="mnuContextMenu_OnClick" CommandParameter="Edit" />
-                                                    <MenuItem Header="Delete" Click="mnuContextMenu_OnClick" CommandParameter="Delete" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="Edit"
+                                                              Header="Edit" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="Delete"
+                                                              Header="Delete" />
                                                     <Separator />
-                                                    <MenuItem Header="Reset Timer" Click="mnuContextMenu_OnClick" CommandParameter="ResetTimer" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="ResetTimer"
+                                                              Header="Reset Timer" />
                                                     <Separator />
-                                                    <MenuItem Header="Set Kanban: Current" Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" />
-                                                    <MenuItem Header="Set Kanban: Next" Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" />
-                                                    <MenuItem Header="Set Kanban: Backlog" Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" />
-                                                    <MenuItem Header="Set Kanban: None" Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="Kanban3"
+                                                              Header="Set Kanban: Current" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="Kanban2"
+                                                              Header="Set Kanban: Next" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="Kanban1"
+                                                              Header="Set Kanban: Backlog" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="Kanban0"
+                                                              Header="Set Kanban: None" />
                                                     <Separator />
-                                                    <MenuItem Header="Move to Top" Click="mnuContextMenu_OnClick" CommandParameter="MoveUp" />
-                                                    <MenuItem Header="Move to Bottom" Click="mnuContextMenu_OnClick" CommandParameter="MoveDown" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="MoveUp"
+                                                              Header="Move to Top" />
+                                                    <MenuItem Click="mnuContextMenu_OnClick"
+                                                              CommandParameter="MoveDown"
+                                                              Header="Move to Bottom" />
                                                 </ContextMenu>
                                             </ListBox.ContextMenu>
                                             <ListBox.ItemContainerStyle>
@@ -428,30 +773,76 @@
                                             </ListBox.ItemContainerStyle>
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal" ToolTip="{Binding NotesAndTags}" Margin="0,2" d:DataContext="{d:DesignInstance }">
-                                                        <TextBlock Width="300" Text="{Binding TagsSorted}" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                        <TextBlock Width="160" Text="{Binding StartDateTime}" Foreground="Red" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
+                                                    <StackPanel Margin="0,2"
+                                                                d:DataContext="{d:DesignInstance}"
+                                                                Orientation="Horizontal"
+                                                                ToolTip="{Binding NotesAndTags}">
+                                                        <TextBlock Width="300"
+                                                                   VerticalAlignment="Top"
+                                                                   KeyboardNavigation.IsTabStop="False"
+                                                                   Text="{Binding TagsSorted}"
+                                                                   TextWrapping="WrapWithOverflow" />
+                                                        <TextBlock Width="160"
+                                                                   Height="30"
+                                                                   Margin="4"
+                                                                   VerticalAlignment="Top"
+                                                                   Foreground="Red"
+                                                                   KeyboardNavigation.IsTabStop="False"
+                                                                   Text="{Binding StartDateTime}" />
                                                         <Button Width="90" Click="Severity_OnClick">
                                                             <Button.Style>
                                                                 <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                                                                     <Setter Property="Template">
                                                                         <Setter.Value>
                                                                             <ControlTemplate TargetType="Button">
-                                                                                <!-- Put in your textbox and progress bar and what not -->
-                                                                                <ProgressBar Minimum="0" Maximum="3" Value="{Binding Severity}" BorderBrush="DarkSlateGray" Background="Black"
-                                                                                             Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}" Height="30" VerticalAlignment="Top"
-                                                                                             KeyboardNavigation.IsTabStop="False" />
+                                                                                <!--  Put in your textbox and progress bar and what not  -->
+                                                                                <ProgressBar Height="30"
+                                                                                             VerticalAlignment="Top"
+                                                                                             Background="Black"
+                                                                                             BorderBrush="DarkSlateGray"
+                                                                                             Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}"
+                                                                                             KeyboardNavigation.IsTabStop="False"
+                                                                                             Maximum="3"
+                                                                                             Minimum="0"
+                                                                                             Value="{Binding Severity}" />
                                                                             </ControlTemplate>
                                                                         </Setter.Value>
                                                                     </Setter>
                                                                 </Style>
                                                             </Button.Style>
                                                         </Button>
-                                                        <Label Width="50" Content="{Binding KanbanRank}" Margin="4" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                        <Button Width="25" FontFamily="Marlett" FontSize="20" Content="6" Click="RankAdjust_OnClick" CommandParameter="down" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                        <Button Width="25" FontFamily="Marlett" FontSize="20" Content="5" Click="RankAdjust_OnClick" CommandParameter="up" Height="30" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False" />
-                                                        <Label Width="65" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.## :}" HorizontalContentAlignment="Right" Height="30" VerticalAlignment="Top"
-                                                               KeyboardNavigation.IsTabStop="False">
+                                                        <Label Width="50"
+                                                               Height="30"
+                                                               Margin="4"
+                                                               VerticalAlignment="Top"
+                                                               Content="{Binding KanbanRank}"
+                                                               KeyboardNavigation.IsTabStop="False" />
+                                                        <Button Width="25"
+                                                                Height="30"
+                                                                VerticalAlignment="Top"
+                                                                Click="RankAdjust_OnClick"
+                                                                CommandParameter="down"
+                                                                Content="6"
+                                                                FontFamily="Marlett"
+                                                                FontSize="20"
+                                                                KeyboardNavigation.IsTabStop="False" />
+                                                        <Button Width="25"
+                                                                Height="30"
+                                                                VerticalAlignment="Top"
+                                                                Click="RankAdjust_OnClick"
+                                                                CommandParameter="up"
+                                                                Content="5"
+                                                                FontFamily="Marlett"
+                                                                FontSize="20"
+                                                                KeyboardNavigation.IsTabStop="False" />
+                                                        <Label Width="65"
+                                                               Height="30"
+                                                               VerticalAlignment="Top"
+                                                               HorizontalContentAlignment="Right"
+                                                               Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                                               ContentStringFormat="{}{0:00.## :}"
+                                                               KeyboardNavigation.IsTabStop="False"
+                                                               MouseUp="TimeTakenTimer_OnClick">
                                                             <Label.Style>
                                                                 <Style>
                                                                     <Style.Triggers>
@@ -467,8 +858,14 @@
                                                                 </Style>
                                                             </Label.Style>
                                                         </Label>
-                                                        <Label Width="45" MouseUp="TimeTakenTimer_OnClick" Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:00.##}" HorizontalContentAlignment="Left" Height="30" VerticalAlignment="Top"
-                                                               KeyboardNavigation.IsTabStop="False">
+                                                        <Label Width="45"
+                                                               Height="30"
+                                                               VerticalAlignment="Top"
+                                                               HorizontalContentAlignment="Left"
+                                                               Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}"
+                                                               ContentStringFormat="{}{0:00.##}"
+                                                               KeyboardNavigation.IsTabStop="False"
+                                                               MouseUp="TimeTakenTimer_OnClick">
                                                             <Label.Style>
                                                                 <Style>
                                                                     <Style.Triggers>
@@ -484,7 +881,10 @@
                                                                 </Style>
                                                             </Label.Style>
                                                         </Label>
-                                                        <TextBlock Text="{Binding Todo}" TextAlignment="Left" TextWrapping="WrapWithOverflow" Margin="4,0" />
+                                                        <TextBlock Margin="4,0"
+                                                                   Text="{Binding Todo}"
+                                                                   TextAlignment="Left"
+                                                                   TextWrapping="WrapWithOverflow" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -493,47 +893,98 @@
                                 </DataTemplate>
                             </TabControl.ContentTemplate>
                         </TabControl>
-                        <StackPanel Orientation="Horizontal" x:Name="kanbanNewTodoPanel">
-                            <TextBox x:Name="tbKanbanNewTodo" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" KeyboardNavigation.TabIndex="1" />
+                        <StackPanel x:Name="kanbanNewTodoPanel" Orientation="Horizontal">
+                            <TextBox x:Name="tbKanbanNewTodo"
+                                     KeyboardNavigation.TabIndex="1"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     TextWrapping="WrapWithOverflow" />
                             <StackPanel>
-                                <ComboBox Name="cbKanbanSeverity" SelectionChanged="SeverityComboBox_OnSelectionChange" Loaded="SeverityComboBox_OnIsLoaded" Unloaded="SeverityComboBox_OnIsLoaded" KeyboardNavigation.TabIndex="2">
+                                <ComboBox Name="cbKanbanSeverity"
+                                          KeyboardNavigation.TabIndex="2"
+                                          Loaded="SeverityComboBox_OnIsLoaded"
+                                          SelectionChanged="SeverityComboBox_OnSelectionChange"
+                                          Unloaded="SeverityComboBox_OnIsLoaded">
                                     <ComboBoxItem Content="None" />
                                     <ComboBoxItem Content="Low" IsSelected="True" />
                                     <ComboBoxItem Content="Med" />
                                     <ComboBoxItem Content="High" />
                                 </ComboBox>
-                                <Button Content="Add" Click="Add_OnClick" KeyboardNavigation.TabIndex="3" />
+                                <Button Click="Add_OnClick"
+                                        Content="Add"
+                                        KeyboardNavigation.TabIndex="3" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel x:Name="kanbanNotesPanel">
-                        <Label Content="Title:" Height="25" />
-                        <TextBox x:Name="tbKanbanTitle" Height="65" HorizontalAlignment="Left" Margin="3" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus" GotFocus="TodoTitle_OnGotFocus" />
+                        <Label Height="25" Content="Title:" />
+                        <TextBox x:Name="tbKanbanTitle"
+                                 Height="65"
+                                 Margin="3"
+                                 HorizontalAlignment="Left"
+                                 GotFocus="TodoTitle_OnGotFocus"
+                                 LostFocus="TodoTitle_OnLostFocus"
+                                 TextWrapping="WrapWithOverflow" />
                         <Label Height="25" Content="Notes:" />
-                        <TextBox x:Name="tbKanbanNotes" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
+                        <TextBox x:Name="tbKanbanNotes"
+                                 Margin="3"
+                                 HorizontalAlignment="Left"
+                                 AcceptsReturn="True"
+                                 GotFocus="Notes_OnGotFocus"
+                                 LostFocus="Notes_OnLostFocus"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 TextWrapping="WrapWithOverflow" />
                         <Label Height="25" Content="Problem:" />
-                        <TextBox x:Name="tbKanbanProblem" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Problem_OnLostFocus" GotFocus="Problem_OnGotFocus" />
+                        <TextBox x:Name="tbKanbanProblem"
+                                 Margin="3"
+                                 HorizontalAlignment="Left"
+                                 AcceptsReturn="True"
+                                 GotFocus="Problem_OnGotFocus"
+                                 LostFocus="Problem_OnLostFocus"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 TextWrapping="WrapWithOverflow" />
                         <Label Height="25" Content="Solution:" />
-                        <TextBox x:Name="tbKanbanSolution" HorizontalAlignment="Left" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
+                        <TextBox x:Name="tbKanbanSolution"
+                                 Margin="3"
+                                 HorizontalAlignment="Left"
+                                 AcceptsReturn="True"
+                                 GotFocus="Solution_OnGotFocus"
+                                 LostFocus="Solution_OnLostFocus"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 TextWrapping="WrapWithOverflow" />
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
-                            <Button Content="Edit Tags" Width="72" Height="35" Click="AddTag_OnClick" />
+                            <Label Margin="2"
+                                   HorizontalAlignment="Right"
+                                   Content="Tags:" />
+                            <Button Width="72"
+                                    Height="35"
+                                    Click="AddTag_OnClick"
+                                    Content="Edit Tags" />
                         </StackPanel>
-                        <ListBox Name="lbKanbanHashTags" ItemsSource="{Binding}" Height="300" HorizontalAlignment="Left" Margin="3" IsSynchronizedWithCurrentItem="True" />
-                        <Button Content="Complete" Height="35" Width="100" Click="TodoComplete_OnClick" />
+                        <ListBox Name="lbKanbanHashTags"
+                                 Height="300"
+                                 Margin="3"
+                                 HorizontalAlignment="Left"
+                                 IsSynchronizedWithCurrentItem="True"
+                                 ItemsSource="{Binding}" />
+                        <Button Width="100"
+                                Height="35"
+                                Click="TodoComplete_OnClick"
+                                Content="Complete" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Log">
-                <!-- VCS Log tab -->
+                <!--  VCS Log tab  -->
                 <StackPanel>
-                    <Button Height="30" Content="Refresh" Click="RefreshLog_OnClick" />
+                    <Button Height="30"
+                            Click="RefreshLog_OnClick"
+                            Content="Refresh" />
                     <ListBox Name="lbHistoryLog" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="TESTING" >
-                <userControls:TodoListView x:Name="ucTodoListView"/>
-            </TabItem >
+            <TabItem Header="TESTING">
+                <userControls:TodoListView x:Name="ucTodoListView" />
+            </TabItem>
         </TabControl>
     </DockPanel>
 </Window>

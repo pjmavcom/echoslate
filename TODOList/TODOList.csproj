@@ -125,6 +125,11 @@
 		<Compile Include="DlgEditTabs.xaml.cs">
 		  <DependentUpon>DlgEditTabs.xaml</DependentUpon>
 		</Compile>
+		<Compile Include="Resources\BoolToLimeBrushConverter.cs" />
+		<Compile Include="Resources\BoolToTimerTextConverter.cs" />
+		<Compile Include="Resources\DynamicPriorityTagComparer.cs" />
+		<Compile Include="Resources\SeverityToBrushConverter.cs" />
+		<Compile Include="Resources\SeverityToTextConverter.cs" />
 		<Compile Include="TabItemHolder.cs" />
 		<Compile Include="TagHolder.cs" />
 		<Compile Include="TagPicker.xaml.cs">

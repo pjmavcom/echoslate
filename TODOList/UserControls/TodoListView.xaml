@@ -4,13 +4,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TODOList.UserControls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="clr-namespace:TODOList.Resources"
              xmlns:todoList="clr-namespace:TODOList"
              xmlns:viewModels="clr-namespace:TODOList.ViewModels"
              d:DesignHeight="500"
              d:DesignWidth="*"
+             IsVisibleChanged="TodoListView_IsVisibleChanged"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <todoList:ProgressBarForegroundConverter x:Key="ProgressBarForegroundConverter" />
+        <resources:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
+        <resources:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
+        <resources:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
         <todoList:TagToBackgroundConverter x:Key="TagToBackgroundConverter" />
     </UserControl.Resources>
     <Grid>
@@ -27,10 +31,10 @@
 
         <ItemsControl Grid.Row="0"
                       Margin="10,10,10,5"
-                      ItemsSource="{Binding AvailableTags}">
+                      ItemsSource="{Binding HashTags}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
+                    <WrapPanel MinWidth="100" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
@@ -55,32 +59,31 @@
                     Orientation="Horizontal">
             <ComboBox Name="cbHashTags"
                       Width="301"
-                      ItemsSource="{Binding}"
+                      ItemsSource="{Binding AllTags}"
                       KeyboardNavigation.IsTabStop="False"
-                      SelectionChanged="HashTags_OnSelectionChanged" />
+                      SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}" />
             <Button Width="161"
-                    Click="Sort_OnClick"
+                    Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="date"
                     Content="Date"
                     KeyboardNavigation.IsTabStop="False" />
             <Button Width="101"
-                    Click="Sort_OnClick"
+                    Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="severity"
                     Content="Severity"
                     KeyboardNavigation.IsTabStop="False" />
-
             <Button Width="111"
-                    Click="Sort_OnClick"
+                    Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="rank"
                     Content="Rank"
                     KeyboardNavigation.IsTabStop="False" />
             <Button Width="71"
-                    Click="Sort_OnClick"
+                    Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="kanban"
                     Content="Kanban"
                     KeyboardNavigation.IsTabStop="False" />
             <Button Width="111"
-                    Click="Sort_OnClick"
+                    Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="active"
                     Content="Active"
                     KeyboardNavigation.IsTabStop="False" />
@@ -135,6 +138,7 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
             </ListBox.ItemContainerStyle>
+            <!--
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="0,2"
@@ -257,12 +261,99 @@
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            -->
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Height="36" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="301" />
+                            <ColumnDefinition Width="161" />
+                            <ColumnDefinition Width="101" />
+                            <ColumnDefinition Width="57" />
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="71" />
+                            <ColumnDefinition Width="111" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Margin="4,0"
+                                   Text="{Binding TagsSorted}"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTip="{Binding NotesAndTags}" />
+
+                        <TextBlock Grid.Column="1"
+                                   Margin="4,0"
+                                   Foreground="Red"
+                                   Text="{Binding StartDateTime}" />
+                        <TextBlock Grid.Column="2"
+                                   Width="90"
+                                   Height="30"
+                                   Margin="4"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   TextAlignment="Center"
+                                   ToolTip="Severity" />
+                        <!--  Text="{Binding SeverityName}"  -->
+
+                        <Label Grid.Column="3"
+                               Width="50"
+                               Content="{Binding Rank}" />
+
+                        <!--  Down arrow (was "6" in Marlett)  -->
+                        <Button Grid.Column="4"
+                                Width="25"
+                                Height="30"
+                                Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                CommandParameter="down"
+                                Content="▼"
+                                FontSize="16"
+                                FontWeight="Bold" />
+
+                        <!--  Up arrow (was "5" in Marlett)  -->
+                        <Button Grid.Column="5"
+                                Width="25"
+                                Height="30"
+                                Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                CommandParameter="up"
+                                Content="▲"
+                                FontSize="16"
+                                FontWeight="Bold" />
+                        <!--
+                        <Button Grid.Column="4" Width="25" Height="30"
+                                Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                CommandParameter="down" Content="6" FontFamily="Marlett" FontSize="20" />
+                        <Button Grid.Column="5" Width="25" Height="30"
+                                Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                CommandParameter="up" Content="5" FontFamily="Marlett" FontSize="20" />-->
+                        <Label Grid.Column="6"
+                               Width="70"
+                               Content="{Binding Kanban}" />
+
+                        <Label Grid.Column="7"
+                               Width="110"
+                               Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
+                               Content="{Binding TimeTakenDisplay}"
+                               Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}" />
+
+                        <TextBlock Grid.Column="8"
+                                   Margin="8,0,4,0"
+                                   Text="{Binding Todo}"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTip="{Binding Todo}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
 
         <Grid Grid.Row="3" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="70" />
+                <ColumnDefinition Width="270" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="tbNewTodo"
                      Grid.Column="0"
@@ -273,7 +364,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="70" />
                 </Grid.RowDefinitions>
+                <TextBlock Grid.Row="2"
+                           FontWeight="Bold"
+                           Foreground="Red"
+                           Text="{Binding DebugCount, StringFormat='Items in view: {0}'}" />
                 <ComboBox Name="cbSeverity"
                           Grid.Row="0"
                           KeyboardNavigation.TabIndex="2"

@@ -1,3 +1,22 @@
+commit c22362c5c785b71482ed971d06188d5223af4d0a
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu Dec 4 08:35:27 2025 +0800
+
+    20251202- v3.40.23.0 Working on TodoView and ViewModel
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Got the interface working and listing items
+    
+    =Other Stuff======================================================================================================
+    --20251203-0m |TodoItemHolder added HasTag() : bool
+    --20251204-0m |Replace hashtag tab bar with a button bar
+    --20251204-0m |Assign hashtags to AvailableTags bar
+    --20251204-0m |Sort items based on AvailableTags buttons
+    --20251204-0m |Added UserControl for input panel at right
+    --20251204-0m |Added UserControl for TodoItems
+    --20251204-0m |TodoItemHolder -> Added FirstTag()
+            Notes: Kind of temporary, may not be needed for anything
+
 commit fe706274c3d6b73cb6bef9f6e2c03f02ce1c1e07
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Dec 2 21:39:27 2025 +0800

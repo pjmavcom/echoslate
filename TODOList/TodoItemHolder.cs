@@ -33,6 +33,23 @@ namespace TODOList
 		public ObservableCollection<string> Tags => _td.Tags;
 		public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
 		
+		public string SeverityName
+		{
+			get {
+				switch (_td.Severity) {
+					case 0:
+						return "None";
+					case 1:
+						return "Low";
+					case 2:
+						return "Medium";
+					case 3:
+						return "High";
+					default:
+						return "Unknown";
+				}
+			}
+		}
 		public int Severity
 		{
 			get => _td.Severity;
@@ -49,7 +66,8 @@ namespace TODOList
 			set => _td.KanbanRank = value;
 		}
 		public bool IsTimerOn => _td.IsTimerOn;
-		public long TimeTakenInMinutes => _td.TimeTakenInMinutes; 
+		public long TimeTakenInMinutes => _td.TimeTakenInMinutes;
+		public string TimeTakenDisplay => $"{TimeTakenInMinutes:00.##} : {TimeTaken.Second:00}";
 		public DateTime TimeTaken
 		{
 			get => _td.TimeTaken;
