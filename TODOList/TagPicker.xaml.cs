@@ -1,15 +1,17 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace TODOList
 {
 	public partial class TagPicker : Window
 	{
-		private List<string> _tags;
-		private List<string> _originalTags;
-		private List<string> _originalTagHolders;
-		private List<string> _previousTags;
-		public List<string> NewTags;
+		private ObservableCollection<string> _tags;
+		private ObservableCollection<string> _originalTags;
+		private ObservableCollection<string> _originalTagHolders;
+		private ObservableCollection<string> _previousTags;
+		public ObservableCollection<string> NewTags;
 		public bool Result;
 		public bool Multi;
 		
@@ -17,8 +19,8 @@ namespace TODOList
 		public TagPicker(bool multi = false)
 		{
 			InitializeComponent();
-			NewTags = new List<string>();
-			_previousTags = new List<string>();
+			NewTags = new ObservableCollection<string>();
+			_previousTags = new ObservableCollection<string>();
 			CenterWindowOnMouse();
 			cbMulti.IsEnabled = multi ? true : false;
 			cbMulti.Visibility = multi ? Visibility.Visible : Visibility.Hidden;
@@ -35,7 +37,7 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-		public void LoadTags(List<string> tags, List<string> th)
+		public void LoadTags(ObservableCollection<string> tags, ObservableCollection<string> th)
 		{
 			if (tags == null || th == null)
 				return;
@@ -83,7 +85,14 @@ namespace TODOList
 			_tags.Add(newTag);
 			_previousTags.Add(newTag);
 			
-			_tags.Sort();
+			// TODO Figure out how to sort the observableCollections
+			// _tags.Sort();
+			var sorted = _tags.OrderBy(x => x).ToList();
+			_tags.Clear();
+			foreach (string s in sorted) {
+				_tags.Add(s);
+			}
+			
 			lbTags.Items.Refresh();
 			
 			foreach (string s in _previousTags)

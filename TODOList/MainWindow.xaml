@@ -531,6 +531,9 @@
                     <ListBox Name="lbHistoryLog" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                 </StackPanel>
             </TabItem>
+            <TabItem Header="TESTING" >
+                <userControls:TodoListView x:Name="ucTodoListView"/>
+            </TabItem >
         </TabControl>
     </DockPanel>
 </Window>

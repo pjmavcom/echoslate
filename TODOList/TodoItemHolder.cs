@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -29,6 +30,9 @@ namespace TODOList
 		public string NotesAndTags => _td.NotesAndTags;
 		public string TagsSorted => _td.TagsSorted;
 		public string StartDateTime => _td.StartDateTime;
+		public ObservableCollection<string> Tags => _td.Tags;
+		public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
+		
 		public int Severity
 		{
 			get => _td.Severity;
@@ -63,6 +67,9 @@ namespace TODOList
 		{
 			_td = td;
 			Rank = int.MaxValue;
+		}
+		public bool HasTag(string tag) {
+			return Tags.Contains(tag);
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //

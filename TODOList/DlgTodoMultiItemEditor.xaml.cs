@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -75,7 +76,7 @@ namespace TODOList
 				tempTags += tag + " ";
 			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			
-			_td.Tags = new List<string>();
+			_td.Tags = new ObservableCollection<string>();
 			_td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 			_td.Severity = _currentSeverity;
 			if (_previousRank > _td.Rank[_currentListHash])

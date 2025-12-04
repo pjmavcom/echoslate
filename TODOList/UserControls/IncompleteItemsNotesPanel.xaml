@@ -7,7 +7,6 @@
              d:DesignHeight="*" d:DesignWidth="300">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <!-- keep all your RowDefinitions exactly as before -->
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -19,25 +18,49 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <!-- <StackPanel x:Name="incompleteItemsNotesPanel"> -->
         <Label Content="Title:" Grid.Row="0" /> 
-        <TextBox x:Name="tbIncompleteItemsTitle" Grid.Row="1" Margin="3" TextWrapping="WrapWithOverflow" LostFocus="TodoTitle_OnLostFocus" GotFocus="TodoTitle_OnGotFocus" />
+        <TextBox x:Name="tbIncompleteItemsTitle"
+                 Grid.Row="1" 
+                 Margin="3" 
+                 TextWrapping="WrapWithOverflow" 
+                 LostFocus="TodoTitle_OnLostFocus" GotFocus="TodoTitle_OnGotFocus" />
         <Label Content="Notes:" Grid.Row="2" />
-        <TextBox x:Name="tbIncompleteItemsNotes" Grid.Row="3" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
+        <TextBox x:Name="tbIncompleteItemsNotes" 
+                 Grid.Row="3" 
+                 Margin="3"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 AcceptsReturn="True" TextWrapping="WrapWithOverflow"
+                 LostFocus="Notes_OnLostFocus" GotFocus="Notes_OnGotFocus" />
         <Label Content="Problem:" Grid.Row="4" />
-        <TextBox x:Name="tbIncompleteItemsProblem" Grid.Row="5" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Problem_OnLostFocus" GotFocus="Problem_OnGotFocus" />
+        <TextBox x:Name="tbIncompleteItemsProblem" 
+                 Grid.Row="5"
+                 Margin="3"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                 AcceptsReturn="True" TextWrapping="WrapWithOverflow" 
+                 LostFocus="Problem_OnLostFocus" GotFocus="Problem_OnGotFocus" />
         <Label Content="Solution:" Grid.Row="6" />
-        <TextBox x:Name="tbIncompleteItemsSolution" Grid.Row="7" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="WrapWithOverflow" LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
+        <TextBox x:Name="tbIncompleteItemsSolution" 
+                 Grid.Row="7" 
+                 Margin="3" 
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                 AcceptsReturn="True" TextWrapping="WrapWithOverflow" 
+                 LostFocus="Solution_OnLostFocus" GotFocus="Solution_OnGotFocus" />
         <StackPanel Orientation="Horizontal" Grid.Row="8" >
-            <Label Content="Tags:" HorizontalAlignment="Right" Margin="2" />
-            <Button Content="Edit Tags" Width="72" Height="35" Click="AddTag_OnClick" />
+            <Label Content="Tags:" 
+                   HorizontalAlignment="Right" Margin="2" />
+            <Button Content="Edit Tags" 
+                    Width="72" Height="35" 
+                    Click="AddTag_OnClick" />
         </StackPanel>
-        <ListBox Name="lbIncompleteItemsHashTags" Grid.Row="9" ItemsSource="{Binding}" Height="300" Margin="3" IsSynchronizedWithCurrentItem="True" />
-        <Button Content="Complete" Grid.Row="10" Width="100" Click="TodoComplete_OnClick" />
-        <!-- </StackPanel> -->
+        <ListBox Name="lbIncompleteItemsHashTags" 
+                 Grid.Row="9" 
+                 Margin="3" 
+                 ItemsSource="{Binding}" 
+                 IsSynchronizedWithCurrentItem="True" />
+        <Button Content="Complete" 
+                Grid.Row="10" 
+                Width="100" 
+                Click="TodoComplete_OnClick" />
     </Grid>
 </UserControl>

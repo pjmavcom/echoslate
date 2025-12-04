@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,7 +35,7 @@ namespace TODOList
         private int _kanban;
         private int _kanbanRank;
         private Dictionary<string, int> _rank;
-        private List<string> _tags;
+        private ObservableCollection<string> _tags;
 
         // PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
         public string Todo
@@ -153,7 +154,7 @@ namespace TODOList
                 return result;
             }
         }
-        public List<string> Tags
+        public ObservableCollection<string> Tags
         {
             get => _tags;
             set
@@ -195,7 +196,7 @@ namespace TODOList
         // CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
         public TodoItem()
         {
-            _tags = new List<string>();
+            _tags = new ObservableCollection<string>();
             _todo = "";
             _notes = "";
             _problem = "";
@@ -209,7 +210,7 @@ namespace TODOList
         }
         public TodoItem(string newItem)
         {
-            _tags = new List<string>();
+            _tags = new ObservableCollection<string>();
             _rank = new Dictionary<string, int>();
             Load3_20(newItem);
         }
@@ -268,7 +269,7 @@ namespace TODOList
         }
         private void ParseTags()
         {
-            _tags = new List<string>();
+            _tags = new ObservableCollection<string>();
             string[] tempPieces = _todo.Split('\r');
             string temp = tempPieces.Aggregate("", (current, s) => current + (s + " "));
             tempPieces = temp.Split('\n');
@@ -323,7 +324,13 @@ namespace TODOList
                 tempTodo += s + " ";
             }
 
-            _tags.Sort();
+            // TODO Figure out how to sort ObservableCollections 
+            // _tags.Sort();
+            var sorted = _tags.OrderBy(x => x).ToList();
+            _tags.Clear();
+            foreach (string s in sorted) {
+                _tags.Add(s);
+            }
             _todo = tempTodo.Trim();
         }
         private string ParseNotes(string notesToParse)

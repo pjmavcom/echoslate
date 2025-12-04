@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -79,7 +80,7 @@ namespace TODOList
 				tempTags += tag + " ";
 			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			
-			_todoItem.Tags = new List<string>();
+			_todoItem.Tags = new ObservableCollection<string>();
 			_todoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 			_todoItem.Notes = tbNotes.Text;
 			_todoItem.Severity = _currentSeverity;

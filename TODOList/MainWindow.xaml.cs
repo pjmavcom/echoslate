@@ -16,6 +16,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using TODOList.UserControls;
+using TODOList.ViewModels;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -50,6 +51,9 @@ namespace TODOList {
 
 		public bool _skipUpdate;
 
+		public ObservableCollection<TodoItemHolder> AllItems { get; } = new ObservableCollection<TodoItemHolder>();
+		private TodoListViewModel _todoListViewModel;
+
 		private readonly List<TabItem> _incompleteItemsTabsList;
 
 		private readonly List<TabItem> _kanbanTabsList;
@@ -57,13 +61,13 @@ namespace TODOList {
 		private TabControl _currentSelectedSubTab;
 		private readonly List<TodoItem> _masterList;
 
-		private readonly List<List<TodoItemHolder>> _incompleteItems;
-		private readonly List<List<TodoItemHolder>> _kanbanItems;
-		private List<List<TodoItemHolder>> _currentItems;
+		private readonly List<ObservableCollection<TodoItemHolder>> _incompleteItems;
+		private readonly List<ObservableCollection<TodoItemHolder>> _kanbanItems;
+		private List<ObservableCollection<TodoItemHolder>> _currentItems;
 
-		private readonly List<List<string>> _incompleteItemsHashTags;
+		private readonly List<ObservableCollection<string>> _incompleteItemsHashTags;
 
-		private readonly List<List<string>> _kanbanHashTags;
+		private readonly List<ObservableCollection<string>> _kanbanHashTags;
 
 		private TodoItem _currentTodoItemInNotesPanel;
 		private int _currentTodoItemInNotesPanelIndex = -1;
@@ -189,11 +193,11 @@ namespace TODOList {
 		public string _testIfChanged;
 
 		private ObservableCollection<string> RecentFiles { get; set; }
-		private List<TodoItemHolder> IncompleteItems =>
+		private ObservableCollection<TodoItemHolder> IncompleteItems =>
 			_incompleteItems[incompleteItemsTodoTabs.SelectedIndex == -1 ? 0 : incompleteItemsTodoTabs.SelectedIndex];
-		private List<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTodoTabs.SelectedIndex];
-		private List<string> KanbanHashTags => _kanbanHashTags[kanbanTodoTabs.SelectedIndex];
-		private List<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
+		private ObservableCollection<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTodoTabs.SelectedIndex];
+		private ObservableCollection<string> KanbanHashTags => _kanbanHashTags[kanbanTodoTabs.SelectedIndex];
+		private ObservableCollection<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
 
 		private string TabNames => incompleteItemsTodoTabs.SelectedIndex == -1
 									   ? _incompleteItemsTabsList[0].Name
@@ -253,6 +257,7 @@ namespace TODOList {
 			Height = _height;
 			Width = _width;
 
+
 			_backupTime = new TimeSpan(0, 5, 0);
 			_backupIncrement = 0;
 
@@ -264,11 +269,11 @@ namespace TODOList {
 			_incompleteItemsTabsList = new List<TabItem>();
 			_kanbanTabsList = new List<TabItem>();
 			_masterList = new List<TodoItem>();
-			_incompleteItems = new List<List<TodoItemHolder>>();
-			_kanbanItems = new List<List<TodoItemHolder>>();
+			_incompleteItems = new List<ObservableCollection<TodoItemHolder>>();
+			_kanbanItems = new List<ObservableCollection<TodoItemHolder>>();
 			_kanbanTabHeaders = new List<string>();
-			_incompleteItemsHashTags = new List<List<string>>();
-			_kanbanHashTags = new List<List<string>>();
+			_incompleteItemsHashTags = new List<ObservableCollection<string>>();
+			_kanbanHashTags = new List<ObservableCollection<string>>();
 			_tabHash = new List<string>();
 			_hashShortcuts = new Dictionary<string, string>();
 			HistoryItems = new List<HistoryItem>();
@@ -291,6 +296,7 @@ namespace TODOList {
 
 			KanbanCreateTabs();
 			_timeUntilBackup = _backupTime;
+			
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Windows METHODS //
@@ -436,7 +442,8 @@ namespace TODOList {
 			_incompleteItemsNotesPanel = ucIncompleteItemsNotesPanel;
 			SelectActiveTabItems();
 			DelayedStartupLoad();
-			
+			_todoListViewModel = new TodoListViewModel(_incompleteItems[0],_incompleteItemsHashTags[0]);
+			ucTodoListView.DataContext = _todoListViewModel;
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Tabs //
@@ -501,7 +508,7 @@ namespace TODOList {
 					break;
 			}
 		}
-		public List<TodoItemHolder> GetActiveItemList() {
+		public ObservableCollection<TodoItemHolder> GetActiveItemList() {
 			switch (tabControl.SelectedIndex) {
 				case 1:
 					return IncompleteItems;
@@ -712,7 +719,7 @@ namespace TODOList {
 		private static void ExpandHashTags(TodoItem td) {
 			string tempTodo = ExpandHashTagsInString(td.Todo);
 			string tempTags = ExpandHashTagsInList(td.Tags);
-			td.Tags = new List<string>();
+			td.Tags = new ObservableCollection<string>();
 
 			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		}
@@ -743,7 +750,7 @@ namespace TODOList {
 
 			return list.Where(s => s != "").Aggregate("", (current, s) => current + (s + " "));
 		}
-		private static string ExpandHashTagsInList(List<string> tags) {
+		private static string ExpandHashTagsInList(ObservableCollection<string> tags) {
 			string result = tags.Aggregate("", (current, s) => current + (s + " "));
 
 			result = ExpandHashTagsInString(result);
@@ -751,7 +758,7 @@ namespace TODOList {
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// IncompleteItems //
-		private void IncompleteItemsTabs_OnLoaded(object sender, RoutedEventArgs e) {
+		public void IncompleteItemsTabs_OnLoaded(object sender, RoutedEventArgs e) {
 			e.Handled = true;
 			IncompleteItemsUpdateHandler();
 			SelectActiveTabItems();
@@ -819,8 +826,8 @@ namespace TODOList {
 			foreach (var td in _masterList.Where(td => !td.Rank.ContainsKey(name)))
 				td.Rank.Add(name, -1);
 
-			_incompleteItems.Add(new List<TodoItemHolder>());
-			_incompleteItemsHashTags.Add(new List<string>());
+			_incompleteItems.Add(new ObservableCollection<TodoItemHolder>());
+			_incompleteItemsHashTags.Add(new ObservableCollection<string>());
 			_incompleteItemsTabsList.Add(ti);
 			if (!doSave) {
 				return;
@@ -830,7 +837,7 @@ namespace TODOList {
 			incompleteItemsTodoTabs.Items.Refresh();
 			AutoSave();
 		}
-		private void IncompleteItemsTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+		public void IncompleteItemsTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
 			e.Handled = true;
 			if (_lbIncompleteItems != null && _previousTodoTabSelectedIndex != -1) {
 				NotesPanelUpdate();
@@ -868,7 +875,7 @@ namespace TODOList {
 			_incompleteItemsNotesPanel.tbIncompleteItemsSolution.Text = _currentTodoItemInNotesPanel.Solution;
 			NotesPanelLoadHashTags();
 		}
-		private void IncompleteItemsHashTags_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+		public void IncompleteItemsHashTags_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
 			e.Handled = true;
 			if (IncompleteItemsHashTags.Count == 0)
 				return;
@@ -968,8 +975,7 @@ namespace TODOList {
 						.Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
 				itemHolder.TD.Rank.Add(currentHash, 99);
 
-			_incompleteItems[incompleteItemsTodoTabs.SelectedIndex] =
-				_incompleteItems[incompleteItemsTodoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList();
+			_incompleteItems[incompleteItemsTodoTabs.SelectedIndex] = new ObservableCollection<TodoItemHolder>(_incompleteItems[incompleteItemsTodoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList());
 			for (int rank = 0; rank < _incompleteItems[incompleteItemsTodoTabs.SelectedIndex].Count; rank++) {
 				_incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
 				_incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].Rank =
@@ -1032,9 +1038,9 @@ namespace TODOList {
 										 Padding = new Thickness(10, 5, 10, 5)
 									 };
 
-			_kanbanHashTags.Add(new List<string>());
+			_kanbanHashTags.Add(new ObservableCollection<string>());
 			_kanbanTabsList.Add(ti);
-			_kanbanItems.Add(new List<TodoItemHolder>());
+			_kanbanItems.Add(new ObservableCollection<TodoItemHolder>());
 			kanbanTodoTabs.Items.Refresh();
 		}
 		private void KanbanTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -1442,7 +1448,7 @@ namespace TODOList {
 		}
 
 		// Incomplete Items Tabs Context menu
-		private void mnuEditTabs_OnClick(object sender, EventArgs e) {
+		public void mnuEditTabs_OnClick(object sender, EventArgs e) {
 			List<TabItem> list = _incompleteItemsTabsList.ToList();
 			DlgEditTabs rt = new DlgEditTabs(list);
 			rt.ShowDialog();
@@ -1485,7 +1491,7 @@ namespace TODOList {
 		}
 
 		// IncompleteItems / Kanban Context Menus
-		private void mnuContextMenu_OnClick(object sender, EventArgs e) {
+		public void mnuContextMenu_OnClick(object sender, EventArgs e) {
 			_errorMessage = string.Empty;
 
 			MenuItem menuItem = sender as MenuItem;
@@ -1629,7 +1635,7 @@ namespace TODOList {
 			}
 		}
 
-		private void EditTodo(List<TodoItemHolder> list, ListBox listBox) {
+		private void EditTodo(ObservableCollection<TodoItemHolder> list, ListBox listBox) {
 			if (listBox.SelectedItems.Count > 1) {
 				MultiEditItems(listBox);
 			} else if (listBox.SelectedItems.Count == 1) {
@@ -1941,7 +1947,7 @@ namespace TODOList {
 			KanbanRefresh();
 			_lbCurrentItems.SelectedItem = _lbCurrentItems.Items.GetItemAt(index);
 		}
-		private void Severity_OnClick(object sender, EventArgs e) {
+		public void Severity_OnClick(object sender, EventArgs e) {
 			if (!(sender is Button b)) return;
 
 			if (b.DataContext is TodoItemHolder itemHolder) {
@@ -1955,16 +1961,16 @@ namespace TODOList {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private void SeverityComboBox_OnSelectionChange(object sender, EventArgs e) {
+		public void SeverityComboBox_OnSelectionChange(object sender, EventArgs e) {
 			if (!(sender is ComboBox cb)) return;
 
 			int index = cb.SelectedIndex;
 			_currentSeverity = index;
 		}
-		private void SeverityComboBox_OnIsLoaded(object sender, EventArgs e) {
+		public void SeverityComboBox_OnIsLoaded(object sender, EventArgs e) {
 			if (sender is ComboBox cb) cb.SelectedIndex = _currentSeverity;
 		}
-		private void Add_OnClick(object sender, EventArgs e) {
+		public void Add_OnClick(object sender, EventArgs e) {
 			string name = TabNames;
 			int newIndex = 0;
 			TodoItem td = new TodoItem() { Todo = _tbNewTodo.Text, Severity = _currentSeverity };
@@ -1991,11 +1997,11 @@ namespace TODOList {
 			_tbNewTodo.Clear();
 			RefreshNotes(newIndex - 1);
 		}
-		private void RankAdjust_OnClick(object sender, EventArgs e) {
+		public void RankAdjust_OnClick(object sender, EventArgs e) {
 			if (!(sender is Button b))
 				return;
 			TodoItemHolder todoItemHolder = b.DataContext as TodoItemHolder;
-			List<TodoItemHolder> todoItemHolderList = _currentItems[_currentSelectedSubTab.SelectedIndex];
+			ObservableCollection<TodoItemHolder> todoItemHolderList = _currentItems[_currentSelectedSubTab.SelectedIndex];
 
 			if (todoItemHolderList.Count == 0)
 				return;
@@ -2163,7 +2169,7 @@ namespace TODOList {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private void TimeTakenTimer_OnClick(object sender, EventArgs e) {
+		public void TimeTakenTimer_OnClick(object sender, EventArgs e) {
 			if (sender is Label l) {
 				if (l.DataContext is TodoItemHolder itemHolder)
 					itemHolder.TD.IsTimerOn = !itemHolder.TD.IsTimerOn;
@@ -2174,7 +2180,7 @@ namespace TODOList {
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sorting //
-		private void Sort_OnClick(object sender, EventArgs e) {
+		public void Sort_OnClick(object sender, EventArgs e) {
 			Button b = sender as Button;
 			if (_currentSort != (string)b?.CommandParameter) {
 				_reverseSort = false;
@@ -2182,7 +2188,7 @@ namespace TODOList {
 			}
 
 			if ((string)b?.CommandParameter == "hash") {
-				List<string> hashTagsList;
+				ObservableCollection<string> hashTagsList;
 				switch (tabControl.SelectedIndex) {
 					case 1:
 						hashTagsList = IncompleteItemsHashTags;
@@ -2206,12 +2212,12 @@ namespace TODOList {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
-		private List<TodoItemHolder> SortByHashTag(List<TodoItemHolder> list, List<string> hashTags) {
+		private ObservableCollection<TodoItemHolder> SortByHashTag(ObservableCollection<TodoItemHolder> list, ObservableCollection<string> hashTags) {
 			if (_didHashChange)
 				_currentHashTagSortIndex = 0;
 
-			List<TodoItemHolder> incompleteItems = new List<TodoItemHolder>();
-			List<string> sortedHashTags = new List<string>();
+			ObservableCollection<TodoItemHolder> incompleteItems = new ObservableCollection<TodoItemHolder>();
+			ObservableCollection<string> sortedHashTags = new ObservableCollection<string>();
 
 			if (hashTags.Count == 0)
 				return list;
@@ -2240,14 +2246,17 @@ namespace TODOList {
 			foreach (string s in sortedHashTags) {
 				List<TodoItemHolder> temp = list.ToList();
 				foreach (TodoItemHolder itemHolder in temp) {
-					List<string> sortedTags = new List<string>();
+					ObservableCollection<string> sortedTags = new ObservableCollection<string>();
 					List<string> unsortedTags = itemHolder.TD.Tags.ToList();
 					foreach (string u in itemHolder.TD.Tags.Where(u => u == s)) {
 						sortedTags.Add(u);
 						unsortedTags.Remove(u);
 					}
 
-					sortedTags.AddRange(unsortedTags);
+					// sortedTags.AddRange(unsortedTags);
+					foreach (string u in unsortedTags) {
+						sortedTags.Add(u);
+					}
 					itemHolder.TD.Tags = sortedTags;
 
 					foreach (string unused in itemHolder.TD.Tags.Where(t => s.Equals(t))) {
@@ -2256,8 +2265,9 @@ namespace TODOList {
 					}
 				}
 			}
-
-			incompleteItems.AddRange(list);
+			foreach (TodoItemHolder itemHolder in list) {
+				incompleteItems.Add(itemHolder); //AddRange(list);
+			}
 
 			return incompleteItems;
 		}
@@ -2277,29 +2287,29 @@ namespace TODOList {
 
 			_prevHashTagList = _incompleteItemsHashTags[0].ToList();
 		}
-		private void SortHashTagLists(List<List<TodoItemHolder>> todoItemHolderList, List<List<string>> hashTagList) {
+		private void SortHashTagLists(List<ObservableCollection<TodoItemHolder>> todoItemHolderList, List<ObservableCollection<string>> hashTagList) {
 			for (int i = 0; i < todoItemHolderList.Count; i++) {
 				foreach (string tag in todoItemHolderList[i].SelectMany(itemHolder => itemHolder.TD.Tags)) {
 					if (!hashTagList[i].Contains(tag))
 						hashTagList[i].Add(tag);
-					hashTagList[i] = hashTagList[i].OrderBy(o => o).ToList();
+					hashTagList[i] = new ObservableCollection<string>(hashTagList[i].OrderBy(o => o)); // ToList();
 				}
 			}
 		}
-		private void SortLists(List<List<TodoItemHolder>> list, List<List<string>> hashTagsList, int tabIndex) {
+		private void SortLists(List<ObservableCollection<TodoItemHolder>> list, List<ObservableCollection<string>> hashTagsList, int tabIndex) {
 			switch (_currentSort) {
 				case "severity":
 					list[tabIndex] = _reverseSort
-										 ? list[tabIndex].OrderByDescending(o => o.Severity).ToList()
-										 : list[tabIndex].OrderBy(o => o.Severity).ToList();
+										 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.Severity).ToList())
+										 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.Severity).ToList());
 					break;
 				case "date":
 					list[tabIndex] = _reverseSort
-										 ? list[tabIndex].OrderByDescending(o => o.TimeStarted).ToList()
-										 : list[tabIndex].OrderBy(o => o.TimeStarted).ToList();
+										 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TimeStarted).ToList())
+										 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TimeStarted).ToList());
 					list[tabIndex] = _reverseSort
-										 ? list[tabIndex].OrderByDescending(o => o.DateStarted).ToList()
-										 : list[tabIndex].OrderBy(o => o.DateStarted).ToList();
+										 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.DateStarted).ToList())
+										 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.DateStarted).ToList());
 					break;
 				case "hash":
 					list[tabIndex] = SortByHashTag(list[tabIndex], hashTagsList[tabIndex]);
@@ -2308,29 +2318,29 @@ namespace TODOList {
 					switch (tabControl.SelectedIndex) {
 						case 1:
 							list[tabIndex] = _reverseSort
-												 ? list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList()
-												 : list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList();
+												 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList())
+												 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList());
 							break;
 						case 2:
 							list[tabIndex] = _reverseSort
-												 ? list[tabIndex].OrderByDescending(o => o.TD.KanbanRank).ToList()
-												 : list[tabIndex].OrderBy(o => o.TD.KanbanRank).ToList();
+												 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TD.KanbanRank).ToList())
+												 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TD.KanbanRank).ToList());
 							break;
 					}
 
 					break;
 				case "kanban":
 					list[tabIndex] = _reverseSort
-										 ? list[tabIndex].OrderByDescending(o => o.TD.Kanban).ToList()
-										 : list[tabIndex].OrderBy(o => o.TD.Kanban).ToList();
+										 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TD.Kanban).ToList())
+										 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TD.Kanban).ToList());
 					break;
 				case "active":
 					list[tabIndex] = _reverseSort
-										 ? list[tabIndex].OrderByDescending(o => o.TimeTaken).ToList()
-										 : list[tabIndex].OrderBy(o => o.TimeTaken).ToList();
+										 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TimeTaken).ToList())
+										 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TimeTaken).ToList());
 					list[tabIndex] = _reverseSort
-										 ? list[tabIndex].OrderByDescending(o => o.IsTimerOn).ToList()
-										 : list[tabIndex].OrderBy(o => o.IsTimerOn).ToList();
+										 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.IsTimerOn).ToList())
+										 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.IsTimerOn).ToList());
 					break;
 			}
 		}
@@ -2959,7 +2969,7 @@ namespace TODOList {
 			_testIfChanged = textBox.Text;
 		}
 		public void TodoTitle_OnLostFocus(object sender, RoutedEventArgs e) {
-			List<TodoItemHolder> todoItemList = GetActiveItemList();
+			ObservableCollection<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxTitle();
 
@@ -2984,7 +2994,7 @@ namespace TODOList {
 			KanbanRefresh();
 		}
 		public void Notes_OnLostFocus(object sender, RoutedEventArgs e) {
-			List<TodoItemHolder> todoItemList = GetActiveItemList();
+			ObservableCollection<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxNotes();
 
@@ -3009,7 +3019,7 @@ namespace TODOList {
 			KanbanRefresh();
 		}
 		public void Problem_OnLostFocus(object sender, RoutedEventArgs e) {
-			List<TodoItemHolder> todoItemList = GetActiveItemList();
+			ObservableCollection<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxProblem();
 
@@ -3034,7 +3044,7 @@ namespace TODOList {
 			KanbanRefresh();
 		}
 		public void Solution_OnLostFocus(object sender, RoutedEventArgs e) {
-			List<TodoItemHolder> todoItemList = GetActiveItemList();
+			ObservableCollection<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox textBox = GetActiveTextBoxSolution();
 
@@ -3097,7 +3107,7 @@ namespace TODOList {
 			TodoComplete();
 		}
 		private void TodoComplete() {
-			List<TodoItemHolder> todoItemList = GetActiveItemList();
+			ObservableCollection<TodoItemHolder> todoItemList = GetActiveItemList();
 			ListBox listBox = GetActiveListBox();
 			TextBox titleTextBox = GetActiveTextBoxTitle();
 			TextBox notesTextBox = GetActiveTextBoxNotes();
@@ -3142,7 +3152,7 @@ namespace TODOList {
 
 			SortHashTagLists(_incompleteItems, _incompleteItemsHashTags);
 
-			List<string> selectedTags = new List<string>();
+			ObservableCollection<string> selectedTags = new ObservableCollection<string>();
 			foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
 			foreach (string tag in tdi.TD.Tags.Where(tag => !selectedTags.Contains(tag)))
 				selectedTags.Add(tag);

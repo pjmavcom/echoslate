@@ -1,3 +1,14 @@
+commit fe706274c3d6b73cb6bef9f6e2c03f02ce1c1e07
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Dec 2 21:39:27 2025 +0800
+
+    20251202- v3.40.22.0 Started making user controls
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251202-0m |Moved IncompleteItemsNotesPanel to a user control and made it 'work'
+
 commit 27cc3d8fa47a37cf9fd86aaabc903f52b34974e3
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Dec 2 18:54:06 2025 +0800
