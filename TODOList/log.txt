@@ -1,3 +1,18 @@
+commit f74f5e354974db701ae8a612bdc2042d49a69831
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu Dec 4 22:11:34 2025 +0800
+
+    20251204- v3.40.24.0 TodoView is coming along nicely
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251204-0m |Changed layout of ItemsView: remove the progress bar and used grids. Much cleaner now.
+    --20251204-0m |List current tags in view to sort by those tags in cbHashTags
+    --20251204-0m |Limit AvailableTags buttons to what the user wants, what is saved in the file
+    --20251204-0m |Make new tabs hashtags selectable
+    --20251204-0m |Fix the sorting buttons
+
 commit c22362c5c785b71482ed971d06188d5223af4d0a
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu Dec 4 08:35:27 2025 +0800

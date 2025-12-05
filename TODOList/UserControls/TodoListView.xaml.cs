@@ -27,14 +27,6 @@ namespace TODOList.UserControls {
 			}
 		}
 
-		private void Sort_OnClick(object sender, RoutedEventArgs e) {
-			if (sender is Button b) {
-				Log.Print($"Sorting by {b.CommandParameter}");
-
-				return;
-			}
-			Log.Warn("No button here");
-		}
 		private void mnuContextMenu_OnClick(object sender, RoutedEventArgs e) {
 		}
 		private void Severity_OnClick(object sender, RoutedEventArgs e) {
@@ -54,6 +46,11 @@ namespace TODOList.UserControls {
 				vm.RefreshAvailableTags();
 				vm.RefreshDisplayedItems();
 				vm.GetCurrentHashTags();
+			}
+		}
+		private void CycleSeverity_OnClick(object sender, RoutedEventArgs e) {
+			if (DataContext is TodoListViewModel vm) {
+				vm.CycleSeverity();
 			}
 		}
 	}

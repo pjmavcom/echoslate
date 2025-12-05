@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using TODOList.Resources;
@@ -35,18 +37,19 @@ namespace TODOList.ViewModels {
 			get => _currentTagFilter;
 			set {
 				_currentTagFilter = value;
+				_reverseSort = true;
 				RefreshDisplayedItems();
 				GetCurrentHashTags();
 				OnPropertyChanged();
 			}
 		}
 
+		// TODO: Change this to RANK after testing
 		private string _currentSort = "severity";
 		public string CurrentSort {
 			get => _currentSort;
 			set {
 				_currentSort = value;
-				Log.Test($"{value}");
 				RefreshDisplayedItems();
 				OnPropertyChanged();
 			}
@@ -55,14 +58,29 @@ namespace TODOList.ViewModels {
 		private bool _reverseSort = true;
 		private bool _previousReverseSort;
 
+		private int _currentSeverityFilter = -1;
+		public int CurrentSeverityFilter {
+			get => _currentSeverityFilter;
+			set {
+				if (value > 3) {
+					value = -1;
+				}
+				_currentSeverityFilter = value;
+				RefreshDisplayedItems();
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(SeverityButtonText));
+				OnPropertyChanged(nameof(SeverityButtonBackground));
+			}
+		}
+
 		private string? _prioritySortTag;
 		public string? PrioritySortTag {
 			get => _prioritySortTag;
 			set {
 				if (_prioritySortTag != value) {
 					_prioritySortTag = value;
+					ApplyPriorityTagSorting();
 					OnPropertyChanged();
-					ApplyPriorityTagSorting(); // ← this runs every time the ComboBox selection changes
 				}
 			}
 		}
@@ -73,13 +91,31 @@ namespace TODOList.ViewModels {
 			AllTags = new ObservableCollection<string>(FilteredTags);
 			RefreshAvailableTags();
 		}
+		public string SeverityButtonText => CurrentSeverityFilter switch {
+												3 => "High",
+												2 => "Med",
+												1 => "Low",
+												0 => "None",
+												_ => ""
+											};
+		public Brush SeverityButtonBackground => CurrentSeverityFilter switch {
+													 3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
+													 2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
+													 1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
+													 0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
+													 _ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
+												 };
+		public void CycleSeverity() {
+			Log.Test();
+			CurrentSeverityFilter++;
+		}
 		public void RefreshAvailableTags() {
 			if (HashTags == null) {
 				HashTags = new ObservableCollection<string>();
 			}
 			HashTags.Clear();
 
-			HashTags.Add("#ALL");
+			HashTags.Add("All");
 			HashTags.Add("#OTHER");
 			HashTags.Add("#BUG");
 			HashTags.Add("#FEATURE");
@@ -110,14 +146,12 @@ namespace TODOList.ViewModels {
 			}
 
 			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems[0]);
-			DisplayedItems.Filter = FilterByTag;
+			DisplayedItems.Filter = CombinedFilter;
 			ApplySort();
+
 			DisplayedItems?.Refresh();
 		}
 		private void ApplySort() {
-			if (_currentSort == _previousSort && _reverseSort == _previousReverseSort) {
-				return;
-			}
 			if (_currentSort != _previousSort) {
 				_reverseSort = false;
 				_previousReverseSort = true;
@@ -136,7 +170,7 @@ namespace TODOList.ViewModels {
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "severity":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", _reverseSort ? ListSortDirection.Ascending : ListSortDirection.Descending));
 					break;
 				case "active":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Active", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
@@ -146,47 +180,57 @@ namespace TODOList.ViewModels {
 					break;
 			}
 		}
-		private bool FilterByTag(object item) {
-			if (item is not TodoItemHolder holder) {
+		private bool CombinedFilter(object item) {
+			if (item is not TodoItemHolder ih) {
 				return false;
 			}
+
+			// Filter by Severity
+			if (CurrentSeverityFilter != -1) {
+				if (ih.Severity != CurrentSeverityFilter) {
+					return false;
+				}
+			}
+
+			// Filter by Tag
 			if (CurrentTagFilter == "#OTHER") {
 				foreach (string tag in HashTags) {
-					if (holder.HasTag(tag)) {
+					if (ih.HasTag(tag)) {
 						return false;
 					}
 				}
 				return true;
 			}
-			return CurrentTagFilter == "#ALL" || CurrentTagFilter == null || holder.HasTag(CurrentTagFilter);
+			return CurrentTagFilter == "#ALL" || CurrentTagFilter == null || ih.HasTag(CurrentTagFilter);
 		}
 		private void ApplyPriorityTagSorting() {
 			DisplayedItems.SortDescriptions.Clear();
 
-			if (DisplayedItems is ListCollectionView lcv) {
-				if (!string.IsNullOrEmpty(PrioritySortTag)) {
-					lcv.CustomSort = new DynamicPriorityTagComparer(PrioritySortTag);
-				} else {
-					lcv.CustomSort = null;
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				if (ih.HasTag(PrioritySortTag)) {
+					ih.IsPrioritySorted = true;
 				}
 			}
 
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.FirstTag), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.Rank), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.StartDateTime), ListSortDirection.Ascending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.IsPrioritySorted), ListSortDirection.Descending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.HasTags), ListSortDirection.Descending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.FirstTag), ListSortDirection.Ascending));
+			ResetPrioritySortTags();
 		}
-
-		private void HashTags_OnSelectedItem(object sender, SelectionChangedEventArgs e) {
-			Log.Test();
+		private void ResetPrioritySortTags() {
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				ih.IsPrioritySorted = false;
+			}
 		}
 		public ICommand SelectTagCommand
 			=> new RelayCommand<string>(tag => { CurrentTagFilter = tag == "All" ? null : tag; });
 		public ICommand SelectSortCommand
 			=> new RelayCommand<string>(sort => { CurrentSort = sort; });
+		public ICommand CycleSeverityCommand
+			=> new RelayCommand<int>(severity => { CurrentSeverityFilter++; });
+
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-
 	}
 }

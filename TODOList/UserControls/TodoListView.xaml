@@ -28,30 +28,45 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Width="Auto"
+                    Margin="4,0"
+                    Padding="16,8"
+                    Background="{Binding SeverityButtonBackground}"
+                    BorderThickness="0"
+                    Click="CycleSeverity_OnClick"
+                    Content="Severity"
+                    FontWeight="SemiBold"
+                    Foreground="White" />
+            <ItemsControl Grid.Column="1"
+                          Margin="10,10,10,5"
+                          ItemsSource="{Binding HashTags}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MinWidth="100" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-        <ItemsControl Grid.Row="0"
-                      Margin="10,10,10,5"
-                      ItemsSource="{Binding HashTags}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel MinWidth="100" Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Margin="4,0"
-                            Padding="16,8"
-                            Background="{Binding RelativeSource={RelativeSource self}, Path=Content, Converter={StaticResource TagToBackgroundConverter}}"
-                            BorderThickness="0"
-                            Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                            CommandParameter="{Binding}"
-                            Content="{Binding}"
-                            FontWeight="SemiBold"
-                            Foreground="White" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Margin="4,0"
+                                Padding="16,8"
+                                Background="{Binding RelativeSource={RelativeSource self}, Path=Content, Converter={StaticResource TagToBackgroundConverter}}"
+                                BorderThickness="0"
+                                Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Content="{Binding}"
+                                FontWeight="SemiBold"
+                                Foreground="White" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
 
 
         <StackPanel Grid.Row="1"
@@ -138,130 +153,6 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
             </ListBox.ItemContainerStyle>
-            <!--
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="0,2"
-                                Orientation="Horizontal"
-                                ToolTip="{Binding NotesAndTags}">
-                        <TextBlock Width="300"
-                                   VerticalAlignment="Top"
-                                   KeyboardNavigation.IsTabStop="False"
-                                   Text="{Binding TagsSorted}"
-                                   TextWrapping="WrapWithOverflow" />
-                        <TextBlock Width="160"
-                                   Height="30"
-                                   Margin="4"
-                                   VerticalAlignment="Top"
-                                   Foreground="Red"
-                                   KeyboardNavigation.IsTabStop="False"
-                                   Text="{Binding StartDateTime}" />
-                        <Button Width="90" Click="Severity_OnClick">
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <ProgressBar Height="30"
-                                                             VerticalAlignment="Top"
-                                                             Background="Black"
-                                                             BorderBrush="DarkSlateGray"
-                                                             Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}"
-                                                             KeyboardNavigation.IsTabStop="False"
-                                                             Maximum="3"
-                                                             Minimum="0"
-                                                             Value="{Binding Severity}" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                        <Label Width="50"
-                               Height="30"
-                               Margin="4"
-                               VerticalAlignment="Top"
-                               Content="{Binding Rank}"
-                               KeyboardNavigation.IsTabStop="False" />
-                        <Button Width="25"
-                                Height="30"
-                                VerticalAlignment="Top"
-                                Click="RankAdjust_OnClick"
-                                CommandParameter="down"
-                                Content="6"
-                                FontFamily="Marlett"
-                                FontSize="20"
-                                KeyboardNavigation.IsTabStop="False" />
-                        <Button Width="25"
-                                Height="30"
-                                VerticalAlignment="Top"
-                                Click="RankAdjust_OnClick"
-                                CommandParameter="up"
-                                Content="5"
-                                FontFamily="Marlett"
-                                FontSize="20"
-                                KeyboardNavigation.IsTabStop="False" />
-                        <Label Width="70"
-                               Height="30"
-                               Margin="4"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Top"
-                               Content="{Binding Kanban}"
-                               KeyboardNavigation.IsTabStop="False" />
-                        <Label Width="65"
-                               Height="30"
-                               VerticalAlignment="Top"
-                               HorizontalContentAlignment="Right"
-                               Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"
-                               ContentStringFormat="{}{0:00.## :}"
-                               KeyboardNavigation.IsTabStop="False"
-                               MouseUp="TimeTakenTimer_OnClick">
-                            <Label.Style>
-                                <Style>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="True">
-                                            <Setter Property="Label.Background" Value="Lime" />
-                                            <Setter Property="Label.Foreground" Value="Black" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="False">
-                                            <Setter Property="Label.Background" Value="Transparent" />
-                                            <Setter Property="Label.Foreground" Value="LightGray" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <Label Width="45"
-                               Height="30"
-                               VerticalAlignment="Top"
-                               HorizontalContentAlignment="Left"
-                               Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}"
-                               ContentStringFormat="{}{0:00.##}"
-                               KeyboardNavigation.IsTabStop="False"
-                               MouseUp="TimeTakenTimer_OnClick">
-                            <Label.Style>
-                                <Style>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="True">
-                                            <Setter Property="Label.Background" Value="Lime" />
-                                            <Setter Property="Label.Foreground" Value="Black" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="False">
-                                            <Setter Property="Label.Background" Value="Transparent" />
-                                            <Setter Property="Label.Foreground" Value="LightGray" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <TextBlock Margin="4,0"
-                                   Text="{Binding Todo}"
-                                   TextAlignment="Left"
-                                   TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            -->
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Height="36" Background="Transparent">
@@ -298,13 +189,9 @@
                                    Foreground="White"
                                    TextAlignment="Center"
                                    ToolTip="Severity" />
-                        <!--  Text="{Binding SeverityName}"  -->
-
                         <Label Grid.Column="3"
                                Width="50"
                                Content="{Binding Rank}" />
-
-                        <!--  Down arrow (was "6" in Marlett)  -->
                         <Button Grid.Column="4"
                                 Width="25"
                                 Height="30"
@@ -313,8 +200,6 @@
                                 Content="▼"
                                 FontSize="16"
                                 FontWeight="Bold" />
-
-                        <!--  Up arrow (was "5" in Marlett)  -->
                         <Button Grid.Column="5"
                                 Width="25"
                                 Height="30"
@@ -323,13 +208,6 @@
                                 Content="▲"
                                 FontSize="16"
                                 FontWeight="Bold" />
-                        <!--
-                        <Button Grid.Column="4" Width="25" Height="30"
-                                Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                CommandParameter="down" Content="6" FontFamily="Marlett" FontSize="20" />
-                        <Button Grid.Column="5" Width="25" Height="30"
-                                Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                CommandParameter="up" Content="5" FontFamily="Marlett" FontSize="20" />-->
                         <Label Grid.Column="6"
                                Width="70"
                                Content="{Binding Kanban}" />
@@ -364,12 +242,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="70" />
+                    <!-- <RowDefinition Height="*" /> -->
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="2"
-                           FontWeight="Bold"
-                           Foreground="Red"
-                           Text="{Binding DebugCount, StringFormat='Items in view: {0}'}" />
+                <!--  <TextBlock Grid.Row="2"  -->
+                <!--  FontWeight="Bold"  -->
+                <!--  Foreground="Red"  -->
+                <!--  Text="{Binding DebugCount, StringFormat='Items in view: {0}'}" />  -->
                 <ComboBox Name="cbSeverity"
                           Grid.Row="0"
                           KeyboardNavigation.TabIndex="2"
