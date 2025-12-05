@@ -1,3 +1,18 @@
+commit 609d392438d302285e1aa81e104878847e657a16
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Dec 5 15:41:45 2025 +0800
+
+    20251204- v3.40.25.0 Hashtag sorting and now the severity filter works
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251205-0m |Remove extra space that the list count took up under the Add button
+    --20251205-0m |Finish HashTag sorting
+            Notes: If tag has priority hash tag, flag it, then sort by that flag
+    --20251205-0m |Sort by rank by using a dictionary(tag, rank)
+    --20251205-0m |A button for just for severity
+
 commit f74f5e354974db701ae8a612bdc2042d49a69831
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu Dec 4 22:11:34 2025 +0800

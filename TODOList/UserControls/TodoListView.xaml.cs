@@ -28,6 +28,7 @@ namespace TODOList.UserControls {
 		}
 
 		private void mnuContextMenu_OnClick(object sender, RoutedEventArgs e) {
+			Log.Test();
 		}
 		private void Severity_OnClick(object sender, RoutedEventArgs e) {
 		}
@@ -46,6 +47,8 @@ namespace TODOList.UserControls {
 				vm.RefreshAvailableTags();
 				vm.RefreshDisplayedItems();
 				vm.GetCurrentHashTags();
+				vm.SetRankTemp();
+				vm.lbTodos = lbTodos;
 			}
 		}
 		private void CycleSeverity_OnClick(object sender, RoutedEventArgs e) {

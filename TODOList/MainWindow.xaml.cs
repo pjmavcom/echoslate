@@ -67,7 +67,7 @@ namespace TODOList {
 		private readonly List<TabItem> _kanbanTabsList;
 
 		private TabControl _currentSelectedSubTab;
-		private readonly List<TodoItem> _masterList;
+		public readonly ObservableCollection<TodoItem> _masterList;
 
 		private readonly List<ObservableCollection<TodoItemHolder>> _incompleteItems;
 		private readonly List<ObservableCollection<TodoItemHolder>> _kanbanItems;
@@ -105,7 +105,7 @@ namespace TODOList {
 		private ListBox _lbNotesPanelHashTags;
 
 		// HISTORY TAB ITEMS
-		private HistoryItem _currentHistoryItem;
+		public HistoryItem _currentHistoryItem;
 		private int _currentHistoryItemIndex;
 		private int _currentHistoryItemMouseIndex;
 		private bool _didMouseSelect;
@@ -208,7 +208,7 @@ namespace TODOList {
 		private ObservableCollection<string> KanbanHashTags => _kanbanHashTags[kanbanTodoTabs.SelectedIndex];
 		private ObservableCollection<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
 
-		private string TabNames => incompleteItemsTodoTabs.SelectedIndex == -1
+		public string TabNames => incompleteItemsTodoTabs.SelectedIndex == -1
 									   ? _incompleteItemsTabsList[0].Name
 									   : _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
 
@@ -275,7 +275,7 @@ namespace TODOList {
 			
 			_incompleteItemsTabsList = new List<TabItem>();
 			_kanbanTabsList = new List<TabItem>();
-			_masterList = new List<TodoItem>();
+			_masterList = new ObservableCollection<TodoItem>();
 			_incompleteItems = new List<ObservableCollection<TodoItemHolder>>();
 			_kanbanItems = new List<ObservableCollection<TodoItemHolder>>();
 			_kanbanTabHeaders = new List<string>();
@@ -286,7 +286,7 @@ namespace TODOList {
 			HistoryItems = new List<HistoryItem>();
 			_currentHistoryItem = new HistoryItem("", "");
 
-			_todoListViewModel = new TodoListViewModel(_incompleteItems, TagFilters);
+			_todoListViewModel = new TodoListViewModel(_masterList, TagFilters);
 			ucTodoListView.DataContext = _todoListViewModel;
 
 			incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
@@ -2216,14 +2216,14 @@ namespace TODOList {
 
 			AutoSave();
 		}
-		private void AddItemToMasterList(TodoItem td) {
+		public void AddItemToMasterList(TodoItem td) {
 			// UNCHECKED
 			if (MasterListContains(td) >= 0)
 				return;
 			CleanTodoHashRanks(td);
 			_masterList.Add(td);
 		}
-		private void RemoveItemFromMasterList(TodoItem td) {
+		public void RemoveItemFromMasterList(TodoItem td) {
 			// UNCHECKED
 			int index = MasterListContains(td);
 			if (index == -1)
@@ -2236,8 +2236,7 @@ namespace TODOList {
 				return _masterList.IndexOf(td);
 			return -1;
 		}
-		private void EditItem(Selector lb, IReadOnlyList<TodoItem> list) {
-			// UNCHECKED
+		private void EditItem(Selector lb, IReadOnlyList<TodoItem> list) { // UNCHECKED
 			int index = lb.SelectedIndex;
 			if (index < 0)
 				return;

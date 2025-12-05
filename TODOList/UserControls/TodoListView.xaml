@@ -39,10 +39,11 @@
                     Padding="16,8"
                     Background="{Binding SeverityButtonBackground}"
                     BorderThickness="0"
-                    Click="CycleSeverity_OnClick"
+                    Command="{Binding CycleSeverityCommand}"
                     Content="Severity"
                     FontWeight="SemiBold"
                     Foreground="White" />
+            <!--  Click="CycleSeverity_OnClick"  -->
             <ItemsControl Grid.Column="1"
                           Margin="10,10,10,5"
                           ItemsSource="{Binding HashTags}">
@@ -115,36 +116,38 @@
                  SelectionMode="Extended">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="Edit"
+                    <MenuItem Command="{Binding ContextMenuEditCommand}"
+                              CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               Header="Edit" />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="Delete"
-                              Header="Delete" />
+                    <!--  Add other MenuItems the same way  -->
+                    <!--  Add more menu items the same way  -->
+                    <MenuItem Header="Delete" />
+                    <!--  Command="{Binding ContextMenuDeleteCommand}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
                     <Separator />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="ResetTimer"
-                              Header="Reset Timer" />
+                    <MenuItem Header="Reset Timer" />
+                    <!--  Command="{Binding ContextMenuResetTimerCommand}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
                     <Separator />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="Kanban3"
-                              Header="Set Kanban: Current" />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="Kanban2"
-                              Header="Set Kanban: Next" />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="Kanban1"
-                              Header="Set Kanban: Backlog" />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="Kanban0"
-                              Header="Set Kanban: None" />
+                    <MenuItem Header="Set Kanban: Current" />
+                    <!--  Command="{Binding ContextMenuKanban3Command}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
+                    <MenuItem Header="Set Kanban: Next" />
+                    <!--  Command="{Binding ContextMenuKanban2Command}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
+                    <MenuItem Header="Set Kanban: Backlog" />
+                    <!--  Command="{Binding ContextMenuKanban1Command}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
+                    <MenuItem Header="Set Kanban: None" />
+                    <!--  Command="{Binding ContextMenuKanban0Command}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
                     <Separator />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="MoveUp"
-                              Header="Move to Top" />
-                    <MenuItem Click="mnuContextMenu_OnClick"
-                              CommandParameter="MoveDown"
-                              Header="Move to Bottom" />
+                    <MenuItem Header="Move to Top" />
+                    <!--  Command="{Binding ContextMenuMoveToTopCommand}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
+                    <MenuItem Header="Move to Bottom" />
+                    <!--  Command="{Binding ContextMenuMoveToBottomCommand}"  -->
+                    <!--  CommandParameter="{Binding}"  -->
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.ItemContainerStyle>
@@ -195,25 +198,27 @@
                         <Button Grid.Column="4"
                                 Width="25"
                                 Height="30"
-                                Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                 CommandParameter="down"
                                 Content="▼"
                                 FontSize="16"
                                 FontWeight="Bold" />
+                        <!--  Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"  -->
                         <Button Grid.Column="5"
                                 Width="25"
                                 Height="30"
-                                Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                 CommandParameter="up"
                                 Content="▲"
                                 FontSize="16"
                                 FontWeight="Bold" />
+                        <!--  Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"  -->
                         <Label Grid.Column="6"
                                Width="70"
+                               HorizontalAlignment="Center"
                                Content="{Binding Kanban}" />
 
                         <Label Grid.Column="7"
                                Width="110"
+                               HorizontalAlignment="Center"
                                Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
                                Content="{Binding TimeTakenDisplay}"
                                Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}" />
@@ -271,3 +276,5 @@
                                          Grid.Column="1" />
     </Grid>
 </UserControl>
+
+

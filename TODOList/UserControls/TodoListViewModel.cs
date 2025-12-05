@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,7 +18,8 @@ using TODOList.Resources;
 
 namespace TODOList.ViewModels {
 	public class TodoListViewModel : INotifyPropertyChanged {
-		public List<ObservableCollection<TodoItemHolder>> AllItems { get; }
+		public ObservableCollection<TodoItem> MasterList { get; }
+		public ObservableCollection<TodoItemHolder> AllItems { get; }
 		private ICollectionView _displayedItems;
 		public ICollectionView DisplayedItems {
 			get => _displayedItems;
@@ -26,6 +28,8 @@ namespace TODOList.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+
+		public ListBox lbTodos;
 
 		public ObservableCollection<string> AllTags { get; }
 		public ObservableCollection<string> FilteredTags { get; }
@@ -85,11 +89,17 @@ namespace TODOList.ViewModels {
 			}
 		}
 
-		public TodoListViewModel(List<ObservableCollection<TodoItemHolder>> allItems, ObservableCollection<string> allTags) {
-			AllItems = allItems ?? throw new ArgumentNullException(nameof(allItems));
+		public TodoListViewModel(ObservableCollection<TodoItem> allItems, ObservableCollection<string> allTags) {
+			MasterList = allItems ?? throw new ArgumentNullException(nameof(allItems));
 			FilteredTags = allTags ?? throw new ArgumentNullException(nameof(allTags));
 			AllTags = new ObservableCollection<string>(FilteredTags);
+			AllItems = new ObservableCollection<TodoItemHolder>();
 			RefreshAvailableTags();
+
+			CycleSeverityCommand = new RelayCommand(CycleSeverity);
+		}
+		public void RefreshAll() {
+			RefreshDisplayedItems(true);
 		}
 		public string SeverityButtonText => CurrentSeverityFilter switch {
 												3 => "High",
@@ -106,7 +116,6 @@ namespace TODOList.ViewModels {
 													 _ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
 												 };
 		public void CycleSeverity() {
-			Log.Test();
 			CurrentSeverityFilter++;
 		}
 		public void RefreshAvailableTags() {
@@ -139,27 +148,34 @@ namespace TODOList.ViewModels {
 				}
 			}
 		}
-		public void RefreshDisplayedItems() {
-			if (AllItems[0].Count == 0) {
+		public void RefreshDisplayedItems(bool refresh = false) {
+			AllItems.Clear();
+			foreach (TodoItem item in MasterList) {
+				AllItems.Add(new TodoItemHolder(item));
+			}
+
+			if (AllItems.Count == 0) {
 				Log.Warn("AllItems is empty.");
 				return;
 			}
 
-			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems[0]);
+			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
 			DisplayedItems.Filter = CombinedFilter;
-			ApplySort();
+			ApplySort(refresh);
 
 			DisplayedItems?.Refresh();
 		}
-		private void ApplySort() {
-			if (_currentSort != _previousSort) {
-				_reverseSort = false;
-				_previousReverseSort = true;
-			} else {
-				_previousReverseSort = _reverseSort;
-				_reverseSort = !_reverseSort;
+		private void ApplySort(bool refresh = false) {
+			if (!refresh) {
+				if (_currentSort != _previousSort) {
+					_reverseSort = false;
+					_previousReverseSort = true;
+				} else {
+					_previousReverseSort = _reverseSort;
+					_reverseSort = !_reverseSort;
+				}
+				_previousSort = _currentSort;
 			}
-			_previousSort = _currentSort;
 
 			DisplayedItems.SortDescriptions.Clear();
 			switch (CurrentSort) {
@@ -222,12 +238,153 @@ namespace TODOList.ViewModels {
 				ih.IsPrioritySorted = false;
 			}
 		}
+		//TODO: Remove this later
+		public void SetRankTemp() {
+			int index = 1;
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				ih.Rank = index;
+				index++;
+			}
+		}
+		private void ContextMenuEdit(TodoListViewModel vm) {
+			if (lbTodos.SelectedItem is not TodoItemHolder ih) {
+				return;
+			}
+			Log.Test();
+			TodoItem item = ih.TD;
+			if (lbTodos.SelectedItems.Count > 1) {
+				MultiEditItems(lbTodos);
+			} else if (lbTodos.SelectedItems.Count == 1) {
+				EditItem(item);
+			} else {
+				Log.Error("No selected items!");
+			}
+		}
+		private void EditItem(TodoItem item) {
+			Log.Debug($"{item}");
+			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(item, MainWindow.GetActiveWindow().TabNames);
+			itemEditor.ShowDialog();
+
+			// TODO: needs to get all instances of the todo from _currentHistoryItem.CompletedTodos, CompletedBugs, CompletedFeatures
+			// TODO: check that ranks work as intended
+			if (itemEditor.Result) {
+				MainWindow.GetActiveWindow().RemoveItemFromMasterList(item);
+				if (MasterList.Contains(item)) {
+					MasterList.Remove(item);
+				}
+				MasterList.Add(itemEditor.ResultTodoItem);
+			}
+			var list = MainWindow.GetActiveWindow()._masterList;
+			RefreshDisplayedItems(true);
+		}
+		private void EditItem(Selector lb, IReadOnlyList<TodoItem> list) {
+			// UNCHECKED
+			int index = lb.SelectedIndex;
+			if (index < 0)
+				return;
+
+			TodoItem td = list[index];
+			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(td, MainWindow.GetActiveWindow().TabNames);
+
+			itemEditor.ShowDialog();
+			if (itemEditor.Result) {
+				MainWindow.GetActiveWindow().RemoveItemFromMasterList(td);
+				if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Contains(td))
+					MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Remove(td);
+
+				if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Contains(td))
+					MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Remove(td);
+
+				if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Contains(td))
+					MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Remove(td);
+
+				MainWindow.GetActiveWindow().AddItemToMasterList(itemEditor.ResultTodoItem);
+				// AutoSave();
+			}
+
+			// IncompleteItemsRefresh();
+			// KanbanRefresh();
+			// RefreshHistory();
+		}
+		private void MultiEditItems(ListBox lb) {
+			// UNCHECKED
+			/*
+			TodoItemHolder firstTd = lb.SelectedItems[0] as TodoItemHolder;
+
+			List<string> tags = new List<string>();
+			List<string> commonTagsTemp = new List<string>();
+			foreach (TodoItemHolder itemHolder in lb.SelectedItems) {
+				foreach (string tag in itemHolder.TD.Tags) {
+					if (!tags.Contains(tag))
+						tags.Add(tag);
+					else if (!commonTagsTemp.Contains(tag))
+						commonTagsTemp.Add(tag);
+				}
+			}
+
+			List<string> commonTags = commonTagsTemp.ToList();
+			foreach (TodoItemHolder itemHolder in lb.SelectedItems)
+			foreach (string tag in commonTagsTemp.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
+				commonTags.Remove(tag);
+
+			if (firstTd == null)
+				return;
+
+			DlgTodoMultiItemEditor dlgTodoMultiItemEditor =
+				new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
+			dlgTodoMultiItemEditor.ShowDialog();
+			if (!dlgTodoMultiItemEditor.Result)
+				return;
+
+			List<string> tagsToRemove =
+				commonTags.Where(tag => !dlgTodoMultiItemEditor.ResultTags.Contains(tag)).ToList();
+
+			foreach (TodoItemHolder itemHolder in lb.SelectedItems) {
+				if (dlgTodoMultiItemEditor.ChangeTag) {
+					foreach (string tag in tagsToRemove)
+						itemHolder.TD.Tags.Remove(tag);
+					foreach (string tag in
+							 dlgTodoMultiItemEditor.ResultTags
+								.Where(tag => !itemHolder.TD.Tags.Contains(tag.ToUpper())))
+						itemHolder.TD.Tags.Add(tag.ToUpper());
+				}
+
+				if (dlgTodoMultiItemEditor.ChangeRank)
+					itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultTD.Rank;
+				if (dlgTodoMultiItemEditor.ChangeSev)
+					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultTD.Severity;
+				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.ChangeComplete)
+					itemHolder.TD.IsComplete = true;
+				if (!dlgTodoMultiItemEditor.ChangeTodo)
+					continue;
+
+				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTD.Todo;
+				foreach (string tag in
+						 dlgTodoMultiItemEditor.ResultTD.Tags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
+					itemHolder.TD.Tags.Add(tag);
+			}
+
+			IncompleteItemsRefresh();
+			KanbanRefresh();
+			*/
+		}
+
+
+		public ICommand ContextMenuEditCommand => new RelayCommand<TodoListViewModel>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuDeleteCommand  => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuResetTimerCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuKanban3Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuKanban2Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuKanban1Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuKanban0Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuMoveToTopCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		// public ICommand ContextMenuMoveToBottomCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+
 		public ICommand SelectTagCommand
 			=> new RelayCommand<string>(tag => { CurrentTagFilter = tag == "All" ? null : tag; });
 		public ICommand SelectSortCommand
 			=> new RelayCommand<string>(sort => { CurrentSort = sort; });
-		public ICommand CycleSeverityCommand
-			=> new RelayCommand<int>(severity => { CurrentSeverityFilter++; });
+		public ICommand CycleSeverityCommand { get; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
