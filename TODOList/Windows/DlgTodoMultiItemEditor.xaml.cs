@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,11 +11,24 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace TODOList {
-	public partial class DlgTodoMultiItemEditor {
-		public TodoItem ResultTD => _td;
+	public partial class DlgTodoMultiItemEditor : INotifyPropertyChanged {
+		// public TodoItem ResultTD => _td;
 		public List<string> ResultTags;
-		public bool Result;
+		public string ResultTodo;
+		public int ResultRank;
+		public int ResultSeverity;
 		public bool ResultIsComplete;
+		
+		public bool Result;
+		
+		private string _todo;
+		public string Todo {
+			get => _todo;
+			set {
+				_todo = value;
+				OnPropertyChanged();
+			}
+		}
 
 		public bool IsSeverityEnabled { get; set; }
 		public bool IsRankEnabled { get; set; }
@@ -21,16 +36,35 @@ namespace TODOList {
 		public bool IsTodoEnabled { get; set; }
 		public bool IsTagEnabled { get; set; }
 
-		[ObservableProperty] public ObservableCollection<TagHolder> _tags;
-		private readonly TodoItem _td;
-		private readonly int _previousRank;
+		public ObservableCollection<TagHolder> _tags;
+		public ObservableCollection<TagHolder> Tags {
+			get => _tags;
+			set {
+				_tags = value;
+				OnPropertyChanged();
+			}
+		}
+		// private readonly TodoItem _td;
+		// private readonly int _previousRank;
+		private int _rank;
+		public int Rank {
+			get => _rank;
+			set {
+				_rank = value;
+				OnPropertyChanged();
+			}
+		}
 		private int _currentSeverity;
 		public int CurrentSeverity {
 			get => _currentSeverity;
-			set => _currentSeverity = value;
+			set {
+				_currentSeverity = value;
+				OnPropertyChanged();
+			}
 		}
-		private int _rank;
 		private readonly string _currentFilter;
+
+		public string CompleteButtonContent { get; set; }
 
 		private List<TodoItem> items;
 
@@ -39,17 +73,13 @@ namespace TODOList {
 			DataContext = this;
 
 			List<string> commonTags = GetCommonTags(items);
-			RemoveNonCommonTags(items, commonTags);
 
-			_td = items[0];
 			_currentFilter = currentFilter;
-			_currentSeverity = _td.Severity;
-			_rank = _td.Rank[_currentFilter];
-			_previousRank = _rank;
+			_currentSeverity = items[0].Severity;
+			_rank = items[0].Rank[_currentFilter];
 
 			cbSev.SelectedIndex = _currentSeverity;
-			tbRank.Text = _rank.ToString();
-			// btnComplete.Content = _td.IsComplete ? "Reactivate" : "Complete";
+			CompleteButtonContent = items[0].IsComplete ? "Reactivate" : "Complete";
 
 			_tags = new ObservableCollection<TagHolder>();
 			foreach (string tag in commonTags) {
@@ -78,27 +108,9 @@ namespace TODOList {
 		}
 		public DlgTodoMultiItemEditor(TodoItem td, string currentFilter, List<string> tags) {
 			InitializeComponent();
-
-			_td = new TodoItem(td.ToString()) {
-												  IsTimerOn = td.IsTimerOn
-											  };
-			_currentFilter = currentFilter;
-			_currentSeverity = _td.Severity;
-			_rank = td.Rank[_currentFilter];
-			_previousRank = td.Rank[_currentFilter];
-
-			cbSev.SelectedIndex = _currentSeverity;
-			tbRank.Text = _rank.ToString();
-			// btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
-
-			_tags = new ObservableCollection<TagHolder>();
-			foreach (string tag in tags)
-				_tags.Add(new TagHolder(tag));
-			lbTags.ItemsSource = _tags;
-			lbTags.Items.Refresh();
-
-			CenterWindowOnMouse();
+			Close();
 		}
+		
 		private void CenterWindowOnMouse() {
 			Window win = Application.Current.MainWindow;
 
@@ -109,32 +121,29 @@ namespace TODOList {
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-		private void SetTodo() {
-			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
-
-			string tempTags = "";
-			ResultTags = new List<string>();
-			foreach (TagHolder th in _tags)
-				if (!ResultTags.Contains(th.Text))
-					ResultTags.Add(th.Text);
-			foreach (string tag in ResultTags)
-				tempTags += tag + " ";
-			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
-
-			_td.Tags = new ObservableCollection<string>();
-			_td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
-			_td.Severity = _currentSeverity;
-			if (_previousRank > _td.Rank[_currentFilter])
-				_td.Rank[_currentFilter]--;
+		private void SetResult() {
+			if (IsTagEnabled) {
+				ResultTags = new List<string>();
+				foreach (TagHolder th in _tags) {
+					string tag = th.Text.ToUpper();
+					if (!ResultTags.Contains(tag))
+						ResultTags.Add(tag);}
+			}
+			if (IsSeverityEnabled) {
+				ResultSeverity = cbSev.SelectedIndex;
+			}
+			if (IsRankEnabled) {
+				ResultRank = Rank;
+			}
+			if (IsTodoEnabled) {
+				ResultTodo = Todo;
+			}
 		}
-		private void DeleteTag_OnClick(object sender, EventArgs e) {
-			if (!(sender is Button b))
-				return;
-			TagHolder th = b.DataContext as TagHolder;
+		private void Delete(TagHolder th) {
 			_tags.Remove(th);
 			lbTags.Items.Refresh();
 		}
-		private void AddTag_OnClick(object sender, EventArgs e) {
+		private void AddTag() {
 			string name = "#NEWTAG";
 			int tagNumber = 0;
 			bool nameExists = false;
@@ -154,59 +163,44 @@ namespace TODOList {
 			_tags.Add(th);
 			lbTags.Items.Refresh();
 		}
-		private void Rank_OnClick(object sender, EventArgs e) {
-			Button b = sender as Button;
-
-			if (b == null)
-				return;
-			string compare = (string)b.CommandParameter;
-			if (compare == "up")
-				_rank--;
-			else if (compare == "down")
-				_rank++;
-			else if (compare == "top")
-				_rank = 0;
-			else if (compare == "bottom")
-				_rank = int.MaxValue;
-
-			_rank = _rank > 0 ? _rank : 0;
-			tbRank.Text = _rank.ToString();
-			_td.Rank[_currentFilter] = _rank;
-		}
-		private void RankChanged() {
-			if (tbRank.Text == "")
-				tbRank.Text = "0";
-			_td.Rank[_currentFilter] = Convert.ToInt32(tbRank.Text);
-		}
-		private void Rank_OnPreviewTextInput(object sender, TextCompositionEventArgs e) {
-			if (!(sender is TextBox tb))
-				return;
-			var fullText = tb.Text.Insert(tb.SelectionStart, e.Text);
-
-			e.Handled = !double.TryParse(fullText, out _);
-		}
-		private void Ok_OnClick(object sender, EventArgs e) {
+		private void Ok() {
 			Result = true;
-			SetTodo();
+			SetResult();
 
 			Close();
 		}
-		private void Complete_OnClick(object sender, EventArgs e) {
+		private void Complete() {
 			Result = true;
 			ResultIsComplete = true;
-			_td.IsComplete = !_td.IsComplete;
-			SetTodo();
+			SetResult();
 
 			Close();
 		}
-		private void Cancel_OnClick() {
-			Log.Debug($"{IsSeverityEnabled},{IsCompleteEnabled},{IsTagEnabled},{IsRankEnabled},{IsTodoEnabled}");
-			string test = "";
-			if (_tags.Count > 0) test = _tags[0].Text;
-			Log.Debug($"{cbSev.SelectionBoxItem},{tbRank.Text}, {tbTodo.Text},{test}");
-			// Close();
+		private void Cancel() {
+			IsTagEnabled = false;
+			IsSeverityEnabled = false;
+			IsRankEnabled = false;
+			IsTodoEnabled = false;
+			IsCompleteEnabled = false;
+			
+			Close();
 		}
-		public ICommand CancelCommand => new RelayCommand(Cancel_OnClick);
-		public ICommand RankChangedCommand => new RelayCommand(RankChanged);
+		private void RankToTop() {
+			Rank = 0;
+		}
+		private void RankToBottom() {
+			Rank = int.MaxValue;
+		}
+		public ICommand CancelCommand => new RelayCommand(Cancel);
+		public ICommand RankToTopCommand => new RelayCommand(RankToTop);
+		public ICommand RankToBottomCommand => new RelayCommand(RankToBottom);
+		public ICommand CompleteCommand => new RelayCommand(Complete);
+		public ICommand OkCommand => new RelayCommand(Ok);
+		public ICommand AddTagCommand => new RelayCommand(AddTag);
+		public ICommand DeleteTagCommand => new RelayCommand<TagHolder>(Delete);
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected void OnPropertyChanged([CallerMemberName] string name = null)
+			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 	}
 }

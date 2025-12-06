@@ -2289,6 +2289,7 @@ namespace TODOList {
 
 			DlgTodoMultiItemEditor dlgTodoMultiItemEditor =
 				new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
+			return;
 			dlgTodoMultiItemEditor.ShowDialog();
 			if (!dlgTodoMultiItemEditor.Result)
 				return;
@@ -2306,18 +2307,18 @@ namespace TODOList {
 						itemHolder.TD.Tags.Add(tag.ToUpper());
 				}
 
-				if (dlgTodoMultiItemEditor.IsRankEnabled)
-					itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultTD.Rank;
+				// if (dlgTodoMultiItemEditor.IsRankEnabled)
+					// itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultRank;
 				if (dlgTodoMultiItemEditor.IsSeverityEnabled)
-					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultTD.Severity;
+					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultSeverity;
 				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.IsCompleteEnabled)
 					itemHolder.TD.IsComplete = true;
 				if (!dlgTodoMultiItemEditor.IsTodoEnabled)
 					continue;
 
-				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTD.Todo;
+				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTodo;
 				foreach (string tag in
-						 dlgTodoMultiItemEditor.ResultTD.Tags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
+						 dlgTodoMultiItemEditor.ResultTags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
 					itemHolder.TD.Tags.Add(tag);
 			}
 

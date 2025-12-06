@@ -11,7 +11,7 @@ Kanban
 Todos
 ====================================FILESETTINGS
 BackupIncrement
-5
+6
 BackupTime
 5
 AutoBackup
@@ -19,7 +19,7 @@ True
 AutoSave
 True
 CurrentProjectVersion
-3.40.28.0.2
+3.40.29.0.2
 ====================================TODO
 2024/05/01|10:30|-|-|0|False|Bug # 14,All # 39,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?||2|15||
 2024/04/22|22:41|-|-|0|False|Feature # 14,All # 61,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|13||
@@ -112,6 +112,11 @@ CurrentProjectVersion
 2025/12/06|14:56|-|-|0|False|All # 3,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # 3,|0|#TODOS Remove TEMPSetRank() from TodoListViewModel||3|17||
 2025/12/06|15:30|-|-|0|False|All # 4,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # 4,|1|#TODOS Remove ObservableCollection and replace with List if needed||3|18||
 ====================================VCS
+NewVCS
+True|20251206|195041|v3.40.28.0 Multi editing todos works now|Updated the whole project and fixed several bugs. Should be smoother now.
+VCSTodos
+2025/12/06|22:22|20251206|222217|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Multi todo item editor works now. Need to apply the changes to the todos, but the dialog works||3|18||
+EndVCS
 NewVCS
 True|20251205|210922|v3.40.27.0 Making a backup since I have to update the project|
 VCSTodos
@@ -848,6 +853,6 @@ VCSTodos
 2019-02-09|11:22|20190209|112231|0|True|All # 0,|1|#BUG Save text in notes bug||0|0||
 EndVCS
 NewVCS
-False|20251206|195041|v3.40.28.0 |
+False|20251206|222259|v3.40.29.0 |
 VCSTodos
 EndVCS

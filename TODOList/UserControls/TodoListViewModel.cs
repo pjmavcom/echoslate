@@ -300,12 +300,10 @@ namespace TODOList.ViewModels {
 			}
 		}
 		private void MultiEditItems(List<TodoItem> items) {
-			foreach (TodoItem item in items) {
-				Log.Debug($"{item.Kanban}");
-			}
 			string tagFilter = CurrentTagFilter != null ? CurrentTagFilter.Remove(0, 1).ToLower().CapitalizeFirstLetter() : "All";
 			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
-			dlg.Show();
+			dlg.ShowDialog();
+			Log.Test();
 			// get common tags => move to multi tag editor
 			/*
 

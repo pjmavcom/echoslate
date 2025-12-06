@@ -1,16 +1,12 @@
 <UserControl x:Class="TODOList.UserControls.TodoListView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:TODOList.UserControls"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:resources="clr-namespace:TODOList.Resources"
-             xmlns:todoList="clr-namespace:TODOList"
-             xmlns:viewModels="clr-namespace:TODOList.ViewModels"
-             d:DesignHeight="500"
-             d:DesignWidth="*"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:TODOList.UserControls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:resources="clr-namespace:TODOList.Resources"
+             xmlns:todoList="clr-namespace:TODOList" xmlns:viewModels="clr-namespace:TODOList.ViewModels"
+             d:DesignHeight="500" d:DesignWidth="*"
              IsVisibleChanged="TodoListView_IsVisibleChanged"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             >
     <UserControl.Resources>
         <resources:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
         <resources:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
@@ -35,18 +31,18 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
                     Width="Auto"
-                    Margin="4,0"
-                    Padding="16,8"
+                    Margin="4,0" Padding="16,8"
                     Background="{Binding SeverityButtonBackground}"
                     BorderThickness="0"
                     Command="{Binding CycleSeverityCommand}"
-                    Content="Severity"
-                    FontWeight="SemiBold"
-                    Foreground="White" />
+                    Content="Severity" FontWeight="SemiBold"
+                    Foreground="White"
+                    />
             <!--  Click="CycleSeverity_OnClick"  -->
             <ItemsControl Grid.Column="1"
                           Margin="10,10,10,5"
-                          ItemsSource="{Binding FilterTags}">
+                          ItemsSource="{Binding FilterTags}"
+                          >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel MinWidth="100" Orientation="Horizontal" />
@@ -55,65 +51,63 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Margin="4,0"
-                                Padding="16,8"
+                        <Button Margin="4,0" Padding="16,8"
                                 Background="{Binding RelativeSource={RelativeSource self}, Path=Content, Converter={StaticResource TagToBackgroundConverter}}"
                                 BorderThickness="0"
                                 Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                 CommandParameter="{Binding}"
                                 Content="{Binding}"
-                                FontWeight="SemiBold"
-                                Foreground="White" />
+                                FontWeight="SemiBold" Foreground="White"
+                                />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
 
 
-        <StackPanel Grid.Row="1"
-                    Grid.Column="0"
-                    Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Grid.Column="0"
+                    Orientation="Horizontal"
+                    >
             <ComboBox Name="cbHashTags"
                       Width="301"
                       ItemsSource="{Binding AllTags}"
                       KeyboardNavigation.IsTabStop="False"
-                      SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}" />
+                      SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}"
+                      />
             <Button Width="161"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    CommandParameter="date"
-                    Content="Date"
-                    KeyboardNavigation.IsTabStop="False" />
+                    CommandParameter="date" Content="Date"
+                    KeyboardNavigation.IsTabStop="False"
+                    />
             <Button Width="101"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    CommandParameter="severity"
-                    Content="Severity"
-                    KeyboardNavigation.IsTabStop="False" />
+                    CommandParameter="severity" Content="Severity"
+                    KeyboardNavigation.IsTabStop="False"
+                    />
             <Button Width="111"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    CommandParameter="rank"
-                    Content="Rank"
-                    KeyboardNavigation.IsTabStop="False" />
+                    CommandParameter="rank" Content="Rank"
+                    KeyboardNavigation.IsTabStop="False"
+                    />
             <Button Width="71"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    CommandParameter="kanban"
-                    Content="Kanban"
-                    KeyboardNavigation.IsTabStop="False" />
+                    CommandParameter="kanban" Content="Kanban"
+                    KeyboardNavigation.IsTabStop="False"
+                    />
             <Button Width="111"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                    CommandParameter="active"
-                    Content="Active"
-                    KeyboardNavigation.IsTabStop="False" />
+                    CommandParameter="active" Content="Active"
+                    KeyboardNavigation.IsTabStop="False"
+                    />
         </StackPanel>
 
         <ListBox x:Name="lbTodos"
-                 Grid.Row="2"
-                 Grid.Column="0"
-                 HorizontalContentAlignment="Stretch"
-                 VerticalContentAlignment="Stretch"
+                 Grid.Row="2" Grid.Column="0"
+                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                  ItemsSource="{Binding DisplayedItems}"
-                 KeyboardNavigation.TabIndex="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 SelectionMode="Extended">
+                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 SelectionMode="Extended"
+                 >
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding ContextMenuEditCommand}" Header="Edit" />
@@ -173,59 +167,58 @@
                                    Margin="4,0"
                                    Text="{Binding TagsSorted}"
                                    TextTrimming="CharacterEllipsis"
-                                   ToolTip="{Binding NotesAndTags}" />
+                                   ToolTip="{Binding NotesAndTags}"
+                                   />
 
                         <TextBlock Grid.Column="1"
                                    Margin="4,0"
                                    Foreground="Red"
-                                   Text="{Binding StartDateTime}" />
+                                   Text="{Binding StartDateTime}"
+                                   />
                         <TextBlock Grid.Column="2"
-                                   Width="90"
-                                   Height="30"
-                                   Margin="4"
-                                   HorizontalAlignment="Left"
+                                   Width="90" Height="30"
+                                   Margin="4" HorizontalAlignment="Left"
                                    VerticalAlignment="Top"
                                    Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
-                                   FontWeight="SemiBold"
-                                   Foreground="White"
-                                   TextAlignment="Center"
-                                   ToolTip="Severity" />
+                                   FontWeight="SemiBold" Foreground="White"
+                                   TextAlignment="Center" ToolTip="Severity"
+                                   />
                         <Label Grid.Column="3"
                                Width="50"
-                               Content="{Binding Rank}" />
+                               Content="{Binding Rank}"
+                               />
                         <Button Grid.Column="4"
-                                Width="25"
-                                Height="30"
-                                CommandParameter="down"
-                                Content="▼"
-                                FontSize="16"
-                                FontWeight="Bold" />
+                                Width="25" Height="30"
+                                CommandParameter="down" Content="▼"
+                                FontSize="16" FontWeight="Bold"
+                                />
                         <!--  Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"  -->
                         <Button Grid.Column="5"
-                                Width="25"
-                                Height="30"
-                                CommandParameter="up"
-                                Content="▲"
-                                FontSize="16"
-                                FontWeight="Bold" />
+                                Width="25" Height="30"
+                                CommandParameter="up" Content="▲"
+                                FontSize="16" FontWeight="Bold"
+                                />
                         <!--  Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"  -->
                         <Label Grid.Column="6"
                                Width="70"
                                HorizontalAlignment="Center"
-                               Content="{Binding Kanban}" />
+                               Content="{Binding Kanban}"
+                               />
 
                         <Label Grid.Column="7"
                                Width="110"
                                HorizontalAlignment="Center"
                                Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
                                Content="{Binding TimeTakenDisplay}"
-                               Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}" />
+                               Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}"
+                               />
 
                         <TextBlock Grid.Column="8"
                                    Margin="8,0,4,0"
                                    Text="{Binding Todo}"
                                    TextTrimming="CharacterEllipsis"
-                                   ToolTip="{Binding Todo}" />
+                                   ToolTip="{Binding Todo}"
+                                   />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -238,9 +231,9 @@
             </Grid.ColumnDefinitions>
             <TextBox x:Name="tbNewTodo"
                      Grid.Column="0"
-                     KeyboardNavigation.TabIndex="1"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     TextWrapping="WrapWithOverflow" />
+                     KeyboardNavigation.TabIndex="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     TextWrapping="WrapWithOverflow"
+                     />
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -253,25 +246,24 @@
                 <!--  Text="{Binding DebugCount, StringFormat='Items in view: {0}'}" />  -->
                 <ComboBox Name="cbSeverity"
                           Grid.Row="0"
-                          KeyboardNavigation.TabIndex="2"
-                          Loaded="SeverityComboBox_OnIsLoaded"
-                          SelectionChanged="SeverityComboBox_OnSelectionChange"
-                          Unloaded="SeverityComboBox_OnIsLoaded">
+                          KeyboardNavigation.TabIndex="2" Loaded="SeverityComboBox_OnIsLoaded"
+                          SelectionChanged="SeverityComboBox_OnSelectionChange" Unloaded="SeverityComboBox_OnIsLoaded"
+                          >
                     <ComboBoxItem Content="None" />
                     <ComboBoxItem Content="Low" IsSelected="True" />
                     <ComboBoxItem Content="Med" />
                     <ComboBoxItem Content="High" />
                 </ComboBox>
                 <Button Grid.Row="1"
-                        Click="Add_OnClick"
-                        Content="Add"
-                        KeyboardNavigation.TabIndex="3" />
+                        Click="Add_OnClick" Content="Add"
+                        KeyboardNavigation.TabIndex="3"
+                        />
             </Grid>
         </Grid>
 
-        <local:IncompleteItemsNotesPanel Grid.Row="0"
-                                         Grid.RowSpan="4"
-                                         Grid.Column="1" />
+        <local:IncompleteItemsNotesPanel Grid.Row="0" Grid.RowSpan="4"
+                                         Grid.Column="1"
+                                         />
     </Grid>
 </UserControl>
 

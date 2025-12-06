@@ -1,3 +1,15 @@
+commit c427f8a0fe051f60a6a3119d3de99d7d51d8cbeb
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sat Dec 6 19:50:48 2025 +0800
+
+    20251205- v3.40.27.0 Making a backup since I have to update the project
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251206-0m |MultiItemEditor dialog is the wrong size
+    --20251206-0m |Working on the MultiItemEditor now
+
 commit 2804271f3a60af13e7acc8f03f3260cd2d07c9c2
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Dec 5 21:09:40 2025 +0800
