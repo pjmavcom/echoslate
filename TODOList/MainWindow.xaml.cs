@@ -54,8 +54,8 @@ namespace TODOList {
 		public ObservableCollection<TodoItemHolder> AllItems { get; } = new ObservableCollection<TodoItemHolder>();
 		private TodoListViewModel _todoListViewModel;
 
-		private ObservableCollection<string> _tagFilters;
-		private ObservableCollection<string> TagFilters {
+		private List<string> _tagFilters;
+		private List<string> TagFilters {
 			get => _tagFilters;
 			set => _tagFilters = value;
 		}
@@ -67,7 +67,7 @@ namespace TODOList {
 		private readonly List<TabItem> _kanbanTabsList;
 
 		private TabControl _currentSelectedSubTab;
-		public readonly ObservableCollection<TodoItem> _masterList;
+		public readonly List<TodoItem> _masterList;
 
 		private readonly List<ObservableCollection<TodoItemHolder>> _incompleteItems;
 		private readonly List<ObservableCollection<TodoItemHolder>> _kanbanItems;
@@ -270,12 +270,12 @@ namespace TODOList {
 			timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
 			timer.Start();
 
-			_tagFilters = new ObservableCollection<string>();
+			_tagFilters = new List<string>();
 			_tagShortcuts = new Dictionary<string, string>();
 			
 			_incompleteItemsTabsList = new List<TabItem>();
 			_kanbanTabsList = new List<TabItem>();
-			_masterList = new ObservableCollection<TodoItem>();
+			_masterList = new List<TodoItem>();
 			_incompleteItems = new List<ObservableCollection<TodoItemHolder>>();
 			_kanbanItems = new List<ObservableCollection<TodoItemHolder>>();
 			_kanbanTabHeaders = new List<string>();
@@ -2297,7 +2297,7 @@ namespace TODOList {
 				commonTags.Where(tag => !dlgTodoMultiItemEditor.ResultTags.Contains(tag)).ToList();
 
 			foreach (TodoItemHolder itemHolder in lb.SelectedItems) {
-				if (dlgTodoMultiItemEditor.ChangeTag) {
+				if (dlgTodoMultiItemEditor.IsTagEnabled) {
 					foreach (string tag in tagsToRemove)
 						itemHolder.TD.Tags.Remove(tag);
 					foreach (string tag in
@@ -2306,13 +2306,13 @@ namespace TODOList {
 						itemHolder.TD.Tags.Add(tag.ToUpper());
 				}
 
-				if (dlgTodoMultiItemEditor.ChangeRank)
+				if (dlgTodoMultiItemEditor.IsRankEnabled)
 					itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultTD.Rank;
-				if (dlgTodoMultiItemEditor.ChangeSev)
+				if (dlgTodoMultiItemEditor.IsSeverityEnabled)
 					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultTD.Severity;
-				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.ChangeComplete)
+				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.IsCompleteEnabled)
 					itemHolder.TD.IsComplete = true;
-				if (!dlgTodoMultiItemEditor.ChangeTodo)
+				if (!dlgTodoMultiItemEditor.IsTodoEnabled)
 					continue;
 
 				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTD.Todo;

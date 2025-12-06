@@ -46,7 +46,7 @@
             <!--  Click="CycleSeverity_OnClick"  -->
             <ItemsControl Grid.Column="1"
                           Margin="10,10,10,5"
-                          ItemsSource="{Binding HashTags}">
+                          ItemsSource="{Binding FilterTags}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel MinWidth="100" Orientation="Horizontal" />
@@ -116,9 +116,7 @@
                  SelectionMode="Extended">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding ContextMenuEditCommand}"
-                              CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                              Header="Edit" />
+                    <MenuItem Command="{Binding ContextMenuEditCommand}" Header="Edit" />
                     <!--  Add other MenuItems the same way  -->
                     <!--  Add more menu items the same way  -->
                     <MenuItem Header="Delete" />

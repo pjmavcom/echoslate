@@ -1,3 +1,15 @@
+commit 2804271f3a60af13e7acc8f03f3260cd2d07c9c2
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Dec 5 21:09:40 2025 +0800
+
+    20251205- v3.40.26.0 Can now edit items (singly)
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Also edits the master list. Still need to edit the _currentHistoryItem lists...
+    
+    =Other Stuff======================================================================================================
+    --20251205-0m |Make this work
+
 commit 609d392438d302285e1aa81e104878847e657a16
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Dec 5 15:41:45 2025 +0800

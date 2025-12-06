@@ -17,6 +17,8 @@
 		<ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
 		<WarningLevel>4</WarningLevel>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <XamlEnableDesignTimeNamespaces>False</XamlEnableDesignTimeNamespaces>
+        <DesignTimeBuilds>false</DesignTimeBuilds>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,6 +45,15 @@
 		</Reference>
 		<Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
 		  <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+		  <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462\Microsoft.Xaml.Behaviors.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Xaml.Behaviors.Design, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+		  <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462\Design\Microsoft.Xaml.Behaviors.Design.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Xaml.Behaviors.DesignTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+		  <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462\Design\Microsoft.Xaml.Behaviors.DesignTools.dll</HintPath>
 		</Reference>
 		<Reference Include="mscorlib" />
 		<Reference Include="PresentationFramework.Aero" />
@@ -103,32 +114,14 @@
 			<Generator>MSBuild:Compile</Generator>
 			<SubType>Designer</SubType>
 		</ApplicationDefinition>
-		<Compile Include="Database.cs" />
-		<Compile Include="DlgAddNewHistory.xaml.cs">
-		  <DependentUpon>DlgAddNewHistory.xaml</DependentUpon>
-		</Compile>
-		<Compile Include="DlgErrorMessage.xaml.cs">
-		  <DependentUpon>DlgErrorMessage.xaml</DependentUpon>
-		</Compile>
-		<Compile Include="DlgHelp.xaml.cs">
-		  <DependentUpon>DlgHelp.xaml</DependentUpon>
-		</Compile>
-		<Compile Include="DlgOptions.xaml.cs">
-		  <DependentUpon>DlgOptions.xaml</DependentUpon>
-		</Compile>
-		<Compile Include="DlgYesNo.xaml.cs">
-		  <DependentUpon>DlgYesNo.xaml</DependentUpon>
-		</Compile>
 		<Compile Include="HistoryItem.cs" />
 		<Compile Include="Log.cs" />
 		<Compile Include="ProgressBarForegroundConverter.cs" />
-		<Compile Include="DlgEditTabs.xaml.cs">
-		  <DependentUpon>DlgEditTabs.xaml</DependentUpon>
-		</Compile>
 		<Compile Include="Resources\BoolToLimeBrushConverter.cs" />
 		<Compile Include="Resources\BoolToTimerTextConverter.cs" />
 		<Compile Include="Resources\SeverityToBrushConverter.cs" />
 		<Compile Include="Resources\SeverityToTextConverter.cs" />
+		<Compile Include="Resources\StringExtensions.cs" />
 		<Compile Include="TabItemHolder.cs" />
 		<Compile Include="TagHolder.cs" />
 		<Compile Include="TagPicker.xaml.cs">
@@ -136,13 +129,7 @@
 		</Compile>
 		<Compile Include="TagToBackgroundConverter.cs" />
 		<Compile Include="TodoItem.cs" />
-		<Compile Include="DlgTodoItemEditor.xaml.cs">
-		  <DependentUpon>DlgTodoItemEditor.xaml</DependentUpon>
-		</Compile>
 		<Compile Include="TodoItemHolder.cs" />
-		<Compile Include="DlgTodoMultiItemEditor.xaml.cs">
-		  <DependentUpon>DlgTodoMultiItemEditor.xaml</DependentUpon>
-		</Compile>
 		<Compile Include="UserControls\IncompleteItemsNotesPanel.xaml.cs">
 		  <DependentUpon>IncompleteItemsNotesPanel.xaml</DependentUpon>
 		</Compile>
@@ -153,11 +140,30 @@
 		  <DependentUpon>TodoListView.xaml</DependentUpon>
 		</Compile>
 		<Compile Include="UserControls\TodoListViewModel.cs" />
-		<Page Include="DlgAddNewHistory.xaml" />
-		<Page Include="DlgErrorMessage.xaml" />
-		<Page Include="DlgHelp.xaml" />
-		<Page Include="DlgOptions.xaml" />
-		<Page Include="DlgYesNo.xaml" />
+		<Compile Include="Windows\DlgAddNewHistory.xaml.cs">
+		  <DependentUpon>DlgAddNewHistory.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgEditTabs.xaml.cs">
+		  <DependentUpon>DlgEditTabs.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgErrorMessage.xaml.cs">
+		  <DependentUpon>DlgErrorMessage.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgHelp.xaml.cs">
+		  <DependentUpon>DlgHelp.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgOptions.xaml.cs">
+		  <DependentUpon>DlgOptions.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgTodoItemEditor.xaml.cs">
+		  <DependentUpon>DlgTodoItemEditor.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgTodoMultiItemEditor.xaml.cs">
+		  <DependentUpon>DlgTodoMultiItemEditor.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Windows\DlgYesNo.xaml.cs">
+		  <DependentUpon>DlgYesNo.xaml</DependentUpon>
+		</Compile>
 		<Page Include="MainWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 			<SubType>Designer</SubType>
@@ -170,13 +176,18 @@
 			<DependentUpon>MainWindow.xaml</DependentUpon>
 			<SubType>Code</SubType>
 		</Compile>
-		<Page Include="DlgEditTabs.xaml" />
-		<Page Include="DlgTodoItemEditor.xaml" />
-		<Page Include="DlgTodoMultiItemEditor.xaml" />
 		<Page Include="TagPicker.xaml" />
 		<Page Include="UserControls\IncompleteItemsNotesPanel.xaml" />
 		<Page Include="UserControls\IncompleteItemsTab.xaml" />
 		<Page Include="UserControls\TodoListView.xaml" />
+		<Page Include="Windows\DlgAddNewHistory.xaml" />
+		<Page Include="Windows\DlgEditTabs.xaml" />
+		<Page Include="Windows\DlgErrorMessage.xaml" />
+		<Page Include="Windows\DlgHelp.xaml" />
+		<Page Include="Windows\DlgOptions.xaml" />
+		<Page Include="Windows\DlgTodoItemEditor.xaml" />
+		<Page Include="Windows\DlgTodoMultiItemEditor.xaml" />
+		<Page Include="Windows\DlgYesNo.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Properties\AssemblyInfo.cs">

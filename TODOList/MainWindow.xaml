@@ -446,7 +446,7 @@
                                             <ComboBox Name="cbIncompleteItemsHashTags"
                                                       Width="301"
                                                       d:DataContext="{d:DesignInstance}"
-                                                      ItemsSource="{Binding HashTags}"
+                                                      ItemsSource="{Binding FilterTags}"
                                                       KeyboardNavigation.IsTabStop="False"
                                                       SelectionChanged="IncompleteItemsHashTags_OnSelectionChanged" />
                                             <Button Width="161"
