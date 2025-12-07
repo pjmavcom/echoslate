@@ -4,17 +4,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using TODOList.Resources;
 
-// using System.Windows.Input;
 
 namespace TODOList.ViewModels {
 	public class TodoListViewModel : INotifyPropertyChanged {
@@ -33,7 +29,7 @@ namespace TODOList.ViewModels {
 
 		public List<string> AllTags { get; }
 		public List<string> MasterFilterTags { get; }
-		private List<string> _filterTags;
+		// private List<string> _filterTags;
 		public ObservableCollection<string> FilterTags { get; }
 		private string _prioritySortTag;
 		public string PrioritySortTag {
@@ -47,8 +43,8 @@ namespace TODOList.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		private string _currentTagFilter = null;
-		public string CurrentTagFilter {
+		private string _currentTagFilter = "All";
+		public string? CurrentTagFilter {
 			get => _currentTagFilter;
 			set {
 				_currentTagFilter = value;
@@ -69,7 +65,6 @@ namespace TODOList.ViewModels {
 				_currentSeverityFilter = value;
 				RefreshDisplayedItems();
 				OnPropertyChanged();
-				OnPropertyChanged(nameof(SeverityButtonText));
 				OnPropertyChanged(nameof(SeverityButtonBackground));
 			}
 		}
@@ -99,7 +94,7 @@ namespace TODOList.ViewModels {
 			}
 		}
 		private string _previousSort = "";
-		private bool _reverseSort = true;
+		private bool _reverseSort;
 		private bool _previousReverseSort;
 
 
@@ -131,6 +126,9 @@ namespace TODOList.ViewModels {
 			FilterTags.Add("#FEATURE");
 
 			foreach (string filter in MasterFilterTags) {
+				if (filter == "All") {
+					continue;
+				}
 				string newFilter = "#" + filter.ToUpper();
 				if (FilterTags.Contains(newFilter)) {
 					continue;
@@ -138,10 +136,27 @@ namespace TODOList.ViewModels {
 				FilterTags.Add(newFilter);
 			}
 		}
+		public void FixRanks() {
+			if (DisplayedItems == null) {
+				return;
+			}
+			DisplayedItems.SortDescriptions.Clear();
+			DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ListSortDirection.Ascending));
+			int index = 1;
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				ih.Rank = index++;
+			}
+		}
 		public void RefreshDisplayedItems(bool forceRefresh = false) {
 			AllItems.Clear();
 			foreach (TodoItem item in MasterList) {
-				AllItems.Add(new TodoItemHolder(item));
+				TodoItemHolder ih = new TodoItemHolder(item);
+				ih.CurrentFilter = GetCurrentTagFilterWithoutHash();
+				if (ih.Rank <= 0) {
+					ih.Rank = int.MaxValue;
+				}
+
+				AllItems.Add(ih);
 			}
 
 			if (AllItems.Count == 0) {
@@ -149,12 +164,9 @@ namespace TODOList.ViewModels {
 				return;
 			}
 
-
 			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
 			DisplayedItems.Filter = CombinedFilter;
-
-			// TODO: Remove this when RANKS work
-			TEMPSetRank();
+			FixRanks();
 
 			ApplySort(forceRefresh);
 
@@ -170,9 +182,7 @@ namespace TODOList.ViewModels {
 			if (!forceRefresh) {
 				if (_currentSort != _previousSort) {
 					_reverseSort = false;
-					_previousReverseSort = true;
 				} else {
-					_previousReverseSort = _reverseSort;
 					_reverseSort = !_reverseSort;
 				}
 				_previousSort = _currentSort;
@@ -182,18 +192,22 @@ namespace TODOList.ViewModels {
 			switch (CurrentSort) {
 				case "date":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("StartDateTime", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "rank":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "severity":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", _reverseSort ? ListSortDirection.Ascending : ListSortDirection.Descending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "active":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Active", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "kanban":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Kanban", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 			}
 		}
@@ -218,7 +232,7 @@ namespace TODOList.ViewModels {
 				}
 				return true;
 			}
-			return CurrentTagFilter == "#ALL" || CurrentTagFilter == null || ih.HasTag(CurrentTagFilter);
+			return CurrentTagFilter == "All" || CurrentTagFilter == null || ih.HasTag(CurrentTagFilter);
 		}
 		private void ApplyPriorityTagSorting() {
 			DisplayedItems.SortDescriptions.Clear();
@@ -239,16 +253,6 @@ namespace TODOList.ViewModels {
 				ih.IsPrioritySorted = false;
 			}
 		}
-
-		//TODO: Remove this later
-		public void TEMPSetRank() {
-			int index = 1;
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				ih.Rank = index;
-				index++;
-			}
-		}
-
 		private void ContextMenuEdit() {
 			if (lbTodos.SelectedItem is not TodoItemHolder ih) {
 				return;
@@ -267,8 +271,7 @@ namespace TODOList.ViewModels {
 			}
 		}
 		private void EditItem(TodoItem item) {
-			Log.Print($"Opening {item} for editing");
-			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(item, MainWindow.GetActiveWindow().TabNames);
+			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(item, CurrentTagFilter);
 			itemEditor.ShowDialog();
 
 			if (itemEditor.Result) {
@@ -299,51 +302,74 @@ namespace TODOList.ViewModels {
 				RefreshDisplayedItems(true);
 			}
 		}
-		private void MultiEditItems(List<TodoItem> items) {
-			string tagFilter = CurrentTagFilter != null ? CurrentTagFilter.Remove(0, 1).ToLower().CapitalizeFirstLetter() : "All";
-			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
-			dlg.ShowDialog();
-			Log.Test();
-			// get common tags => move to multi tag editor
-			/*
+		public string GetCurrentTagFilterWithoutHash() {
+			string result = CurrentTagFilter;
+			if (CurrentTagFilter.Contains("#")) {
+				result = result.Remove(0, 1);
+			}
+			return result.ToLower()
+			   .CapitalizeFirstLetter();
+		}
+		public void ReRankWithSubsetMoved(List<TodoItem> subset, int newRankForSubsetFirstItem) {
+			List<TodoItem> allItems = new();
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				allItems.Add(ih.TD);
+			}
+			var remainingItems = allItems
+			   .Where(item => !subset.Contains(item))
+			   .ToList();
 
-			if (firstTd == null)
-				return;
+			int insertIndex = newRankForSubsetFirstItem - 1;
+			insertIndex = Math.Clamp(insertIndex, 0, remainingItems.Count);
+			remainingItems.InsertRange(insertIndex, subset);
 
-			DlgTodoMultiItemEditor dlgTodoMultiItemEditor =
-				new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
-			dlgTodoMultiItemEditor.ShowDialog();
-			if (!dlgTodoMultiItemEditor.Result)
-				return;
-
-			List<string> tagsToRemove =
-				commonTags.Where(tag => !dlgTodoMultiItemEditor.ResultTags.Contains(tag)).ToList();
-
-			foreach (TodoItemHolder itemHolder in lb.SelectedItems) {
-				if (dlgTodoMultiItemEditor.ChangeTag) {
-					foreach (string tag in tagsToRemove)
-						itemHolder.TD.Tags.Remove(tag);
-					foreach (string tag in
-							 dlgTodoMultiItemEditor.ResultTags
-								.Where(tag => !itemHolder.TD.Tags.Contains(tag.ToUpper())))
-						itemHolder.TD.Tags.Add(tag.ToUpper());
-				}
-
-				if (dlgTodoMultiItemEditor.ChangeRank)
-					itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultTD.Rank;
-				if (dlgTodoMultiItemEditor.ChangeSev)
-					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultTD.Severity;
-				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.ChangeComplete)
-					itemHolder.TD.IsComplete = true;
-				if (!dlgTodoMultiItemEditor.ChangeTodo)
-					continue;
-
-				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTD.Todo;
-				foreach (string tag in
-						 dlgTodoMultiItemEditor.ResultTD.Tags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
-					itemHolder.TD.Tags.Add(tag);
+			string currentFilterWithoutHash = GetCurrentTagFilterWithoutHash();
+			for (int i = 0; i < remainingItems.Count; i++) {
+				remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
 			}
 
+			AllItems.Clear();
+			foreach (TodoItem item in remainingItems) {
+				AllItems.Add(new TodoItemHolder(item));
+			}
+			RefreshAll();
+		}
+
+		private void MultiEditItems(List<TodoItem> items) {
+			string tagFilter = GetCurrentTagFilterWithoutHash();
+			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
+			dlg.ShowDialog();
+
+			if (dlg.IsEnabled) {
+				ReRankWithSubsetMoved(items, dlg.ResultRank);
+			}
+			foreach (TodoItem item in items) {
+				if (dlg.IsSeverityEnabled) {
+					item.Severity = dlg.ResultSeverity;
+				}
+				if (dlg.IsTodoEnabled) {
+					item.Todo += " " + dlg.ResultTodo;
+					Log.Print($"{item.Todo}");
+				}
+				if (dlg.IsTagEnabled) {
+					foreach (string tag in dlg.CommonTags) {
+						if (item.Tags.Contains(tag)) {
+							item.Tags.Remove(tag);
+						}
+					}
+					foreach (string tag in dlg.ResultTags) {
+						if (!item.Tags.Contains(tag)) {
+							item.Tags.Add(tag);
+						}
+					}
+				}
+				if (dlg.IsCompleteEnabled) {
+					item.IsComplete = true;
+				}
+			}
+
+			RefreshAll();
+			/*
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 			*/
@@ -361,7 +387,7 @@ namespace TODOList.ViewModels {
 		// public ICommand ContextMenuMoveToBottomCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
 
 		public ICommand SelectTagCommand
-			=> new RelayCommand<string>(tag => { CurrentTagFilter = tag == "All" ? null : tag; });
+			=> new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
 		public ICommand SelectSortCommand
 			=> new RelayCommand<string>(sort => { CurrentSort = sort; });
 		public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
@@ -370,5 +396,4 @@ namespace TODOList.ViewModels {
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 	}
-
 }

@@ -45,14 +45,9 @@ namespace TODOList.UserControls {
 		private void TodoListView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			if (e.NewValue is true && DataContext is TodoListViewModel vm) {
 				vm.RefreshAvailableTags();
-				vm.RefreshDisplayedItems();	
+				vm.RefreshAll();	
 				vm.GetCurrentHashTags();
 				vm.lbTodos = lbTodos;
-			}
-		}
-		private void CycleSeverity_OnClick(object sender, RoutedEventArgs e) {
-			if (DataContext is TodoListViewModel vm) {
-				vm.CycleSeverity();
 			}
 		}
 	}

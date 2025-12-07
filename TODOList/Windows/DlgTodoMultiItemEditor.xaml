@@ -36,19 +36,17 @@
             <CheckBox x:Name="ckSev"
                       Grid.Column="0"
                       Margin="2" VerticalAlignment="Center"
-                      Content="Severity:"
                       IsChecked="{Binding IsSeverityEnabled, Mode=TwoWay}"
                       />
-            <ComboBox x:Name="cbSev"
-                      Grid.Column="1"
-                      Margin="2"
-                      IsEnabled="{Binding IsChecked, ElementName=ckSev}"
-                      >
-                <ComboBoxItem Content="None" IsSelected="True" />
-                <ComboBoxItem Content="Low" />
-                <ComboBoxItem Content="Med" />
-                <ComboBoxItem Content="High" />
-            </ComboBox>
+            <Button Grid.Column="1"
+                    Width="Auto"
+                    Margin="4,0" Padding="16,8"
+                    Background="{Binding SeverityButtonBackground}"
+                    BorderThickness="0"
+                    Command="{Binding CycleSeverityCommand}"
+                    Content="Severity" FontWeight="SemiBold"
+                    Foreground="White"
+                    />
 
             <CheckBox x:Name="ckRank"
                       Grid.Column="3"
@@ -135,7 +133,6 @@
                                     CommandParameter="{Binding}"
                                     Content="X"
                                     />
-                            <!--  Click="DeleteTag"  -->
                             <TextBox Grid.Column="1"
                                      Margin="5,0"
                                      Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

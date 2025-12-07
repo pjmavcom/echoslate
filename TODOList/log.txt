@@ -1,3 +1,17 @@
+commit efa9a267b95d6a52070913fc3f8a1e8c6daf1104
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sat Dec 6 22:23:21 2025 +0800
+
+    20251206- v3.40.28.0 Multi editing todos works now
+    
+    20251206- v3.40.28.0 Multi editing todos works now
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Updated the whole project and fixed several bugs. Should be smoother now.
+    
+    =Other Stuff======================================================================================================
+    --20251206-0m |Multi todo item editor works now. Need to apply the changes to the todos, but the dialog works
+
 commit c427f8a0fe051f60a6a3119d3de99d7d51d8cbeb
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Sat Dec 6 19:50:48 2025 +0800

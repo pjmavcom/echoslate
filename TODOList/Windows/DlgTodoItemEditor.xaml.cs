@@ -1,63 +1,134 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 
-namespace TODOList
-{
-	public partial class DlgTodoItemEditor
-	{
+namespace TODOList {
+	public partial class DlgTodoItemEditor : INotifyPropertyChanged {
+		public ObservableCollection<string> SeverityOptions { get; } = new() { "None", "Low", "Med", "High" };
+		private int _currentSeverity;
+		public int CurrentSeverity {
+			get => _currentSeverity;
+			set {
+				if (value > 3) {
+					value = 0;
+				}
+				_currentSeverity = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(SeverityButtonBackground));
+			}
+		}
+		public Brush SeverityButtonBackground => CurrentSeverity switch {
+													 3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
+													 2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
+													 1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
+													 0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
+													 _ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
+												 };
+
+		private int _rank;
+		public int Rank {
+			get => _rank;
+			set {
+				_rank = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private long _timeInMinutes;
+		public long TimeInMinutes {
+			get => _timeInMinutes;
+			set {
+				_timeInMinutes = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int _kanbanId;
+		public int KanbanId {
+			get => _kanbanId;
+			set {
+				_kanbanId = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _todoText;
+		public string TodoText {
+			get => _todoText;
+			set {
+				_todoText = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _notes;
+		public string Notes {
+			get => _notes;
+			set {
+				_notes = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private readonly TodoItem _todoItem;
 		public TodoItem ResultTodoItem => _todoItem;
-		public List<string> ResultTags;
 		public bool Result;
+
+		private List<string> Tags { get; set; }
+		private List<TagHolder> _tagHolders;
+		public List<TagHolder> TagHolders {
+			get => _tagHolders;
+			set {
+				_tagHolders = value;
+				OnPropertyChanged();
+			}
+		}
 		
-		private int _currentSeverity;
-		private readonly int _previousRank;
-		private List<TagHolder> Tags { get; set; }
-		private string _currentListHash;
-		
-		public DlgTodoItemEditor(TodoItem td, string currentListHash)
-		{
+		private List<string> ResultTags { get; set; }
+		public string SelectedTag { get; set; }
+		private readonly string _currentListHash;
+
+		private int _previousRank;
+
+		public DlgTodoItemEditor(TodoItem td, string? currentListHash) {
 			InitializeComponent();
-			
-			_todoItem = new TodoItem(td.ToString())
-			{
-				IsTimerOn = td.IsTimerOn
-			};
-			_currentSeverity = _todoItem.Severity;
-			_currentListHash = currentListHash;
+			DataContext = this;
+
+			_todoItem = new TodoItem(td.ToString()) {
+														IsTimerOn = td.IsTimerOn
+													};
+			_currentListHash = currentListHash ?? "All";
 			_previousRank = td.Rank[_currentListHash];
 
-			cbSev.SelectedIndex = _currentSeverity;
-			tbTodo.Text = td.Todo;
-
+			CurrentSeverity = _todoItem.Severity;
+			Rank = _todoItem.Rank[_currentListHash];
+			TimeInMinutes = _todoItem.TimeTakenInMinutes;
+			KanbanId = _todoItem.Kanban;
+			TodoText = _todoItem.Todo;
+			Notes = _todoItem.Notes;
 			
-			string tempNote = string.Empty;
-			tempNote = td.Notes;
-			if (tempNote.Contains("/n"))
-			{
-				tempNote = tempNote.Replace("/n", Environment.NewLine);
+			Tags = new List<string>(_todoItem.Tags);
+			TagHolders = new List<TagHolder>();
+			foreach (string tag in Tags) {
+				TagHolders.Add(new TagHolder(tag));
 			}
-			tbNotes.Text = tempNote;
-			 
-			iudRank.Value = td.Rank[_currentListHash];
-			iudTime.Value = _todoItem.TimeTakenInMinutes;
-			btnComplete.Content = td.IsComplete ? "Reactivate" : "Complete";
 
-			Tags = new List<TagHolder>();
-			foreach (string tag in td.Tags)
-				Tags.Add(new TagHolder(tag));
-			lbTags.ItemsSource = Tags;
-			lbTags.Items.Refresh();
+			Notes = td.Notes;
+			if (Notes.Contains("/n")) {
+				Notes = Notes.Replace("/n", Environment.NewLine);
+			}
 
-			tbKanban.Text = _todoItem.Kanban.ToString();
-			
+
 			CenterWindowOnMouse();
 		}
-		private void CenterWindowOnMouse()
-		{
+		private void CenterWindowOnMouse() {
 			Window win = Application.Current.MainWindow;
 
 			if (win == null)
@@ -67,42 +138,37 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-		private void SetTodo()
-		{
-			string tempTodo = MainWindow.ExpandHashTagsInString(tbTodo.Text);
-		
+		private void SetTodo() {
+			ResultTodoItem.Severity = CurrentSeverity;
+			ResultTodoItem.Rank[_currentListHash] = Rank;
+			// if (_previousRank > _todoItem.Rank[_currentListHash])
+				// _todoItem.Rank[_currentListHash]--;
+				
+			// TODO: Figure out how to set TimeTaken
+			// ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
+			ResultTodoItem.Notes = Notes;
+			
+			string tempTodo = MainWindow.ExpandHashTagsInString(TodoText);
 			string tempTags = "";
 			ResultTags = new List<string>();
-			foreach(TagHolder th in Tags)
+			foreach (TagHolder th in TagHolders)
 				if (!ResultTags.Contains(th.Text))
 					ResultTags.Add(th.Text);
 			foreach (string tag in ResultTags)
 				tempTags += tag + " ";
 			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
 			
-			_todoItem.Tags = new ObservableCollection<string>();
-			_todoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
-			_todoItem.Notes = tbNotes.Text;
-			_todoItem.Severity = _currentSeverity;
-			if (_previousRank > _todoItem.Rank[_currentListHash])
-				_todoItem.Rank[_currentListHash]--;
+			ResultTodoItem.Tags = new ObservableCollection<string>();
+			ResultTodoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		}
-		private void Severity_OnSelectionChange(object sender, EventArgs e)
-		{
-			if (sender is ComboBox rb) _currentSeverity = rb.SelectedIndex;
-		}
-		private void AddTag_OnClick(object sender, EventArgs e)
-		{
+		private void AddTag_OnClick(object sender, EventArgs e) {
 			string name = "#NEWTAG";
 			int tagNumber = 0;
 			bool nameExists = false;
-			do
-			{
-				foreach (TagHolder t in Tags)
-				{
+			do {
+				foreach (TagHolder t in TagHolders) {
 					if (t.Text == name.ToUpper() + tagNumber ||
-					    t.Text == "#" + name.ToUpper() + tagNumber)
-					{
+						t.Text == "#" + name.ToUpper() + tagNumber) {
 						tagNumber++;
 						nameExists = true;
 						break;
@@ -110,48 +176,44 @@ namespace TODOList
 					nameExists = false;
 				}
 			} while (nameExists);
-			
+
 			TagHolder th = new TagHolder(name.ToUpper() + tagNumber);
-			Tags.Add(th);
-			lbTags.Items.Refresh();
+			TagHolders.Add(th);
 		}
-		private void DeleteTag_OnClick(object sender, EventArgs e)
-		{
+		private void DeleteTag_OnClick(object sender, EventArgs e) {
 			if (!(sender is Button b))
 				return;
-			
+
 			TagHolder th = b.DataContext as TagHolder;
-			Tags.Remove(th);
-			lbTags.Items.Refresh();
+			TagHolders.Remove(th);
 		}
-		private void Rank_OnValueChanged(object sender, EventArgs e)
-		{
-			_todoItem.Rank[_currentListHash] = (int) iudRank.Value;
-			_todoItem.Rank[_currentListHash] = _todoItem.Rank[_currentListHash] > 0 ? _todoItem.Rank[_currentListHash] : 0;
-		}
-		private void Time_OnValueChanged(object sender, EventArgs e)
-		{
-			if (iudTime != null)
-				_todoItem.TimeTaken = new DateTime((long)(iudTime.Value * TimeSpan.TicksPerMinute));
-		}
-		private void OK_OnClick(object sender, EventArgs e)
-		{
+		private void Ok() {
 			Result = true;
 			SetTodo();
-			
+
 			Close();
 		}
-		private void Complete_OnClick(object sender, EventArgs e)
-		{
+		private void Complete() {
 			Result = true;
-			_todoItem.IsComplete = !_todoItem.IsComplete;
+			_todoItem.IsComplete = true;
 			SetTodo();
-			
+
 			Close();
 		}
-		private void Cancel_OnClick(object sender, EventArgs e)
-		{
+		private void Cancel() {
 			Close();
 		}
+		public void CycleSeverity() {
+			CurrentSeverity++;
+		}
+		
+		public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
+		public ICommand CompleteCommand => new RelayCommand(Complete);
+		public ICommand OkCommand => new RelayCommand(Ok);
+		public ICommand CancelCommand => new RelayCommand(Cancel);	
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected void OnPropertyChanged([CallerMemberName] string name = null)
+			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 	}
 }

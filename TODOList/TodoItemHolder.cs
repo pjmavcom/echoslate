@@ -24,12 +24,21 @@ namespace TODOList {
 		}
 		private int _rank;
 		public int Rank {
-			get => _rank;
+			get => TD.Rank[_currentFilter];
 			set {
-				_rank = value;
+				TD.Rank[_currentFilter] = value;
 				OnPropertyChanged();
 			}
 		}
+		private string _currentFilter = "All";
+		public string CurrentFilter {
+			get => _currentFilter;
+			set {
+				_currentFilter = value;
+				OnPropertyChanged();
+			}
+		}
+		
 		public string Todo => _td.Todo;
 		public string NotesAndTags => _td.NotesAndTags;
 		public string TagsSorted => _td.TagsSorted;
@@ -48,22 +57,6 @@ namespace TODOList {
 
 		public bool HasTags => Tags.Count > 0;
 
-		public string SeverityName {
-			get {
-				switch (_td.Severity) {
-					case 0:
-						return "None";
-					case 1:
-						return "Low";
-					case 2:
-						return "Medium";
-					case 3:
-						return "High";
-					default:
-						return "Unknown";
-				}
-			}
-		}
 		public int Severity {
 			get => _td.Severity;
 			set => _td.Severity = value;
@@ -92,7 +85,7 @@ namespace TODOList {
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItemHolder(TodoItem td) {
 			_td = td;
-			Rank = int.MaxValue;
+			// Rank = int.MaxValue;
 		}
 		public bool HasTag(string tag) {
 			return Tags.Contains(tag);
