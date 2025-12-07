@@ -29,7 +29,6 @@ namespace TODOList.ViewModels {
 
 		public List<string> AllTags { get; }
 		public List<string> MasterFilterTags { get; }
-		// private List<string> _filterTags;
 		public ObservableCollection<string> FilterTags { get; }
 		private string _prioritySortTag;
 		public string PrioritySortTag {
@@ -271,14 +270,19 @@ namespace TODOList.ViewModels {
 			}
 		}
 		private void EditItem(TodoItem item) {
-			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(item, CurrentTagFilter);
-			itemEditor.ShowDialog();
+			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash());
+			dlg.ShowDialog();
 
-			if (itemEditor.Result) {
-				// TODO: Check this for issues
-				MainWindow.GetActiveWindow().RemoveItemFromMasterList(item);
-				if (MasterList.Contains(item)) {
-					MasterList.Remove(item);
+			Log.Debug($"{item}");
+			Log.Debug($"{dlg.ResultTodoItem}");
+			
+			if (dlg.Result) {
+				RemoveItemFromMasterList(item);
+				AddItemToMasterList(dlg.ResultTodoItem);
+				ReRankWithSubsetMoved(dlg.ResultTodoItem, dlg.Rank);
+				RefreshDisplayedItems(true);
+				// if (MasterList.Contains(item)) {
+					// MasterList.Remove(item);
 
 					// TODO: needs to get all instances of the todo from _currentHistoryItem.CompletedTodos, CompletedBugs, CompletedFeatures
 					// TODO: check that ranks work as intended
@@ -291,16 +295,38 @@ namespace TODOList.ViewModels {
 					// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Contains(td))
 					// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Remove(td);
 
-					MainWindow.GetActiveWindow().AddItemToMasterList(itemEditor.ResultTodoItem);
+					// MainWindow.GetActiveWindow().AddItemToMasterList(itemEditor.ResultTodoItem);
 					// AutoSave();
-				}
+				// }
 
 				// IncompleteItemsRefresh();
 				// KanbanRefresh();
 				// RefreshHistory();
-				MasterList.Add(itemEditor.ResultTodoItem);
-				RefreshDisplayedItems(true);
 			}
+		}
+		private void CleanTodoHashRanks(TodoItem td) {
+			List<string> remove = (from pair in td.Rank where !MasterFilterTags.Contains(pair.Key) select pair.Key).ToList();
+			foreach (string hash in remove)
+				td.Rank.Remove(hash);
+			foreach (string name in MasterFilterTags.Where(name => !td.Rank.ContainsKey(name)))
+				td.Rank.Add(name, -1);
+		}
+		public void AddItemToMasterList(TodoItem td) {
+			if (MasterListContains(td) >= 0)
+				return;
+			CleanTodoHashRanks(td);
+			MasterList.Add(td);
+		}
+		public void RemoveItemFromMasterList(TodoItem td) {
+			int index = MasterListContains(td);
+			if (index == -1)
+				return;
+			MasterList.RemoveAt(index);
+		}
+		private int MasterListContains(TodoItem td) {
+			if (MasterList.Contains(td))
+				return MasterList.IndexOf(td);
+			return -1;
 		}
 		public string GetCurrentTagFilterWithoutHash() {
 			string result = CurrentTagFilter;
@@ -309,6 +335,30 @@ namespace TODOList.ViewModels {
 			}
 			return result.ToLower()
 			   .CapitalizeFirstLetter();
+		}
+		public void ReRankWithSubsetMoved(TodoItem subset, int newRankForSubsetFirstItem) {
+			List<TodoItem> allItems = new();
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				allItems.Add(ih.TD);
+			}
+			var remainingItems = allItems
+			   .Where(item => item != subset)
+			   .ToList();
+
+			int insertIndex = newRankForSubsetFirstItem - 1;
+			insertIndex = Math.Clamp(insertIndex, 0, remainingItems.Count);
+			remainingItems.Insert(insertIndex, subset);
+
+			string currentFilterWithoutHash = GetCurrentTagFilterWithoutHash();
+			for (int i = 0; i < remainingItems.Count; i++) {
+				remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
+			}
+
+			AllItems.Clear();
+			foreach (TodoItem item in remainingItems) {
+				AllItems.Add(new TodoItemHolder(item));
+			}
+			RefreshAll();
 		}
 		public void ReRankWithSubsetMoved(List<TodoItem> subset, int newRankForSubsetFirstItem) {
 			List<TodoItem> allItems = new();
@@ -340,7 +390,7 @@ namespace TODOList.ViewModels {
 			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
 			dlg.ShowDialog();
 
-			if (dlg.IsEnabled) {
+			if (dlg.IsRankEnabled) {
 				ReRankWithSubsetMoved(items, dlg.ResultRank);
 			}
 			foreach (TodoItem item in items) {

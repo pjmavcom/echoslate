@@ -125,7 +125,6 @@ namespace TODOList {
 				Notes = Notes.Replace("/n", Environment.NewLine);
 			}
 
-
 			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse() {
@@ -145,7 +144,7 @@ namespace TODOList {
 				// _todoItem.Rank[_currentListHash]--;
 				
 			// TODO: Figure out how to set TimeTaken
-			// ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
+			ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
 			ResultTodoItem.Notes = Notes;
 			
 			string tempTodo = MainWindow.ExpandHashTagsInString(TodoText);

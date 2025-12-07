@@ -11,7 +11,7 @@
         <resources:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
         <resources:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
         <resources:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
-        <todoList:TagToBackgroundConverter x:Key="TagToBackgroundConverter" />
+        <resources:IsTagSelectedConverter x:Key="IsTagSelectedConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -38,7 +38,6 @@
                     Content="Severity" FontWeight="SemiBold"
                     Foreground="White"
                     />
-            <!--  Click="CycleSeverity_OnClick"  -->
             <ItemsControl Grid.Column="1"
                           Margin="10,10,10,5"
                           ItemsSource="{Binding FilterTags}"
@@ -51,14 +50,51 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
+
                         <Button Margin="4,0" Padding="16,8"
-                                Background="{Binding RelativeSource={RelativeSource self}, Path=Content, Converter={StaticResource TagToBackgroundConverter}}"
                                 BorderThickness="0"
-                                Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding}"
                                 Content="{Binding}"
                                 FontWeight="SemiBold" Foreground="White"
-                                />
+                                >
+
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="#464646" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
+                                                        >
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#5A5A5A" />
+                                        </Trigger>
+
+                                        <DataTrigger Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding Converter="{StaticResource IsTagSelectedConverter}">
+                                                    <Binding Path="." />
+                                                    <Binding Path="DataContext.CurrentTagFilter" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
+                                            <Setter Property="Background" Value="#0078D7" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -68,8 +104,7 @@
         <StackPanel Grid.Row="1" Grid.Column="0"
                     Orientation="Horizontal"
                     >
-            <ComboBox Name="cbHashTags"
-                      Width="301"
+            <ComboBox Width="301"
                       ItemsSource="{Binding AllTags}"
                       KeyboardNavigation.IsTabStop="False"
                       SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}"
@@ -266,5 +301,3 @@
                                          />
     </Grid>
 </UserControl>
-
-

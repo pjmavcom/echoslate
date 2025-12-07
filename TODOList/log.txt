@@ -1,3 +1,18 @@
+commit 29130b38bc8d63ba4d1aeab74626b85e1c6001be
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sun Dec 7 13:57:52 2025 +0800
+
+    20251206- v3.40.29.0 Still working away: Multi and single item editors work (mostly)
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251207-0m |Tag filter bar has an extra ALL filter
+    --20251207-0m |Severity buttons in ItemEdit dialogs should be buttons that change color like the main interface
+    --20251207-0m |Remove TEMPSetRank() from TodoListViewModel
+    --20251207-0m |Refactored sorting functions
+    --20251207-0m |MultiEdit changed todo item now correctly
+
 commit efa9a267b95d6a52070913fc3f8a1e8c6daf1104
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Sat Dec 6 22:23:21 2025 +0800
