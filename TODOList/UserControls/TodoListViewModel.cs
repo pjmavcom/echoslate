@@ -27,8 +27,8 @@ namespace TODOList.ViewModels {
 
 		public ListBox lbTodos;
 
-		public List<string> AllTags { get; }
-		public List<string> MasterFilterTags { get; }
+		public ObservableCollection<string> AllTags { get; }
+		public List<string> MasterFilterTags { get; set; }
 		public ObservableCollection<string> FilterTags { get; }
 		private string _prioritySortTag;
 		public string PrioritySortTag {
@@ -102,7 +102,7 @@ namespace TODOList.ViewModels {
 			AllItems = new List<TodoItemHolder>();
 
 			MasterFilterTags = masterFilterTags ?? throw new ArgumentNullException(nameof(masterFilterTags));
-			AllTags = new List<string>(MasterFilterTags);
+			AllTags = new ObservableCollection<string>(MasterFilterTags);
 			FilterTags = new ObservableCollection<string>(MasterFilterTags);
 		}
 		public void GetCurrentHashTags() {
@@ -172,6 +172,7 @@ namespace TODOList.ViewModels {
 			DisplayedItems?.Refresh();
 		}
 		public void RefreshAll() {
+			RefreshAvailableTags();
 			RefreshDisplayedItems(true);
 		}
 		public void CycleSeverity() {
@@ -427,7 +428,19 @@ namespace TODOList.ViewModels {
 			KanbanRefresh();
 			*/
 		}
-
+		public void EditFilterBarRelayCommand() {
+			DlgEditTabs dlg = new(MasterFilterTags);
+			dlg.ShowDialog();
+			if (dlg.Result) {
+				Log.Print("Filters successfully edited");
+				MasterFilterTags.Clear();
+				MasterFilterTags = dlg.ResultList;
+				foreach (TodoItem td in MasterList) {
+					CleanTodoHashRanks(td);
+				}
+				RefreshAll();
+			}
+		}
 		public List<TodoItem> GetSelectedListBoxItems() {
 			List<TodoItem> items = [];
 			foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
@@ -537,9 +550,11 @@ namespace TODOList.ViewModels {
 			ih.TD.IsTimerOn = !ih.IsTimerOn;
 			RefreshAll();
 		});
+		
 		public ICommand SelectTagCommand => new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
 		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
 		public ICommand CycleSeverityCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
+		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

@@ -862,7 +862,8 @@ namespace TODOList {
 				string tagShortcut = "";
 				tagShortcut = GetHashShortcut(name, tagShortcut);
 				_tagShortcuts.Add(tagShortcut, name);
-				_tagHash.Add(hashtag);
+				// TODO: This needs to be uncommented when IncompleteItemsAddNewTab is removed
+				// _tagHash.Add(hashtag);
 			}
 
 			TagFilters.Add(name);
@@ -890,7 +891,7 @@ namespace TODOList {
 				hashShortcut = GetHashShortcut(name, hashShortcut);
 				_hashShortcuts.Add(hashShortcut, name);
 				// this is working in AddNewTagFilter and being duplicated here
-				// _tagHash.Add(hash);
+				_tagHash.Add(hash);
 			}
 
 			// TODO: Check if below is still needed after using just a single list
@@ -1565,7 +1566,11 @@ namespace TODOList {
 		public void mnuEditTabs_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
 			List<TabItem> list = _incompleteItemsTabsList.ToList();
-			DlgEditTabs rt = new DlgEditTabs(list);
+			List<string> tabs = [];
+			foreach (TabItem tab in list) {
+				tabs.Add(tab.Name);
+			}
+			DlgEditTabs rt = new DlgEditTabs(tabs);
 			rt.ShowDialog();
 			if (!rt.Result)
 				return;

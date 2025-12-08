@@ -1,40 +1,46 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using TODOList.Resources;
 
-namespace TODOList
-{
-	public partial class DlgEditTabs
-	{
+namespace TODOList {
+	public partial class DlgEditTabs : INotifyPropertyChanged {
 		private readonly List<TabItemHolder> _newTabItemList;
-		private List<string> _tabNames;
+		private ObservableCollection<string> _tabNames;
+		public ObservableCollection<string> TabNames {
+			get => _tabNames;
+			set {
+				_tabNames = value;
+				OnPropertyChanged();
+			}
+		}
+		private string _newTabName;
+		public string NewTabName {
+			get => _newTabName;
+			set {
+				_newTabName = value;
+				OnPropertyChanged();
+			}
+		}
 		public bool Result;
 		public List<string> ResultList;
-		
-		public DlgEditTabs(List<TabItem> list)
-		{
-			_newTabItemList = new List<TabItemHolder>();
-			_tabNames = new List<string>();
-			
-			foreach (TabItem ti in list)
-			{
-				_newTabItemList.Add(new TabItemHolder(ti));
-				_tabNames.Add(ti.Name);
-			}
 
-			_tabNames.Remove("All");
-			RefreshTabOrder();
+		public DlgEditTabs(List<string> tabNames) {
 			InitializeComponent();
-			lbTabs.ItemsSource = _tabNames;
-			lbTabs.Items.Refresh();
-			
+			DataContext = this;
+
+			TabNames = new ObservableCollection<string>(tabNames);
+			TabNames.Remove("All");
 			CenterWindowOnMouse();
 		}
-		private void CenterWindowOnMouse()
-		{
+		private void CenterWindowOnMouse() {
 			Window win = Application.Current.MainWindow;
 
 			if (win == null)
@@ -44,144 +50,69 @@ namespace TODOList
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-		private string UpperFirstLetter(string s)
-		{
-			string result = "";
-			for (int i = 0; i < s.Length; i++)
-			{
-				if (i == 0)
-				{
-					result += s[i].ToString().ToUpper();
-				}
-				else
-				{
-					result += s[i];
+		public ICommand NewTabCommand => new RelayCommand(() => {
+			TabNames.Add(NewTabName.CapitalizeFirstLetter());
+			NewTabName = string.Empty;
+		});
+		public ICommand DeleteCommand => new RelayCommand<ListBox>(lb => {
+			List<string> tabsToRemove = lb.SelectedItems.Cast<string>().ToList();
+			foreach (string s in tabsToRemove) {
+				if (TabNames.Contains(s)) {
+					TabNames.Remove(s);
 				}
 			}
+		});
+		public ICommand MoveUpCommand => new RelayCommand<ListBox>(lb => {
+			HashSet<string> selectedSet = lb.SelectedItems.Cast<string>().ToHashSet();
+			List<string> listToRemove = TabNames.Where(selectedSet.Contains).ToList();
 
-			return result;
-		}
-		private void AddNewTab()
-		{
-			string newTabName = tbNewTab.Text.Trim();
-			if (newTabName != string.Empty)
-			{
-				newTabName = UpperFirstLetter(newTabName);
-				if (!_tabNames.Contains(newTabName))
-				{
-					_tabNames.Add(newTabName);
-					lbTabs.Items.Refresh();
-					tbNewTab.Text = string.Empty;
+			int bufferIndex = 0;
+			foreach (string s in listToRemove) {
+				int index = TabNames.IndexOf(s);
+				if (index <= bufferIndex) {
+					bufferIndex++;
+					continue;
 				}
+				(TabNames[index], TabNames[index - 1]) = (TabNames[index - 1], TabNames[index]);
 			}
-		}
-		private void btnNewTab_OnClick(object sender, EventArgs e)
-		{
-			AddNewTab();
-		}
-		private void btnDelete_OnClick(object sender, EventArgs e)
-		{
-			if (lbTabs.SelectedItems.Count > 0)
-			{
-				foreach (string s in lbTabs.SelectedItems)
-					_tabNames.Remove(s);
-				lbTabs.Items.Refresh();
+			lb.SelectedItems.Clear();
+			foreach (string s in listToRemove) {
+				lb.SelectedItems.Add(s);
 			}
-		}
-		private void RefreshTabOrder()
-		{
-			int index = 0;
-			foreach (TabItemHolder tih in _newTabItemList)
-			{
-				tih.MaxIndex = _newTabItemList.Count;
-				tih.CurrentIndex = index;
-				index++;
-			}
-		}
-		private void btnOk_OnClick(object sender, EventArgs e)
-		{
-			List<string> resultsWithoutSpaces = new List<string>();
-			resultsWithoutSpaces.Add("All");
-			
-			foreach (string s in _tabNames)
-			{
-				string newName = "";
-				if (s.Contains(' '))
-				{
-					foreach (char c in s)
-						if (c != ' ')
-							newName += c;
+		});
+		public ICommand MoveDownCommand => new RelayCommand<ListBox>(lb => {
+			HashSet<string> selectedSet = lb.SelectedItems.Cast<string>().ToHashSet();
+			List<string> listToRemove = TabNames.Where(selectedSet.Contains).ToList();
+			listToRemove.Reverse();
+
+			int bufferIndex = TabNames.Count - 1;
+			foreach (string s in listToRemove) {
+				int index = TabNames.IndexOf(s);
+				if (index >= bufferIndex) {
+					bufferIndex--;
+					continue;
 				}
-				else
-					newName = s;
-				resultsWithoutSpaces.Add(newName);
+				(TabNames[index], TabNames[index + 1]) = (TabNames[index + 1], TabNames[index]);
 			}
-			ResultList = resultsWithoutSpaces;
-			Result = true;
-			Close();
-		}
-		private void btnCancel_OnClick(object sender, EventArgs e)
-		{
+			listToRemove.Reverse();
+			lb.SelectedItems.Clear();
+			foreach (string s in listToRemove) {
+				lb.SelectedItems.Add(s);
+			}
+		});
+		public ICommand CancelCommand => new RelayCommand(() => {
 			Result = false;
 			Close();
-		}
-		private void tbNewTab_OnKeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter || e.Key == Key.Return)
-				AddNewTab();
-		}
-		private void btnMoveUp_OnClick(object sender, RoutedEventArgs e)
-		{
-			int currentIndex = 0;
-			List<string> selectedItems = new List<string>();
-			List<string> selectedItemsOrdered = new List<string>(_tabNames);
-			
-			foreach (string s in lbTabs.SelectedItems)
-				selectedItems.Add(s);
-			foreach (string s in _tabNames)
-			{
-				if (selectedItems.Contains(s))
-					continue;
-				selectedItemsOrdered.Remove(s);
-			}
-			
-			foreach (string s in selectedItemsOrdered)
-			{
-				int index = _tabNames.IndexOf(s);
-				if (index <= currentIndex++)
-					continue;
-				_tabNames[index] = _tabNames[index - 1];
-				_tabNames[index - 1] = s;
-			}
-			
-			lbTabs.Items.Refresh();
-		}
-		private void btnMoveDown_OnClick(object sender, RoutedEventArgs e)
-		{
-			int currentIndex = _tabNames.Count - 1;
-			List<string> selectedItems = new List<string>();
-			List<string> selectedItemsOrdered = new List<string>(_tabNames);
-			
-			foreach (string s in lbTabs.SelectedItems)
-				selectedItems.Add(s);
-			foreach (string s in _tabNames)
-			{
-				if (selectedItems.Contains(s))
-					continue;
-				selectedItemsOrdered.Remove(s);
-			}
+		});
+		public ICommand OkCommand => new RelayCommand(() => {
+			ResultList = ["All"];
+			ResultList.AddRange(TabNames);
+			Result = true;
+			Close();
+		});
 
-			selectedItemsOrdered.Reverse();
-			foreach (string s in selectedItemsOrdered)
-			{
-				int index = _tabNames.IndexOf(s);
-				if (index >= currentIndex--)
-					continue;
-				_tabNames[index] = _tabNames[index + 1];
-				_tabNames[index + 1] = s;
-			}
-			
-			lbTabs.Items.Refresh();
-		}
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected void OnPropertyChanged([CallerMemberName] string name = null)
+			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 	}
 }

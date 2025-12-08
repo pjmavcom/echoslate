@@ -19,7 +19,7 @@ True
 AutoSave
 True
 CurrentProjectVersion
-3.40.31.0.2
+3.40.32.0.2
 ====================================TODO
 2024/05/01|10:30|-|-|0|False|Bug # 14,All # 46,Other # -1,Feature # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#BUG Pushing complete on Kanban tab notes panel doubles all todos in the selected list....needs A refresh?||2|15||
 2024/04/22|22:41|-|-|0|False|Feature # 14,All # 68,Other # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#FEATURE Remake the save file|For readability and maybe size / compression|1|13||
@@ -87,41 +87,58 @@ CurrentProjectVersion
 2025/12/02|14:45|-|-|0|False|All # 32,Other # 8,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Maybe using a 'pipe' in a todo will break the file?||2|26||
 2025/12/02|15:37|-|-|0|False|All # 33,Other # 9,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Search for all WHYs and see if they break anything at the end||0|3||
 2025/12/02|16:11|-|-|0|False|All # 31,Other # 10,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Add Log.Print And start debugging it all||2|28||
-2025/12/02|18:55|-|-|0|False|All # 30,Other # 11,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Divide interface into user controls||3|13||
-2025/12/02|18:55|-|-|0|False|All # 29,Other # 12,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Remake interface||3|14||
-2025/12/04|08:18|-|-|0|False|All # 28,Other # 14,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#HASHTAGS Adjust AvailableTags buttons to look better||3|4||
-2025/12/04|08:20|-|-|0|False|All # 27,Other # 15,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|2|#HASHTAGS Apply DlgEditTabs to AvailableTags bar||3|2||
+2025/12/02|18:55|-|-|0|False|All # 30,Other # 11,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Divide interface into user controls||3|14||
+2025/12/02|18:55|-|-|0|False|All # 29,Other # 12,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#POLISH Remake interface||3|21||
+2025/12/04|08:20|-|-|0|False|All # 27,Other # 15,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#HASHTAGS Apply DlgEditTabs to AvailableTags bar||3|4||
 2025/12/04|08:21|-|-|0|False|All # 26,Other # 16,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Add CompleteItem to right click context menu in TodoItems listbox||2|24||
-2025/12/04|08:25|-|-|0|False|All # 3,Other # 21,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#SORTING Make the Timer work||3|1||
-2025/12/04|08:26|-|-|0|False|All # 25,Other # 22,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#ADDNEWITEM Make the AddNewItem bar work||3|5||
-2025/12/04|08:26|-|-|0|False|All # 24,Other # 23,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#ADDNEWITEM Fix Severity||3|6||
-2025/12/04|08:26|-|-|0|False|All # 23,Other # 24,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#ADDNEWITEM Fix Add button||3|7||
+2025/12/04|08:26|-|-|0|False|All # 25,Other # 22,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|2|#ADDNEWITEM Make the AddNewItem bar work||3|5||
+2025/12/04|08:26|-|-|0|False|All # 24,Other # 23,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|2|#ADDNEWITEM Fix Severity||3|6||
+2025/12/04|08:26|-|-|0|False|All # 23,Other # 24,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|2|#ADDNEWITEM Fix Add button||3|7||
 2025/12/04|08:34|-|-|0|False|All # 21,Other # 26,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Make interface themes||2|29||
 2025/12/04|08:40|-|-|0|False|All # 20,Other # 27,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Right click taskbar icon to reset window position if starting offscreen||2|30||
-2025/12/04|22:01|-|-|0|False|All # 19,Other # -1,Feature # -1,Bug # 1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#BUG Figure out why hashtag shortcuts dont work||3|15||
-2025/12/04|22:08|-|-|0|False|All # 18,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Make the date look better||3|16||
+2025/12/04|22:01|-|-|0|False|All # 19,Other # -1,Feature # -1,Bug # 1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#BUG Figure out why hashtag shortcuts dont work||3|12||
+2025/12/04|22:08|-|-|0|False|All # 18,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#POLISH Make the date look better||3|15||
 2025/12/04|22:08|-|-|0|False|All # 17,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Drag and drop reordering?||0|18||
-2025/12/05|16:01|-|-|0|False|All # 16,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Center text on active and other labels||3|17||
-2025/12/05|21:09|-|-|0|False|All # 15,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Get remove all instances of TodoItem from _currentHistoryItem: CompletedTodos, CompletedBugs, CompletedFeatures.||3|8||
+2025/12/05|16:01|-|-|0|False|All # 16,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#POLISH Center text on active and other labels||3|16||
+2025/12/05|21:09|-|-|0|False|All # 15,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|Get remove all instances of TodoItem from _currentHistoryItem: CompletedTodos, CompletedBugs, CompletedFeatures.||3|8||
 2025/12/06|11:21|-|-|0|False|Ifwishes # 5,All # 12,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Kanban # -1,Todos # -1,|1|#IFWISHES Figure out the save and load functions||0|1||
 2025/12/06|11:21|-|-|0|False|Ifwishes # 6,All # 13,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Kanban # -1,Todos # -1,|1|#IFWISHES Notifications for new todos not from the current instance (from mobile or another computer)||0|2||
-2025/12/06|15:30|-|-|0|False|All # 14,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # 4,|1|#TODOS Remove ObservableCollection and replace with List if needed||3|9||
+2025/12/06|15:30|-|-|0|False|All # 14,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # 4,|0|#TODOS Remove ObservableCollection and replace with List if needed||3|9||
 2019/03/24|17:34|-|-|0|False|Bug # 14,All # 85,Other # -1,Feature # 0,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#BUG Options changing does not get saved|Check when options are changed that it saves when done|1|9||
 2025/12/07|10:48|-|-|0|False|Ifwishes # 7,All # 9,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Kanban # -1,Todos # -1,|1|#IFWISHES Search for todo||0|0||
 2025/12/07|11:26|-|-|0|False|Todos # 5,All # 10,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#TODOS Remove old DlgTodoMultiItemEditor constructor||0|0||
 2025/12/07|12:03|-|-|0|False|Todos # 6,All # 11,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#TODOS Change Kanban ID in ItemEditor dialog to be a drop down||0|0||
-2025/12/04|08:33|-|-|0|False|All # 22,Other # 25,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#SAVELOAD Figure out the save and load functions|Test notes|3|12||
-2025/12/07|13:35|-|-|0|False|Todos # 7,All # 4,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#TODOS Add complete item to context menu||3|3||
-2025/12/07|13:36|-|-|0|False|Todos # 8,All # 5,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#TODOS Make the two edit item dialogs look the same||3|18||
+2025/12/04|08:33|-|-|0|False|All # 22,Other # 25,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#SAVELOAD Figure out the save and load functions|Test notes|3|11||
+2025/12/07|13:36|-|-|0|False|Todos # 8,All # 5,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|0|#POLISH #TODOS Make the two edit item dialogs look the same||3|17||
 2025/12/07|13:45|-|-|0|False|Ifwishes # 8,All # 6,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Kanban # -1,Todos # -1,|1|#IFWISHES Make controls configurable or make vim controls||0|0||
-2025/12/07|13:53|-|-|0|False|Todos # 1,All # 7,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|1|#BUG #TODOS Multiselect move to top does not work||3|11||
-2025/12/07|13:57|-|-|0|False|All # 8,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#BUG When resetting to previous history item, the version should reset as well||3|10||
+2025/12/07|13:57|-|-|0|False|All # 8,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#BUG When resetting to previous history item, the version should reset as well||3|10||
+2025/12/08|15:45|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#POLISH Sort by tag combo box is only 4 items tall now, make it bigger||3|18||
+2025/12/08|15:45|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|2|#ADDNEWITEM If adding a brand new item, set the rank to max as it is added, then rerank it||3|13||
+2025/12/08|16:17|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#POLISH Add numbers to filter buttons||3|19||
+2025/12/08|16:53|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#EDITITEM Make the edit item window work||3|22||
+2025/12/08|16:53|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#EDITITEM Sync data between the edit item window||3|23||
+2025/12/08|17:35|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#HASHTAGS Filter tag edit window||3|3||
+2025/12/08|17:35|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|2|#ADDNEWITEM Add new item bar||3|2||
+2025/12/08|17:37|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#POLISH Polish the current TodoListView interface||3|24||
+2025/12/08|17:36|-|-|0|False|All # 0,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#EDITITEM Edit notes bar||3|1||
+2025/12/04|08:18|-|-|0|False|All # 28,Other # 14,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#HASHTAGS #POLISH Adjust AvailableTags buttons to look better||3|20||
+2025/12/08|17:39|-|-|0|False|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|0|#MULTIITEMEDIT #POLISH If a change is made in a property, auto set the check box flag||3|25||
 ====================================VCS
 NewVCS
-False|20251207|205205|v3.40.31.0 |
+False|20251208|163544|v3.40.32.0 |
+VCSTodos
+EndVCS
+NewVCS
+True|20251207|205205|v3.40.31.0 Context menu and todo item buttons work now|
 VCSTodos
 2025/12/04|08:25|20251208|135122|0|True|All # 3,Other # 21,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#SORTING Make the Rank buttons work||3|1||
 2025/12/04|08:25|20251208|135123|0|True|All # 3,Other # 21,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#SORTING Make the Severity bar work||3|1||
+2025/12/04|08:25|20251208|144847|0|True|All # 3,Other # 21,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|#SORTING Make the Timer work||3|1||
+2025/12/08|16:20|20251208|162054|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|Context menu now works on multiple items at once||3|22||
+2025/12/07|13:35|20251208|163249|0|True|Todos # 7,All # 4,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#TODOS Add complete item to context menu||3|2||
+2025/12/08|14:49|20251208|163254|0|True|All # -1,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|3|Make the menu items work||3|16||
+2025/12/07|13:53|20251208|163253|0|True|Todos # 1,All # 7,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,|3|#BUG #TODOS Multiselect move to top does not work||3|9||
+2025/12/08|14:55|20251208|161753|0|True|All # 0,Other # -1,Feature # -1,Bug # -1,Oldbugs # -1,Notes # -1,Ui # -1,Ifwishes # -1,Kanban # -1,Todos # -1,|1|#BUG The rank buttons dont work on the all filter|I reenabled rank = int.MaxValue To the constructor. This needs to be added when adding NEW items, not adding old items back|3|19||
 EndVCS
 NewVCS
 True|20251207|135653|v3.40.30.0 Finished the editor dialogs|

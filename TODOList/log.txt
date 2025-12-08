@@ -1,3 +1,25 @@
+commit 6facf2ec695f59613bf050e2c07a8366aa24bc10
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Mon Dec 8 16:35:42 2025 +0800
+
+    20251207- v3.40.31.0 Context menu and todo item buttons work now
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20251208-0m |Multiselect move to top does not work
+    --20251208-0m |The rank buttons dont work on the all filter
+            Notes: I reenabled rank = int.MaxValue To the constructor. This needs to be added when adding NEW items,
+                    not adding old items back
+    
+    =Other Stuff======================================================================================================
+    --20251208-0m |Make the Rank buttons work
+    --20251208-0m |Make the Severity bar work
+    --20251208-0m |Make the Timer work
+    --20251208-0m |Context menu now works on multiple items at once
+    --20251208-0m |Add complete item to context menu
+    --20251208-0m |Make the menu items work
+
 commit ae8631288fde9f15a358825e788aa9acfe865ff7
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Sun Dec 7 20:48:52 2025 +0800

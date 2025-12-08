@@ -1,76 +1,69 @@
 <Window x:Class="TODOList.DlgEditTabs"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		mc:Ignorable="d"
-		Title="Edit Tab" Height="496" Width="300" 
-		FocusManager.FocusedElement="{Binding ElementName=lbTabs}"
-		Style="{StaticResource {x:Type Window}}" >
-	<StackPanel >
-		<ListBox Name="lbTabs" ItemsSource="{Binding}" SelectionMode="Multiple" Height="350" />
-		<StackPanel Orientation="Horizontal" Height="30" >
-			<Button Name="btnNewTab" Content="New Tab" Width="84" Click="btnNewTab_OnClick" Margin="2,0,2,0"/>
-			<TextBox Name="tbNewTab" Width="192" Margin="2,0,2,0" KeyUp="tbNewTab_OnKeyUp" />
-		</StackPanel >
-		<StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
-			<Button Name="btnDelete" Content="Delete" Width="88" Click="btnDelete_OnClick" Margin="2,0,2,0" />
-			<Button Name="btnMoveUp" Content="/\" Width="88" Click="btnMoveUp_OnClick" Margin="2,0,2,0" />
-			<Button Name="btnMoveDown" Content="\/" Width="88" Click="btnMoveDown_OnClick" Margin="2,0,2,0" />
-		</StackPanel >
-		<StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
-			<Button Name="btnOk" Content="Ok" Width="138" Click="btnOk_OnClick" Margin="2,0,2,0" />
-			<Button Name="btnCancel" Content="Cancel" Width="138" Click="btnCancel_OnClick" Margin="2,0,2,0" />
-		</StackPanel >
-	</StackPanel >	
-<!--	<Grid TextElement.FontSize="16" >
-		<Grid.RowDefinitions >
-			<RowDefinition />
-			<RowDefinition Height="35" />
-		</Grid.RowDefinitions >
-		<ListBox Grid.Row="0" Name="lbTabs" >
-			<ListBox.ItemTemplate >
-				<DataTemplate >
-					<StackPanel Orientation="Horizontal" Height="35">
-						<Button Width="30" Content="+" Click="AddNewTab_OnClick" Visibility="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" />
-						<Button Width="30" Content="X" Click="RemoveTab_OnClick" Visibility="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" />
-						<TextBox Width="248" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_OnPreviewTextInput" />
-						<Button Width="30" Content="6" FontFamily="Marlett" Click="Move_OnClick" CommandParameter="down" >
-							<Button.Style >
-								<Style TargetType="Button">
-									<Style.Triggers >
-										<DataTrigger Binding="{Binding CanMoveDown, UpdateSourceTrigger=PropertyChanged}" Value="True" >
-											<Setter Property="Visibility" Value="Visible" />
-										</DataTrigger >
-										<DataTrigger Binding="{Binding CanMoveDown}" Value="False" >
-											<Setter Property="Visibility" Value="Hidden" />
-										</DataTrigger >
-									</Style.Triggers >
-								</Style >
-							</Button.Style >
-						</Button >
-						<Button Width="30" Content="5" FontFamily="Marlett" Click="Move_OnClick" CommandParameter="up" >
-							<Button.Style >
-								<Style TargetType="Button">
-									<Style.Triggers >
-										<DataTrigger Binding="{Binding CanMoveUp}" Value="True" >
-											<Setter Property="Visibility" Value="Visible" />
-										</DataTrigger >
-										<DataTrigger Binding="{Binding CanMoveUp}" Value="False" >
-											<Setter Property="Visibility" Value="Hidden" />
-										</DataTrigger >
-									</Style.Triggers >
-								</Style >
-							</Button.Style >
-						</Button >
-					</StackPanel >
-				</DataTemplate >
-			</ListBox.ItemTemplate >
-		</ListBox >	
-		<StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" >
-			<Button Content="Ok" Click="Ok_OnClick" Width="150" Height="35" IsDefault="True" KeyboardNavigation.IsTabStop="False" />
-			<Button Content="Cancel" Click="Cancel_OnClick" Width="150" Height="35" KeyboardNavigation.IsTabStop="False" />
-		</StackPanel >
-	</Grid>
--->
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:behaviors="clr-namespace:TODOList.Behaviors" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:resources="clr-namespace:TODOList.Resources"
+        Title="Edit Tab"
+        Width="300" Height="496"
+        FocusManager.FocusedElement="{Binding ElementName=lbTabs}"
+        Style="{StaticResource {x:Type Window}}"
+        mc:Ignorable="d"
+        >
+    <StackPanel x:Name="MainGrid">
+        <ListBox x:Name="lbTabs"
+                 Height="350"
+                 ItemsSource="{Binding TabNames}"
+                 SelectionMode="Multiple"
+                 />
+        <StackPanel Height="30" Orientation="Horizontal">
+            <Button Name="btnNewTab"
+                    Width="84"
+                    Margin="2,0,2,0"
+                    Command="{Binding NewTabCommand}"
+                    Content="New Tab"
+                    />
+            <TextBox Name="tbNewTab"
+                     Width="192"
+                     Margin="2,0,2,0"
+                     behaviors:TextBoxBehavior.RemoveSpaces="True"
+                     Text="{Binding NewTabName, UpdateSourceTrigger=PropertyChanged}"
+                     />
+        </StackPanel>
+        <StackPanel Height="30"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    >
+            <Button Width="88"
+                    Margin="2,0,2,0"
+                    Command="{Binding DeleteCommand}"
+                    CommandParameter="{Binding ElementName=MainGrid, Path=Children[0]}"
+                    Content="Delete"
+                    />
+            <Button Width="88"
+                    Margin="2,0,2,0"
+                    Command="{Binding MoveUpCommand}"
+                    CommandParameter="{Binding ElementName=MainGrid, Path=Children[0]}"
+                    Content="▲"
+                    />
+            <Button Width="88"
+                    Margin="2,0,2,0"
+                    Command="{Binding MoveDownCommand}"
+                    CommandParameter="{Binding ElementName=MainGrid, Path=Children[0]}"
+                    Content="▼"
+                    />
+        </StackPanel>
+        <StackPanel Height="30"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    >
+            <Button Width="138"
+                    Margin="2,0,2,0"
+                    Command="{Binding OkCommand}"
+                    Content="Ok"
+                    />
+            <Button Width="138"
+                    Margin="2,0,2,0"
+                    Command="{Binding CancelCommand}"
+                    Content="Cancel"
+                    />
+        </StackPanel>
+    </StackPanel>
 </Window>
