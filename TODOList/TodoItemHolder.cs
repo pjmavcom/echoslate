@@ -38,7 +38,7 @@ namespace TODOList {
 				OnPropertyChanged();
 			}
 		}
-		
+
 		public string Todo => _td.Todo;
 		public string NotesAndTags => _td.NotesAndTags;
 		public string TagsSorted => _td.TagsSorted;
@@ -63,15 +63,25 @@ namespace TODOList {
 		}
 		public int Kanban {
 			get => _td.Kanban;
-			set => _td.Kanban = value;
+			set {
+				_td.Kanban = value;
+				KanbanRank = int.MaxValue;
+				OnPropertyChanged();
+			}
 		}
 		public int KanbanRank {
 			get => _td.KanbanRank;
-			set => _td.KanbanRank = value;
+			set {
+				_td.KanbanRank = value;
+				OnPropertyChanged();
+			}
 		}
 		public bool IsTimerOn => _td.IsTimerOn;
 		public long TimeTakenInMinutes => _td.TimeTakenInMinutes;
-		public string TimeTakenDisplay => $"{TimeTakenInMinutes:00.##} : {TimeTaken.Second:00}";
+		private string _timeTakenDisplay;
+		public string TimeTakenDisplay {
+			get => $"{TimeTakenInMinutes:00.##} : {TimeTaken.Second:00}";
+		}
 		public DateTime TimeTaken {
 			get => _td.TimeTaken;
 			set {
@@ -83,9 +93,16 @@ namespace TODOList {
 		public string DateStarted => TD.DateStarted;
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-		public TodoItemHolder(TodoItem td) {
-			_td = td;
-			// Rank = int.MaxValue;
+		public TodoItemHolder(TodoItem item) {
+			_td = item;
+			_td.PropertyChanged += (s, e) => {
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
+				if (e.PropertyName is nameof(TodoItem.TimeTaken) or
+									  nameof(TodoItem.TimeTakenInMinutes) or
+									  nameof(TodoItem.IsTimerOn)) {
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeTakenDisplay)));
+				}
+			};
 		}
 		public bool HasTag(string tag) {
 			return Tags.Contains(tag);

@@ -1,3 +1,17 @@
+commit ae8631288fde9f15a358825e788aa9acfe865ff7
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sun Dec 7 20:48:52 2025 +0800
+
+    20251207- v3.40.30.0 Finished the editor dialogs
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251207-0m |Apply edited todo from todoitemeditor
+    --20251207-0m |Move master list functions to view model
+    --20251207-0m |Tag filter bar does not highlight the current filter
+    --20251207-0m |Figure out how to set TimeTakenInMinutes in TodoItemEditor
+
 commit 29130b38bc8d63ba4d1aeab74626b85e1c6001be
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Sun Dec 7 13:57:52 2025 +0800

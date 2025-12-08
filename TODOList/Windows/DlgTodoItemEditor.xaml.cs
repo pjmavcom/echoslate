@@ -140,10 +140,6 @@ namespace TODOList {
 		private void SetTodo() {
 			ResultTodoItem.Severity = CurrentSeverity;
 			ResultTodoItem.Rank[_currentListHash] = Rank;
-			// if (_previousRank > _todoItem.Rank[_currentListHash])
-				// _todoItem.Rank[_currentListHash]--;
-				
-			// TODO: Figure out how to set TimeTaken
 			ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
 			ResultTodoItem.Notes = Notes;
 			

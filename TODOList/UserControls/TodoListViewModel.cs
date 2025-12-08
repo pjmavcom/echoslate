@@ -175,7 +175,6 @@ namespace TODOList.ViewModels {
 			RefreshDisplayedItems(true);
 		}
 		public void CycleSeverity() {
-			CurrentSeverityFilter++;
 		}
 		private void ApplySort(bool forceRefresh = false) {
 			if (!forceRefresh) {
@@ -275,28 +274,28 @@ namespace TODOList.ViewModels {
 
 			Log.Debug($"{item}");
 			Log.Debug($"{dlg.ResultTodoItem}");
-			
+
 			if (dlg.Result) {
 				RemoveItemFromMasterList(item);
 				AddItemToMasterList(dlg.ResultTodoItem);
 				ReRankWithSubsetMoved(dlg.ResultTodoItem, dlg.Rank);
 				RefreshDisplayedItems(true);
 				// if (MasterList.Contains(item)) {
-					// MasterList.Remove(item);
+				// MasterList.Remove(item);
 
-					// TODO: needs to get all instances of the todo from _currentHistoryItem.CompletedTodos, CompletedBugs, CompletedFeatures
-					// TODO: check that ranks work as intended
-					// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Contains(td))
-					// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Remove(td);
+				// TODO: needs to get all instances of the todo from _currentHistoryItem.CompletedTodos, CompletedBugs, CompletedFeatures
+				// TODO: check that ranks work as intended
+				// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Contains(td))
+				// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Remove(td);
 
-					// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Contains(td))
-					// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Remove(td);
+				// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Contains(td))
+				// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Remove(td);
 
-					// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Contains(td))
-					// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Remove(td);
+				// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Contains(td))
+				// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Remove(td);
 
-					// MainWindow.GetActiveWindow().AddItemToMasterList(itemEditor.ResultTodoItem);
-					// AutoSave();
+				// MainWindow.GetActiveWindow().AddItemToMasterList(itemEditor.ResultTodoItem);
+				// AutoSave();
 				// }
 
 				// IncompleteItemsRefresh();
@@ -317,7 +316,11 @@ namespace TODOList.ViewModels {
 			CleanTodoHashRanks(td);
 			MasterList.Add(td);
 		}
-		public void RemoveItemFromMasterList(TodoItem td) {
+		public void RemoveItemFromMasterList(TodoItem? td) {
+			if (td == null) {
+				Log.Warn("item is null");
+				return;
+			}
 			int index = MasterListContains(td);
 			if (index == -1)
 				return;
@@ -425,22 +428,118 @@ namespace TODOList.ViewModels {
 			*/
 		}
 
-
+		public List<TodoItem> GetSelectedListBoxItems() {
+			List<TodoItem> items = [];
+			foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+				items.Add(ih.TD);
+			}
+			return items;
+		}
+		public List<TodoItemHolder> GetSelectedListBoxHolders() {
+			List<TodoItemHolder> ihs = [];
+			foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+				ihs.Add(ih);
+			}
+			return ihs;
+		}
 		public ICommand ContextMenuEditCommand => new RelayCommand(ContextMenuEdit);
-		// public ICommand ContextMenuDeleteCommand  => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuResetTimerCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuKanban3Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuKanban2Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuKanban1Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuKanban0Command => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuMoveToTopCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
-		// public ICommand ContextMenuMoveToBottomCommand => new RelayCommand<TodoItemHolder>(item => ContextMenuEdit(item));
+		public ICommand ContextMenuDeleteCommand => new RelayCommand(() => {
+			foreach (TodoItem item in GetSelectedListBoxItems()) {
+				RemoveItemFromMasterList(item);
+			}
+			RefreshAll();
+		});
+		public ICommand ContextMenuResetTimerCommand => new RelayCommand(() => {
+			foreach (TodoItem item in GetSelectedListBoxItems()) {
+				item.ResetTimer();
+			}
+			RefreshAll();
+		});
+		public ICommand ContextMenuKanban3Command => new RelayCommand(() => {
+			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 3;
+			}
+			RefreshAll();
+		});
+		public ICommand ContextMenuKanban2Command => new RelayCommand(() => {
+			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 2;
+			}
+			RefreshAll();
+		});
+		public ICommand ContextMenuKanban1Command => new RelayCommand(() => {
+			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 1;
+			}
+			RefreshAll();
+		});
+		public ICommand ContextMenuKanban0Command => new RelayCommand(() => {
+			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 0;
+			}
+			RefreshAll();
+		});
+		public ICommand ContextMenuMoveToTopCommand => new RelayCommand(() => {
+			ReRankWithSubsetMoved(GetSelectedListBoxItems(), 0);
+			RefreshAll();
+		});
+		public ICommand ContextMenuMoveToBottomCommand => new RelayCommand(() => {
+			ReRankWithSubsetMoved(GetSelectedListBoxItems(), int.MaxValue);
+			RefreshAll();
+		});
+		public ICommand ContextMenuCompleteCommand => new RelayCommand(() => {
+			foreach (TodoItem item in GetSelectedListBoxItems()) {
+				item.IsComplete = true;
+			}
+			RefreshAll();
+		});
+		public ICommand DebugPrintTodoCommand => new RelayCommand(() => {
+			foreach (TodoItem item in GetSelectedListBoxItems()) {
+				Log.Debug($"{item}");
+			}
+		});
 
-		public ICommand SelectTagCommand
-			=> new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
-		public ICommand SelectSortCommand
-			=> new RelayCommand<string>(sort => { CurrentSort = sort; });
-		public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
+		public ICommand RankDownCommand => new RelayCommand<TodoItemHolder>(ih => {
+			var list = DisplayedItems.Cast<TodoItemHolder>()
+			   .OrderBy(h => h.Rank)
+			   .ToList();
+			int visibleIndex = list.IndexOf(ih);
+			if (visibleIndex >= list.Count - 1) {
+				return;
+			}
+
+			TodoItemHolder nextItem = list.ElementAt(visibleIndex + 1);
+
+			ih.Rank++;
+			nextItem.Rank--;
+			RefreshAll();
+		});
+		public ICommand RankUpCommand => new RelayCommand<TodoItemHolder>(ih => {
+			var list = DisplayedItems.Cast<TodoItemHolder>()
+			   .OrderBy(h => h.Rank)
+			   .ToList();
+			int visibleIndex = list.IndexOf(ih);
+			if (visibleIndex <= 0) {
+				return;
+			}
+
+			TodoItemHolder prevItem = list.ElementAt(visibleIndex - 1);
+
+			ih.Rank--;
+			prevItem.Rank++;
+			RefreshAll();
+		});
+		public ICommand ChangeSeverityCommand => new RelayCommand<TodoItemHolder>(ih => {
+			ih.Severity = (ih.Severity + 1) % 4;
+			RefreshAll();
+		});
+		public ICommand ToggleTimerCommand => new RelayCommand<TodoItemHolder>(ih => {
+			ih.TD.IsTimerOn = !ih.IsTimerOn;
+			RefreshAll();
+		});
+		public ICommand SelectTagCommand => new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
+		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
+		public ICommand CycleSeverityCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

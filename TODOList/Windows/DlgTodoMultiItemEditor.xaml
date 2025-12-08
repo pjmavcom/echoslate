@@ -78,8 +78,7 @@
                 <ColumnDefinition Width="500" />
             </Grid.ColumnDefinitions>
 
-            <CheckBox x:Name="ckTodo"
-                      Grid.Column="0"
+            <CheckBox Grid.Column="0"
                       Margin="2" VerticalAlignment="Top"
                       Content="TODO:"
                       IsChecked="{Binding IsTodoEnabled, Mode=TwoWay}"

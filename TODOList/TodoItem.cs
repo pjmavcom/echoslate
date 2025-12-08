@@ -181,6 +181,10 @@ namespace TODOList {
 			_rank = new Dictionary<string, int>();
 			Load3_20(newItem);
 		}
+		public void ResetTimer() {
+			IsTimerOn = false;
+			TimeTaken = new DateTime(0);
+		}
 		private void FixDateTime() {
 			if (!_dateStarted.Contains("-")) {
 				_dateStarted = _dateStarted.Insert(4, "-");
