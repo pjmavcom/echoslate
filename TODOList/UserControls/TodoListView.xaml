@@ -1,8 +1,8 @@
 <UserControl x:Class="TODOList.UserControls.TodoListView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:TODOList.UserControls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:resources="clr-namespace:TODOList.Resources" xmlns:todoList="clr-namespace:TODOList"
-             xmlns:viewModels="clr-namespace:TODOList.ViewModels"
-             d:DesignHeight="500" d:DesignWidth="*" IsVisibleChanged="TodoListView_IsVisibleChanged"
+             xmlns:behaviors="clr-namespace:TODOList.Behaviors" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:global="clr-namespace:" xmlns:local="clr-namespace:TODOList.UserControls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resources="clr-namespace:TODOList.Resources" xmlns:todoList="clr-namespace:TODOList" xmlns:viewModels="clr-namespace:TODOList.ViewModels"
+             d:DesignHeight="500" d:DesignWidth="1400" IsVisibleChanged="TodoListView_IsVisibleChanged"
              mc:Ignorable="d"
              >
     <UserControl.Resources>
@@ -10,6 +10,7 @@
         <resources:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
         <resources:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
         <resources:IsTagSelectedConverter x:Key="IsTagSelectedConverter" />
+        <resources:SubtractFixedWidthConverter x:Key="SubtractFixedWidthConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -31,12 +32,12 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
                     Width="Auto"
-                    Margin="4,0" Padding="16,8"
-                    Background="{Binding SeverityButtonBackground}"
-                    BorderThickness="0"
-                    Command="{Binding CycleSeverityCommand}"
-                    Content="Severity" FontWeight="SemiBold" Foreground="White"
-                    />
+                    Background="{Binding CurrentSeverityBrush}"
+                    Command="{Binding CycleSeverityFilterCommand}"
+                    Content="Severity"
+                    Style="{StaticResource SeverityButton}"
+                    >
+            </Button>
             <ItemsControl Grid.Column="1"
                           Margin="10,10,10,5"
                           ItemsSource="{Binding FilterTags}"
@@ -49,37 +50,16 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-
-                        <Button Margin="4,0" Padding="16,8"
-                                BorderThickness="0"
-                                Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        <Button Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding}"
                                 Content="{Binding}"
-                                FontWeight="SemiBold" Foreground="White"
                                 >
-
                             <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Background" Value="#464646" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="border"
-                                                        Padding="{TemplateBinding Padding}"
-                                                        Background="{TemplateBinding Background}"
-                                                        CornerRadius="6"
-                                                        >
-                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-
+                                <Style BasedOn="{StaticResource FilterButton}" TargetType="Button">
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" Value="#5A5A5A" />
                                         </Trigger>
-
                                         <DataTrigger Value="True">
                                             <DataTrigger.Binding>
                                                 <MultiBinding Converter="{StaticResource IsTagSelectedConverter}">
@@ -93,7 +73,6 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ContextMenu>
@@ -140,7 +119,7 @@
                  Grid.Row="2" Grid.Column="0"
                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                  ItemsSource="{Binding DisplayedItems}"
-                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended"
+                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="Extended"
                  >
             <ListBox.ContextMenu>
                 <ContextMenu>
@@ -170,17 +149,36 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="36" Background="Transparent">
+                    <Grid Height="36"
+                          Margin="2"
+                          Background="Transparent"
+                          >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="301" />
+                            <!--  Tags  -->
                             <ColumnDefinition Width="161" />
+                            <!--  Date  -->
                             <ColumnDefinition Width="101" />
+                            <!--  Severity  -->
                             <ColumnDefinition Width="57" />
+                            <!--  Rank  -->
                             <ColumnDefinition Width="25" />
+                            <!--  ↓  -->
                             <ColumnDefinition Width="25" />
+                            <!--  ↑  -->
                             <ColumnDefinition Width="71" />
+                            <!--  Kanban  -->
                             <ColumnDefinition Width="111" />
+                            <!--  Timer  -->
+
                             <ColumnDefinition Width="*" />
+                            <!--         <ColumnDefinition.MaxWidth> -->
+                            <!--             <Binding ElementName="lbTodos" Path="ActualWidth"> -->
+                            <!--                 <Binding Converter="{StaticResource SubtractFixedWidthConverter}" ConverterParameter="551" /> -->
+                            <!--             </Binding> -->
+                            <!--         </ColumnDefinition.MaxWidth> -->
+                            <!--         <ColumnDefinition.MinWidth>300</ColumnDefinition.MinWidth> -->
+                            <!--     </ColumnDefinition> -->
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0"
@@ -259,9 +257,10 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="270" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="tbNewTodo"
-                     Grid.Column="0"
-                     KeyboardNavigation.TabIndex="1" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow"
+            <TextBox Grid.Column="0"
+                     AcceptsReturn="True" Cursor="IBeam" KeyboardNavigation.TabIndex="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Text="{Binding NewTodoText}"
+                     TextWrapping="Wrap"
                      />
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -273,17 +272,19 @@
                 <!--  FontWeight="Bold"  -->
                 <!--  Foreground="Red"  -->
                 <!--  Text="{Binding DebugCount, StringFormat='Items in view: {0}'}" />  -->
-                <ComboBox Name="cbSeverity"
-                          Grid.Row="0"
-                          KeyboardNavigation.TabIndex="2" Loaded="SeverityComboBox_OnIsLoaded" SelectionChanged="SeverityComboBox_OnSelectionChange" Unloaded="SeverityComboBox_OnIsLoaded"
-                          >
-                    <ComboBoxItem Content="None" />
-                    <ComboBoxItem Content="Low" IsSelected="True" />
-                    <ComboBoxItem Content="Med" />
-                    <ComboBoxItem Content="High" />
-                </ComboBox>
+                <Button Grid.Column="0"
+                        Width="Auto"
+                        Background="{Binding NewTodoSeverityBrush}"
+                        Command="{Binding CycleNewTodoSeverityCommand}"
+                        Content="Severity" FontWeight="SemiBold" Foreground="White"
+                        Style="{StaticResource SeverityButton}"
+                        />
                 <Button Grid.Row="1"
-                        Click="Add_OnClick" Content="Add" KeyboardNavigation.TabIndex="3"
+                        Width="Auto"
+                        Margin="4,0" Padding="16,8"
+                        BorderThickness="0" 
+                        Command="{Binding NewTodoAddCommand}"
+                        Content="Add" KeyboardNavigation.TabIndex="3"
                         />
             </Grid>
         </Grid>

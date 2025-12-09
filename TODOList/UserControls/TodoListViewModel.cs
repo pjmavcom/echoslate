@@ -24,6 +24,7 @@ namespace TODOList.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+		public static Dictionary<string, string> HashShortcuts;
 
 		public ListBox lbTodos;
 
@@ -54,7 +55,17 @@ namespace TODOList.ViewModels {
 			}
 		}
 
-		private int _currentSeverityFilter = -1;
+		private static SolidColorBrush SeverityBrush(int severity) =>
+			severity switch {
+				3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
+				2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
+				1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
+				0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
+				_ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
+			};
+
+		
+		private int _currentSeverityFilter;
 		public int CurrentSeverityFilter {
 			get => _currentSeverityFilter;
 			set {
@@ -62,27 +73,23 @@ namespace TODOList.ViewModels {
 					value = -1;
 				}
 				_currentSeverityFilter = value;
+				CurrentSeverityBrush = SeverityBrush(CurrentSeverityFilter);
 				RefreshDisplayedItems();
 				OnPropertyChanged();
-				OnPropertyChanged(nameof(SeverityButtonBackground));
 			}
 		}
-		public string SeverityButtonText => CurrentSeverityFilter switch {
-												3 => "High",
-												2 => "Med",
-												1 => "Low",
-												0 => "None",
-												_ => ""
-											};
-		public Brush SeverityButtonBackground => CurrentSeverityFilter switch {
-													 3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
-													 2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
-													 1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
-													 0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
-													 _ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
-												 };
+		private SolidColorBrush _currentSeverityBrush;
+		public SolidColorBrush CurrentSeverityBrush {
+			get => _currentSeverityBrush;
+			set {
+				_currentSeverityBrush = value;
+				OnPropertyChanged();
+			}
+		}
+
 
 		// TODO: Change this to RANK after testing
+		// or make it an option
 		private string _currentSort = "severity";
 		public string CurrentSort {
 			get => _currentSort;
@@ -96,14 +103,45 @@ namespace TODOList.ViewModels {
 		private bool _reverseSort;
 		private bool _previousReverseSort;
 
+		private string _newTodoText;
+		public string NewTodoText {
+			get => _newTodoText;
+			set {
+				_newTodoText = value;
+				OnPropertyChanged();
+			}
+		}
+		private int _newTodoSeverity;
+		public int NewTodoSeverity {
+			get => _newTodoSeverity;
+			set {
+				_newTodoSeverity = value % 4;
+				NewTodoSeverityBrush = SeverityBrush(NewTodoSeverity);
+				OnPropertyChanged();
+			}
+		}
+		private SolidColorBrush _newTodoSeverityBrush;
+		public SolidColorBrush NewTodoSeverityBrush {
+			get => _newTodoSeverityBrush;
+			set {
+				_newTodoSeverityBrush = value;
+				OnPropertyChanged();
+			}
+		}
 
-		public TodoListViewModel(List<TodoItem> masterList, List<string> masterFilterTags) {
+
+		public TodoListViewModel(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts) {
 			MasterList = masterList ?? throw new ArgumentNullException(nameof(masterList));
 			AllItems = new List<TodoItemHolder>();
 
 			MasterFilterTags = masterFilterTags ?? throw new ArgumentNullException(nameof(masterFilterTags));
 			AllTags = new ObservableCollection<string>(MasterFilterTags);
 			FilterTags = new ObservableCollection<string>(MasterFilterTags);
+			
+			HashShortcuts = hashShortcuts ?? throw new ArgumentNullException(nameof(hashShortcuts));
+			
+			CurrentSeverityFilter = -1;
+			NewTodoSeverity = 0;
 		}
 		public void GetCurrentHashTags() {
 			AllTags.Clear();
@@ -389,6 +427,49 @@ namespace TODOList.ViewModels {
 			RefreshAll();
 		}
 
+		private static void ExpandHashTags(TodoItem td) {
+			// UNCHECKED
+			string tempTodo = ExpandHashTagsInString(td.Todo);
+			string tempTags = ExpandHashTagsInList(td.Tags);
+			td.Tags = new ObservableCollection<string>();
+
+			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
+		}
+		public static string ExpandHashTagsInString(string todo) {
+			// UNCHECKED
+			string[] pieces = todo.Split(' ');
+
+			List<string> list = new List<string>();
+			foreach (string piece in pieces) {
+				string s = piece;
+				if (s.Contains('#')) {
+					string t = s.ToUpper();
+					if (t.Equals("#FEATURES"))
+						t = "#FEATURE";
+
+					if (t.Equals("#BUGS"))
+						t = "#BUG";
+
+					foreach (string hash in from pair in HashShortcuts
+											where t.Equals("#" + pair.Key.ToUpper())
+											select "#" + pair.Value)
+						s = hash;
+
+					s = s.ToLower();
+				}
+
+				list.Add(s);
+			}
+
+			return list.Where(s => s != "").Aggregate("", (current, s) => current + (s + " "));
+		}
+		private static string ExpandHashTagsInList(ObservableCollection<string> tags) {
+			// UNCHECKED
+			string result = tags.Aggregate("", (current, s) => current + (s + " "));
+
+			result = ExpandHashTagsInString(result);
+			return result;
+		}
 		private void MultiEditItems(List<TodoItem> items) {
 			string tagFilter = GetCurrentTagFilterWithoutHash();
 			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
@@ -550,11 +631,22 @@ namespace TODOList.ViewModels {
 			ih.TD.IsTimerOn = !ih.IsTimerOn;
 			RefreshAll();
 		});
-		
+		public void NewTodoAdd() {
+		}
+
 		public ICommand SelectTagCommand => new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
 		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
-		public ICommand CycleSeverityCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
+		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
+		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
+		public ICommand NewTodoAddCommand => new RelayCommand(() => {
+			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+			ExpandHashTags(item);
+			item.Tags.Add(CurrentTagFilter);
+			AddItemToMasterList(item);
+			RefreshAll();
+			NewTodoText = "";
+		});
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

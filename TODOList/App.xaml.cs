@@ -17,6 +17,7 @@ namespace TODOList {
 													   new BoolToTimerTextConverter(),
 												   };
 			foreach (var c in converters) c.Convert(0, typeof(Brush), null, CultureInfo.CurrentCulture);
+			
 			base.OnStartup(e);
 		}
 	}

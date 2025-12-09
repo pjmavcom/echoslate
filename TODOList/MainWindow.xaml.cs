@@ -82,7 +82,7 @@ namespace TODOList {
 
 		private readonly List<string> _kanbanTabHeaders;
 		private readonly ObservableCollection<string> _tagHash;
-		private static Dictionary<string, string> _hashShortcuts;
+		public static Dictionary<string, string> _hashShortcuts;
 		
 		private List<string> _prevHashTagList = new List<string>();
 
@@ -255,7 +255,7 @@ namespace TODOList {
 					Application.Current.Shutdown();
 				}
 			};
-			mnuMain.Background = Brushes.Red;
+			// mnuMain.Background = Brushes.Red;
 #endif
 
 			LoadSettings();
@@ -286,7 +286,7 @@ namespace TODOList {
 			HistoryItems = new List<HistoryItem>();
 			_currentHistoryItem = new HistoryItem("", "");
 
-			_todoListViewModel = new TodoListViewModel(_masterList, TagFilters);
+			_todoListViewModel = new TodoListViewModel(_masterList, TagFilters, _hashShortcuts);
 			ucTodoListView.DataContext = _todoListViewModel;
 
 			incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;

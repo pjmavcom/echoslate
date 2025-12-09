@@ -1,3 +1,15 @@
+commit 303c14883d5f9d6b8ff82ffd6264dbdf19562548
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Mon Dec 8 21:28:10 2025 +0800
+
+    20251208- v3.40.32.0 Filter Tag edit window is working!
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251208-0m |Apply DlgEditTabs to AvailableTags bar
+    --20251208-0m |Filter tag edit window
+
 commit 6facf2ec695f59613bf050e2c07a8366aa24bc10
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Mon Dec 8 16:35:42 2025 +0800
