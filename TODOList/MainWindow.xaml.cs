@@ -3360,23 +3360,23 @@ namespace Echoslate {
 				selectedTags.Add(tag);
 
 			bool multi = _lbCurrentItems.SelectedItems.Count > 1;
-			TagPicker tp = new TagPicker(multi);
+			TagPicker tp = new TagPicker();
 			tp.LoadTags(_incompleteItemsHashTags[0], selectedTags);
 			tp.ShowDialog();
 			if (tp.Result == false)
 				return;
 
-			if (_lbCurrentItems.SelectedItems.Count > 1) {
-				if (tp.Multi)
-					foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
-						tdi.TD.Tags = tp.NewTags;
-				else
-					foreach (string s in tp.NewTags)
-					foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
-						tdi.TD.AddTag(s);
-			} else {
-				_currentTodoItemInNotesPanel.Tags = tp.NewTags;
-			}
+			// if (_lbCurrentItems.SelectedItems.Count > 1) {
+				// if (tp.Multi)
+					// foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
+						// tdi.TD.Tags = tp.NewTags;
+				// else
+					// foreach (string s in tp.NewTags)
+					// foreach (TodoItemHolder tdi in _lbCurrentItems.SelectedItems)
+						// tdi.TD.AddTag(s);
+			// } else {
+				// _currentTodoItemInNotesPanel.Tags = tp.NewTags;
+			// }
 
 			_lbNotesPanelHashTags.ItemsSource = _currentTodoItemInNotesPanel.Tags;
 			_lbNotesPanelHashTags.Items.Refresh();

@@ -1,3 +1,18 @@
+commit ca9497442593ffdf9d0f5d7940af7d9ebd4d579a
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed Dec 10 20:10:58 2025 +0800
+
+    20251209- v3.40.34.0 NoteEditor bar is functional now
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251210-0m |Add new item bar
+    --20251210-0m |Make the edit item window work
+    --20251210-0m |Sync data between the edit item window
+    --20251210-0m |Edit notes bar
+    --20251210-0m |Sort by tag combo box is only 4 items tall now, make it bigger
+
 commit 0a047a5dcbd82e193868d6de2c8798f543b580e7
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Tue Dec 9 17:30:37 2025 +0800

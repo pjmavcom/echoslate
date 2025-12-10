@@ -37,15 +37,33 @@ namespace Echoslate.UserControls {
 
 		private void TodoListView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			if (e.NewValue is true && DataContext is TodoListViewModel vm) {
-				vm.RefreshAvailableTags();
 				vm.RefreshAll();	
-				vm.GetCurrentHashTags();
 				vm.lbTodos = lbTodos;
 			}
 		}
-		private void ItemNotesPanel_EditTagsRequested(object sender, RoutedEventArgs e) {
-			Log.Test();
-			var vm = (TodoListViewModel)DataContext;
+		private void NotesPanelCompleteRequested(object sender, RoutedEventArgs e) {
+			TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			if (vm == null) {
+				Log.Print("Can not find ViewModel.");
+				return;
+			}
+			if (vm.lbTodos.SelectedItem == null) {
+				Log.Print("No todos selected.");
+				return;
+			}
+
+
+		}
+		private void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {
+			TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			if (vm == null) {
+				Log.Print("Can not find ViewModel.");
+				return;
+			}
+			if (vm.lbTodos.SelectedItem == null) {
+				Log.Print("No todos selected.");
+			return;
+			}
 
 			List<TodoItem> ihs = [];
 			List<string> selectedTags = [];

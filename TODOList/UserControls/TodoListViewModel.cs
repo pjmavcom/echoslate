@@ -40,6 +40,7 @@ namespace Echoslate.ViewModels {
 					return;
 				}
 				_prioritySortTag = value;
+				RefreshAll();
 				ApplyPriorityTagSorting();
 				OnPropertyChanged();
 			}
@@ -50,8 +51,7 @@ namespace Echoslate.ViewModels {
 			set {
 				_currentTagFilter = value;
 				_reverseSort = true;
-				RefreshDisplayedItems();
-				GetCurrentHashTags();
+				RefreshAll();
 				OnPropertyChanged();
 			}
 		}
@@ -73,7 +73,7 @@ namespace Echoslate.ViewModels {
 				}
 				_currentSeverityFilter = value;
 				CurrentSeverityBrush = SeverityBrush(CurrentSeverityFilter);
-				RefreshDisplayedItems();
+				RefreshAll();
 				OnPropertyChanged();
 			}
 		}
@@ -94,7 +94,7 @@ namespace Echoslate.ViewModels {
 			get => _currentSort;
 			set {
 				_currentSort = value;
-				RefreshDisplayedItems();
+				RefreshAll();
 				OnPropertyChanged();
 			}
 		}
@@ -220,9 +220,9 @@ namespace Echoslate.ViewModels {
 			DisplayedItems?.Refresh();
 		}
 		public void RefreshAll() {
-			GetCurrentHashTags();
 			RefreshAvailableTags();
 			RefreshDisplayedItems(true);
+			GetCurrentHashTags();
 		}
 		private void ApplySort(bool forceRefresh = false) {
 			if (!forceRefresh) {
@@ -327,7 +327,7 @@ namespace Echoslate.ViewModels {
 				RemoveItemFromMasterList(item);
 				AddItemToMasterList(dlg.ResultTodoItem);
 				ReRankWithSubsetMoved(dlg.ResultTodoItem, dlg.Rank);
-				RefreshDisplayedItems(true);
+				RefreshAll();
 				// if (MasterList.Contains(item)) {
 				// MasterList.Remove(item);
 
@@ -657,6 +657,7 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 			NewTodoText = "";
 		});
+		public ICommand RefreshAllCommand => new RelayCommand(RefreshAll);
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

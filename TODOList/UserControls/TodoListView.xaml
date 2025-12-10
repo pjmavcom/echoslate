@@ -10,7 +10,6 @@
         <converters:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
         <converters:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
         <converters:IsTagSelectedConverter x:Key="IsTagSelectedConverter" />
-        <converters:SubtractFixedWidthConverter x:Key="SubtractFixedWidthConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,8 +19,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
 
         <!--  Filter button bar  -->
@@ -88,7 +87,7 @@
                     Orientation="Horizontal"
                     >
             <ComboBox Width="301"
-                      ItemsSource="{Binding AllAvailableTagsView}"
+                      ItemsSource="{Binding CurrentVisibleTags}"
                       KeyboardNavigation.IsTabStop="False" MaxDropDownHeight="360"
                       SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}"
                       />
@@ -293,7 +292,7 @@
         <!--  Items NotesPanel  -->
         <local:ItemNotesPanel x:Name="itemNotesPanel"
                               Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"
-                              EditTagsRequested="ItemNotesPanel_EditTagsRequested"
+                              NotesPanelCompleteRequested="NotesPanelCompleteRequested" NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
                               SelectedTodoItem="{Binding SelectedItem, ElementName=lbTodos, Mode=OneWay}"
                               />
     </Grid>
