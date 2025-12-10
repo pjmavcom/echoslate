@@ -1,6 +1,6 @@
-﻿<Window x:Class="TODOList.MainWindow"
+﻿<Window x:Class="Echoslate.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:TODOList" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:userControls="clr-namespace:TODOList.UserControls" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:userControls="clr-namespace:Echoslate.UserControls" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         Title="{Binding WindowTitle}"
         Width="1920" Height="1080"
         FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}"
@@ -619,7 +619,7 @@
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <userControls:IncompleteItemsNotesPanel x:Name="ucIncompleteItemsNotesPanel" Grid.Column="1" />
+                    <userControls:ItemNotesPanel x:Name="ucIncompleteItemsNotesPanel" Grid.Column="1" />
                 </StackPanel>
             </TabItem>
             <TabItem Name="tabKanban"

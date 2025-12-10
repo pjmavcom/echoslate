@@ -3,14 +3,14 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace TODOList.Resources;
+namespace Echoslate.Converters;
 
-public class BoolToLimeBrushConverter : IValueConverter {
+public class BoolToTimerTextConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 		if (value is bool isOn && isOn)
-			return new SolidColorBrush(Colors.Lime);
+			return Brushes.Black;
 		else
-			return new SolidColorBrush(Colors.Transparent);
+			return Brushes.LightGray;
 	}
 
 	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

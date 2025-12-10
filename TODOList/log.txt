@@ -1,3 +1,22 @@
+commit 0a047a5dcbd82e193868d6de2c8798f543b580e7
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Tue Dec 9 17:30:37 2025 +0800
+
+    20251208- v3.40.33.0 Add new item bar is working
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Item added to master list. Still needs to set kanban rank. Applying current sorting tag works
+            though
+    Also spent some time on the interface. Removed all the 2,500 lines of styling and condensed it down to
+            550 lines. App is smoother now and looks better.
+    
+    =Other Stuff======================================================================================================
+    --20251209-0m |Make the AddNewItem bar work
+    --20251209-0m |Fix Severity
+    --20251209-0m |Fix Add button
+    --20251209-0m |Fixed the AddNewItem text bar to look like you can click all of it to edit a text
+    --20251209-0m |Edited and made the interface look better, looks more like Rider
+
 commit 303c14883d5f9d6b8ff82ffd6264dbdf19562548
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Mon Dec 8 21:28:10 2025 +0800

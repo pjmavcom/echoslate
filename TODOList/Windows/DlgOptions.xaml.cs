@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 
-namespace TODOList
+namespace Echoslate
 {
 	public partial class DlgOptions
 	{

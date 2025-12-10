@@ -9,10 +9,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
-using TODOList.Resources;
+using Echoslate.Resources;
 
 
-namespace TODOList.ViewModels {
+namespace Echoslate.ViewModels {
 	public class TodoListViewModel : INotifyPropertyChanged {
 		public List<TodoItem> MasterList { get; }
 		public List<TodoItemHolder> AllItems { get; }
@@ -29,6 +29,7 @@ namespace TODOList.ViewModels {
 		public ListBox lbTodos;
 
 		public ObservableCollection<string> AllTags { get; }
+		public ObservableCollection<string> CurrentVisibleTags { get; }
 		public List<string> MasterFilterTags { get; set; }
 		public ObservableCollection<string> FilterTags { get; }
 		private string _prioritySortTag;
@@ -63,8 +64,6 @@ namespace TODOList.ViewModels {
 				0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
 				_ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
 			};
-
-		
 		private int _currentSeverityFilter;
 		public int CurrentSeverityFilter {
 			get => _currentSeverityFilter;
@@ -135,22 +134,33 @@ namespace TODOList.ViewModels {
 			AllItems = new List<TodoItemHolder>();
 
 			MasterFilterTags = masterFilterTags ?? throw new ArgumentNullException(nameof(masterFilterTags));
+			CurrentVisibleTags = new ObservableCollection<string>(MasterFilterTags);
 			AllTags = new ObservableCollection<string>(MasterFilterTags);
 			FilterTags = new ObservableCollection<string>(MasterFilterTags);
-			
+
 			HashShortcuts = hashShortcuts ?? throw new ArgumentNullException(nameof(hashShortcuts));
-			
+
 			CurrentSeverityFilter = -1;
 			NewTodoSeverity = 0;
 		}
 		public void GetCurrentHashTags() {
-			AllTags.Clear();
+			CurrentVisibleTags.Clear();
+			if (DisplayedItems == null || MasterList == null) {
+				return;
+			}
 			foreach (TodoItemHolder ih in DisplayedItems) {
 				foreach (string tag in ih.Tags) {
-					if (AllTags.Contains(tag)) {
+					if (CurrentVisibleTags.Contains(tag)) {
 						continue;
 					}
-					AllTags.Add(tag);
+					CurrentVisibleTags.Add(tag);
+				}
+			}
+			foreach (TodoItem item in MasterList) {
+				foreach (string tag in item.Tags) {
+					if (!AllTags.Contains(tag)) {
+						AllTags.Add(tag);
+					}
 				}
 			}
 		}
@@ -210,10 +220,9 @@ namespace TODOList.ViewModels {
 			DisplayedItems?.Refresh();
 		}
 		public void RefreshAll() {
+			GetCurrentHashTags();
 			RefreshAvailableTags();
 			RefreshDisplayedItems(true);
-		}
-		public void CycleSeverity() {
 		}
 		private void ApplySort(bool forceRefresh = false) {
 			if (!forceRefresh) {
@@ -536,6 +545,9 @@ namespace TODOList.ViewModels {
 			}
 			return ihs;
 		}
+		private void ItemNotesPanel_EditTagsRequested(object sender, EventArgs e) {
+			Log.Test();
+		}
 		public ICommand ContextMenuEditCommand => new RelayCommand(ContextMenuEdit);
 		public ICommand ContextMenuDeleteCommand => new RelayCommand(() => {
 			foreach (TodoItem item in GetSelectedListBoxItems()) {
@@ -631,8 +643,6 @@ namespace TODOList.ViewModels {
 			ih.TD.IsTimerOn = !ih.IsTimerOn;
 			RefreshAll();
 		});
-		public void NewTodoAdd() {
-		}
 
 		public ICommand SelectTagCommand => new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
 		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });

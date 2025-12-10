@@ -15,8 +15,8 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
-using TODOList.UserControls;
-using TODOList.ViewModels;
+using Echoslate.UserControls;
+using Echoslate.ViewModels;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -30,7 +30,7 @@ using TabControl = System.Windows.Controls.TabControl;
 using TextBox = System.Windows.Controls.TextBox;
 
 
-namespace TODOList {
+namespace Echoslate {
 	public partial class MainWindow : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private const string PROGRAM_VERSION = "3.40.20.1";
@@ -151,7 +151,7 @@ namespace TODOList {
 		private int _pomoTimeLeft;
 
 		// CONTROLS
-		private IncompleteItemsNotesPanel _incompleteItemsNotesPanel;
+		private ItemNotesPanel _incompleteItemsNotesPanel;
 		private ComboBox _cbIncompleteItemsHashTags;
 		private ComboBox _cbKanbanHashTags;
 		private ListBox _lbIncompleteItems;
@@ -255,7 +255,7 @@ namespace TODOList {
 					Application.Current.Shutdown();
 				}
 			};
-			// mnuMain.Background = Brushes.Red;
+			mnuMain.Background = Brushes.Red;
 #endif
 
 			LoadSettings();
@@ -481,10 +481,10 @@ namespace TODOList {
 
 			switch (_previousMainTabSelectedIndex) {
 				case 1: //"TODOs":
-					UpdateNotes(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsNotes);
-					UpdateTitle(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsTitle);
-					UpdateProblem(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsProblem);
-					UpdateSolution(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsSolution);
+					// UpdateNotes(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsNotes);
+					// UpdateTitle(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsTitle);
+					// UpdateProblem(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsProblem);
+					// UpdateSolution(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsSolution);
 					break;
 				case 2: //"Kanban":
 					UpdateNotes(_lbKanbanItems, tbKanbanNotes);
@@ -501,133 +501,133 @@ namespace TODOList {
 		// Get Active Items
 		private void SelectActiveTabItems() {
 			// UNCHECKED
-			_lbCurrentItems = null;
-			_currentItems = null;
-			_currentSelectedSubTab = null;
-			_lbNotesPanelHashTags = null;
-
-			int tabIndex = tabControl.SelectedIndex;
-			switch (tabIndex) {
-				case 0:
-					// History Tab
-					break;
-				case 1:
-					// IncompleteItems (TO DO) Tab
-					IncompleteItemsUpdateHandler();
-					_currentSelectedSubTab = incompleteItemsTodoTabs;
-					_lbCurrentItems = _lbIncompleteItems;
-					_currentItems = _incompleteItems;
-					_tbNewTodo = tbIncompleteItemsNewTodo;
-					_cbSeverity = cbIncompleteItemsSeverity;
-					_lbNotesPanelHashTags = _incompleteItemsNotesPanel.lbIncompleteItemsHashTags;
-					break;
-				case 2:
-					// Kanban Tab
-					KanbanUpdateHandler();
-					_currentSelectedSubTab = kanbanTodoTabs;
-					_lbCurrentItems = _lbKanbanItems;
-					_currentItems = _kanbanItems;
-					_tbNewTodo = tbKanbanNewTodo;
-					_cbSeverity = cbKanbanSeverity;
-					_lbNotesPanelHashTags = lbKanbanHashTags;
-					break;
-				case 3:
-					// Log Tab
-					break;
-			}
+			// _lbCurrentItems = null;
+			// _currentItems = null;
+			// _currentSelectedSubTab = null;
+			// _lbNotesPanelHashTags = null;
+			//
+			// int tabIndex = tabControl.SelectedIndex;
+			// switch (tabIndex) {
+			// 	case 0:
+			// 		// History Tab
+			// 		break;
+			// 	case 1:
+			// 		// IncompleteItems (TO DO) Tab
+			// 		IncompleteItemsUpdateHandler();
+			// 		_currentSelectedSubTab = incompleteItemsTodoTabs;
+			// 		_lbCurrentItems = _lbIncompleteItems;
+			// 		_currentItems = _incompleteItems;
+			// 		_tbNewTodo = tbIncompleteItemsNewTodo;
+			// 		_cbSeverity = cbIncompleteItemsSeverity;
+			// 		_lbNotesPanelHashTags = _incompleteItemsNotesPanel.lbIncompleteItemsHashTags;
+			// 		break;
+			// 	case 2:
+			// 		// Kanban Tab
+			// 		KanbanUpdateHandler();
+			// 		_currentSelectedSubTab = kanbanTodoTabs;
+			// 		_lbCurrentItems = _lbKanbanItems;
+			// 		_currentItems = _kanbanItems;
+			// 		_tbNewTodo = tbKanbanNewTodo;
+			// 		_cbSeverity = cbKanbanSeverity;
+			// 		_lbNotesPanelHashTags = lbKanbanHashTags;
+			// 		break;
+			// 	case 3:
+			// 		// Log Tab
+			// 		break;
+			// }
 		}
 		public ObservableCollection<TodoItemHolder> GetActiveItemList() {
 			// UNCHECKED
-			switch (tabControl.SelectedIndex) {
-				case 1:
-					return IncompleteItems;
-				case 2:
-					return KanbanItems;
-				default:
-					_errorMessage = "Function: GetActiveItemList()\n" +
-									"\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
-									"\tNot a valid tab with a list\n";
+			// switch (tabControl.SelectedIndex) {
+				// case 1:
+					// return IncompleteItems;
+				// case 2:
+					// return KanbanItems;
+				// default:
+					// _errorMessage = "Function: GetActiveItemList()\n" +
+									// "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+									// "\tNot a valid tab with a list\n";
 					return null;
-			}
+			// }
 		}
 		public ListBox GetActiveListBox() {
 			// UNCHECKED
-			switch (tabControl.SelectedIndex) {
-				case 1:
-					if (_lbIncompleteItems == null)
-						IncompleteItemsInitialize();
-					return _lbIncompleteItems;
-				case 2:
-					if (_lbKanbanItems == null)
-						KanbanInitialize();
-					return _lbKanbanItems;
-				default:
-					_errorMessage = "Function: GetActiveListBox()\n" +
-									"\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
-									"\tNot a valid tab with a ListBox\n" +
-									_errorMessage;
+			// switch (tabControl.SelectedIndex) {
+				// case 1:
+					// if (_lbIncompleteItems == null)
+						// IncompleteItemsInitialize();
+					// return _lbIncompleteItems;
+				// case 2:
+					// if (_lbKanbanItems == null)
+						// KanbanInitialize();
+					// return _lbKanbanItems;
+				// default:
+					// _errorMessage = "Function: GetActiveListBox()\n" +
+									// "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+									// "\tNot a valid tab with a ListBox\n" +
+									// _errorMessage;
 					return null;
-			}
+			// }
 		}
 		public TextBox GetActiveTextBoxTitle() {
 			// UNCHECKED
-			switch (tabControl.SelectedIndex) {
-				case 1:
-					return _incompleteItemsNotesPanel.tbIncompleteItemsTitle;
-				case 2:
-					return tbKanbanTitle;
-				default:
-					_errorMessage = "Function: GetActiveTextBox()\n" +
-									"\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
-									"\tNot a valid tab with a Title textbox\n" +
-									_errorMessage;
+			// switch (tabControl.SelectedIndex) {
+				// case 1:
+					// return _incompleteItemsNotesPanel.tbIncompleteItemsTitle;
+				// case 2:
+					// return tbKanbanTitle;
+				// default:
+					// _errorMessage = "Function: GetActiveTextBox()\n" +
+									// "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+									// "\tNot a valid tab with a Title textbox\n" +
+									// _errorMessage;
 					return null;
-			}
+			// }
 		}
 		private TextBox GetActiveTextBoxNotes() {
 			// UNCHECKED
-			switch (tabControl.SelectedIndex) {
-				case 1:
-					return _incompleteItemsNotesPanel.tbIncompleteItemsNotes;
-				case 2:
-					return tbKanbanNotes;
-				default:
-					_errorMessage = "Function: GetActiveTextBox()\n" +
-									"\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
-									"\tNot a valid tab with a Notes textbox\n" +
-									_errorMessage;
+			// switch (tabControl.SelectedIndex) {
+				// case 1:
+					// return _incompleteItemsNotesPanel.tbIncompleteItemsNotes;
+				// case 2:
+					// return tbKanbanNotes;
+				// default:
+					// _errorMessage = "Function: GetActiveTextBox()\n" +
+									// "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+									// "\tNot a valid tab with a Notes textbox\n" +
+									// _errorMessage;
 					return null;
-			}
+			// }
 		}
 		private TextBox GetActiveTextBoxProblem() {
 			// UNCHECKED
-			switch (tabControl.SelectedIndex) {
-				case 1:
-					return _incompleteItemsNotesPanel.tbIncompleteItemsProblem;
-				case 2:
-					return tbKanbanProblem;
-				default:
-					_errorMessage = "Function: GetActiveTextBoxProblem()\n" +
-									"\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
-									"\tNot a valid tab with a Problem textbox\n" +
-									_errorMessage;
+			// switch (tabControl.SelectedIndex) {
+				// case 1:
+					// return _incompleteItemsNotesPanel.tbIncompleteItemsProblem;
+				// case 2:
+					// return tbKanbanProblem;
+				// default:
+					// _errorMessage = "Function: GetActiveTextBoxProblem()\n" +
+									// "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+									// "\tNot a valid tab with a Problem textbox\n" +
+									// _errorMessage;
 					return null;
-			}
+			// }
 		}
 		private TextBox GetActiveTextBoxSolution() {
 			// UNCHECKED
-			switch (tabControl.SelectedIndex) {
-				case 1:
-					return _incompleteItemsNotesPanel.tbIncompleteItemsSolution;
-				case 2:
-					return tbKanbanSolution;
-				default:
-					_errorMessage = "Function: GetActiveTextBoxSolution()\n" +
-									"\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
-									"\tNot a valid tab with a Solution textbox\n" +
-									_errorMessage;
+			// switch (tabControl.SelectedIndex) {
+				// case 1:
+					// return _incompleteItemsNotesPanel.tbIncompleteItemsSolution;
+				// case 2:
+					// return tbKanbanSolution;
+				// default:
+					// _errorMessage = "Function: GetActiveTextBoxSolution()\n" +
+									// "\tSelectedIndex: " + tabControl.SelectedIndex + "\n" +
+									// "\tNot a valid tab with a Solution textbox\n" +
+									// _errorMessage;
 					return null;
-			}
+			// }
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Timers //
@@ -944,10 +944,10 @@ namespace TODOList {
 
 			_currentTodoItemInNotesPanelIndex = _lbIncompleteItems.SelectedIndex;
 			_currentTodoItemInNotesPanel = list[_currentTodoItemInNotesPanelIndex];
-			_incompleteItemsNotesPanel.tbIncompleteItemsNotes.Text = _currentTodoItemInNotesPanel.Notes.Replace("/n", Environment.NewLine);
-			_incompleteItemsNotesPanel.tbIncompleteItemsTitle.Text = _currentTodoItemInNotesPanel.Todo;
-			_incompleteItemsNotesPanel.tbIncompleteItemsProblem.Text = _currentTodoItemInNotesPanel.Problem;
-			_incompleteItemsNotesPanel.tbIncompleteItemsSolution.Text = _currentTodoItemInNotesPanel.Solution;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsNotes.Text = _currentTodoItemInNotesPanel.Notes.Replace("/n", Environment.NewLine);
+			// _incompleteItemsNotesPanel.tbIncompleteItemsTitle.Text = _currentTodoItemInNotesPanel.Todo;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsProblem.Text = _currentTodoItemInNotesPanel.Problem;
+			// _incompleteItemsNotesPanel.tbIncompleteItemsSolution.Text = _currentTodoItemInNotesPanel.Solution;
 			NotesPanelLoadHashTags();
 		}
 		public void IncompleteItemsHashTags_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -957,8 +957,8 @@ namespace TODOList {
 				return;
 
 			_hashToSortBy = IncompleteItemsHashTags[0];
-			if (_cbIncompleteItemsHashTags.SelectedItem != null)
-				_hashToSortBy = _cbIncompleteItemsHashTags.SelectedItem.ToString();
+			// if (_cbIncompleteItemsHashTags.SelectedItem != null)
+				// _hashToSortBy = _cbIncompleteItemsHashTags.SelectedItem.ToString();
 
 			_hashSortSelected = true;
 			_currentSort = "hash";
@@ -3262,48 +3262,49 @@ namespace TODOList {
 		}
 		private void NotesPanelUpdate() {
 			// UNCHECKED
-			UpdateNotes(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsNotes);
-			UpdateTitle(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsTitle);
-			UpdateProblem(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsProblem);
-			UpdateSolution(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsSolution);
-			NotesPanelLoadHashTags();
+			// UpdateNotes(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsNotes);
+			// UpdateTitle(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsTitle);
+			// UpdateProblem(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsProblem);
+			// UpdateSolution(_lbIncompleteItems, _incompleteItemsNotesPanel.tbIncompleteItemsSolution);
+			// NotesPanelLoadHashTags();
 		}
 		private void UpdateNotes(ListBox listBox, TextBox textBox) {
 			// UNCHECKED
-			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
-				_currentTodoItemInNotesPanel.Notes = textBox.Text;
+			// if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
+				// _currentTodoItemInNotesPanel.Notes = textBox.Text;
 		}
 		public void UpdateTitle(ListBox listBox, TextBox textBox) {
 			// UNCHECKED
-			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
-				_currentTodoItemInNotesPanel.Todo = textBox.Text;
+			// if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
+				// _currentTodoItemInNotesPanel.Todo = textBox.Text;
 		}
 		public void UpdateProblem(ListBox listBox, TextBox textBox) {
 			// UNCHECKED
-			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
-				_currentTodoItemInNotesPanel.Problem = textBox.Text;
+			// if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
+				// _currentTodoItemInNotesPanel.Problem = textBox.Text;
 		}
 		private void UpdateSolution(ListBox listBox, TextBox textBox) {
 			// UNCHECKED
-			if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
-				_currentTodoItemInNotesPanel.Solution = textBox.Text;
+			// if (listBox.SelectedIndex >= 0 && _currentTodoItemInNotesPanel != null)
+				// _currentTodoItemInNotesPanel.Solution = textBox.Text;
 		}
 		private void NotesPanelLoadHashTags() {
 			// UNCHECKED
-			if (_currentTodoItemInNotesPanel == null ||
-				_lbNotesPanelHashTags == null)
-				return;
+			// if (_currentTodoItemInNotesPanel == null ||
+				// _lbNotesPanelHashTags == null) {
+				// return;
+			// }
 
-			_notesPanelHashTags.Clear();
-			foreach (string tag in _currentTodoItemInNotesPanel.Tags)
-				_notesPanelHashTags.Add(tag);
+			// _notesPanelHashTags.Clear();
+			// foreach (string tag in _currentTodoItemInNotesPanel.Tags)
+				// _notesPanelHashTags.Add(tag);
 
-			_lbNotesPanelHashTags.ItemsSource = _notesPanelHashTags;
-			_lbNotesPanelHashTags.Items.Refresh();
+			// _lbNotesPanelHashTags.ItemsSource = _notesPanelHashTags;
+			// _lbNotesPanelHashTags.Items.Refresh();
 		}
 		public void TodoComplete_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
-			TodoComplete();
+			// TodoComplete();
 		}
 		private void TodoComplete() {
 			// UNCHECKED

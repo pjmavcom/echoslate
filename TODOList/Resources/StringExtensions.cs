@@ -1,4 +1,4 @@
-namespace TODOList.Resources;
+namespace Echoslate.Resources;
 
 public static class StringExtensions {
 	public static string CapitalizeFirstLetter(this string s) {

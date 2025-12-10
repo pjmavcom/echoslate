@@ -2,9 +2,8 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace TODOList.Resources;
+namespace Echoslate.Converters;
 
-// SubtractFixedWidthConverter.cs
 public class SubtractFixedWidthConverter : IValueConverter {
 	public object Convert(object value, Type t, object parameter, CultureInfo c) {
 		if (value is double availableWidth && parameter is string s && double.TryParse(s, out double fixedTotal))

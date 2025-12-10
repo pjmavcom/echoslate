@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace TODOList
+namespace Echoslate
 {
 	public class TabItemHolder : INotifyPropertyChanged
 	{

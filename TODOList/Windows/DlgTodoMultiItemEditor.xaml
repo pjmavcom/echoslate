@@ -1,7 +1,6 @@
-<Window x:Class="TODOList.DlgTodoMultiItemEditor"
+<Window x:Class="Echoslate.DlgTodoMultiItemEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:b="http://schemas.microsoft.com/xaml/behaviors" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Todo Multi Item Edit"
         Width="610" Height="676"
         Style="{StaticResource {x:Type Window}}"
@@ -44,8 +43,7 @@
                     Background="{Binding SeverityButtonBackground}"
                     BorderThickness="0"
                     Command="{Binding CycleSeverityCommand}"
-                    Content="Severity" FontWeight="SemiBold"
-                    Foreground="White"
+                    Content="Severity" FontWeight="SemiBold" Foreground="White"
                     />
 
             <CheckBox x:Name="ckRank"

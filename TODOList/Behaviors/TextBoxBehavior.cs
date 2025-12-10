@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace TODOList.Behaviors;
+namespace Echoslate.Behaviors;
 
 public static class TextBoxBehavior {
 	public static readonly DependencyProperty RemoveSpacesProperty =

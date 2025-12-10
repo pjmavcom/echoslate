@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 
-namespace TODOList {
+namespace Echoslate {
 	public partial class DlgTodoMultiItemEditor : INotifyPropertyChanged {
 		public List<string> ResultTags;
 		public string ResultTodo;

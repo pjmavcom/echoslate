@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 
-namespace TODOList {
+namespace Echoslate {
 	public partial class DlgTodoItemEditor : INotifyPropertyChanged {
 		public ObservableCollection<string> SeverityOptions { get; } = new() { "None", "Low", "Med", "High" };
 		private int _currentSeverity;

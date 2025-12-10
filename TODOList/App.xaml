@@ -1,4 +1,4 @@
-﻿<Application x:Class="TODOList.App"
+﻿<Application x:Class="Echoslate.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:wpfTool="http://schemas.xceed.com/wpf/xaml/toolkit"
              StartupUri="MainWindow.xaml"
@@ -23,6 +23,7 @@
                 <Setter Property="Background" Value="{StaticResource AppBackground}" />
             </Style>
             <Style TargetType="Control">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 <Setter Property="Background" Value="{StaticResource ControlBackground}" />
                 <Setter Property="Foreground" Value="{StaticResource Foreground}" />
                 <Setter Property="BorderBrush" Value="{StaticResource Border}" />
@@ -544,6 +545,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 

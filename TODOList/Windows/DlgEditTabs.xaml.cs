@@ -8,9 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using TODOList.Resources;
+using Echoslate.Resources;
 
-namespace TODOList {
+namespace Echoslate {
 	public partial class DlgEditTabs : INotifyPropertyChanged {
 		private readonly List<TabItemHolder> _newTabItemList;
 		private ObservableCollection<string> _tabNames;

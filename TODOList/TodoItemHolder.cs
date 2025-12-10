@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TODOList {
+namespace Echoslate {
 	public class TodoItemHolder : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private TodoItem _td;
@@ -39,7 +39,23 @@ namespace TODOList {
 			}
 		}
 
-		public string Todo => _td.Todo;
+
+		public string Todo {
+			get => _td.Todo;
+			set => _td.Todo = value;
+		}
+		public string Notes {
+			get => _td.Notes;
+			set => _td.Notes = value;
+		}
+		public string Problem {
+			get => _td.Problem;
+			set => _td.Problem = value;
+		}
+		public string Solution {
+			get=>  _td.Solution;
+			set => _td.Solution = value;
+		}
 		public string NotesAndTags => _td.NotesAndTags;
 		public string TagsSorted => _td.TagsSorted;
 		public string StartDateTime => _td.StartDateTime;
@@ -106,6 +122,9 @@ namespace TODOList {
 		}
 		public bool HasTag(string tag) {
 			return Tags.Contains(tag);
+		}
+		public void CleanNotes() {
+			_td.CleanNotes();
 		}
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //

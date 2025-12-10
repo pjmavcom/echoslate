@@ -3,9 +3,8 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace TODOList.Resources;
+namespace Echoslate.Converters;
 
-// SeverityToBrushConverter.cs
 public class SeverityToBrushConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		=> value is int s

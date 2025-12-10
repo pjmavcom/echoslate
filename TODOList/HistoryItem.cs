@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TODOList
+namespace Echoslate
 {
 	public class HistoryItem : INotifyPropertyChanged
 	{

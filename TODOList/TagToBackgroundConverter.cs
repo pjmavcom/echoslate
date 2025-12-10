@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using TODOList.ViewModels;
+using Echoslate.ViewModels;
 
-namespace TODOList;
+namespace Echoslate;
 
 public class TagToBackgroundConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

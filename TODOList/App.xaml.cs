@@ -2,9 +2,10 @@
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using TODOList.Resources;
+using Echoslate.Converters;
+using Echoslate.Resources;
 
-namespace TODOList {
+namespace Echoslate {
 	/// <summary>
 	/// Interaction logic for App.xaml
 	/// </summary>

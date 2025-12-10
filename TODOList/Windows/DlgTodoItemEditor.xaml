@@ -1,7 +1,6 @@
-<Window x:Class="TODOList.DlgTodoItemEditor"
+<Window x:Class="Echoslate.DlgTodoItemEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Todo Item Edit"
         Width="610" Height="740"
         FocusManager.FocusedElement="{Binding ElementName=tbTodo}"
@@ -31,8 +30,7 @@
                     Background="{Binding SeverityButtonBackground}"
                     BorderThickness="0"
                     Command="{Binding CycleSeverityCommand}"
-                    Content="Severity" FontWeight="SemiBold"
-                    Foreground="White"
+                    Content="Severity" FontWeight="SemiBold" Foreground="White"
                     />
             <Label Grid.Column="1"
                    Margin="2"
@@ -110,8 +108,7 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0"
-                   Margin="2" HorizontalAlignment="Left"
-                   VerticalAlignment="Center"
+                   Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center"
                    Content="Tags:"
                    />
             <Button Grid.Row="1" Grid.Column="0"
@@ -120,8 +117,7 @@
                     Command="{Binding AddTagCommand}"
                     Content="Add Tag"
                     />
-            <ListBox Grid.Row="0" Grid.RowSpan="2"
-                     Grid.Column="1"
+            <ListBox Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
                      Width="490" Height="280"
                      Margin="2"
                      ItemsSource="{Binding TagHolders}"
@@ -139,8 +135,7 @@
                                     Background="#FF6B6B"
                                     Command="{Binding DataContext.DeleteTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                     CommandParameter="{Binding}"
-                                    Content="X" FontWeight="Bold"
-                                    Foreground="White"
+                                    Content="X" FontWeight="Bold" Foreground="White"
                                     />
                             <TextBox Grid.Column="1"
                                      Margin="0,2,2,2"
@@ -161,23 +156,20 @@
                     Margin="5"
                     Background="#4CAF50"
                     Command="{Binding CompleteCommand}"
-                    Content="Complete" FontSize="16"
-                    FontWeight="SemiBold" Foreground="White"
+                    Content="Complete" FontSize="16" FontWeight="SemiBold" Foreground="White"
                     />
 
             <Button Width="160" Height="40"
                     Margin="5"
                     Command="{Binding OkCommand}"
-                    Content="OK" FontSize="16"
-                    Foreground="White" IsDefault="True"
+                    Content="OK" FontSize="16" Foreground="White" IsDefault="True"
                     />
 
             <Button Width="160" Height="40"
                     Margin="5"
                     Background=" #F44336"
                     Command="{Binding CancelCommand}"
-                    Content="Cancel" FontSize="16"
-                    Foreground="White" IsCancel="True"
+                    Content="Cancel" FontSize="16" Foreground="White" IsCancel="True"
                     />
 
         </UniformGrid>

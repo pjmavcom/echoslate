@@ -8,7 +8,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TODOList
+namespace Echoslate
 {
 	public class TagHolder
 	{

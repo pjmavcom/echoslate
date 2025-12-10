@@ -13,7 +13,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using static System.Globalization.CultureInfo;
 
-namespace TODOList {
+namespace Echoslate {
 	[Serializable]
 	public class TodoItem : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
@@ -39,7 +39,7 @@ namespace TODOList {
 		public string Todo {
 			get => AddNewLines(_todo);
 			set {
-				_todo = ParseNotes(value);
+				_todo = value;
 				ParseNewTags();
 			}
 		}
@@ -57,15 +57,15 @@ namespace TODOList {
 		}
 		public string Notes {
 			get => AddNewLines(_notes);
-			set => _notes = ParseNotes(value);
+			set => _notes = value;
 		}
 		public string Problem {
 			get => AddNewLines(_problem);
-			set => _problem = ParseNotes(value);
+			set => _problem = value;
 		}
 		public string Solution {
 			get => AddNewLines(_solution);
-			set => _solution = ParseNotes(value);
+			set => _solution = value;
 		}
 		public string NotesAndTags => "Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
 									  Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
@@ -180,6 +180,13 @@ namespace TODOList {
 			_tags = new ObservableCollection<string>();
 			_rank = new Dictionary<string, int>();
 			Load3_20(newItem);
+		}
+		public void CleanNotes() {
+			Todo = ParseNotes(Todo);
+			ParseNewTags();
+			Notes = ParseNotes(Notes);
+			Problem = ParseNotes(Problem);
+			Solution = ParseNotes(Solution);
 		}
 		public void ResetTimer() {
 			IsTimerOn = false;

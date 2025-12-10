@@ -1,54 +1,116 @@
-<Window x:Class="TODOList.DlgHelp"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		mc:Ignorable="d"
-		Title="Help" Height="400" Width="380" 
-		Style="{StaticResource {x:Type Window}}" >
-	<Grid TextElement.FontSize="16" TextElement.Foreground="Gray" >
-		<StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Alt+Enter" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Add new Todo item" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Ctrl+Enter" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Quick complete new Todo item" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Enter" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Edit selected Todo item" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Numpad /" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Previous tab" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Numpad *" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Next tab" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Numpad -" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Decrease new severity" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Numpad +" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Increase new severity" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Ctrl+S" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Quick save" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Ctrl+," Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Quick load previous file" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-			<StackPanel Orientation="Horizontal" >
-				<Label Content="Ctrl+P" Width="100" HorizontalContentAlignment="Right" FontWeight="Bold" />
-				<Label Content="=Toggle work timer" Width="300" HorizontalContentAlignment="Left" />
-			</StackPanel >
-		</StackPanel >
-		<Button HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Close" IsDefault="True" IsCancel="True" />
-	</Grid>
+<Window x:Class="Echoslate.DlgHelp"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Help"
+        Width="380" Height="400"
+        Style="{StaticResource {x:Type Window}}"
+        mc:Ignorable="d"
+        >
+    <Grid TextElement.FontSize="16" TextElement.Foreground="Gray">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Alt+Enter" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Add new Todo item"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Ctrl+Enter" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Quick complete new Todo item"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Enter" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Edit selected Todo item"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Numpad /" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Previous tab"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Numpad *" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Next tab"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Numpad -" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Decrease new severity"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Numpad +" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Increase new severity"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Ctrl+S" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Quick save"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Ctrl+," FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Quick load previous file"
+                       />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="100"
+                       HorizontalContentAlignment="Right"
+                       Content="Ctrl+P" FontWeight="Bold"
+                       />
+                <Label Width="300"
+                       HorizontalContentAlignment="Left"
+                       Content="=Toggle work timer"
+                       />
+            </StackPanel>
+        </StackPanel>
+        <Button HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Content="Close" IsCancel="True" IsDefault="True"
+                />
+    </Grid>
 </Window>

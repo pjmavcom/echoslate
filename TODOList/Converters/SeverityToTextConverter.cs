@@ -2,9 +2,8 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace TODOList.Resources;
+namespace Echoslate.Resources;
 
-// SeverityToTextConverter.cs
 public class SeverityToTextConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		=> value is int s ? s switch { 0 => "None", 1 => "Low", 2 => "Med", 3 => "High", _ => "" } : "";

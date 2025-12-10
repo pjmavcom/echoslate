@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace TODOList
+namespace Echoslate
 {
 	public partial class DlgHelp
 	{

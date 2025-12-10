@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace TODOList {
+namespace Echoslate {
 	public partial class IncompleteItemsTab : UserControl {
 		
 		public IncompleteItemsTab() {
