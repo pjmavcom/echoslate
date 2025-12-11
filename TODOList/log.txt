@@ -1,3 +1,35 @@
+commit 0df6e1e720458b6df37d664329289bdea3d8a286
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Wed Dec 10 22:44:04 2025 +0800
+
+    20251210- v3.40.35.0 A few small bugs fixed and checking on other easy fixes...none left...hard work left
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20251210-0m |Combo box of tags to sort by is not working
+            Problem: Was bound to the wrong list. Also was refreshing before DisplayedItems, so the list was wrong.
+                    (null in the beginning, then the wrong list following)
+    --20251210-0m |Common tags are not selected when opening TagPicker
+            Problem: I commented out the lines adding selected items to the listbox selected items list to try and bind
+                    selected items, but the failed
+            Solution: Uncomment those lines
+    --20251210-0m |AllAvailableTags is not sorted in the TagPicker
+            Problem: I had changed the variable name...
+            Solution: Fix the variable name
+    
+    =Other Stuff======================================================================================================
+    --20251210-0m |Changing data in the NotesPanel updates the TodoItem now.
+            Notes: However, the update causes a refresh which sets the selected item to null. And the way TodoItems
+                    and TodoItemHolders and the Lists all work, I can't get the previous item selected very easily. This
+                    will be fixed and easy to do when TodoItem and TodoItemHolder are refactored. Adding a bug to remind me
+                    to do that anyway
+    
+    --20251210-0m |Fix heights for NotesPanel
+    --20251210-0m |Combo box of tags to sort by is not working
+            Problem: Was bound to the wrong list. Also was refreshing before DisplayedItems, so the list was wrong.
+                    (null in the beginning, then the wrong list following)
+
 commit ca9497442593ffdf9d0f5d7940af7d9ebd4d579a
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed Dec 10 20:10:58 2025 +0800

@@ -159,7 +159,18 @@
                     Margin="0,0,10,0"
                     Command="{Binding OkCommand}"
                     Content="OK" IsDefault="True"
-                    />
+                    >
+                <Button.Style>
+                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked, ElementName=ckComplete}" Value="False">
+                                <Setter Property="IsEnabled" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button Width="150" Height="35"
                     Command="{Binding CancelCommand}"
                     Content="Cancel" IsCancel="True"

@@ -202,15 +202,15 @@ namespace Echoslate {
 		public string _testIfChanged;
 
 		private ObservableCollection<string> RecentFiles { get; set; }
-		private ObservableCollection<TodoItemHolder> IncompleteItems =>
-			_incompleteItems[incompleteItemsTodoTabs.SelectedIndex == -1 ? 0 : incompleteItemsTodoTabs.SelectedIndex];
+		// private ObservableCollection<TodoItemHolder> IncompleteItems =>
+			// _incompleteItems[incompleteItemsTodoTabs.SelectedIndex == -1 ? 0 : incompleteItemsTodoTabs.SelectedIndex];
 		private ObservableCollection<TodoItemHolder> KanbanItems => _kanbanItems[kanbanTodoTabs.SelectedIndex];
 		private ObservableCollection<string> KanbanHashTags => _kanbanHashTags[kanbanTodoTabs.SelectedIndex];
-		private ObservableCollection<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
+		// private ObservableCollection<string> IncompleteItemsHashTags => _incompleteItemsHashTags[incompleteItemsTodoTabs.SelectedIndex];
 
-		public string TabNames => incompleteItemsTodoTabs.SelectedIndex == -1
-									   ? _incompleteItemsTabsList[0].Name
-									   : _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
+		// public string TabNames => incompleteItemsTodoTabs.SelectedIndex == -1
+									   // ? _incompleteItemsTabsList[0].Name
+									   // : _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
 
 		private string WindowTitle => "Echoslate v" + PROGRAM_VERSION + " " + _currentOpenFile;
 		private List<HistoryItem> HistoryItems { get; }
@@ -286,11 +286,11 @@ namespace Echoslate {
 			HistoryItems = new List<HistoryItem>();
 			_currentHistoryItem = new HistoryItem("", "");
 
-			_todoListViewModel = new TodoListViewModel(_masterList, TagFilters, _hashShortcuts);
+			_todoListViewModel = new TodoListViewModel(_masterList, TagFilters, _hashShortcuts, HistoryItems);
 			ucTodoListView.DataContext = _todoListViewModel;
 
-			incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
-			incompleteItemsTodoTabs.Items.Refresh();
+			// incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
+			// incompleteItemsTodoTabs.Items.Refresh();
 			kanbanTodoTabs.ItemsSource = _kanbanTabsList;
 			kanbanTodoTabs.Items.Refresh();
 			mnuRecentLoads.ItemsSource = RecentFiles;
@@ -330,25 +330,25 @@ namespace Echoslate {
 			int mainPanelDivisions = MAIN_LIST_BOX_PANEL_WIDTH + NOTES_PANEL_WIDTH;
 			double mainGridWidth = Math.Floor(_windowWidth / mainPanelDivisions * MAIN_LIST_BOX_PANEL_WIDTH);
 			double notesPanelWidth = _windowWidth - mainGridWidth;
-			incompleteItemsMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
+			// incompleteItemsMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
 			kanbanMainGrid.Width = mainGridWidth > 0 ? mainGridWidth : 1;
 			// _incompleteItemsNotesPanel.incompleteItemsNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 			kanbanNotesPanel.Width = notesPanelWidth > 0 ? notesPanelWidth : 1;
 
 			double todoTabsHeight = _windowHeight - NEW_TODO_PANEL_HEIGHT - TOP_OF_PANEL_STUFF_HEIGHT;
-			incompleteItemsTodoTabs.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+			// incompleteItemsTodoTabs.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
 			kanbanTodoTabs.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
-			incompleteItemsNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
+			// incompleteItemsNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
 			kanbanNewTodoPanel.Height = NEW_TODO_PANEL_HEIGHT;
 
-			if (_lbIncompleteItems != null)
-				_lbIncompleteItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
-			if (_lbKanbanItems != null)
-				_lbKanbanItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+			// if (_lbIncompleteItems != null)
+				// _lbIncompleteItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
+			// if (_lbKanbanItems != null)
+				// _lbKanbanItems.Height = todoTabsHeight > 0 ? todoTabsHeight : 1;
 
-			cbIncompleteItemsSeverity.Width = 100;
+			// cbIncompleteItemsSeverity.Width = 100;
 			cbKanbanSeverity.Width = 100;
-			tbIncompleteItemsNewTodo.Width = (mainGridWidth - 100) > 0 ? (mainGridWidth - 100) : 1;
+			// tbIncompleteItemsNewTodo.Width = (mainGridWidth - 100) > 0 ? (mainGridWidth - 100) : 1;
 			tbKanbanNewTodo.Width = (mainGridWidth - 100) > 0 ? (mainGridWidth - 100) : 1;
 
 			double notesPanelHeight = _windowHeight - TOP_OF_PANEL_STUFF_HEIGHT;
@@ -467,7 +467,7 @@ namespace Echoslate {
 		}
 		private void OnLoaded(object sender, EventArgs e) {
 			// UNCHECKED
-			_incompleteItemsNotesPanel = ucIncompleteItemsNotesPanel;
+			// _incompleteItemsNotesPanel = ucIncompleteItemsNotesPanel;
 			SelectActiveTabItems();
 			DelayedStartupLoad();
 		}
@@ -812,42 +812,42 @@ namespace Echoslate {
 		}
 		private void IncompleteItemsInitialize() {
 			// UNCHECKED
-			Application.Current.Dispatcher.Invoke(async () => {
-				if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter incompleteItemsContentPresenter)) {
-					return;
-				}
-
-				incompleteItemsContentPresenter.ApplyTemplate();
-				if (incompleteItemsContentPresenter.ContentTemplate == null) {
-					return;
-				}
-				_lbIncompleteItems = incompleteItemsContentPresenter.ContentTemplate.FindName("lbIncompleteItems", incompleteItemsContentPresenter) as ListBox;
-				if (_lbIncompleteItems == null) {
-					return;
-				}
-
-				IncompleteItemsSortToTabs();
-				_lbIncompleteItems.ItemsSource = IncompleteItems;
-				_lbIncompleteItems.Items.Refresh();
-				_lbIncompleteItems.SelectionChanged += IncompleteItems_OnSelectionChanged;
-				_lbIncompleteItems.UnselectAll();
-				double height = _windowHeight - NEW_TODO_PANEL_HEIGHT - TOP_OF_PANEL_STUFF_HEIGHT;
-				_lbIncompleteItems.Height = height > 0 ? height : 1;
-			}, DispatcherPriority.ApplicationIdle);
+			// Application.Current.Dispatcher.Invoke(async () => {
+			// 	if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is ContentPresenter incompleteItemsContentPresenter)) {
+			// 		return;
+			// 	}
+			//
+			// 	incompleteItemsContentPresenter.ApplyTemplate();
+			// 	if (incompleteItemsContentPresenter.ContentTemplate == null) {
+			// 		return;
+			// 	}
+			// 	_lbIncompleteItems = incompleteItemsContentPresenter.ContentTemplate.FindName("lbIncompleteItems", incompleteItemsContentPresenter) as ListBox;
+			// 	if (_lbIncompleteItems == null) {
+			// 		return;
+			// 	}
+			//
+			// 	IncompleteItemsSortToTabs();
+			// 	_lbIncompleteItems.ItemsSource = IncompleteItems;
+			// 	_lbIncompleteItems.Items.Refresh();
+			// 	_lbIncompleteItems.SelectionChanged += IncompleteItems_OnSelectionChanged;
+			// 	_lbIncompleteItems.UnselectAll();
+			// 	double height = _windowHeight - NEW_TODO_PANEL_HEIGHT - TOP_OF_PANEL_STUFF_HEIGHT;
+			// 	_lbIncompleteItems.Height = height > 0 ? height : 1;
+			// }, DispatcherPriority.ApplicationIdle);
 		}
 		private void IncompleteItemsUpdateHandler() {
 			// UNCHECKED
-			if (_lbIncompleteItems == null)
-				IncompleteItemsInitialize();
-			if (_cbIncompleteItemsHashTags == null)
-				IncompleteItemsHashTagsInitialize();
-			if (_lbIncompleteItems == null || _cbIncompleteItemsHashTags == null)
-				return;
+			// if (_lbIncompleteItems == null)
+				// IncompleteItemsInitialize();
+			// if (_cbIncompleteItemsHashTags == null)
+				// IncompleteItemsHashTagsInitialize();
+			// if (_lbIncompleteItems == null || _cbIncompleteItemsHashTags == null)
+				// return;
 
-			if (incompleteItemsTodoTabs.Items.Count <= 0)
-				return;
-			if (incompleteItemsTodoTabs.SelectedIndex < 0)
-				incompleteItemsTodoTabs.SelectedIndex = 0;
+			// if (incompleteItemsTodoTabs.Items.Count <= 0)
+				// return;
+			// if (incompleteItemsTodoTabs.SelectedIndex < 0)
+				// incompleteItemsTodoTabs.SelectedIndex = 0;
 
 			IncompleteItemsRefresh();
 		}
@@ -905,8 +905,8 @@ namespace Echoslate {
 				return;
 			}
 
-			incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
-			incompleteItemsTodoTabs.Items.Refresh();
+			// incompleteItemsTodoTabs.ItemsSource = _incompleteItemsTabsList;
+			// incompleteItemsTodoTabs.Items.Refresh();
 			AutoSave();
 		}
 		public void IncompleteItemsTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -919,7 +919,7 @@ namespace Echoslate {
 			}
 
 			Dispatcher.BeginInvoke(new Action(IncompleteItemsUpdateHandler));
-			_previousTodoTabSelectedIndex = incompleteItemsTodoTabs.SelectedIndex;
+			// _previousTodoTabSelectedIndex = incompleteItemsTodoTabs.SelectedIndex;
 		}
 		private void IncompleteItemsCreateTabs() {
 			// UNCHECKED
@@ -933,17 +933,17 @@ namespace Echoslate {
 			// UNCHECKED
 			e.Handled = true;
 
-			List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
-			if (_lbIncompleteItems.SelectedIndex < 0) {
-				if (_currentTodoItemInNotesPanelIndex < _lbIncompleteItems.Items.Count &&
-					_currentTodoItemInNotesPanelIndex != -1)
-					_lbIncompleteItems.SelectedItem =
-						_lbIncompleteItems.Items.GetItemAt(_currentTodoItemInNotesPanelIndex);
-				return;
-			}
+			// List<TodoItem> list = IncompleteItems.Select(itemHolder => itemHolder.TD).ToList();
+			// if (_lbIncompleteItems.SelectedIndex < 0) {
+				// if (_currentTodoItemInNotesPanelIndex < _lbIncompleteItems.Items.Count &&
+					// _currentTodoItemInNotesPanelIndex != -1)
+					// _lbIncompleteItems.SelectedItem =
+						// _lbIncompleteItems.Items.GetItemAt(_currentTodoItemInNotesPanelIndex);
+				// return;
+			// }
 
-			_currentTodoItemInNotesPanelIndex = _lbIncompleteItems.SelectedIndex;
-			_currentTodoItemInNotesPanel = list[_currentTodoItemInNotesPanelIndex];
+			// _currentTodoItemInNotesPanelIndex = _lbIncompleteItems.SelectedIndex;
+			// _currentTodoItemInNotesPanel = list[_currentTodoItemInNotesPanelIndex];
 			// _incompleteItemsNotesPanel.tbIncompleteItemsNotes.Text = _currentTodoItemInNotesPanel.Notes.Replace("/n", Environment.NewLine);
 			// _incompleteItemsNotesPanel.tbIncompleteItemsTitle.Text = _currentTodoItemInNotesPanel.Todo;
 			// _incompleteItemsNotesPanel.tbIncompleteItemsProblem.Text = _currentTodoItemInNotesPanel.Problem;
@@ -953,10 +953,10 @@ namespace Echoslate {
 		public void IncompleteItemsHashTags_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
 			// UNCHECKED
 			e.Handled = true;
-			if (IncompleteItemsHashTags.Count == 0)
-				return;
+			// if (IncompleteItemsHashTags.Count == 0)
+				// return;
 
-			_hashToSortBy = IncompleteItemsHashTags[0];
+			// _hashToSortBy = IncompleteItemsHashTags[0];
 			// if (_cbIncompleteItemsHashTags.SelectedItem != null)
 				// _hashToSortBy = _cbIncompleteItemsHashTags.SelectedItem.ToString();
 
@@ -1006,36 +1006,36 @@ namespace Echoslate {
 			CheckForHashTagListChanges();
 			IncompleteItemsFixRankings();
 
-			int tabIndex = incompleteItemsTodoTabs.SelectedIndex;
-			if (tabIndex < 0 || tabIndex >= _incompleteItemsTabsList.Count)
-				return;
+			// int tabIndex = incompleteItemsTodoTabs.SelectedIndex;
+			// if (tabIndex < 0 || tabIndex >= _incompleteItemsTabsList.Count)
+				// return;
 
-			SortLists(_incompleteItems, _incompleteItemsHashTags, tabIndex);
+			// SortLists(_incompleteItems, _incompleteItemsHashTags, tabIndex);
 
-			if (_lbIncompleteItems != null) {
-				_lbIncompleteItems.ItemsSource = IncompleteItems;
-				_lbIncompleteItems.Items.Refresh();
-			}
+			// if (_lbIncompleteItems != null) {
+				// _lbIncompleteItems.ItemsSource = IncompleteItems;
+				// _lbIncompleteItems.Items.Refresh();
+			// }
 
-			if (_cbIncompleteItemsHashTags != null) {
-				_cbIncompleteItemsHashTags.ItemsSource = IncompleteItemsHashTags;
-				_cbIncompleteItemsHashTags.Items.Refresh();
-			}
+			// if (_cbIncompleteItemsHashTags != null) {
+				// _cbIncompleteItemsHashTags.ItemsSource = IncompleteItemsHashTags;
+				// _cbIncompleteItemsHashTags.Items.Refresh();
+			// }
 		}
 		private void IncompleteItemsHashTagsInitialize() {
 			// UNCHECKED
-			if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is
-					  ContentPresenter hashTagsContentPresenter))
-				return;
+			// if (!(incompleteItemsTodoTabs.Template.FindName("PART_SelectedContentHost", incompleteItemsTodoTabs) is
+					  // ContentPresenter hashTagsContentPresenter))
+				// return;
 
-			_cbIncompleteItemsHashTags =
-				hashTagsContentPresenter.ContentTemplate.FindName("cbIncompleteItemsHashTags", hashTagsContentPresenter)
-					as ComboBox;
-			if (_cbIncompleteItemsHashTags == null)
-				return;
+			// _cbIncompleteItemsHashTags =
+				// hashTagsContentPresenter.ContentTemplate.FindName("cbIncompleteItemsHashTags", hashTagsContentPresenter)
+					// as ComboBox;
+			// if (_cbIncompleteItemsHashTags == null)
+				// return;
 
-			_cbIncompleteItemsHashTags.ItemsSource = IncompleteItemsHashTags;
-			_cbIncompleteItemsHashTags.Items.Refresh();
+			// _cbIncompleteItemsHashTags.ItemsSource = IncompleteItemsHashTags;
+			// _cbIncompleteItemsHashTags.Items.Refresh();
 		}
 		private void IncompleteItemsCountTabItems() {
 			// UNCHECKED
@@ -1046,22 +1046,22 @@ namespace Echoslate {
 		}
 		private void IncompleteItemsFixRankings() {
 			// UNCHECKED
-			if (incompleteItemsTodoTabs.Items.Count == 0 ||
-				incompleteItemsTodoTabs.SelectedIndex < 0 ||
-				incompleteItemsTodoTabs.SelectedIndex >= incompleteItemsTodoTabs.Items.Count)
-				return;
+			// if (incompleteItemsTodoTabs.Items.Count == 0 ||
+				// incompleteItemsTodoTabs.SelectedIndex < 0 ||
+				// incompleteItemsTodoTabs.SelectedIndex >= incompleteItemsTodoTabs.Items.Count)
+				// return;
 
-			string currentHash = _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
-			foreach (TodoItemHolder itemHolder in _incompleteItems[incompleteItemsTodoTabs.SelectedIndex]
-						.Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
-				itemHolder.TD.Rank.Add(currentHash, 99);
+			// string currentHash = _incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name;
+			// foreach (TodoItemHolder itemHolder in _incompleteItems[incompleteItemsTodoTabs.SelectedIndex]
+						// .Where(itemHolder => !itemHolder.TD.Rank.ContainsKey(currentHash)))
+				// itemHolder.TD.Rank.Add(currentHash, 99);
 
-			_incompleteItems[incompleteItemsTodoTabs.SelectedIndex] = new ObservableCollection<TodoItemHolder>(_incompleteItems[incompleteItemsTodoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList());
-			for (int rank = 0; rank < _incompleteItems[incompleteItemsTodoTabs.SelectedIndex].Count; rank++) {
-				_incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
-				_incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].Rank =
-					_incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash];
-			}
+			// _incompleteItems[incompleteItemsTodoTabs.SelectedIndex] = new ObservableCollection<TodoItemHolder>(_incompleteItems[incompleteItemsTodoTabs.SelectedIndex].OrderBy(o => o.TD.Rank[currentHash]).ToList());
+			// for (int rank = 0; rank < _incompleteItems[incompleteItemsTodoTabs.SelectedIndex].Count; rank++) {
+				// _incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash] = rank + 1;
+				// _incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].Rank =
+					// _incompleteItems[incompleteItemsTodoTabs.SelectedIndex][rank].TD.Rank[currentHash];
+			// }
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Kanban //
@@ -1275,30 +1275,30 @@ namespace Echoslate {
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Hotkeys //
 		private void HkSwitchTab(object sender, ExecutedRoutedEventArgs e) {
 			// UNCHECKED
-			int index = incompleteItemsTodoTabs.SelectedIndex;
-			switch ((string)e.Parameter) {
-				case "right" when tabControl.SelectedIndex == 0:
-					tabControl.SelectedIndex = 1;
-					return;
-				case "right": {
-					index++;
-					if (index >= incompleteItemsTodoTabs.Items.Count)
-						index = incompleteItemsTodoTabs.Items.Count - 1;
+			// int index = incompleteItemsTodoTabs.SelectedIndex;
+			// switch ((string)e.Parameter) {
+				// case "right" when tabControl.SelectedIndex == 0:
+					// tabControl.SelectedIndex = 1;
+					// return;
+				// case "right": {
+					// index++;
+					// if (index >= incompleteItemsTodoTabs.Items.Count)
+						// index = incompleteItemsTodoTabs.Items.Count - 1;
 
-					break;
-				}
-				case "left": {
-					index--;
-					if (index < 0) {
-						index = 0;
+					// break;
+				// }
+				// case "left": {
+					// index--;
+					// if (index < 0) {
+						// index = 0;
 						// tabControl.SelectedIndex = 0;
-					}
+					// }
 
-					break;
-				}
-			}
+					// break;
+				// }
+			// }
 
-			incompleteItemsTodoTabs.SelectedIndex = index;
+			// incompleteItemsTodoTabs.SelectedIndex = index;
 		}
 		private void HkSwitchSeverity(object sender, ExecutedRoutedEventArgs e) {
 			// UNCHECKED
@@ -1342,12 +1342,12 @@ namespace Echoslate {
 			}
 
 			TodoItemHolder itemHolder = (TodoItemHolder)_lbIncompleteItems.SelectedItem;
-			if (itemHolder != null) {
-				DlgTodoItemEditor dlgTodoItemEditor = new DlgTodoItemEditor(itemHolder.TD, TabNames);
-				dlgTodoItemEditor.ShowDialog();
-				if (dlgTodoItemEditor.Result)
-					AddItemToMasterList(dlgTodoItemEditor.ResultTodoItem);
-			}
+			// if (itemHolder != null) {
+				// DlgTodoItemEditor dlgTodoItemEditor = new DlgTodoItemEditor(itemHolder.TD, TabNames);
+				// dlgTodoItemEditor.ShowDialog();
+				// if (dlgTodoItemEditor.Result)
+					// AddItemToMasterList(dlgTodoItemEditor.ResultTodoItem);
+			// }
 
 			IncompleteItemsRefresh();
 			KanbanRefresh();
@@ -1369,16 +1369,16 @@ namespace Echoslate {
 			ListBox lb = null;
 			List<TodoItem> list = new List<TodoItem>();
 
-			if (tabTodos.IsSelected) {
-				lb = _lbIncompleteItems;
-				list.AddRange(IncompleteItems.Select(itemHolder => itemHolder.TD));
-			} else if (tabKanban.IsSelected) {
-				lb = _lbKanbanItems;
-				list.AddRange(KanbanItems.Select(itemHolder => itemHolder.TD));
-			} else if (tabHistory.IsSelected) {
-				lb = lbCompletedTodos;
-				list = _currentHistoryItem.CompletedTodos;
-			}
+			// if (tabTodos.IsSelected) {
+				// lb = _lbIncompleteItems;
+				// list.AddRange(IncompleteItems.Select(itemHolder => itemHolder.TD));
+			// } else if (tabKanban.IsSelected) {
+				// lb = _lbKanbanItems;
+				// list.AddRange(KanbanItems.Select(itemHolder => itemHolder.TD));
+			// } else if (tabHistory.IsSelected) {
+				// lb = lbCompletedTodos;
+				// list = _currentHistoryItem.CompletedTodos;
+			// }
 
 			EditItem(lb, list);
 		}
@@ -1393,12 +1393,12 @@ namespace Echoslate {
 		}
 		private void HkStartStopTimer(object sender, ExecutedRoutedEventArgs e) {
 			// UNCHECKED
-			if (!tabTodos.IsSelected)
-				return;
+			// if (!tabTodos.IsSelected)
+				// return;
 
 			int index = _lbIncompleteItems.SelectedIndex;
-			IncompleteItems[index].TD.IsTimerOn = !IncompleteItems[index].TD.IsTimerOn;
-			_lbIncompleteItems.Items.Refresh();
+			// IncompleteItems[index].TD.IsTimerOn = !IncompleteItems[index].TD.IsTimerOn;
+			// _lbIncompleteItems.Items.Refresh();
 		}
 		private void HKEscape(object sender, ExecutedRoutedEventArgs e) {
 			// UNCHECKED
@@ -1415,10 +1415,10 @@ namespace Echoslate {
 											};
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					newTodo.Rank[TabNames] = IncompleteItems.Count;
-					newTodo.Tags.Add("#" + TabNames);
-					if (newTodo.Severity == 3)
-						newTodo.Rank[TabNames] = 0;
+					// newTodo.Rank[TabNames] = IncompleteItems.Count;
+					// newTodo.Tags.Add("#" + TabNames);
+					// if (newTodo.Severity == 3)
+						// newTodo.Rank[TabNames] = 0;
 					break;
 				case 2:
 					newTodo.Kanban = kanbanTodoTabs.SelectedIndex;
@@ -1680,7 +1680,7 @@ namespace Echoslate {
 			// UNCHECKED
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					EditTodo(IncompleteItems, _lbIncompleteItems);
+					// EditTodo(IncompleteItems, _lbIncompleteItems);
 					break;
 				case 2:
 					EditTodo(KanbanItems, _lbKanbanItems);
@@ -1739,7 +1739,7 @@ namespace Echoslate {
 
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					todoItem.Rank[_incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name] = 0;
+					// todoItem.Rank[_incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name] = 0;
 					break;
 				case 2:
 					todoItem.KanbanRank = 0;
@@ -1757,8 +1757,8 @@ namespace Echoslate {
 
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					todoItem.Rank[_incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name] =
-						_lbIncompleteItems.Items.Count + 1;
+					// todoItem.Rank[_incompleteItemsTabsList[incompleteItemsTodoTabs.SelectedIndex].Name] =
+						// _lbIncompleteItems.Items.Count + 1;
 					break;
 				case 2:
 					todoItem.KanbanRank = _lbKanbanItems.Items.Count + 1;
@@ -1803,12 +1803,12 @@ namespace Echoslate {
 						break;
 					}
 
-					if (selectedIndex >= IncompleteItems.Count) {
-						_errorMessage = "\tIncompleteItems[SelectedIndex] out of range";
-						break;
-					}
+					// if (selectedIndex >= IncompleteItems.Count) {
+						// _errorMessage = "\tIncompleteItems[SelectedIndex] out of range";
+						// break;
+					// }
 
-					todoItemHolder = IncompleteItems[selectedIndex];
+					// todoItemHolder = IncompleteItems[selectedIndex];
 					break;
 				case 2:
 					tabName = "KanbanItems";
@@ -1906,6 +1906,9 @@ namespace Echoslate {
 				case Key.Up:
 					_currentHistoryItemIndex--;
 					break;
+				case Key.Escape:
+					return;
+				
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
@@ -1953,7 +1956,9 @@ namespace Echoslate {
 		}
 		private void AddTodoToHistory(TodoItem td) {
 			// UNCHECKED
-			if (_currentHistoryItem.DateAdded == "") AddNewHistoryItem();
+			if (_currentHistoryItem.DateAdded == "") {
+				AddNewHistoryItem();
+			}
 
 			RefreshHistory();
 			_currentHistoryItem = HistoryItems[0];
@@ -1972,7 +1977,7 @@ namespace Echoslate {
 			AutoSave();
 			RefreshHistory();
 		}
-		private void RefreshHistory() {
+		public void RefreshHistory() {
 			// UNCHECKED
 			List<HistoryItem> temp = HistoryItems.OrderByDescending(o => o.DateTimeAdded).ToList();
 			HistoryItems.Clear();
@@ -2124,16 +2129,16 @@ namespace Echoslate {
 		}
 		public void Add_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
-			string name = TabNames;
+			// string name = TabNames;
 			int newIndex = 0;
 			TodoItem td = new TodoItem() { Todo = _tbNewTodo.Text, Severity = _currentSeverity };
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					td.Tags.Add("#" + name);
-					newIndex = _lbIncompleteItems.Items.Count + 1;
-					td.Rank[TabNames] = newIndex;
-					if (td.Severity == 3)
-						td.Rank[TabNames] = 0;
+					// td.Tags.Add("#" + name);
+					// newIndex = _lbIncompleteItems.Items.Count + 1;
+					// td.Rank[TabNames] = newIndex;
+					// if (td.Severity == 3)
+						// td.Rank[TabNames] = 0;
 					break;
 				case 2:
 					td.Kanban = kanbanTodoTabs.SelectedIndex;
@@ -2186,9 +2191,9 @@ namespace Echoslate {
 			int newRank;
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					newRank = todoItemHolderList[index - 1].TD.Rank[TabNames];
-					todoItemHolderList[index - 1].TD.Rank[TabNames] = todoItemHolder.Rank;
-					todoItemHolder.TD.Rank[TabNames] = newRank;
+					// newRank = todoItemHolderList[index - 1].TD.Rank[TabNames];
+					// todoItemHolderList[index - 1].TD.Rank[TabNames] = todoItemHolder.Rank;
+					// todoItemHolder.TD.Rank[TabNames] = newRank;
 					break;
 				case 2:
 					newRank = todoItemHolderList[index - 1].TD.KanbanRank;
@@ -2208,9 +2213,9 @@ namespace Echoslate {
 			int newRank;
 			switch (tabControl.SelectedIndex) {
 				case 1:
-					newRank = todoItemHolderList[index + 1].TD.Rank[TabNames];
-					todoItemHolderList[index + 1].TD.Rank[TabNames] = todoItemHolder.Rank;
-					todoItemHolder.TD.Rank[TabNames] = newRank;
+					// newRank = todoItemHolderList[index + 1].TD.Rank[TabNames];
+					// todoItemHolderList[index + 1].TD.Rank[TabNames] = todoItemHolder.Rank;
+					// todoItemHolder.TD.Rank[TabNames] = newRank;
 					break;
 				case 2:
 					newRank = todoItemHolderList[index + 1].TD.KanbanRank;
@@ -2247,25 +2252,25 @@ namespace Echoslate {
 				return;
 
 			TodoItem td = list[index];
-			DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(td, TabNames);
+			// DlgTodoItemEditor itemEditor = new DlgTodoItemEditor(td, TabNames);
 
-			itemEditor.ShowDialog();
-			if (itemEditor.Result) {
-				RemoveItemFromMasterList(td);
-				if (_currentHistoryItem.CompletedTodos.Contains(td))
-					_currentHistoryItem.CompletedTodos.Remove(td);
+			// itemEditor.ShowDialog();
+			// if (itemEditor.Result) {
+				// RemoveItemFromMasterList(td);
+				// if (_currentHistoryItem.CompletedTodos.Contains(td))
+					// _currentHistoryItem.CompletedTodos.Remove(td);
 
-				if (_currentHistoryItem.CompletedTodosBugs.Contains(td))
-					_currentHistoryItem.CompletedTodosBugs.Remove(td);
+				// if (_currentHistoryItem.CompletedTodosBugs.Contains(td))
+					// _currentHistoryItem.CompletedTodosBugs.Remove(td);
 
-				if (_currentHistoryItem.CompletedTodosFeatures.Contains(td))
-					_currentHistoryItem.CompletedTodosFeatures.Remove(td);
+				// if (_currentHistoryItem.CompletedTodosFeatures.Contains(td))
+					// _currentHistoryItem.CompletedTodosFeatures.Remove(td);
 
-				AddItemToMasterList(itemEditor.ResultTodoItem);
-				AutoSave();
-			}
+				// AddItemToMasterList(itemEditor.ResultTodoItem);
+				// AutoSave();
+			// }
 
-			IncompleteItemsRefresh();
+			// IncompleteItemsRefresh();
 			KanbanRefresh();
 			RefreshHistory();
 		}
@@ -2292,42 +2297,42 @@ namespace Echoslate {
 			if (firstTd == null)
 				return;
 
-			DlgTodoMultiItemEditor dlgTodoMultiItemEditor =
-				new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
-			return;
-			dlgTodoMultiItemEditor.ShowDialog();
-			if (!dlgTodoMultiItemEditor.Result)
-				return;
+			// DlgTodoMultiItemEditor dlgTodoMultiItemEditor =
+				// new DlgTodoMultiItemEditor(firstTd.TD, TabNames, commonTags);
+			// return;
+			// dlgTodoMultiItemEditor.ShowDialog();
+			// if (!dlgTodoMultiItemEditor.Result)
+				// return;
 
-			List<string> tagsToRemove =
-				commonTags.Where(tag => !dlgTodoMultiItemEditor.ResultTags.Contains(tag)).ToList();
+			// List<string> tagsToRemove =
+				// commonTags.Where(tag => !dlgTodoMultiItemEditor.ResultTags.Contains(tag)).ToList();
 
-			foreach (TodoItemHolder itemHolder in lb.SelectedItems) {
-				if (dlgTodoMultiItemEditor.IsTagEnabled) {
-					foreach (string tag in tagsToRemove)
-						itemHolder.TD.Tags.Remove(tag);
-					foreach (string tag in
-							 dlgTodoMultiItemEditor.ResultTags
-								.Where(tag => !itemHolder.TD.Tags.Contains(tag.ToUpper())))
-						itemHolder.TD.Tags.Add(tag.ToUpper());
-				}
+			// foreach (TodoItemHolder itemHolder in lb.SelectedItems) {
+				// if (dlgTodoMultiItemEditor.IsTagEnabled) {
+					// foreach (string tag in tagsToRemove)
+						// itemHolder.TD.Tags.Remove(tag);
+					// foreach (string tag in
+							 // dlgTodoMultiItemEditor.ResultTags
+								// .Where(tag => !itemHolder.TD.Tags.Contains(tag.ToUpper())))
+						// itemHolder.TD.Tags.Add(tag.ToUpper());
+				// }
 
 				// if (dlgTodoMultiItemEditor.IsRankEnabled)
 					// itemHolder.TD.Rank = dlgTodoMultiItemEditor.ResultRank;
-				if (dlgTodoMultiItemEditor.IsSeverityEnabled)
-					itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultSeverity;
-				if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.IsCompleteEnabled)
-					itemHolder.TD.IsComplete = true;
-				if (!dlgTodoMultiItemEditor.IsTodoEnabled)
-					continue;
+				// if (dlgTodoMultiItemEditor.IsSeverityEnabled)
+					// itemHolder.TD.Severity = dlgTodoMultiItemEditor.ResultSeverity;
+				// if (dlgTodoMultiItemEditor.ResultIsComplete && dlgTodoMultiItemEditor.IsCompleteEnabled)
+					// itemHolder.TD.IsComplete = true;
+				// if (!dlgTodoMultiItemEditor.IsTodoEnabled)
+					// continue;
 
-				itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTodo;
-				foreach (string tag in
-						 dlgTodoMultiItemEditor.ResultTags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
-					itemHolder.TD.Tags.Add(tag);
-			}
+				// itemHolder.TD.Todo += Environment.NewLine + dlgTodoMultiItemEditor.ResultTodo;
+				// foreach (string tag in
+						 // dlgTodoMultiItemEditor.ResultTags.Where(tag => !itemHolder.TD.Tags.Contains(tag)))
+					// itemHolder.TD.Tags.Add(tag);
+			// }
 
-			IncompleteItemsRefresh();
+			// IncompleteItemsRefresh();
 			KanbanRefresh();
 		}
 		public void TimeTakenTimer_OnClick(object sender, EventArgs e) {
@@ -2354,7 +2359,7 @@ namespace Echoslate {
 				ObservableCollection<string> hashTagsList;
 				switch (tabControl.SelectedIndex) {
 					case 1:
-						hashTagsList = IncompleteItemsHashTags;
+						// hashTagsList = IncompleteItemsHashTags;
 						break;
 					case 2:
 						hashTagsList = KanbanHashTags;
@@ -2363,12 +2368,12 @@ namespace Echoslate {
 						return;
 				}
 
-				if (hashTagsList.Count == 0)
-					return;
+				// if (hashTagsList.Count == 0)
+					// return;
 
 				_currentHashTagSortIndex++;
-				if (_currentHashTagSortIndex >= hashTagsList.Count)
-					_currentHashTagSortIndex = 0;
+				// if (_currentHashTagSortIndex >= hashTagsList.Count)
+					// _currentHashTagSortIndex = 0;
 			}
 
 			_reverseSort = !_reverseSort;
@@ -2484,9 +2489,9 @@ namespace Echoslate {
 				case "rank":
 					switch (tabControl.SelectedIndex) {
 						case 1:
-							list[tabIndex] = _reverseSort
-												 ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList())
-												 : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList());
+							// list[tabIndex] = _reverseSort
+												 // ? new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderByDescending(o => o.TD.Rank[TabNames]).ToList())
+												 // : new ObservableCollection<TodoItemHolder>(list[tabIndex].OrderBy(o => o.TD.Rank[TabNames]).ToList());
 							break;
 						case 2:
 							list[tabIndex] = _reverseSort
@@ -2612,7 +2617,7 @@ namespace Echoslate {
 			IncompleteItemsRefresh();
 			KanbanRefresh();
 			RefreshHistory();
-			incompleteItemsTodoTabs.Items.Refresh();
+			// incompleteItemsTodoTabs.Items.Refresh();
 			kanbanTodoTabs.Items.Refresh();
 			kanbanTodoTabs.SelectedIndex = 3;
 
@@ -2655,7 +2660,7 @@ namespace Echoslate {
 			_cbIncompleteItemsHashTags = null;
 			_cbKanbanHashTags = null;
 
-			incompleteItemsTodoTabs.SelectedIndex = -1;
+			// incompleteItemsTodoTabs.SelectedIndex = -1;
 			kanbanTodoTabs.SelectedIndex = -1;
 		}
 		private void Load2_1SaveFile(string path) {

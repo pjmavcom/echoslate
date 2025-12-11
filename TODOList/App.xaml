@@ -7,16 +7,19 @@
         <ResourceDictionary>
 
             <!--  Core colors  -->
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF2B579A" />
             <SolidColorBrush x:Key="AppBackground" Color="#2B2B2B" />
+            <SolidColorBrush x:Key="AppDarkBackground" Color="#1e1f22" />
             <SolidColorBrush x:Key="ControlBackground" Color="#0e0e0e" />
             <SolidColorBrush x:Key="EditorBackground" Color="#000000" />
             <SolidColorBrush x:Key="RaisedBackground" Color="#343B41" />
             <SolidColorBrush x:Key="Foreground" Color="#DCDCDC" />
             <SolidColorBrush x:Key="SubtleForeground" Color="#999999" />
             <SolidColorBrush x:Key="Accent" Color="#007ACC" />
-            <SolidColorBrush x:Key="Border" Color="#555555" />
-            <SolidColorBrush x:Key="LessThanBorder" Color="#505050" />
-            <SolidColorBrush x:Key="ButtonBackground" Color="#4b4c4f" />
+            <SolidColorBrush x:Key="Border" Color="#292929" />
+            <SolidColorBrush x:Key="LessThanBorder" Color="#272727" />
+            <SolidColorBrush x:Key="ButtonBackground" Color="#323232" />
 
             <!--  GLOBAL  -->
             <Style TargetType="Window">
@@ -32,7 +35,7 @@
                 <Setter Property="Background" Value="{StaticResource ControlBackground}" />
             </Style>
             <Style TargetType="Grid">
-                <Setter Property="Background" Value="{StaticResource AppBackground}" />
+                <Setter Property="Background" Value="Transparent" />
             </Style>
 
             <!--  TextBox / TextBlock / Label style  -->
@@ -57,7 +60,7 @@
                 <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
                 <Setter Property="Foreground" Value="{StaticResource SubtleForeground}" />
                 <Setter Property="BorderBrush" Value="{StaticResource Border}" />
-                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="Padding" Value="12,6" />
                 <Setter Property="Template">
                     <Setter.Value>
@@ -65,7 +68,7 @@
                             <Border x:Name="border"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1" CornerRadius="4"
+                                    BorderThickness="2" CornerRadius="4"
                                     >
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
@@ -78,6 +81,10 @@
                                     <Setter TargetName="border" Property="Background" Value="{StaticResource Accent}" />
                                     <Setter Property="Foreground" Value="{StaticResource Foreground}" />
                                 </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource AppBackground}" />
+                                    <Setter Property="Foreground" Value="{StaticResource LessThanBorder}" />
+                                </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -85,7 +92,7 @@
             </Style>
             <!--  FilterButton style  -->
             <Style x:Key="FilterButton" TargetType="Button">
-                <!--  BasedOn="{StaticResource Button}"  -->
+                <!--  BasedOn="{StddaticResource Button}"  -->
                 <Setter Property="Margin" Value="4,0" />
                 <Setter Property="Padding" Value="16,8" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -129,7 +136,8 @@
                             <Border x:Name="border"
                                     Padding="{TemplateBinding Padding}"
                                     Background="{TemplateBinding Background}"
-                                    BorderBrush="Transparent" BorderThickness="2" CornerRadius="6"
+                                    BorderBrush="Transparent" BorderThickness="2"
+                                    CornerRadius="6"
                                     >
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
@@ -149,7 +157,7 @@
 
             <!--  ComboBox style  -->
             <Style TargetType="ComboBox">
-                <Setter Property="Background" Value="{StaticResource AppBackground}" />
+                <Setter Property="Background" Value="{StaticResource ControlBackground}" />
                 <Setter Property="Foreground" Value="{StaticResource Foreground}" />
                 <Setter Property="BorderBrush" Value="{StaticResource Border}" />
                 <Setter Property="BorderThickness" Value="1" />
@@ -179,7 +187,8 @@
                                                                       HorizontalAlignment="Left" VerticalAlignment="Center"
                                                                       />
                                                     <Path x:Name="arrow"
-                                                          Margin="0,0,8,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                          Margin="0,0,8,0" HorizontalAlignment="Right"
+                                                          VerticalAlignment="Center"
                                                           Data="M 0 0 L 4 4 L 8 0 Z" Fill="#AAAAAA"
                                                           />
                                                 </Grid>
@@ -260,15 +269,18 @@
             <Style TargetType="ListBox">
                 <Setter Property="Background" Value="{StaticResource ControlBackground}" />
                 <Setter Property="Foreground" Value="{StaticResource SubtleForeground}" />
+                <Setter Property="BorderBrush" Value="Transparent" />
             </Style>
             <Style TargetType="ListBoxItem">
                 <Setter Property="Background" Value="{StaticResource EditorBackground}" />
                 <Setter Property="Foreground" Value="{StaticResource SubtleForeground}" />
+                <Setter Property="BorderBrush" Value="Transparent" />
             </Style>
 
             <!--  TabControl / TabItem  -->
             <Style TargetType="TabControl">
-                <Setter Property="Background" Value="{StaticResource AppBackground}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
             </Style>
             <Style TargetType="TabItem">
                 <Setter Property="Padding" Value="16,6" />

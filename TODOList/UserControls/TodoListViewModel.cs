@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Components;
 using Echoslate.Resources;
 
 
@@ -24,9 +25,14 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+		public List<HistoryItem> HistoryItems { get; }
+		public HistoryItem CurrentHistoryItem { get; set; }
+
 		public static Dictionary<string, string> HashShortcuts;
 
 		public ListBox lbTodos;
+
+		public ObservableCollection<FilterButton> FilterButtons { get; } = [];
 
 		public ObservableCollection<string> AllTags { get; }
 		public ObservableCollection<string> CurrentVisibleTags { get; }
@@ -82,6 +88,7 @@ namespace Echoslate.ViewModels {
 			get => _currentSeverityBrush;
 			set {
 				_currentSeverityBrush = value;
+				RefreshAll();
 				OnPropertyChanged();
 			}
 		}
@@ -94,7 +101,7 @@ namespace Echoslate.ViewModels {
 			get => _currentSort;
 			set {
 				_currentSort = value;
-				RefreshAll();
+				RefreshDisplayedItems();
 				OnPropertyChanged();
 			}
 		}
@@ -129,9 +136,12 @@ namespace Echoslate.ViewModels {
 		}
 
 
-		public TodoListViewModel(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts) {
-			MasterList = masterList ?? throw new ArgumentNullException(nameof(masterList));
+		public TodoListViewModel(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts, List<HistoryItem> historyItems) {
+			MasterList = masterList;
 			AllItems = new List<TodoItemHolder>();
+			HistoryItems = historyItems;
+
+			FilterButtons = [];
 
 			MasterFilterTags = masterFilterTags ?? throw new ArgumentNullException(nameof(masterFilterTags));
 			CurrentVisibleTags = new ObservableCollection<string>(MasterFilterTags);
@@ -182,6 +192,18 @@ namespace Echoslate.ViewModels {
 				}
 				FilterTags.Add(newFilter);
 			}
+			FilterButtons.Clear();
+			foreach (string filter in FilterTags) {
+				int count = 0;
+				foreach (TodoItem item in MasterList) {
+					if (filter == "All") {
+						count = MasterList.Count;
+					} else if (item.Tags.Contains(filter)) {
+						count++;
+					}
+				}
+				FilterButtons.Add(new FilterButton(filter, count));
+			}
 		}
 		public void FixRanks() {
 			if (DisplayedItems == null) {
@@ -195,6 +217,19 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		public void RefreshDisplayedItems(bool forceRefresh = false) {
+			if (RefreshAllItems()) {
+				return;
+			}
+
+			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
+			DisplayedItems.Filter = CombinedFilter;
+			FixRanks();
+
+			ApplySort(forceRefresh);
+
+			DisplayedItems?.Refresh();
+		}
+		private bool RefreshAllItems() {
 			AllItems.Clear();
 			foreach (TodoItem item in MasterList) {
 				TodoItemHolder ih = new TodoItemHolder(item);
@@ -208,16 +243,9 @@ namespace Echoslate.ViewModels {
 
 			if (AllItems.Count == 0) {
 				Log.Warn("AllItems is empty.");
-				return;
+				return true;
 			}
-
-			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
-			DisplayedItems.Filter = CombinedFilter;
-			FixRanks();
-
-			ApplySort(forceRefresh);
-
-			DisplayedItems?.Refresh();
+			return false;
 		}
 		public void RefreshAll() {
 			RefreshAvailableTags();
@@ -316,6 +344,42 @@ namespace Echoslate.ViewModels {
 				Log.Error("No items selected.");
 			}
 		}
+		public void MarkSelectedItemAsComplete() {
+			if (lbTodos.SelectedItem == null) {
+				Log.Warn("No todos selected.");
+				return;
+			}
+			TodoItemHolder? ih = lbTodos.SelectedItem as TodoItemHolder;
+			TodoItem? item = ih?.TD;
+			if (item != null) {
+				Log.Warn("Selected item is null.");
+				MarkTodoAsComplete(item);
+			}
+		}
+		public void MarkTodoAsComplete(TodoItem item) {
+			item.IsComplete = true;
+			RefreshAllItems();
+			SortCompleteTodosToHistory();
+			Log.Test();
+		}
+		public void SortCompleteTodosToHistory() {
+			foreach (TodoItemHolder ih in AllItems) {
+				if (ih.TD.IsComplete) {
+					Log.Debug($"{ih.TD}");
+
+					RemoveItemFromMasterList(ih.TD);
+					AddItemToHistory(ih.TD);
+				}
+			}
+			RefreshAll();
+		}
+		public void AddItemToHistory(TodoItem item) {
+			CurrentHistoryItem = HistoryItems[0];
+			CurrentHistoryItem.AddCompletedTodo(item);
+
+			// TODO: rewrite RefreshHistory()
+			MainWindow.GetActiveWindow().RefreshHistory();
+		}
 		private void EditItem(TodoItem item) {
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash());
 			dlg.ShowDialog();
@@ -324,9 +388,16 @@ namespace Echoslate.ViewModels {
 			Log.Debug($"{dlg.ResultTodoItem}");
 
 			if (dlg.Result) {
+				TodoItem newItem = dlg.ResultTodoItem;
 				RemoveItemFromMasterList(item);
-				AddItemToMasterList(dlg.ResultTodoItem);
-				ReRankWithSubsetMoved(dlg.ResultTodoItem, dlg.Rank);
+				AddItemToMasterList(newItem);
+
+				if (newItem.IsComplete) {
+					MarkTodoAsComplete(newItem);
+				} else {
+					ReRankWithSubsetMoved(newItem, dlg.Rank);
+				}
+
 				RefreshAll();
 				// if (MasterList.Contains(item)) {
 				// MasterList.Remove(item);
@@ -358,21 +429,26 @@ namespace Echoslate.ViewModels {
 			foreach (string name in MasterFilterTags.Where(name => !td.Rank.ContainsKey(name)))
 				td.Rank.Add(name, -1);
 		}
-		public void AddItemToMasterList(TodoItem td) {
-			if (MasterListContains(td) >= 0)
-				return;
-			CleanTodoHashRanks(td);
-			MasterList.Add(td);
-		}
-		public void RemoveItemFromMasterList(TodoItem? td) {
-			if (td == null) {
-				Log.Warn("item is null");
+		public void AddItemToMasterList(TodoItem item) {
+			if (MasterListContains(item) >= 0) {
+				Log.Warn("MasterList already contains Item.");
 				return;
 			}
-			int index = MasterListContains(td);
-			if (index == -1)
+			CleanTodoHashRanks(item);
+			MasterList.Add(item);
+		}
+		public void RemoveItemFromMasterList(TodoItem? item) {
+			if (item == null) {
+				Log.Warn("item is null.");
 				return;
+			}
+			int index = MasterListContains(item);
+			if (index == -1) {
+				Log.Warn("MasterList does not contain TodoItem.");
+				return;
+			}
 			MasterList.RemoveAt(index);
+			Log.Print("TodoItem removed from MasterList.");
 		}
 		private int MasterListContains(TodoItem td) {
 			if (MasterList.Contains(td))
@@ -508,7 +584,7 @@ namespace Echoslate.ViewModels {
 					}
 				}
 				if (dlg.IsCompleteEnabled) {
-					item.IsComplete = true;
+					MarkTodoAsComplete(item);
 				}
 			}
 
@@ -595,7 +671,7 @@ namespace Echoslate.ViewModels {
 		});
 		public ICommand ContextMenuCompleteCommand => new RelayCommand(() => {
 			foreach (TodoItem item in GetSelectedListBoxItems()) {
-				item.IsComplete = true;
+				MarkTodoAsComplete(item);
 			}
 			RefreshAll();
 		});
@@ -644,7 +720,7 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 
-		public ICommand SelectTagCommand => new RelayCommand<string>(tag => { CurrentTagFilter = tag is null or "All" ? "All" : tag; });
+		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => { CurrentTagFilter = button.Filter is null or "All" ? "All" : button.Filter; });
 		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
 		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
 		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
@@ -657,7 +733,10 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 			NewTodoText = "";
 		});
-		public ICommand RefreshAllCommand => new RelayCommand(RefreshAll);
+		public ICommand RefreshAllCommand => new RelayCommand(() => {
+			// TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			RefreshAll();
+		});
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

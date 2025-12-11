@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 using Echoslate.ViewModels;
 
 namespace Echoslate.UserControls {
@@ -47,12 +48,7 @@ namespace Echoslate.UserControls {
 				Log.Print("Can not find ViewModel.");
 				return;
 			}
-			if (vm.lbTodos.SelectedItem == null) {
-				Log.Print("No todos selected.");
-				return;
-			}
-
-
+			vm.MarkSelectedItemAsComplete();
 		}
 		private void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {
 			TodoListViewModel? vm = (TodoListViewModel)DataContext;
@@ -91,5 +87,9 @@ namespace Echoslate.UserControls {
 				vm.RefreshAll();
 			}
 		}
+		public ICommand RefreshAllCommand => new RelayCommand(() => {
+			TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			vm.RefreshAll();
+		});
 	}
 }
