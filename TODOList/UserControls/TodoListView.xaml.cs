@@ -16,7 +16,7 @@ namespace Echoslate.UserControls {
 		public TodoListView() {
 			InitializeComponent();
 			// Loaded += TodoListView_OnLoaded;
-			lbTodos.SelectionChanged += Todos_OnSelectionChanged;
+			// lbTodos.SelectionChanged += Todos_OnSelectionChanged;
 		}
 		// private void TodoListView_OnLoaded(object sender, RoutedEventArgs e) {
 			// This helps it load the first time just a bit faster
@@ -36,13 +36,13 @@ namespace Echoslate.UserControls {
 		}
 
 		private void TodoListView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			if (e.NewValue is true && DataContext is TodoListViewModel vm) {
+			if (e.NewValue is true && DataContext is TodoDisplayViewModelBase vm) {
 				vm.RefreshAll();
-				vm.lbTodos = lbTodos;
+				// vm.lbTodos = lbTodos;
 			}
 		}
 		private void NotesPanelCompleteRequested(object sender, RoutedEventArgs e) {
-			TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			TodoDisplayViewModelBase? vm = (TodoDisplayViewModelBase)DataContext;
 			if (vm == null) {
 				Log.Print("Can not find ViewModel.");
 				return;
@@ -50,19 +50,23 @@ namespace Echoslate.UserControls {
 			vm.MarkSelectedItemAsComplete();
 		}
 		private void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {
-			TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			TodoDisplayViewModelBase? vm = (TodoDisplayViewModelBase)DataContext;
 			if (vm == null) {
 				Log.Print("Can not find ViewModel.");
 				return;
 			}
-			if (vm.lbTodos.SelectedItem == null) {
+			if (vm.SelectedTodoItems[0] == null) {
 				Log.Print("No todos selected.");
 				return;
 			}
+			// if (vm.lbTodos.SelectedItem == null) {
+				// Log.Print("No todos selected.");
+				// return;
+			// }
 
 			List<TodoItem> ihs = [];
 			List<string> selectedTags = [];
-			foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+			foreach (TodoItemHolder ih in vm.SelectedTodoItems) {
 				ihs.Add(ih.TD);
 			}
 
@@ -87,7 +91,7 @@ namespace Echoslate.UserControls {
 			}
 		}
 		public ICommand RefreshAllCommand => new RelayCommand(() => {
-			TodoListViewModel? vm = (TodoListViewModel)DataContext;
+			TodoDisplayViewModelBase? vm = (TodoDisplayViewModelBase)DataContext;
 			vm.RefreshAll();
 		});
 	}

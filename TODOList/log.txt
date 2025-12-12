@@ -1,3 +1,16 @@
+commit 1facb2d24f0ebea42fea2c9f9fbf8a00c2b8a809
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Dec 12 16:22:53 2025 +0800
+
+    20251211- v3.40.37.0 Kanban view is working. A few bugs to fix left
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Other Stuff======================================================================================================
+    --20251212-0m |Create KanbanViewModel from TodoListViewModelBase and make it work with kanban view
+    --20251212-0m |Modify TodoListViewModel to inherit from TodoDisplayViewModelBase and make it work again
+    --20251212-0m |Create TodoDisplayViewModelBase and factor out the stuff specific to TodoListView
+
 commit 4640012ec0e6d7e879430e853b2b295f76e0812c
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu Dec 11 20:51:14 2025 +0800

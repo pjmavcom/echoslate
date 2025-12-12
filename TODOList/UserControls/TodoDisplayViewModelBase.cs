@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -30,7 +31,7 @@ namespace Echoslate.ViewModels {
 
 		public Dictionary<string, string> HashShortcuts { get; set; }
 
-		public ListBox lbTodos;
+		// public ListBox lbTodos;
 
 		public ObservableCollection<FilterButton> FilterButtons { get; set; } = [];
 
@@ -134,18 +135,21 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+		public IList SelectedTodoItems { get; } = new ObservableCollection<object>();
 
-		private List<TodoItemHolder> _selectedItems;
-		public List<TodoItemHolder> SelectedItems {
-			get => _selectedItems;
+		private object _selectedTodoItem;
+		public object SelectedTodoItem {
+			get => _selectedTodoItem;
 			set {
-				_selectedItems = value;
-				OnPropertyChanged();
+				if (_selectedTodoItem != value) {
+					_selectedTodoItem = value;
+					OnPropertyChanged();
+				}
 			}
 		}
 
-
-		public TodoDisplayViewModelBase() { }
+		public TodoDisplayViewModelBase() {
+		}
 		public virtual void Initialize(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts, List<HistoryItem> historyItems) {
 			MasterList = masterList;
 			AllItems = [];
@@ -306,28 +310,48 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		private void ContextMenuEdit() {
-			if (lbTodos.SelectedItem is not TodoItemHolder ih) {
+			if (SelectedTodoItems[0] is not TodoItemHolder ih) {
 				return;
+			} else {
 			}
+			// if (lbTodos.SelectedItem is not TodoItemHolder ih) {
+			// 	return;
+			// }
 
-			if (lbTodos.SelectedItems.Count > 1) {
+			if (SelectedTodoItems.Count > 1) {
 				List<TodoItem> items = new List<TodoItem>();
-				foreach (TodoItemHolder ihs in lbTodos.SelectedItems) {
+				foreach (TodoItemHolder ihs in SelectedTodoItems) {
 					items.Add(ihs.TD);
 				}
 				MultiEditItems(items);
-			} else if (lbTodos.SelectedItems.Count == 1) {
+			} else if (SelectedTodoItems.Count == 1) {
 				EditItem(ih.TD);
 			} else {
 				Log.Error("No items selected.");
 			}
+			// if (lbTodos.SelectedItems.Count > 1) {
+			// 	List<TodoItem> items = new List<TodoItem>();
+			// 	foreach (TodoItemHolder ihs in lbTodos.SelectedItems) {
+			// 		items.Add(ihs.TD);
+			// 	}
+			// 	MultiEditItems(items);
+			// } else if (lbTodos.SelectedItems.Count == 1) {
+			// 	EditItem(ih.TD);
+			// } else {
+			// 	Log.Error("No items selected.");
+			// }
 		}
 		public void MarkSelectedItemAsComplete() {
-			if (lbTodos.SelectedItem == null) {
+			if (SelectedTodoItems[0] == null) {
 				Log.Warn("No todos selected.");
 				return;
 			}
-			TodoItemHolder? ih = lbTodos.SelectedItem as TodoItemHolder;
+			TodoItemHolder? ih = SelectedTodoItems[0] as TodoItemHolder;
+			// if (lbTodos.SelectedItem == null) {
+			// 	Log.Warn("No todos selected.");
+			// 	return;
+			// }
+			// TodoItemHolder? ih = lbTodos.SelectedItem as TodoItemHolder;
 			TodoItem? item = ih?.TD;
 			if (item != null) {
 				Log.Warn("Selected item is null.");
@@ -587,16 +611,23 @@ namespace Echoslate.ViewModels {
 		}
 		public List<TodoItem> GetSelectedListBoxItems() {
 			List<TodoItem> items = [];
-			foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+			// foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+			// items.Add(ih.TD);
+			// }
+
+			foreach (TodoItemHolder ih in SelectedTodoItems) {
 				items.Add(ih.TD);
 			}
 			return items;
 		}
 		public List<TodoItemHolder> GetSelectedListBoxHolders() {
 			List<TodoItemHolder> ihs = [];
-			foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+			foreach (TodoItemHolder ih in SelectedTodoItems) {
 				ihs.Add(ih);
 			}
+			// foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
+			// 	ihs.Add(ih);
+			// }
 			return ihs;
 		}
 		private void ItemNotesPanel_EditTagsRequested(object sender, EventArgs e) {
@@ -715,10 +746,7 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 			NewTodoText = "";
 		});
-		public ICommand RefreshAllCommand => new RelayCommand(() => {
-			// TodoListViewModel? vm = (TodoListViewModel)DataContext;
-			RefreshAll();
-		});
+		public ICommand RefreshAllCommand => new RelayCommand(() => { RefreshAll(); });
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

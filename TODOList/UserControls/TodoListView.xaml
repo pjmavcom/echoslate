@@ -1,4 +1,4 @@
-<UserControl x:Class="Echoslate.UserControls.TodoListView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:behaviors="clr-namespace:Echoslate.Behaviors" xmlns:converters="clr-namespace:Echoslate.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:global="clr-namespace:" xmlns:local="clr-namespace:Echoslate.UserControls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:resources="clr-namespace:Echoslate.Resources" xmlns:todoList="clr-namespace:Echoslate" xmlns:viewModels="clr-namespace:Echoslate.ViewModels" d:DesignHeight="500" d:DesignWidth="1400" IsVisibleChanged="TodoListView_IsVisibleChanged" mc:Ignorable="d">
+<UserControl x:Class="Echoslate.UserControls.TodoListView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:Echoslate.Behaviors" xmlns:converters="clr-namespace:Echoslate.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:global="clr-namespace:" xmlns:local="clr-namespace:Echoslate.UserControls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:resources="clr-namespace:Echoslate.Resources" xmlns:todoList="clr-namespace:Echoslate" xmlns:viewModels="clr-namespace:Echoslate.ViewModels" d:DesignHeight="500" d:DesignWidth="1400" IsVisibleChanged="TodoListView_IsVisibleChanged" mc:Ignorable="d">
     <UserControl.Resources>
         <converters:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
         <converters:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
@@ -94,9 +94,16 @@
         </StackPanel>
 
         <!--  Main TodoList view  -->
-        <ListBox x:Name="lbTodos" Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+        <!--  x:Name="lbTodos"  -->
+        <ListBox Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                  ItemsSource="{Binding DisplayedItems}"
-                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Hidden" SelectionMode="Extended">
+                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                 SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
+                 SelectionMode="Extended">
+            <b:Interaction.Behaviors>
+                <!--  This syncs selection to the ViewModel automatically  -->
+                <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedTodoItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
+            </b:Interaction.Behaviors>
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding ContextMenuEditCommand}" Header="Edit" />
@@ -213,6 +220,6 @@
 
         <!--  Items NotesPanel  -->
         <local:ItemNotesPanel x:Name="itemNotesPanel" Grid.Row="0" Grid.RowSpan="4" Grid.Column="1" NotesPanelCompleteRequested="NotesPanelCompleteRequested" NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
-                              SelectedTodoItem="{Binding SelectedItem, ElementName=lbTodos, Mode=OneWay}" />
+                              SelectedTodoItem="{Binding DataContext.SelectedTodoItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" />
     </Grid>
 </UserControl>
