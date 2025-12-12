@@ -274,12 +274,12 @@
 
             <!--  VCS TodoList tab  -->
             <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="Todo List">
-                <userControls:TodoListView DataContext="{StaticResource TodoListVM}" />
+                <userControls:TodoDisplayView DataContext="{StaticResource TodoListVM}" />
             </TabItem>
 
             <!--  VCS Kanban tab  -->
             <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="Kanban">
-                <userControls:TodoListView DataContext="{StaticResource KanbanVM}" />
+                <userControls:TodoDisplayView DataContext="{StaticResource KanbanVM}" />
             </TabItem>
 
             <TabItem Header="Log">

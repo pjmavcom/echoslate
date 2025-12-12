@@ -9,6 +9,9 @@ namespace Echoslate.ViewModels {
 		}
 		public override void Initialize(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts, List<HistoryItem> historyItems) {
 			base.Initialize(masterList, masterFilterTags, hashShortcuts, historyItems);
+			CurrentFilter = "Current";
+			CurrentSort = "severity";
+			_reverseSort = false;
 			RefreshAll();
 		}
 		protected override void RefreshFilter() {

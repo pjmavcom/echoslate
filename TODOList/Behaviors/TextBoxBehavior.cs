@@ -7,24 +7,26 @@ namespace Echoslate.Behaviors;
 
 public static class TextBoxBehavior {
 	public static readonly DependencyProperty RemoveSpacesProperty =
-		DependencyProperty.RegisterAttached(
-											"RemoveSpaces", typeof(bool), typeof(TextBoxBehavior),
+		DependencyProperty.RegisterAttached("RemoveSpaces", typeof(bool), typeof(TextBoxBehavior),
 											new PropertyMetadata(false, OnRemoveSpacesChanged));
 	public static void SetRemoveSpaces(DependencyObject element, bool value) =>
 		element.SetValue(RemoveSpacesProperty, value);
 	public static bool GetRemoveSpaces(DependencyObject element) =>
 		(bool)element.GetValue(RemoveSpacesProperty);
+	
+	
 	private static void OnRemoveSpacesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-		if (d is TextBox tb) {
-			if ((bool)e.NewValue) {
-				tb.PreviewTextInput += Tb_PreviewTextInput;
-				DataObject.AddPastingHandler(tb, Tb_OnPaste);
-				tb.TextChanged += Tb_TextChanged;
-			} else {
-				tb.PreviewTextInput -= Tb_PreviewTextInput;
-				DataObject.RemovePastingHandler(tb, Tb_OnPaste);
-				tb.TextChanged -= Tb_TextChanged;
-			}
+		if (d is not TextBox tb) {
+			return;
+		}
+		if ((bool)e.NewValue) {
+			tb.PreviewTextInput += Tb_PreviewTextInput;
+			DataObject.AddPastingHandler(tb, Tb_OnPaste);
+			tb.TextChanged += Tb_TextChanged;
+		} else {
+			tb.PreviewTextInput -= Tb_PreviewTextInput;
+			DataObject.RemovePastingHandler(tb, Tb_OnPaste);
+			tb.TextChanged -= Tb_TextChanged;
 		}
 	}
 	private static void Tb_PreviewTextInput(object sender, TextCompositionEventArgs e) {

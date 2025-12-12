@@ -24,7 +24,7 @@ namespace Echoslate.UserControls {
 		}
 		private void RefreshAll() {
 			if (VisualTreeHelper.GetParent(this) is DependencyObject parent) {
-				var todoListView = this.TryFindParent<TodoListView>();
+				var todoListView = this.TryFindParent<TodoDisplayView>();
 				if (todoListView?.DataContext is TodoListViewModel vm) {
 					vm.RefreshAll();
 				}

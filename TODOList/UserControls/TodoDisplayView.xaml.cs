@@ -12,8 +12,8 @@ using CommunityToolkit.Mvvm.Input;
 using Echoslate.ViewModels;
 
 namespace Echoslate.UserControls {
-	public partial class TodoListView : UserControl {
-		public TodoListView() {
+	public partial class TodoDisplayView : UserControl {
+		public TodoDisplayView() {
 			InitializeComponent();
 			// Loaded += TodoListView_OnLoaded;
 			// lbTodos.SelectionChanged += Todos_OnSelectionChanged;
@@ -47,6 +47,7 @@ namespace Echoslate.UserControls {
 				Log.Print("Can not find ViewModel.");
 				return;
 			}
+			
 			vm.MarkSelectedItemAsComplete();
 		}
 		private void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {

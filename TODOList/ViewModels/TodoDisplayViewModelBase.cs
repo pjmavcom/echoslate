@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -31,8 +30,6 @@ namespace Echoslate.ViewModels {
 
 		public Dictionary<string, string> HashShortcuts { get; set; }
 
-		// public ListBox lbTodos;
-
 		public ObservableCollection<FilterButton> FilterButtons { get; set; } = [];
 
 		public ObservableCollection<string> AllTags { get; set; }
@@ -57,7 +54,7 @@ namespace Echoslate.ViewModels {
 			get => _currentFilter;
 			set {
 				_currentFilter = value;
-				_reverseSort = true;
+				// _reverseSort = false;
 				RefreshAll();
 				OnPropertyChanged();
 			}
@@ -107,7 +104,7 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		private string _previousSort = "";
-		private bool _reverseSort;
+		protected bool _reverseSort;
 		private bool _previousReverseSort;
 
 		private string _newTodoText;
@@ -342,7 +339,7 @@ namespace Echoslate.ViewModels {
 			// }
 		}
 		public void MarkSelectedItemAsComplete() {
-			if (SelectedTodoItems[0] == null) {
+			if (SelectedTodoItems == null || SelectedTodoItems.Count == 0 || SelectedTodoItems[0] == null) {
 				Log.Warn("No todos selected.");
 				return;
 			}

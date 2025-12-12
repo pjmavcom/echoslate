@@ -9,11 +9,12 @@ public class FilterButton : INotifyPropertyChanged {
 	public int Count {
 		get => _count;
 		set {
-			if (_count != value) {
-				_count = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(DisplayTitle));
+			if (_count == value) {
+				return;
 			}
+			_count = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(DisplayTitle));
 		}
 	}
 

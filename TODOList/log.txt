@@ -1,3 +1,22 @@
+commit 0a8fcf98dfd8c93f1535a5b7c85a73bbb5812fe6
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Dec 12 20:12:07 2025 +0800
+
+    20251212- v3.40.38.0 Finally bound SelectedItems to a property
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: Removed some todos that were not needed anymore and added some to this HistoryItem that are
+            completed already
+    
+    =Bugs Squashed====================================================================================================
+    --20251212-0m |Hashtag list only had 4 items in it after sorting by severity in another filter...check If refresh
+                    happens on every window or filter change
+    
+    =Other Stuff======================================================================================================
+    --20251212-0m |Add CompleteItem to right click context menu in TodoItems listbox
+    --20251212-0m |Bound SelectedItems to a property finally. Having two DisplayViews with the same names for some
+                    controls was causing problems. Fixed the ListBox lbTodos issues and now the SelectedItems is bounds properly
+
 commit 1facb2d24f0ebea42fea2c9f9fbf8a00c2b8a809
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Dec 12 16:22:53 2025 +0800
