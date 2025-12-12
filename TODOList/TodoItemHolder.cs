@@ -38,6 +38,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		public int CurrentKanbanFilter { get; set; }
 
 
 		public string Todo {
@@ -53,7 +54,7 @@ namespace Echoslate {
 			set => _td.Problem = value;
 		}
 		public string Solution {
-			get=>  _td.Solution;
+			get => _td.Solution;
 			set => _td.Solution = value;
 		}
 		public string NotesAndTags => _td.NotesAndTags;

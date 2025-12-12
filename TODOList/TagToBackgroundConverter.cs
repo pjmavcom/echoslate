@@ -11,7 +11,7 @@ public class TagToBackgroundConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 		var vm = (Application.Current.MainWindow?.DataContext as TodoListViewModel);
 		var tag = value?.ToString();
-		bool isSelected = (tag == "All" && vm?.CurrentTagFilter == null) || tag == vm?.CurrentTagFilter;
+		bool isSelected = (tag == "All" && vm?.CurrentFilter == null) || tag == vm?.CurrentFilter;
 		return isSelected
 				   ? new SolidColorBrush(Color.FromRgb(0, 120, 215))
 				   : new SolidColorBrush(Color.FromRgb(70, 70, 70));

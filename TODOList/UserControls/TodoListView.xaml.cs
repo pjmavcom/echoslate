@@ -13,23 +13,22 @@ using Echoslate.ViewModels;
 
 namespace Echoslate.UserControls {
 	public partial class TodoListView : UserControl {
-		
-		
 		public TodoListView() {
 			InitializeComponent();
-			Loaded += TodoListView_OnLoaded;
+			// Loaded += TodoListView_OnLoaded;
 			lbTodos.SelectionChanged += Todos_OnSelectionChanged;
 		}
-		private void TodoListView_OnLoaded(object sender, RoutedEventArgs e) {
+		// private void TodoListView_OnLoaded(object sender, RoutedEventArgs e) {
 			// This helps it load the first time just a bit faster
-			var dummy = new TodoItem(); 
-			var tempList = new List<TodoItem> { dummy };
-			lbTodos.ItemsSource = tempList;
-			Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
-			if (DataContext is TodoListViewModel vm) {
-				lbTodos.ItemsSource = vm.DisplayedItems;
-			}
-		}
+			// TodoItem item = new TodoItem();
+			// TodoItemHolder ih = new TodoItemHolder(item);
+			// List<TodoItemHolder> tempList = [ih];
+			// lbTodos.ItemsSource = tempList;
+			// Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
+			// if (DataContext is TodoListViewModel vm) {
+				// lbTodos.ItemsSource = vm.DisplayedItems;
+			// }
+		// }
 		private void Todos_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
 			foreach (TodoItemHolder ih in e.RemovedItems.OfType<TodoItemHolder>()) {
 				ih.CleanNotes();
@@ -38,7 +37,7 @@ namespace Echoslate.UserControls {
 
 		private void TodoListView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			if (e.NewValue is true && DataContext is TodoListViewModel vm) {
-				vm.RefreshAll();	
+				vm.RefreshAll();
 				vm.lbTodos = lbTodos;
 			}
 		}
@@ -58,7 +57,7 @@ namespace Echoslate.UserControls {
 			}
 			if (vm.lbTodos.SelectedItem == null) {
 				Log.Print("No todos selected.");
-			return;
+				return;
 			}
 
 			List<TodoItem> ihs = [];

@@ -52,7 +52,7 @@
                                             <DataTrigger.Binding>
                                                 <MultiBinding Converter="{StaticResource IsTagSelectedConverter}">
                                                     <Binding Path="." />
-                                                    <Binding Path="DataContext.CurrentTagFilter" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                    <Binding Path="DataContext.CurrentFilter" RelativeSource="{RelativeSource AncestorType=UserControl}" />
                                                 </MultiBinding>
                                             </DataTrigger.Binding>
                                             <Setter Property="Background" Value="#0078D7" />

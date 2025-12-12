@@ -1,3 +1,25 @@
+commit 4640012ec0e6d7e879430e853b2b295f76e0812c
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Thu Dec 11 20:51:14 2025 +0800
+
+    20251210- v3.40.36.0 The main window works correctly
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: A few small bugs that should get cleared up when History, TodoItem and such are refactored
+    
+    =Bugs Squashed====================================================================================================
+    --20251211-0m |Sort does not work in reverse.
+            Notes: I think the reverse sort flag is getting reset or something
+    
+    =Other Stuff======================================================================================================
+    --20251211-0m |Add numbers to filter buttons
+    --20251211-0m |Disabled buttons (multi item editor) do not look disabled
+    --20251211-0m |Filter bar buttons dont show current selected filter again
+    --20251211-0m |Make the date look better
+    --20251211-0m |Center text on active and other labels
+    --20251211-0m |Polish the current TodoListView interface
+    --20251211-0m |Adjust AvailableTags buttons to look better
+
 commit 0df6e1e720458b6df37d664329289bdea3d8a286
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Wed Dec 10 22:44:04 2025 +0800

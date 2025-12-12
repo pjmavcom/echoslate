@@ -1,13 +1,12 @@
-﻿<Window x:Class="Echoslate.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:userControls="clr-namespace:Echoslate.UserControls" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+﻿<Window x:Class="Echoslate.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:userControls="clr-namespace:Echoslate.UserControls" xmlns:viewModels="clr-namespace:Echoslate.ViewModels" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit" x:Name="MainWindowInstance"
         Title="{Binding WindowTitle}"
-        Width="1920" Height="1080"
-        FocusManager.FocusedElement="{Binding ElementName=_lbIncompleteItems}"
-        Loaded="OnLoaded"
+        Width="1920" Height="1080" Loaded="OnLoaded"
         Style="{StaticResource {x:Type Window}}"
         mc:Ignorable="d">
 
     <Window.Resources>
-        <local:ProgressBarForegroundConverter x:Key="ProgressBarForegroundConverter" />
+        <viewModels:KanbanViewModel x:Key="KanbanVM" />
+        <viewModels:TodoListViewModel x:Key="TodoListVM" />
 
         <RoutedUICommand x:Key="Add" Text="Text" />
         <RoutedUICommand x:Key="Complete" Text="Some Text" />
@@ -18,13 +17,6 @@
         <RoutedUICommand x:Key="QuickLoadPrevious" Text="And Yet Another Another Text" />
         <RoutedUICommand x:Key="StartStopTimer" Text="And Yet Another Another Text" />
 
-        <DataTemplate x:Key="NotesPanelHashTagsListBox">
-            <StackPanel Height="30" Orientation="Horizontal">
-                <Button Width="35" Click="DeleteTag_OnClick" Content="X" />
-                <TextBox Width="250" LostFocus="NewTag_LostFocus"
-                         Text="{Binding Text}" />
-            </StackPanel>
-        </DataTemplate>
     </Window.Resources>
 
     <Window.CommandBindings>
@@ -279,167 +271,17 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="TESTING">
-                <userControls:TodoListView x:Name="ucTodoListView" />
+
+            <!--  VCS TodoList tab  -->
+            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="Todo List">
+                <userControls:TodoListView DataContext="{StaticResource TodoListVM}" />
             </TabItem>
-            <TabItem Name="tabKanban" HorizontalAlignment="Right" VerticalAlignment="Center" Header="Kanban">
-                <!--  VCS Kanban tab  -->
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel x:Name="kanbanMainGrid">
-                        <TabControl Name="kanbanTodoTabs"
-                                    ItemsSource="{Binding}"
-                                    Loaded="KanbanTabs_OnLoaded" SelectionChanged="KanbanTab_OnSelectionChanged">
-                            <TabControl.ContentTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <StackPanel Height="30" Orientation="Horizontal">
-                                            <ComboBox Name="cbKanbanHashTags" Width="301"
-                                                      d:DataContext="{d:DesignInstance}"
-                                                      ItemsSource="{Binding KanbanHashTags}"
-                                                      KeyboardNavigation.IsTabStop="False" SelectionChanged="KanbanHashTags_OnSelectionChange" />
-                                            <Button Width="161" Click="Sort_OnClick" CommandParameter="date" Content="Date" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="101" Click="Sort_OnClick" CommandParameter="severity" Content="Severity" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="111" Click="Sort_OnClick" CommandParameter="rank" Content="Rank" KeyboardNavigation.IsTabStop="False" />
-                                            <Button Width="111" Click="Sort_OnClick" CommandParameter="active" Content="Active" KeyboardNavigation.IsTabStop="False" />
-                                        </StackPanel>
-                                        <ListBox Name="lbKanbanItems" HorizontalContentAlignment="Stretch"
-                                                 d:DataContext="{d:DesignInstance}"
-                                                 ItemsSource="{Binding}"
-                                                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Extended">
-                                            <ListBox.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="Edit" Header="Edit" />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="Delete" Header="Delete" />
-                                                    <Separator />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="ResetTimer" Header="Reset Timer" />
-                                                    <Separator />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="Kanban3" Header="Set Kanban: Current" />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="Kanban2" Header="Set Kanban: Next" />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="Kanban1" Header="Set Kanban: Backlog" />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="Kanban0" Header="Set Kanban: None" />
-                                                    <Separator />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="MoveUp" Header="Move to Top" />
-                                                    <MenuItem Click="mnuContextMenu_OnClick" CommandParameter="MoveDown" Header="Move to Bottom" />
-                                                </ContextMenu>
-                                            </ListBox.ContextMenu>
-                                            <ListBox.ItemContainerStyle>
-                                                <Style TargetType="ListBoxItem">
-                                                    <Setter Property="Height" Value="auto" />
-                                                    <Setter Property="Padding" Value="0" />
-                                                </Style>
-                                            </ListBox.ItemContainerStyle>
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Margin="0,2"
-                                                                d:DataContext="{d:DesignInstance}"
-                                                                Orientation="Horizontal"
-                                                                ToolTip="{Binding NotesAndTags}">
-                                                        <TextBlock Width="300" VerticalAlignment="Top" KeyboardNavigation.IsTabStop="False"
-                                                                   Text="{Binding TagsSorted}"
-                                                                   TextWrapping="WrapWithOverflow" />
-                                                        <TextBlock Width="160" Height="30" Margin="4" VerticalAlignment="Top" Foreground="Red" KeyboardNavigation.IsTabStop="False"
-                                                                   Text="{Binding StartDateTime}" />
-                                                        <Button Width="90" Click="Severity_OnClick">
-                                                            <Button.Style>
-                                                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                                                                    <Setter Property="Template">
-                                                                        <Setter.Value>
-                                                                            <ControlTemplate TargetType="Button">
-                                                                                <!--  Put in your textbox and progress bar and what not  -->
-                                                                                <ProgressBar Height="30" VerticalAlignment="Top" Background="Black" BorderBrush="DarkSlateGray"
-                                                                                             Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value, Converter={StaticResource ProgressBarForegroundConverter}}"
-                                                                                             KeyboardNavigation.IsTabStop="False" Maximum="3" Minimum="0"
-                                                                                             Value="{Binding Severity}" />
-                                                                            </ControlTemplate>
-                                                                        </Setter.Value>
-                                                                    </Setter>
-                                                                </Style>
-                                                            </Button.Style>
-                                                        </Button>
-                                                        <Label Width="50" Height="30" Margin="4" VerticalAlignment="Top"
-                                                               Content="{Binding KanbanRank}"
-                                                               KeyboardNavigation.IsTabStop="False" />
-                                                        <Button Width="25" Height="30" VerticalAlignment="Top" Click="RankAdjust_OnClick" CommandParameter="down" Content="6" FontFamily="Marlett" FontSize="20" KeyboardNavigation.IsTabStop="False" />
-                                                        <Button Width="25" Height="30" VerticalAlignment="Top" Click="RankAdjust_OnClick" CommandParameter="up" Content="5" FontFamily="Marlett" FontSize="20" KeyboardNavigation.IsTabStop="False" />
-                                                        <Label Width="65" Height="30" VerticalAlignment="Top" HorizontalContentAlignment="Right"
-                                                               Content="{Binding TimeTakenInMinutes, UpdateSourceTrigger=PropertyChanged}"
-                                                               ContentStringFormat="{}{0:00.## :}" KeyboardNavigation.IsTabStop="False" MouseUp="TimeTakenTimer_OnClick">
-                                                            <Label.Style>
-                                                                <Style>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="True">
-                                                                            <Setter Property="Label.Background" Value="Lime" />
-                                                                            <Setter Property="Label.Foreground" Value="Black" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="False">
-                                                                            <Setter Property="Label.Background" Value="Transparent" />
-                                                                            <Setter Property="Label.Foreground" Value="LightGray" />
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Label.Style>
-                                                        </Label>
-                                                        <Label Width="45" Height="30" VerticalAlignment="Top" HorizontalContentAlignment="Left"
-                                                               Content="{Binding TimeTaken.Second, UpdateSourceTrigger=PropertyChanged}"
-                                                               ContentStringFormat="{}{0:00.##}" KeyboardNavigation.IsTabStop="False" MouseUp="TimeTakenTimer_OnClick">
-                                                            <Label.Style>
-                                                                <Style>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="True">
-                                                                            <Setter Property="Label.Background" Value="Lime" />
-                                                                            <Setter Property="Label.Foreground" Value="Black" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding IsTimerOn}" Value="False">
-                                                                            <Setter Property="Label.Background" Value="Transparent" />
-                                                                            <Setter Property="Label.Foreground" Value="LightGray" />
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Label.Style>
-                                                        </Label>
-                                                        <TextBlock Margin="4,0"
-                                                                   Text="{Binding Todo}"
-                                                                   TextAlignment="Left" TextWrapping="WrapWithOverflow" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </TabControl.ContentTemplate>
-                        </TabControl>
-                        <StackPanel x:Name="kanbanNewTodoPanel" Orientation="Horizontal">
-                            <TextBox x:Name="tbKanbanNewTodo" KeyboardNavigation.TabIndex="1" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" />
-                            <StackPanel>
-                                <ComboBox Name="cbKanbanSeverity" KeyboardNavigation.TabIndex="2" Loaded="SeverityComboBox_OnIsLoaded" SelectionChanged="SeverityComboBox_OnSelectionChange" Unloaded="SeverityComboBox_OnIsLoaded">
-                                    <ComboBoxItem Content="None" />
-                                    <ComboBoxItem Content="Low" IsSelected="True" />
-                                    <ComboBoxItem Content="Med" />
-                                    <ComboBoxItem Content="High" />
-                                </ComboBox>
-                                <Button Click="Add_OnClick" Content="Add" KeyboardNavigation.TabIndex="3" />
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel x:Name="kanbanNotesPanel">
-                        <Label Height="25" Content="Title:" />
-                        <TextBox x:Name="tbKanbanTitle" Height="65" Margin="3" HorizontalAlignment="Left" GotFocus="TodoTitle_OnGotFocus" LostFocus="TodoTitle_OnLostFocus" TextWrapping="WrapWithOverflow" />
-                        <Label Height="25" Content="Notes:" />
-                        <TextBox x:Name="tbKanbanNotes" Margin="3" HorizontalAlignment="Left" AcceptsReturn="True" GotFocus="Notes_OnGotFocus" LostFocus="Notes_OnLostFocus" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" />
-                        <Label Height="25" Content="Problem:" />
-                        <TextBox x:Name="tbKanbanProblem" Margin="3" HorizontalAlignment="Left" AcceptsReturn="True" GotFocus="Problem_OnGotFocus" LostFocus="Problem_OnLostFocus" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" />
-                        <Label Height="25" Content="Solution:" />
-                        <TextBox x:Name="tbKanbanSolution" Margin="3" HorizontalAlignment="Left" AcceptsReturn="True" GotFocus="Solution_OnGotFocus" LostFocus="Solution_OnLostFocus" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" />
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="2" HorizontalAlignment="Right" Content="Tags:" />
-                            <Button Width="72" Height="35" Click="AddTag_OnClick" Content="Edit Tags" />
-                        </StackPanel>
-                        <ListBox Name="lbKanbanHashTags" Height="300" Margin="3" HorizontalAlignment="Left" IsSynchronizedWithCurrentItem="True"
-                                 ItemsSource="{Binding}" />
-                        <Button Width="100" Height="35" Click="TodoComplete_OnClick" Content="Complete" />
-                    </StackPanel>
-                </StackPanel>
+
+            <!--  VCS Kanban tab  -->
+            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="Kanban">
+                <userControls:TodoListView DataContext="{StaticResource KanbanVM}" />
             </TabItem>
+
             <TabItem Header="Log">
                 <!--  VCS Log tab  -->
                 <StackPanel>
