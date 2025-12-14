@@ -1,5 +1,399 @@
-<UserControl x:Class="Echoslate.UserControls.HistoryView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate.UserControls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="300" d:DesignWidth="300" mc:Ignorable="d">
+<UserControl x:Class="Echoslate.UserControls.HistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:EchoSlate.Behaviors"
+             xmlns:converters="clr-namespace:Echoslate.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Echoslate.UserControls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             d:DesignHeight="800" d:DesignWidth="1200"
+             mc:Ignorable="d"
+             >
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <converters:WidthToBoolConverter x:Key="WideConverter" Threshold="900" />
+        <converters:MathConverter x:Key="Math" />
+    </UserControl.Resources>
     <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
 
+            <!--  ====================== LEFT: CURRENT IN-PROGRESS PANEL ======================  -->
+            <Grid Grid.Column="0" Background="{StaticResource ControlBackground}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0"
+                        Background="{StaticResource AppDarkBackground}"
+                        BorderBrush="{StaticResource Border}"
+                        >
+                    <StackPanel Margin="15">
+                        <TextBlock Margin="0,0,0,7"
+                                   FontSize="16" FontWeight="Bold"
+                                   Foreground="{StaticResource Foreground}"
+                                   Text="Current Version (In Progress)"
+                                   />
+                        <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,10,0" VerticalAlignment="Center"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="Version:"
+                                       />
+                            <wpfTool:IntegerUpDown Width="60"
+                                                   Margin="5,0"
+                                                   Background="{StaticResource EditorBackground}"
+                                                   BorderBrush="Transparent"
+                                                   Foreground="{StaticResource Foreground}"
+                                                   Minimum="0"
+                                                   Value="{Binding CurrentHistoryItem.VersionMajor, UpdateSourceTrigger=PropertyChanged}"
+                                                   />
+                            <TextBlock VerticalAlignment="Center"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="."
+                                       />
+                            <wpfTool:IntegerUpDown Width="60"
+                                                   Margin="5,0"
+                                                   Background="{StaticResource EditorBackground}"
+                                                   BorderBrush="Transparent"
+                                                   Foreground="{StaticResource Foreground}"
+                                                   Minimum="0"
+                                                   Value="{Binding CurrentHistoryItem.VersionMinor, UpdateSourceTrigger=PropertyChanged}"
+                                                   />
+                            <TextBlock VerticalAlignment="Center"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="."
+                                       />
+                            <wpfTool:IntegerUpDown Width="60"
+                                                   Margin="5,0"
+                                                   Background="{StaticResource EditorBackground}"
+                                                   BorderBrush="Transparent"
+                                                   Foreground="{StaticResource Foreground}"
+                                                   Minimum="0"
+                                                   Value="{Binding CurrentHistoryItem.VersionBuild, UpdateSourceTrigger=PropertyChanged}"
+                                                   />
+                            <TextBlock VerticalAlignment="Center"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="."
+                                       />
+                            <wpfTool:IntegerUpDown Width="60"
+                                                   Margin="5,0"
+                                                   Background="{StaticResource EditorBackground}"
+                                                   BorderBrush="Transparent"
+                                                   Foreground="{StaticResource Foreground}"
+                                                   Minimum="0"
+                                                   Value="{Binding CurrentHistoryItem.VersionRevision, UpdateSourceTrigger=PropertyChanged}"
+                                                   />
+                        </StackPanel>
+                        <ComboBox Width="200"
+                                  Margin="0,0,0,15" HorizontalAlignment="Left"
+                                  SelectedIndex="0"
+                                  >
+                            <ComboBoxItem>Auto-increment: Build</ComboBoxItem>
+                            <ComboBoxItem>Auto-increment: Patch</ComboBoxItem>
+                            <ComboBoxItem>Auto-increment: Minor</ComboBoxItem>
+                            <ComboBoxItem>Auto-increment: Major</ComboBoxItem>
+                        </ComboBox>
+                        <TextBox Margin="0,0,0,10"
+                                 Background="{StaticResource EditorBackground}"
+                                 BorderBrush="{StaticResource Accent}"
+                                 FontSize="14" FontWeight="SemiBold"
+                                 Foreground="{StaticResource Foreground}"
+                                 Text="{Binding CurrentHistoryItem.Title, UpdateSourceTrigger=PropertyChanged}"
+                                 />
+                        <TextBox Height="140"
+                                 Margin="0,0,0,15"
+                                 AcceptsReturn="True"
+                                 Background="{StaticResource EditorBackground}"
+                                 BorderBrush="{StaticResource Accent}"
+                                 Foreground="{StaticResource Foreground}"
+                                 Text="{Binding CurrentHistoryItem.Notes, UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap"
+                                 />
+                        <Button Width="140" Height="35"
+                                HorizontalAlignment="Left"
+                                Command="{Binding CommitCommand}"
+                                Content="Commit Now"
+                                >
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Background" Value="{StaticResource Accent}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Foreground}" />
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <ListView Grid.Row="1"
+                          Background="Transparent"
+                          BorderBrush="{StaticResource Border}"
+                          Foreground="{StaticResource SubtleForeground}"
+                          ItemsSource="{Binding CommittedHistoryItems}"
+                          SelectedItem="{Binding SelectedHistoryItem}"
+                          >
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="120"
+                                            DisplayMemberBinding="{Binding VersionString}"
+                                            Header="Version"
+                                            />
+                            <GridViewColumn Width="150"
+                                            DisplayMemberBinding="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}"
+                                            Header="Date"
+                                            />
+                            <GridViewColumn Width="Auto"
+                                            DisplayMemberBinding="{Binding Title}"
+                                            Header="Title"
+                                            />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+
+            <!--  ====================== RIGHT: DETAILS & LISTS ======================  -->
+            <Grid Grid.Column="1" Background="{StaticResource AppDarkBackground}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0"
+                            Margin="20,15,20,20"
+                            Background="Transparent"
+                            >
+                    <!--  Visibility="{Binding SelectedHistoryItem.IsCommitted, Converter={StaticResource BoolToVis}}"  -->
+                    <TextBlock FontSize="18" FontWeight="Bold"
+                               Foreground="{StaticResource Accent}"
+                               Text="{Binding SelectedHistoryItem.VersionString}"
+                               />
+                    <TextBlock Margin="0,5,0,0"
+                               FontSize="16"
+                               Foreground="{StaticResource Foreground}"
+                               Text="{Binding SelectedHistoryItem.Title}"
+                               />
+                    <TextBlock Margin="0,5,0,15"
+                               Foreground="{StaticResource Foreground}"
+                               Text="{Binding SelectedHistoryItem.CommitDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}"
+                               />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                Padding="10,5"
+                                Command="{Binding CopyCommitMessageCommand}"
+                                Content="Copy"
+                                Foreground="{StaticResource Foreground}"
+                                />
+                        <TextBox Grid.Column="1"
+                                 Height="200"
+                                 behaviors:ScrollBehavior.AlwaysScroll="True" IsReadOnly="True"
+                                 Text="{Binding SelectedHistoryItem.FullCommitMessage}"
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                 />
+                    </Grid>
+
+                    <!--  Visibility="{Binding SelectedHistoryItem.IsCommitted, Converter={StaticResource BoolToVis}}"  -->
+                </StackPanel>
+
+                <Grid Grid.Row="1" Margin="20,0,20,20">
+                    <Grid x:Name="HorizontalLayout" Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                            <ColumnDefinition Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                            <ColumnDefinition Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="10,0,0,0">
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}"
+                                       />
+                            <ListView Margin="0,0,0,10"
+                                      Background="Transparent" BorderBrush="Transparent"
+                                      ItemsSource="{Binding BugsCompleted}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                Margin="4,4,8,4" Padding="8,6"
+                                                Background="{StaticResource RaisedBackground}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                >
+                                            <TextBlock Margin="8,6"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Foreground}"
+                                                       Text="{Binding Todo}"
+                                                       TextWrapping="Wrap"
+                                                       />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}"
+                                       />
+                            <ListView Margin="0,0,0,10"
+                                      Background="Transparent" BorderBrush="Transparent"
+                                      ItemsSource="{Binding FeaturesCompleted}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                Margin="4,4,8,4" Padding="8,6"
+                                                Background="{StaticResource RaisedBackground}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                >
+                                            <TextBlock Margin="8,6"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Foreground}"
+                                                       Text="{Binding Todo}"
+                                                       TextWrapping="Wrap"
+                                                       />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="10,0,0,0">
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}"
+                                       />
+                            <ListView Margin="0,0,0,10"
+                                      Background="Transparent" BorderBrush="Transparent"
+                                      ItemsSource="{Binding OtherCompleted}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                Margin="4,4,8,4" Padding="8,6"
+                                                Background="{StaticResource RaisedBackground}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                >
+                                            <TextBlock Margin="8,6"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Foreground}"
+                                                       Text="{Binding Todo}"
+                                                       TextWrapping="Wrap"
+                                                       />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel x:Name="VerticalLayout" Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.FalseString}}">
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}"
+                                       />
+                            <ListView Margin="0,0,0,10"
+                                      Background="Transparent" BorderBrush="Transparent"
+                                      ItemsSource="{Binding BugsCompleted}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                Margin="4,4,8,4" Padding="8,6"
+                                                Background="{StaticResource RaisedBackground}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                >
+                                            <TextBlock Margin="8,6"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Foreground}"
+                                                       Text="{Binding Todo}"
+                                                       TextWrapping="Wrap"
+                                                       />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}"
+                                       />
+                            <ListView Margin="0,0,0,10"
+                                      Background="Transparent" BorderBrush="Transparent"
+                                      ItemsSource="{Binding FeaturesCompleted}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                Margin="4,4,8,4" Padding="8,6"
+                                                Background="{StaticResource RaisedBackground}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                >
+                                            <TextBlock Margin="8,6"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Foreground}"
+                                                       Text="{Binding Todo}"
+                                                       TextWrapping="Wrap"
+                                                       />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Foreground}"
+                                       Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}"
+                                       />
+                            <ListView Margin="0,0,0,10"
+                                      Background="Transparent" BorderBrush="Transparent"
+                                      ItemsSource="{Binding OtherCompleted}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                Margin="4,4,8,4" Padding="8,6"
+                                                Background="{StaticResource RaisedBackground}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                >
+                                            <TextBlock Margin="8,6"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Foreground}"
+                                                       Text="{Binding Todo}"
+                                                       TextWrapping="Wrap"
+                                                       />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

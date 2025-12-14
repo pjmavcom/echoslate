@@ -177,28 +177,28 @@ namespace Echoslate {
 			get => _versionA;
 			set {
 				_versionA = value;
-				iudVersionA.Value = value;
+				// iudVersionA.Value = value;
 			}
 		}
 		private int VersionB {
 			get => _versionB;
 			set {
 				_versionB = value;
-				iudVersionB.Value = value;
+				// iudVersionB.Value = value;
 			}
 		}
 		private int VersionC {
 			get => _versionC;
 			set {
 				_versionC = value;
-				iudVersionC.Value = value;
+				// iudVersionC.Value = value;
 			}
 		}
 		private int VersionD {
 			get => _versionD;
 			set {
 				_versionD = value;
-				iudVersionD.Value = value;
+				// iudVersionD.Value = value;
 			}
 		}
 
@@ -297,11 +297,11 @@ namespace Echoslate {
 			// kanbanTodoTabs.ItemsSource = _kanbanTabsList;
 			// kanbanTodoTabs.Items.Refresh();
 			mnuRecentLoads.ItemsSource = RecentFiles;
-			lbHistory.ItemsSource = HistoryItems;
+			// lbHistory.ItemsSource = HistoryItems;
 
-			lbHistory.SelectedIndex = 0;
+			// lbHistory.SelectedIndex = 0;
 			_currentHistoryItemIndex = 0;
-			lbCompletedTodos.SelectedIndex = 0;
+			// lbCompletedTodos.SelectedIndex = 0;
 			_notesPanelHashTags = new List<string>();
 
 			//			lblPomoWork.Content = _pomoWorkTime.ToString();
@@ -402,23 +402,23 @@ namespace Echoslate {
 		private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
 			// UNCHECKED
 			const int wmHotkey = 0x0312;
-			switch (msg) {
-				case wmHotkey:
-					switch (wParam.ToInt32()) {
-						case HOTKEY_ID:
-							int vkey = (((int)lParam >> 16) & 0xFFFF);
-							if (vkey == 0x73) {
-								Activate();
-								FocusManager.SetFocusedElement(FocusManager.GetFocusScope(tbHNotes), tbHNotes);
-								_tbNewTodo.Focus();
-							}
+			// switch (msg) {
+				// case wmHotkey:
+					// switch (wParam.ToInt32()) {
+						// case HOTKEY_ID:
+							// int vkey = (((int)lParam >> 16) & 0xFFFF);
+							// if (vkey == 0x73) {
+								// Activate();
+								// FocusManager.SetFocusedElement(FocusManager.GetFocusScope(tbHNotes), tbHNotes);
+								// _tbNewTodo.Focus();
+							// }
 
-							handled = true;
-							break;
-					}
+							// handled = true;
+							// break;
+					// }
 
-					break;
-			}
+					// break;
+			// }
 
 			return IntPtr.Zero;
 		}
@@ -478,6 +478,9 @@ namespace Echoslate {
 			
 			var kanbanVM = (KanbanViewModel)Resources["KanbanVM"];
 			kanbanVM.Initialize(MasterList, TagFilters, HashShortcuts, HistoryItems);
+
+			var historyVM = (HistoryViewModel)Resources["HistoryVM"];
+			historyVM.Initialize(HistoryItems);
 		}
 
 		// METHODS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////// Tabs //
@@ -1607,17 +1610,17 @@ namespace Echoslate {
 		// History Item Context menus
 		private void mnuResetHistoryCopied_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
-			int index = lbHistory.SelectedIndex;
-			HistoryItems[index].ResetCopied();
+			// int index = lbHistory.SelectedIndex;
+			// HistoryItems[index].ResetCopied();
 		}
 		private void mnuEditHistoryTodo_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
-			if (lbCompletedTodos.IsMouseOver)
-				EditItem(lbCompletedTodos, _currentHistoryItem.CompletedTodos);
-			else if (lbCompletedTodosFeatures.IsMouseOver)
-				EditItem(lbCompletedTodosFeatures, _currentHistoryItem.CompletedTodosFeatures);
-			else if (lbCompletedTodosBugs.IsMouseOver)
-				EditItem(lbCompletedTodosBugs, _currentHistoryItem.CompletedTodosBugs);
+			// if (lbCompletedTodos.IsMouseOver)
+				// EditItem(lbCompletedTodos, _currentHistoryItem.CompletedTodos);
+			// else if (lbCompletedTodosFeatures.IsMouseOver)
+				// EditItem(lbCompletedTodosFeatures, _currentHistoryItem.CompletedTodosFeatures);
+			// else if (lbCompletedTodosBugs.IsMouseOver)
+				// EditItem(lbCompletedTodosBugs, _currentHistoryItem.CompletedTodosBugs);
 
 			RefreshHistory();
 		}
@@ -1891,13 +1894,13 @@ namespace Echoslate {
 		}
 		private void Title_OnTextChange(object sender, EventArgs e) {
 			// UNCHECKED
-			_currentHistoryItem.Title = tbHTitle.Text;
-			lbHistory.Items.Refresh();
+			// _currentHistoryItem.Title = tbHTitle.Text;
+			// lbHistory.Items.Refresh();
 		}
 		private void Notes_OnTextChange(object sender, EventArgs e) {
 			// UNCHECKED
-			_currentHistoryItem.Notes = tbHNotes.Text;
-			lbHistory.Items.Refresh();
+			// _currentHistoryItem.Notes = tbHNotes.Text;
+			// lbHistory.Items.Refresh();
 		}
 		private void HistoryListBox_OnKeyDown(object sender, KeyEventArgs e) {
 			// UNCHECKED
@@ -1932,10 +1935,10 @@ namespace Echoslate {
 
 			if (prevIndex == _currentHistoryItemIndex) return;
 
-			_currentHistoryItem = lbHistory.Items[_currentHistoryItemIndex] as HistoryItem;
-			if (_currentHistoryItem != null) lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+			// _currentHistoryItem = lbHistory.Items[_currentHistoryItemIndex] as HistoryItem;
+			// if (_currentHistoryItem != null) lblHTotalTime.Content = _currentHistoryItem.TotalTime;
 
-			lbHistory.SelectedIndex = _currentHistoryItemIndex;
+			// lbHistory.SelectedIndex = _currentHistoryItemIndex;
 			RefreshHistory();
 		}
 		private void HistoryListBox_OnMouseDown(object sender, EventArgs e) {
@@ -1948,19 +1951,19 @@ namespace Echoslate {
 		}
 		private void HistoryListBox_OnSelectionChange(object sender, SelectionChangedEventArgs e) {
 			// UNCHECKED
-			if (_didMouseSelect) _currentHistoryItemIndex = lbHistory.SelectedIndex;
+			// if (_didMouseSelect) _currentHistoryItemIndex = lbHistory.SelectedIndex;
 
-			if (lbHistory.Items.Count == 0) return;
+			// if (lbHistory.Items.Count == 0) return;
 
-			if (_currentHistoryItemIndex >= lbHistory.Items.Count) _currentHistoryItemIndex = lbHistory.Items.Count - 1;
+			// if (_currentHistoryItemIndex >= lbHistory.Items.Count) _currentHistoryItemIndex = lbHistory.Items.Count - 1;
 
-			if (lbHistory.Items[_currentHistoryItemIndex] is HistoryItem hi) {
-				_currentHistoryItem = hi;
-				if (_currentHistoryItem != null) lblHTotalTime.Content = _currentHistoryItem.TotalTime;
-			}
+			// if (lbHistory.Items[_currentHistoryItemIndex] is HistoryItem hi) {
+				// _currentHistoryItem = hi;
+				// if (_currentHistoryItem != null) lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+			// }
 
-			RefreshHistory();
-			_didMouseSelect = false;
+			// RefreshHistory();
+			// _didMouseSelect = false;
 		}
 		private void AddTodoToHistory(TodoItem td) {
 			// UNCHECKED
@@ -1993,27 +1996,27 @@ namespace Echoslate {
 
 			if (HistoryItems.Count == 0) _currentHistoryItem = new HistoryItem("", "");
 
-			if (HistoryItems.Count > 0 && _currentHistoryItem.DateAdded == "") lbHistory.SelectedIndex = 0;
+			// if (HistoryItems.Count > 0 && _currentHistoryItem.DateAdded == "") lbHistory.SelectedIndex = 0;
 
 			SortCompletedItems(_currentHistoryItem);
 
-			tbHNotes.Text = _currentHistoryItem.Notes;
-			tbHTitle.Text = _currentHistoryItem.Title;
-			lbCompletedTodos.ItemsSource = _currentHistoryItem.CompletedTodos;
-			lbCompletedTodos.Items.Refresh();
-			lbCompletedTodosBugs.ItemsSource = _currentHistoryItem.CompletedTodosBugs;
-			lbCompletedTodosBugs.Items.Refresh();
-			lbCompletedTodosFeatures.ItemsSource = _currentHistoryItem.CompletedTodosFeatures;
-			lbCompletedTodosFeatures.Items.Refresh();
-			lblHTotalTime.Content = _currentHistoryItem.TotalTime;
+			// tbHNotes.Text = _currentHistoryItem.Notes;
+			// tbHTitle.Text = _currentHistoryItem.Title;
+			// lbCompletedTodos.ItemsSource = _currentHistoryItem.CompletedTodos;
+			// lbCompletedTodos.Items.Refresh();
+			// lbCompletedTodosBugs.ItemsSource = _currentHistoryItem.CompletedTodosBugs;
+			// lbCompletedTodosBugs.Items.Refresh();
+			// lbCompletedTodosFeatures.ItemsSource = _currentHistoryItem.CompletedTodosFeatures;
+			// lbCompletedTodosFeatures.Items.Refresh();
+			// lblHTotalTime.Content = _currentHistoryItem.TotalTime;
 
-			int index = lbHistory.SelectedIndex;
-			lbHistory.Items.Refresh();
-			lbHistory.SelectedIndex = index;
-			iudVersionA.Value = VersionA;
-			iudVersionB.Value = VersionB;
-			iudVersionC.Value = VersionC;
-			iudVersionD.Value = VersionD;
+			// int index = lbHistory.SelectedIndex;
+			// lbHistory.Items.Refresh();
+			// lbHistory.SelectedIndex = index;
+			// iudVersionA.Value = VersionA;
+			// iudVersionB.Value = VersionB;
+			// iudVersionC.Value = VersionC;
+			// iudVersionD.Value = VersionD;
 		}
 		private void DeleteHistory_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
@@ -2039,7 +2042,7 @@ namespace Echoslate {
 			string time = $"{totalTime / 60:00} : {totalTime % 60:00}";
 			Clipboard.SetText(hi.ToClipboard(time));
 			hi.SetCopied();
-			if (lbHistory.Items.IndexOf(hi) != 0) return;
+			// if (lbHistory.Items.IndexOf(hi) != 0) return;
 
 			DlgYesNo dlgYesNo = new DlgYesNo("New History", "Add a new History Item?");
 			dlgYesNo.ShowDialog();
@@ -2052,9 +2055,9 @@ namespace Echoslate {
 			List<TodoItem> tempOther = new List<TodoItem>();
 			List<TodoItem> temp = new List<TodoItem>();
 
-			temp.AddRange(hi.CompletedTodos);
-			temp.AddRange(hi.CompletedTodosBugs);
-			temp.AddRange(hi.CompletedTodosFeatures);
+			temp.AddRange(hi.CompletedTodoItems);
+			temp.AddRange(hi.BugsCompleted);
+			temp.AddRange(hi.FeaturesCompleted);
 
 			foreach (TodoItem td in temp) {
 				if (td.Tags.Contains("#BUG"))
@@ -2065,9 +2068,9 @@ namespace Echoslate {
 					tempOther.Add(td);
 			}
 
-			hi.CompletedTodos = tempOther;
-			hi.CompletedTodosBugs = tempBug;
-			hi.CompletedTodosFeatures = tempFeature;
+			hi.CompletedTodoItems = tempOther;
+			hi.BugsCompleted = tempBug;
+			hi.FeaturesCompleted = tempFeature;
 		}
 		private void DeleteTodo_OnClick(object sender, EventArgs e) {
 			// UNCHECKED
@@ -2082,12 +2085,12 @@ namespace Echoslate {
 				AddItemToMasterList(td);
 				IncompleteItemsRefresh();
 				KanbanRefresh();
-				if (_currentHistoryItem.CompletedTodos.Contains(td))
-					_currentHistoryItem.CompletedTodos.Remove(td);
-				else if (_currentHistoryItem.CompletedTodosBugs.Contains(td))
-					_currentHistoryItem.CompletedTodosBugs.Remove(td);
-				else if (_currentHistoryItem.CompletedTodosFeatures.Contains(td))
-					_currentHistoryItem.CompletedTodosFeatures.Remove(td);
+				if (_currentHistoryItem.CompletedTodoItems.Contains(td))
+					_currentHistoryItem.CompletedTodoItems.Remove(td);
+				else if (_currentHistoryItem.BugsCompleted.Contains(td))
+					_currentHistoryItem.BugsCompleted.Remove(td);
+				else if (_currentHistoryItem.FeaturesCompleted.Contains(td))
+					_currentHistoryItem.FeaturesCompleted.Remove(td);
 
 				AutoSave();
 			}
@@ -2631,7 +2634,7 @@ namespace Echoslate {
 			// kanbanTodoTabs.SelectedIndex = 3;
 
 			if (HistoryItems.Count > 0) {
-				lbHistory.SelectedIndex = 0;
+				// lbHistory.SelectedIndex = 0;
 				_currentHistoryItem = HistoryItems[0];
 			} else {
 				_currentHistoryItem = new HistoryItem("", "");
@@ -2823,12 +2826,12 @@ namespace Echoslate {
 			stream.WriteLine(_autoSave);
 			stream.WriteLine("CurrentProjectVersion");
 			int versionCheckBoxChecked = 0;
-			if (cbVersionB.IsChecked == true)
-				versionCheckBoxChecked = 1;
-			else if (cbVersionC.IsChecked == true)
-				versionCheckBoxChecked = 2;
-			else if (cbVersionD.IsChecked == true)
-				versionCheckBoxChecked = 3;
+			// if (cbVersionB.IsChecked == true)
+				// versionCheckBoxChecked = 1;
+			// else if (cbVersionC.IsChecked == true)
+				// versionCheckBoxChecked = 2;
+			// else if (cbVersionD.IsChecked == true)
+				// versionCheckBoxChecked = 3;
 			stream.WriteLine(MakeCurrentVersion() + "." + versionCheckBoxChecked);
 
 			Log.Print("Writing TODOs...");
@@ -3033,16 +3036,16 @@ namespace Echoslate {
 			int checkBoxChecked = Convert.ToInt16(parts[4]);
 			switch (checkBoxChecked) {
 				case 0:
-					cbVersionA.IsChecked = true;
+					// cbVersionA.IsChecked = true;
 					break;
-					// case 1:
-					cbVersionB.IsChecked = true;
+					case 1:
+					// cbVersionB.IsChecked = true;
 					break;
 				case 2:
-					cbVersionC.IsChecked = true;
+					// cbVersionC.IsChecked = true;
 					break;
 				case 3:
-					cbVersionD.IsChecked = true;
+					// cbVersionD.IsChecked = true;
 					break;
 			}
 		}
@@ -3055,17 +3058,17 @@ namespace Echoslate {
 		}
 		private void UpdateCurrentVersion() {
 			// UNCHECKED
-			if (cbVersionA.IsChecked == true)
-				VersionA++;
+			// if (cbVersionA.IsChecked == true)
+				// VersionA++;
 
-			if (cbVersionB.IsChecked == true)
-				VersionB++;
+			// if (cbVersionB.IsChecked == true)
+				// VersionB++;
 
-			if (cbVersionC.IsChecked == true)
-				VersionC++;
+			// if (cbVersionC.IsChecked == true)
+				// VersionC++;
 
-			if (cbVersionD.IsChecked == true)
-				VersionD++;
+			// if (cbVersionD.IsChecked == true)
+				// VersionD++;
 		}
 		private void VersionCheckBox_OnChanged(object sender, EventArgs e) {
 			// UNCHECKED
@@ -3079,46 +3082,46 @@ namespace Echoslate {
 			_isUpdatingCheckBoxes = true;
 			switch (checkBox.Name) {
 				case "cbVersionA":
-					if (checkBox.IsChecked == true) {
-						cbVersionB.IsChecked = false;
-						cbVersionC.IsChecked = false;
-						cbVersionD.IsChecked = false;
-					} else {
-						cbVersionB.IsChecked = true;
-					}
+					// if (checkBox.IsChecked == true) {
+						// cbVersionB.IsChecked = false;
+						// cbVersionC.IsChecked = false;
+						// cbVersionD.IsChecked = false;
+					// } else {
+						// cbVersionB.IsChecked = true;
+					// }
 
 					_isUpdatingCheckBoxes = false;
 					break;
 				case "cbVersionB":
-					if (checkBox.IsChecked == true) {
-						cbVersionA.IsChecked = false;
-						cbVersionC.IsChecked = false;
-						cbVersionD.IsChecked = false;
-					} else {
-						cbVersionC.IsChecked = true;
-					}
+					// if (checkBox.IsChecked == true) {
+						// cbVersionA.IsChecked = false;
+						// cbVersionC.IsChecked = false;
+						// cbVersionD.IsChecked = false;
+					// } else {
+						// cbVersionC.IsChecked = true;
+					// }
 
 					_isUpdatingCheckBoxes = false;
 					break;
 				case "cbVersionC":
-					if (checkBox.IsChecked == true) {
-						cbVersionA.IsChecked = false;
-						cbVersionB.IsChecked = false;
-						cbVersionD.IsChecked = false;
-					} else {
-						cbVersionB.IsChecked = true;
-					}
+					// if (checkBox.IsChecked == true) {
+						// cbVersionA.IsChecked = false;
+						// cbVersionB.IsChecked = false;
+						// cbVersionD.IsChecked = false;
+					// } else {
+						// cbVersionB.IsChecked = true;
+					// }
 
 					_isUpdatingCheckBoxes = false;
 					break;
 				case "cbVersionD":
-					if (checkBox.IsChecked == true) {
-						cbVersionA.IsChecked = false;
-						cbVersionB.IsChecked = false;
-						cbVersionC.IsChecked = false;
-					} else {
-						cbVersionB.IsChecked = true;
-					}
+					// if (checkBox.IsChecked == true) {
+						// cbVersionA.IsChecked = false;
+						// cbVersionB.IsChecked = false;
+						// cbVersionC.IsChecked = false;
+					// } else {
+						// cbVersionB.IsChecked = true;
+					// }
 
 					_isUpdatingCheckBoxes = false;
 					break;
@@ -3126,23 +3129,23 @@ namespace Echoslate {
 		}
 		private void Version_OnValueChangedA(object sender, RoutedPropertyChangedEventArgs<object> e) {
 			// UNCHECKED
-			if (iudVersionA.Value != null)
-				VersionA = (int)iudVersionA.Value;
+			// if (iudVersionA.Value != null)
+				// VersionA = (int)iudVersionA.Value;
 		}
 		private void Version_OnValueChangedB(object sender, RoutedPropertyChangedEventArgs<object> e) {
 			// UNCHECKED
-			if (iudVersionB.Value != null)
-				VersionB = (int)iudVersionB.Value;
+			// if (iudVersionB.Value != null)
+				// VersionB = (int)iudVersionB.Value;
 		}
 		private void Version_OnValueChangedC(object sender, RoutedPropertyChangedEventArgs<object> e) {
 			// UNCHECKED
-			if (iudVersionC.Value != null)
-				VersionC = (int)iudVersionC.Value;
+			// if (iudVersionC.Value != null)
+				// VersionC = (int)iudVersionC.Value;
 		}
 		private void Version_OnValueChangedD(object sender, RoutedPropertyChangedEventArgs<object> e) {
 			// UNCHECKED
-			if (iudVersionD.Value != null)
-				VersionD = (int)iudVersionD.Value;
+			// if (iudVersionD.Value != null)
+				// VersionD = (int)iudVersionD.Value;
 		}
 
 		// Notes Panel stuff

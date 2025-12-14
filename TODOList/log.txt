@@ -1,3 +1,19 @@
+commit 338d6e499d61e8ee6a7e4fe50a72a7c6445ac1de
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Dec 12 22:38:06 2025 +0800
+
+    20251212- v3.40.39.0 A few tweaks and bugs
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    
+    =Bugs Squashed====================================================================================================
+    --20251212-0m |No main menu anymore
+            Notes: Missing the popup section in the styles
+    --20251212-0m |Notes panel complete button needs to check for null
+    
+    =Other Stuff======================================================================================================
+    --20251212-0m |Kanban doesn't auto select the CURRENT filter
+
 commit 0a8fcf98dfd8c93f1535a5b7c85a73bbb5812fe6
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Dec 12 20:12:07 2025 +0800

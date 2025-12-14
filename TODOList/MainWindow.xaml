@@ -1,12 +1,23 @@
-﻿<Window x:Class="Echoslate.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:userControls="clr-namespace:Echoslate.UserControls" xmlns:viewModels="clr-namespace:Echoslate.ViewModels" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit" x:Name="MainWindowInstance"
+﻿<Window x:Class="Echoslate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:userControls="clr-namespace:Echoslate.UserControls"
+        xmlns:viewModels="clr-namespace:Echoslate.ViewModels"
+        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        x:Name="MainWindowInstance"
         Title="{Binding WindowTitle}"
-        Width="1920" Height="1080" Loaded="OnLoaded"
+        Width="1920" Height="1080"
+        Loaded="OnLoaded"
         Style="{StaticResource {x:Type Window}}"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        >
 
     <Window.Resources>
         <viewModels:KanbanViewModel x:Key="KanbanVM" />
         <viewModels:TodoListViewModel x:Key="TodoListVM" />
+        <viewModels:HistoryViewModel x:Key="HistoryVM" />
 
         <RoutedUICommand x:Key="Add" Text="Text" />
         <RoutedUICommand x:Key="Complete" Text="Some Text" />
@@ -33,36 +44,47 @@
     <Window.InputBindings>
         <KeyBinding Key="Enter"
                     Command="{StaticResource Add}"
-                    Modifiers="Alt" />
+                    Modifiers="Alt"
+                    />
         <KeyBinding Key="Enter"
                     Command="{StaticResource Complete}"
-                    Modifiers="Control" />
+                    Modifiers="Control"
+                    />
         <KeyBinding Key="Enter" Command="{StaticResource Edit}" />
         <KeyBinding Key="Divide"
                     Command="{StaticResource SwitchTab}"
-                    CommandParameter="left" />
+                    CommandParameter="left"
+                    />
         <KeyBinding Key="Multiply"
                     Command="{StaticResource SwitchTab}"
-                    CommandParameter="right" />
+                    CommandParameter="right"
+                    />
         <KeyBinding Key="Subtract"
                     Command="{StaticResource SwitchSeverity}"
-                    CommandParameter="up" />
+                    CommandParameter="up"
+                    />
         <KeyBinding Key="Add"
                     Command="{StaticResource SwitchSeverity}"
-                    CommandParameter="down" />
+                    CommandParameter="down"
+                    />
         <KeyBinding Key="S"
                     Command="{StaticResource QuickSave}"
-                    Modifiers="Control" />
+                    Modifiers="Control"
+                    />
         <KeyBinding Key="OemComma"
                     Command="{StaticResource QuickLoadPrevious}"
-                    Modifiers="Control" />
+                    Modifiers="Control"
+                    />
         <KeyBinding Key="P"
                     Command="{StaticResource StartStopTimer}"
-                    Modifiers="Control" />
+                    Modifiers="Control"
+                    />
     </Window.InputBindings>
 
 
-    <Grid HorizontalAlignment="Stretch" ClipToBounds="True" TextElement.FontFamily="Source Code Pro" TextElement.FontSize="16">
+    <Grid HorizontalAlignment="Stretch"
+          ClipToBounds="True" TextElement.FontFamily="Source Code Pro" TextElement.FontSize="16"
+          >
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -72,7 +94,10 @@
                 <ColumnDefinition Width="500" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Menu Name="mnuMain" Grid.Column="0" FontSize="16">
+            <Menu Name="mnuMain"
+                  Grid.Column="0"
+                  FontSize="16"
+                  >
                 <MenuItem Header="_File">
                     <MenuItem Click="mnuNew_OnClick" Header="New" />
                     <Separator />
@@ -85,14 +110,17 @@
                     <Separator />
                     <MenuItem Click="mnuQuit_OnClick" Header="Quit" />
                 </MenuItem>
-                <MenuItem Name="mnuRecentLoads" Click="mnuLoadFiles_OnClick" Header="Recent Loads"
+                <MenuItem Name="mnuRecentLoads"
+                          Click="mnuLoadFiles_OnClick" Header="Recent Loads"
                           ItemsSource="{Binding}"
-                          MouseRightButtonUp="mnuRecentLoads_OnRMBUp">
+                          MouseRightButtonUp="mnuRecentLoads_OnRMBUp"
+                          >
                     <MenuItem.ContextMenu>
                         <ContextMenu>
                             <MenuItem Click="mnuRemoveFile_OnClick"
                                       CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
-                                      Header="Remove">
+                                      Header="Remove"
+                                      >
                                 <MenuItem.DataContext>
                                     <Binding RelativeSource="{RelativeSource Self}">
                                         <Binding.Path>PlacementTarget.DataContext</Binding.Path>
@@ -104,23 +132,50 @@
                 </MenuItem>
                 <MenuItem Click="mnuHelp_OnClick" Header="Help" />
             </Menu>
-            <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+            <StackPanel Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        >
                 <Grid>
-                    <ProgressBar Name="pbPomo" Width="400" Height="30" Background="Maroon" BorderBrush="DarkSlateGray" Maximum="100" Minimum="0"
-                                 Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}" />
-                    <Label Name="lblPomo" Width="400" HorizontalContentAlignment="Right" FontSize="20" FontWeight="SemiBold" MouseDoubleClick="PomoTimerReset_OnClick" MouseUp="PomoTimerToggle_OnClick" />
+                    <ProgressBar Name="pbPomo"
+                                 Width="400" Height="30"
+                                 Background="Maroon" BorderBrush="DarkSlateGray" Maximum="100"
+                                 Minimum="0"
+                                 Value="{Binding PomoTimeLeft, UpdateSourceTrigger=PropertyChanged}"
+                                 />
+                    <Label Name="lblPomo"
+                           Width="400"
+                           HorizontalContentAlignment="Right"
+                           FontSize="20" FontWeight="SemiBold" MouseDoubleClick="PomoTimerReset_OnClick"
+                           MouseUp="PomoTimerToggle_OnClick"
+                           />
                 </Grid>
                 <Label Width="100" Content="Work: " />
-                <wpfTool:IntegerUpDown Name="iudPomoWork" Width="80" Minimum="1" ValueChanged="PomoWork_OnValueChanged"
-                                       Value="{Binding PomoWorkTime, UpdateSourceTrigger=PropertyChanged}" />
+                <wpfTool:IntegerUpDown Name="iudPomoWork"
+                                       Width="80"
+                                       Minimum="1" ValueChanged="PomoWork_OnValueChanged"
+                                       Value="{Binding PomoWorkTime, UpdateSourceTrigger=PropertyChanged}"
+                                       />
                 <Label Width="100" Content="Break: " />
-                <wpfTool:IntegerUpDown Name="iudPomoBreak" Width="80" Minimum="1" ValueChanged="PomoBreak_OnValueChanged"
-                                       Value="{Binding PomoBreakTime, UpdateSourceTrigger=PropertyChanged}" />
+                <wpfTool:IntegerUpDown Name="iudPomoBreak"
+                                       Width="80"
+                                       Minimum="1" ValueChanged="PomoBreak_OnValueChanged"
+                                       Value="{Binding PomoBreakTime, UpdateSourceTrigger=PropertyChanged}"
+                                       />
             </StackPanel>
         </Grid>
-        <TabControl Name="tabControl" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True" SelectionChanged="TabControl_OnSelectionChanged">
-            <TabItem Name="tabHistory" Header="History" KeyboardNavigation.IsTabStop="False">
+        <TabControl Name="tabControl"
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    ClipToBounds="True" SelectionChanged="TabControl_OnSelectionChanged"
+                    >
+            <TabItem Name="tabHistory"
+                     Header="History" KeyboardNavigation.IsTabStop="False"
+                     >
                 <!--  VCS History tab  -->
+                <userControls:HistoryView DataContext="{StaticResource HistoryVM}" />
+
+                <!--
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" />
@@ -270,22 +325,29 @@
                         </ListBox>
                     </Grid>
                 </Grid>
+                -->
             </TabItem>
 
             <!--  VCS TodoList tab  -->
-            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="Todo List">
+            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                     Header="Todo List"
+                     >
                 <userControls:TodoDisplayView DataContext="{StaticResource TodoListVM}" />
             </TabItem>
 
             <!--  VCS Kanban tab  -->
-            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center" Header="Kanban">
+            <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                     Header="Kanban"
+                     >
                 <userControls:TodoDisplayView DataContext="{StaticResource KanbanVM}" />
             </TabItem>
 
             <TabItem Header="Log">
                 <!--  VCS Log tab  -->
                 <StackPanel>
-                    <Button Height="30" Click="RefreshLog_OnClick" Content="Refresh" />
+                    <Button Height="30"
+                            Click="RefreshLog_OnClick" Content="Refresh"
+                            />
                     <ListBox Name="lbHistoryLog" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                 </StackPanel>
             </TabItem>
