@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
@@ -143,7 +143,7 @@ namespace Echoslate {
 			ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
 			ResultTodoItem.Notes = Notes;
 			
-			string tempTodo = MainWindow.ExpandHashTagsInString(TodoText);
+			string tempTodo = ExpandHashTagsInString(TodoText);
 			string tempTags = "";
 			ResultTags = new List<string>();
 			foreach (TagHolder th in TagHolders)
@@ -151,36 +151,32 @@ namespace Echoslate {
 					ResultTags.Add(th.Text);
 			foreach (string tag in ResultTags)
 				tempTags += tag + " ";
-			tempTags = MainWindow.ExpandHashTagsInString(tempTags);
+			tempTags = ExpandHashTagsInString(tempTags);
 			
 			ResultTodoItem.Tags = new ObservableCollection<string>();
 			ResultTodoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		}
-		private void AddTag_OnClick(object sender, EventArgs e) {
-			string name = "#NEWTAG";
-			int tagNumber = 0;
-			bool nameExists = false;
-			do {
-				foreach (TagHolder t in TagHolders) {
-					if (t.Text == name.ToUpper() + tagNumber ||
-						t.Text == "#" + name.ToUpper() + tagNumber) {
-						tagNumber++;
-						nameExists = true;
-						break;
-					}
-					nameExists = false;
+		public static string ExpandHashTagsInString(string todo) {
+			string[] pieces = todo.Split(' ');
+
+			List<string> list = [];
+			foreach (string piece in pieces) {
+				string s = piece;
+				if (s.Contains('#')) {
+					s = s.ToUpper();
+					if (s.Equals("#FEATURES"))
+						s = "#FEATURE";
+
+					if (s.Equals("#BUGS"))
+						s = "#BUG";
+
+					s = s.ToLower();
 				}
-			} while (nameExists);
 
-			TagHolder th = new TagHolder(name.ToUpper() + tagNumber);
-			TagHolders.Add(th);
-		}
-		private void DeleteTag_OnClick(object sender, EventArgs e) {
-			if (!(sender is Button b))
-				return;
+				list.Add(s);
+			}
 
-			TagHolder th = b.DataContext as TagHolder;
-			TagHolders.Remove(th);
+			return list.Where(s => s != "").Aggregate("", (current, s) => current + (s + " "));
 		}
 		private void Ok() {
 			Result = true;

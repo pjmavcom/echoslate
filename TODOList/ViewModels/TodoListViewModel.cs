@@ -7,6 +7,10 @@ using Echoslate.Components;
 namespace Echoslate.ViewModels {
 	public class TodoListViewModel : TodoDisplayViewModelBase {
 		public TodoListViewModel() {
+			
+		}
+		public override void Initialize(MainWindowViewModel mainWindowVM) {
+			base.Initialize(mainWindowVM);
 		}
 
 		protected override void RefreshFilter() {

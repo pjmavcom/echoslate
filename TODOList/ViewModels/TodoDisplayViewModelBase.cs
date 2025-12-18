@@ -28,7 +28,7 @@ namespace Echoslate.ViewModels {
 		public List<HistoryItem> HistoryItems { get; set; }
 		public HistoryItem CurrentHistoryItem { get; set; }
 
-		public Dictionary<string, string> HashShortcuts { get; set; }
+		// public Dictionary<string, string> HashShortcuts { get; set; }
 
 		public ObservableCollection<FilterButton> FilterButtons { get; set; } = [];
 
@@ -147,19 +147,18 @@ namespace Echoslate.ViewModels {
 
 		public TodoDisplayViewModelBase() {
 		}
-		public virtual void Initialize(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts, List<HistoryItem> historyItems) {
-			MasterList = masterList;
-			AllItems = [];
-			HistoryItems = historyItems;
+		public virtual void Initialize(MainWindowViewModel mainWindowVM) {
+			MasterList = mainWindowVM.MasterTodoItemsList;
+			HistoryItems = mainWindowVM.MasterHistoryItemsList;
+			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
+			// HashShortcuts = mainWindowVM.MasterHashShortcuts ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterHashShortcuts));
 
+			AllItems = [];
 			FilterButtons = [];
 
-			MasterFilterTags = masterFilterTags ?? throw new ArgumentNullException(nameof(masterFilterTags));
 			CurrentVisibleTags = new ObservableCollection<string>(MasterFilterTags);
 			AllTags = [];
 			FilterList = new ObservableCollection<string>(MasterFilterTags);
-
-			HashShortcuts = hashShortcuts ?? throw new ArgumentNullException(nameof(hashShortcuts));
 
 			CurrentSeverityFilter = -1;
 			NewTodoSeverity = 0;
@@ -377,7 +376,7 @@ namespace Echoslate.ViewModels {
 			CurrentHistoryItem.AddCompletedTodo(item);
 
 			// TODO: rewrite RefreshHistory()
-			MainWindow.GetActiveWindow().RefreshHistory();
+			// MainWindow.GetActiveWindow().RefreshHistory();
 		}
 		private void EditItem(TodoItem item) {
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash());
@@ -534,10 +533,11 @@ namespace Echoslate.ViewModels {
 					if (t.Equals("#BUGS"))
 						t = "#BUG";
 
-					foreach (string hash in from pair in HashShortcuts
-											where t.Equals("#" + pair.Key.ToUpper())
-											select "#" + pair.Value)
-						s = hash;
+					// foreach (string hash in from pair in HashShortcuts
+					// where t.Equals("#" + pair.Key.ToUpper())
+					// select "#" + pair.Value) {
+					// s = hash;
+					// }
 
 					s = s.ToLower();
 				}

@@ -1,3 +1,16 @@
+commit 07daa908053797252ba5d3125db512ca8af249c9
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sun Dec 14 23:06:43 2025 +0800
+
+    20251212- v3.40.40.0 Final user control is complete
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: History tab is complete, looks good, mostly functional. Now have to wire it all up and get the
+            three views to interact
+    
+    =Other Stuff======================================================================================================
+    --20251214-0m |Divide interface into user controls
+
 commit 338d6e499d61e8ee6a7e4fe50a72a7c6445ac1de
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Dec 12 22:38:06 2025 +0800

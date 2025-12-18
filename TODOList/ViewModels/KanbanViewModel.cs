@@ -7,8 +7,8 @@ namespace Echoslate.ViewModels {
 	public class KanbanViewModel : TodoDisplayViewModelBase {
 		public KanbanViewModel() {
 		}
-		public override void Initialize(List<TodoItem> masterList, List<string> masterFilterTags, Dictionary<string, string> hashShortcuts, List<HistoryItem> historyItems) {
-			base.Initialize(masterList, masterFilterTags, hashShortcuts, historyItems);
+		public override void Initialize(MainWindowViewModel mainWindowVM) {
+			base.Initialize(mainWindowVM);
 			CurrentFilter = "Current";
 			CurrentSort = "severity";
 			_reverseSort = false;

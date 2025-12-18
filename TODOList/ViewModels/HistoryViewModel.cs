@@ -52,8 +52,8 @@ namespace Echoslate.ViewModels {
 			CommitCommand = new RelayCommand(CommitCurrent);//, CanCommit);
 			CopyCommitMessageCommand = new RelayCommand(CopyCommitMessage);//, () => SelectedHistoryItem?.IsCommitted == true);
 		}
-		public void Initialize(List<HistoryItem> historyItems) {
-			_allHistoryItems = new ObservableCollection<HistoryItem>(historyItems);
+		public void Initialize(MainWindowViewModel mainWindowVM) {
+			_allHistoryItems = new ObservableCollection<HistoryItem>(mainWindowVM.MasterHistoryItemsList);
 			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
 			LoadData();
 			OnPropertyChanged(nameof(CommittedHistoryItems));

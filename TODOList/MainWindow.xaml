@@ -9,16 +9,11 @@
         x:Name="MainWindowInstance"
         Title="{Binding WindowTitle}"
         Width="1920" Height="1080"
-        Loaded="OnLoaded"
         Style="{StaticResource {x:Type Window}}"
         mc:Ignorable="d"
         >
 
     <Window.Resources>
-        <viewModels:KanbanViewModel x:Key="KanbanVM" />
-        <viewModels:TodoListViewModel x:Key="TodoListVM" />
-        <viewModels:HistoryViewModel x:Key="HistoryVM" />
-
         <RoutedUICommand x:Key="Add" Text="Text" />
         <RoutedUICommand x:Key="Complete" Text="Some Text" />
         <RoutedUICommand x:Key="Edit" Text="Another Text" />
@@ -29,17 +24,6 @@
         <RoutedUICommand x:Key="StartStopTimer" Text="And Yet Another Another Text" />
 
     </Window.Resources>
-
-    <Window.CommandBindings>
-        <CommandBinding Command="{StaticResource Add}" Executed="HkAdd" />
-        <CommandBinding Command="{StaticResource Complete}" Executed="HkComplete" />
-        <CommandBinding Command="{StaticResource Edit}" Executed="HkEdit" />
-        <CommandBinding Command="{StaticResource SwitchTab}" Executed="HkSwitchTab" />
-        <CommandBinding Command="{StaticResource SwitchSeverity}" Executed="HkSwitchSeverity" />
-        <CommandBinding Command="{StaticResource QuickSave}" Executed="HkQuickSave" />
-        <CommandBinding Command="{StaticResource QuickLoadPrevious}" Executed="HkQuickLoadPrevious" />
-        <CommandBinding Command="{StaticResource StartStopTimer}" Executed="HkStartStopTimer" />
-    </Window.CommandBindings>
 
     <Window.InputBindings>
         <KeyBinding Key="Enter"
@@ -85,6 +69,7 @@
     <Grid HorizontalAlignment="Stretch"
           ClipToBounds="True" TextElement.FontFamily="Source Code Pro" TextElement.FontSize="16"
           >
+        <!--  DataContext="{StaticResource MainWindowVM}"  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -167,179 +152,28 @@
         <TabControl Name="tabControl"
                     Grid.Row="1"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    ClipToBounds="True" SelectionChanged="TabControl_OnSelectionChanged"
+                    ClipToBounds="True"
                     >
+
+            <!--  VCS History tab  -->
             <TabItem Name="tabHistory"
                      Header="History" KeyboardNavigation.IsTabStop="False"
                      >
-                <!--  VCS History tab  -->
-                <userControls:HistoryView DataContext="{StaticResource HistoryVM}" />
-
-                <!--
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="97*" />
-                            <ColumnDefinition Width="203*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="35" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                            <Button Width="90" Click="NewHistory_OnClick" Content="New" KeyboardNavigation.IsTabStop="False" />
-                            <Button Width="90" Click="DeleteHistory_OnClick" Content="Delete" KeyboardNavigation.IsTabStop="False" />
-                        </StackPanel>
-                        <ListBox Name="lbHistory" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                 ItemsSource="{Binding}"
-                                 KeyDown="HistoryListBox_OnKeyDown" PreviewMouseLeftButtonDown="HistoryListBox_OnMouseDown" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="HistoryListBox_OnSelectionChange">
-                            <ListBox.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Click="mnuResetHistoryCopied_OnClick" Header="Reset Copied" />
-                                </ContextMenu>
-                            </ListBox.ContextMenu>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="25" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0"
-                                                d:DataContext="{d:DesignInstance}"
-                                                Click="CopyHistory_OnClick" Content="1" FontFamily="Marlett" FontSize="20" KeyboardNavigation.IsTabStop="False">
-                                            <Button.Style>
-                                                <Style>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding HasBeenCopied}" Value="True">
-                                                            <Setter Property="Label.Background" Value="ForestGreen" />
-                                                            <Setter Property="Label.Foreground" Value="Black" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding HasBeenCopied}" Value="False">
-                                                            <Setter Property="Label.Background" Value="#222" />
-                                                            <Setter Property="Label.Foreground" Value="Black" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                        <TextBlock Grid.Column="1"
-                                                   d:DataContext="{d:DesignInstance}"
-                                                   Text="{Binding Title}"
-                                                   TextWrapping="Wrap" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="35" />
-                            <RowDefinition Height="35" />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <Label Margin="2" Content="Version: " />
-                            <CheckBox Name="cbVersionA" Checked="VersionCheckBox_OnChanged" CommandParameter="A"
-                                      IsChecked="{Binding VersionAUpdate}"
-                                      Unchecked="VersionCheckBox_OnChanged" />
-                            <wpfTool:IntegerUpDown Name="iudVersionA" Width="80" Minimum="0" ValueChanged="Version_OnValueChangedA" />
-                            <CheckBox Name="cbVersionB" Checked="VersionCheckBox_OnChanged" CommandParameter="B"
-                                      IsChecked="{Binding VersionAUpdate}"
-                                      Unchecked="VersionCheckBox_OnChanged" />
-                            <wpfTool:IntegerUpDown Name="iudVersionB" Width="80" Minimum="0" ValueChanged="Version_OnValueChangedB" />
-                            <CheckBox Name="cbVersionC" Checked="VersionCheckBox_OnChanged" CommandParameter="C"
-                                      IsChecked="{Binding VersionAUpdate}"
-                                      Unchecked="VersionCheckBox_OnChanged" />
-                            <wpfTool:IntegerUpDown Name="iudVersionC" Width="80" Minimum="0" ValueChanged="Version_OnValueChangedC" />
-                            <CheckBox Name="cbVersionD" Checked="VersionCheckBox_OnChanged" CommandParameter="D"
-                                      IsChecked="{Binding VersionAUpdate}"
-                                      Unchecked="VersionCheckBox_OnChanged" />
-                            <wpfTool:IntegerUpDown Name="iudVersionD" Width="80" Minimum="0" ValueChanged="Version_OnValueChangedD" />
-                            <Label Margin="2" Content="Time: " />
-                            <Label Name="lblHTotalTime" Width="40" Margin="2" />
-                        </StackPanel>
-                        <TextBox Name="tbHTitle" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" TextChanged="Title_OnTextChange" TextWrapping="NoWrap" />
-                        <TextBox Name="tbHNotes" Grid.Row="2" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto" TextChanged="Notes_OnTextChange" TextWrapping="Wrap" />
-                        <ListBox Name="lbCompletedTodosBugs" Grid.Row="3" HorizontalContentAlignment="Stretch" MouseDoubleClick="mnuEditHistoryTodo_OnClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,2"
-                                          d:DataContext="{d:DesignInstance}"
-                                          ToolTip="{Binding NotesAndTags}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="25" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" Click="DeleteTodo_OnClick" Content="r" FontFamily="Marlett" FontSize="20" KeyboardNavigation.IsTabStop="False" />
-                                        <TextBlock Grid.Column="1" Margin="4"
-                                                   Text="{Binding Todo}"
-                                                   TextAlignment="Left" TextWrapping="Wrap" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <ListBox Name="lbCompletedTodosFeatures" Grid.Row="4" HorizontalContentAlignment="Stretch" MouseDoubleClick="mnuEditHistoryTodo_OnClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,2"
-                                          d:DataContext="{d:DesignInstance}"
-                                          ToolTip="{Binding NotesAndTags}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="25" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" Click="DeleteTodo_OnClick" Content="r" FontFamily="Marlett" FontSize="20" KeyboardNavigation.IsTabStop="False" />
-                                        <TextBlock Grid.Column="1" Margin="4"
-                                                   Text="{Binding Todo}"
-                                                   TextAlignment="Left" TextWrapping="Wrap" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <ListBox Name="lbCompletedTodos" Grid.Row="5" HorizontalContentAlignment="Stretch" MouseDoubleClick="mnuEditHistoryTodo_OnClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,2"
-                                          d:DataContext="{d:DesignInstance}"
-                                          ToolTip="{Binding NotesAndTags}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="25" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" Click="DeleteTodo_OnClick" Content="r" FontFamily="Marlett" FontSize="20" KeyboardNavigation.IsTabStop="False" />
-                                        <TextBlock Grid.Column="1" Margin="4"
-                                                   Text="{Binding Todo}"
-                                                   TextAlignment="Left" TextWrapping="Wrap" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </Grid>
-                -->
+                <userControls:HistoryView DataContext="{Binding HistoryVM}" />
             </TabItem>
 
             <!--  VCS TodoList tab  -->
             <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center"
                      Header="Todo List"
                      >
-                <userControls:TodoDisplayView DataContext="{StaticResource TodoListVM}" />
+                <userControls:TodoDisplayView DataContext="{Binding TodoListVM}" />
             </TabItem>
 
             <!--  VCS Kanban tab  -->
             <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Center"
                      Header="Kanban"
                      >
-                <userControls:TodoDisplayView DataContext="{StaticResource KanbanVM}" />
+                <userControls:TodoDisplayView DataContext="{Binding KanbanVM}" />
             </TabItem>
 
             <TabItem Header="Log">
