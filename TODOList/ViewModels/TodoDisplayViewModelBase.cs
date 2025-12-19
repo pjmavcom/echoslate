@@ -20,7 +20,7 @@ namespace Echoslate.ViewModels {
 		private ICollectionView _displayedItems;
 		public ICollectionView DisplayedItems {
 			get => _displayedItems;
-			private set {
+			set {
 				_displayedItems = value;
 				OnPropertyChanged();
 			}
@@ -162,7 +162,7 @@ namespace Echoslate.ViewModels {
 
 			CurrentSeverityFilter = -1;
 			NewTodoSeverity = 0;
-			// RefreshAll();
+			RefreshAll();
 		}
 		protected abstract void RefreshFilter();
 		protected abstract bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih);
@@ -186,6 +186,9 @@ namespace Echoslate.ViewModels {
 		// 	return false;
 		// }
 
+		public void RebuildView() {
+			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
+		}
 		public void GetCurrentHashTags() {
 			CurrentVisibleTags.Clear();
 			if (DisplayedItems == null || MasterList == null) {
@@ -514,8 +517,6 @@ namespace Echoslate.ViewModels {
 			// UNCHECKED
 			string tempTodo = ExpandHashTagsInString(td.Todo);
 			string tempTags = ExpandHashTagsInList(td.Tags);
-			td.Tags = new ObservableCollection<string>();
-
 			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		}
 		public string ExpandHashTagsInString(string todo) {
@@ -738,7 +739,9 @@ namespace Echoslate.ViewModels {
 		public ICommand NewTodoAddCommand => new RelayCommand(() => {
 			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
 			ExpandHashTags(item);
-			item.Tags.Add(CurrentFilter);
+			if (CurrentFilter != "All") {
+				item.Tags.Add(CurrentFilter);
+			}
 			AddItemToMasterList(item);
 			RefreshAll();
 			NewTodoText = "";

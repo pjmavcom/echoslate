@@ -7,20 +7,68 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace Echoslate {
 	public class HistoryItem : INotifyPropertyChanged {
-		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		private string _notes;
-		private string _title;
-		private string _dateAdded;
-		private string _timeAdded;
-		private List<TodoItem> _completedTodoItems;
-		private bool _hasBeenCopied;
+		private Version _version;
+		public Version Version {
+			get => _version;
+			set {
+				_version = value;
+				OnPropertyChanged();
+			}
+		}
 
-		public Version Version;
+		private string _title = "";
+		public string Title {
+			get => _title;
+			set => _title = value;
+		}
+
+		private string _dateAdded = "";
+		public string DateAdded {
+			get => _dateAdded;
+			set {
+				_dateAdded = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _timeAdded = "";
+		public string TimeAdded {
+			get => _timeAdded;
+			set {
+				_timeAdded = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _notes = "";
+		public string Notes {
+			get => _notes;
+			set => _notes = value;
+		}
+
+		private ObservableCollection<TodoItem> _completedTodoItems;
+		public ObservableCollection<TodoItem> CompletedTodoItems {
+			get => _completedTodoItems;
+			set => _completedTodoItems = value;
+		}
+
+		private bool _hasBeenCopied;
+		public bool HasBeenCopied {
+			get => _hasBeenCopied;
+			private set {
+				_hasBeenCopied = value;
+				OnPropertyChanged();
+			}
+		}
+
+		[JsonIgnore]
 		public int VersionMajor {
 			get => Version.Major;
 			set {
@@ -28,6 +76,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		[JsonIgnore]
 		public int VersionMinor {
 			get => Version.Minor;
 			set {
@@ -35,6 +84,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		[JsonIgnore]
 		public int VersionBuild {
 			get => Version.Build;
 			set {
@@ -42,6 +92,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		[JsonIgnore]
 		public int VersionRevision {
 			get => Version.Revision;
 			set {
@@ -49,35 +100,34 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		public string VersionString => Version.ToString();
+		[JsonIgnore] public string VersionString => Version.ToString();
 
 		private bool _isCommitted;
 		public bool IsCommitted {
 			get => _isCommitted;
 			set { _isCommitted = value; }
 		}
-		public DateTime CommitDate { get; set; }
 
-		public string FullCommitMessage { get; set; }
+		private DateTime _commitDate;
+		public DateTime CommitDate {
+			get => _commitDate;
+			set {
+				_commitDate = value;
+				OnPropertyChanged();
+			}
+		}
 
-		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
-		public string Notes {
-			get => _notes;
-			set => _notes = value;
+
+		private string _fullCommitMessage;
+		[JsonIgnore]
+		public string FullCommitMessage {
+			get => _fullCommitMessage;
+			set {
+				_fullCommitMessage = value;
+				OnPropertyChanged();
+			}
 		}
-		public string Title {
-			get => _title;
-			set => _title = value;
-		}
-		public string DateAdded => _dateAdded;
-		public string TimeAdded => _timeAdded;
-		public string DateTimeAdded => _dateAdded + "-" + _timeAdded;
-		public List<TodoItem> CompletedTodoItems {
-			get => _completedTodoItems;
-			set => _completedTodoItems = value;
-		}
-		public List<TodoItem> BugsCompleted { get; set; }
-		public List<TodoItem> FeaturesCompleted { get; set; }
+		[JsonIgnore]
 		public string TotalTime {
 			get {
 				long result = 0;
@@ -87,40 +137,97 @@ namespace Echoslate {
 				return (result / TimeSpan.TicksPerMinute).ToString();
 			}
 		}
-		public bool HasBeenCopied {
-			get => _hasBeenCopied;
-			private set {
-				_hasBeenCopied = value;
-				OnPropertyChanged();
-			}
-		}
+
+		[JsonIgnore] public string DateTimeAdded => _dateAdded + "-" + _timeAdded;
+
+		public List<TodoItem> BugsCompleted = [];
+		public List<TodoItem> FeaturesCompleted = [];
+		public List<TodoItem> OtherCompleted = [];
+
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-		public HistoryItem() : this(DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT), DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT)) {
-			Version = new Version(7,7,7,7);
-		}
-		public HistoryItem(DateTime dateTime) : this(dateTime.ToString(MainWindow.DATE_STRING_FORMAT), dateTime.ToString(MainWindow.TIME_STRING_FORMAT)) {
-		}
-		public HistoryItem(string date, string time) {
-			_completedTodoItems = new List<TodoItem>();
-			BugsCompleted = new List<TodoItem>();
-			FeaturesCompleted = new List<TodoItem>();
-			_dateAdded = date;
-			_timeAdded = time;
-			_notes = "";
+		public HistoryItem() {
 			Version = new Version();
-			IsCommitted = false;
-			FullCommitMessage = ToClipboard("0");
+			_title = string.Empty;
+			_dateAdded = string.Empty;
+			_timeAdded = string.Empty;
+			_notes = string.Empty;
+			CompletedTodoItems = [];
+			_hasBeenCopied = false;
+			_isCommitted = false;
+			_commitDate = new DateTime();
+			
+			SortCompletedTodoItems();
 		}
-		public HistoryItem(List<string> newItem) {
-			_completedTodoItems = new List<TodoItem>();
-			BugsCompleted = new List<TodoItem>();
-			FeaturesCompleted = new List<TodoItem>();
-			Load2_0(newItem);
-			Version = new Version();
-			IsCommitted = false;
-			FullCommitMessage = ToClipboard("0");
+		// public HistoryItem() : this(DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT), DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT)) {
+		// Version = new Version(7, 7, 7, 7);
+		// }
+		public static HistoryItem Create(DateTime dateTime) {
+			return Create(dateTime.ToString(MainWindow.DATE_STRING_FORMAT), dateTime.ToString(MainWindow.TIME_STRING_FORMAT));
 		}
+		// public HistoryItem(DateTime dateTime) : this(dateTime.ToString(MainWindow.DATE_STRING_FORMAT), dateTime.ToString(MainWindow.TIME_STRING_FORMAT)) {
+		// }
+		public static HistoryItem Create(string date, string time) {
+			return new HistoryItem {
+									   DateAdded = date,
+									   TimeAdded = time
+								   };
+		}
+		// public HistoryItem(string date, string time) {
+		// _completedTodoItems = new ObservableCollection<TodoItem>();
+		// _dateAdded = date;
+		// _timeAdded = time;
+		// _notes = "";
+		// Version = new Version();
+		// IsCommitted = false;
+		// SortCompletedTodoItems();
+		// }
+		public static HistoryItem Create(List<string> newItem) {
+			string[] pieces = newItem[0].Split('|');
+			bool hasBeenCopied = Convert.ToBoolean(pieces[0]);
+			string dateAdded = pieces[1];
+			string timeAdded = pieces[2];
+			string title = pieces[3];
+			string notes = AddNewLines(pieces[4]);
+
+			int index = 0;
+			newItem.RemoveAt(0);
+			foreach (string s in newItem) {
+				if (s == "VCSTodos") {
+					break;
+				}
+				index++;
+			}
+			
+			for (int i = 0; i < index; i++) {
+				notes += newItem[i] + Environment.NewLine;
+			}
+
+			for (int i = 0; i <= index; i++) {
+				newItem.RemoveAt(0);
+			}
+
+			ObservableCollection<TodoItem> completedTodoItems = [];
+			foreach (string s in newItem) {
+				TodoItem td = TodoItem.Create(s);
+				completedTodoItems.Add(td);
+			}
+			return new HistoryItem() {
+										 HasBeenCopied = hasBeenCopied,
+										 DateAdded = dateAdded,
+										 TimeAdded = timeAdded,
+										 Title = title,
+										 Notes = notes,
+										 CompletedTodoItems = completedTodoItems
+									 };
+		}
+		// public HistoryItem(List<string> newItem) {
+		// _completedTodoItems = new ObservableCollection<TodoItem>();
+		// Load2_0(newItem);
+		// Version = new Version();
+		// IsCommitted = false;
+		// SortCompletedTodoItems();
+		// }
 		private void Load2_0(List<string> newItem) {
 			string[] pieces = newItem[0].Split('|');
 			_hasBeenCopied = Convert.ToBoolean(pieces[0]);
@@ -146,7 +253,7 @@ namespace Echoslate {
 			}
 
 			foreach (string s in newItem) {
-				TodoItem td = new TodoItem(s);
+				TodoItem td = TodoItem.Create(s);
 				_completedTodoItems.Add(td);
 			}
 		}
@@ -154,6 +261,22 @@ namespace Echoslate {
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		public void AddCompletedTodo(TodoItem td) {
 			_completedTodoItems.Add(td);
+			SortCompletedTodoItems();
+		}
+		public void SortCompletedTodoItems() {
+			BugsCompleted.Clear();
+			FeaturesCompleted.Clear();
+			OtherCompleted.Clear();
+			foreach (TodoItem item in _completedTodoItems) {
+				if (item.Tags.Contains("#BUG")) {
+					BugsCompleted.Add(item);
+				} else if (item.Tags.Contains("#FEATURE")) {
+					FeaturesCompleted.Add(item);
+				} else {
+					OtherCompleted.Add(item);
+				}
+			}
+			FullCommitMessage = ToClipboard("0");
 		}
 		public void SetCopied() {
 			HasBeenCopied = true;
@@ -225,10 +348,10 @@ namespace Echoslate {
 			}
 			return result;
 		}
-		private string AddNewLines(string s) {
+		private static string AddNewLines(string s) {
 			return s.Replace("/n", Environment.NewLine);
 		}
-		private string RemoveNewLines(string s) {
+		private static string RemoveNewLines(string s) {
 			return s.Replace(Environment.NewLine, "/n");
 		}
 

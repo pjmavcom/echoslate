@@ -101,9 +101,8 @@ namespace Echoslate {
 			InitializeComponent();
 			DataContext = this;
 
-			_todoItem = new TodoItem(td.ToString()) {
-														IsTimerOn = td.IsTimerOn
-													};
+			_todoItem = TodoItem.Create(td.ToString());
+			_todoItem.IsTimerOn = td.IsTimerOn;
 			_currentListHash = currentListHash ?? "All";
 			_previousRank = td.Rank[_currentListHash];
 

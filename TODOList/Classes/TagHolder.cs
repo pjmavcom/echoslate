@@ -5,9 +5,6 @@
  * 
  */
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
 namespace Echoslate
 {
 	public class TagHolder

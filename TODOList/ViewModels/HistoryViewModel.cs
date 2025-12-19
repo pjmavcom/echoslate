@@ -16,8 +16,12 @@ namespace Echoslate.ViewModels {
 		private HistoryItem _currentHistoryItem;
 		public HistoryItem CurrentHistoryItem {
 			get => _currentHistoryItem;
-			private set => SetProperty(ref _currentHistoryItem, value);
+			private set {
+				SetProperty(ref _currentHistoryItem, value);
+				UpdateCategorizedLists();
+			}
 		}
+		public bool IsCurrentSelected => SelectedHistoryItem == CurrentHistoryItem;
 
 		private HistoryItem _selectedHistoryItem;
 		public HistoryItem SelectedHistoryItem {
@@ -25,11 +29,7 @@ namespace Echoslate.ViewModels {
 			set {
 				if (SetProperty(ref _selectedHistoryItem, value)) {
 					UpdateCategorizedLists();
-					OnPropertyChanged(nameof(BugsCount));
-					
-					OnPropertyChanged(nameof(BugsCompleted));
-					OnPropertyChanged(nameof(FeaturesCount));
-					OnPropertyChanged(nameof(OtherCount));
+					OnPropertyChanged(nameof(IsCurrentSelected));
 				}
 			}
 		}
@@ -57,6 +57,12 @@ namespace Echoslate.ViewModels {
 			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
 			LoadData();
 			OnPropertyChanged(nameof(CommittedHistoryItems));
+
+			CurrentHistoryItem = mainWindowVM.CurrentHistoryItem;
+			mainWindowVM.CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+		}
+		public void RebuildView() {
+			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
 		}
 
 		public void LoadData() {
@@ -90,6 +96,12 @@ namespace Echoslate.ViewModels {
 					OtherCompleted.Add(new TodoItemHolder(todo));
 				}
 			}
+			OnPropertyChanged(nameof(BugsCount));
+			OnPropertyChanged(nameof(BugsCompleted));
+			OnPropertyChanged(nameof(FeaturesCount));
+			OnPropertyChanged(nameof(FeaturesCompleted));
+			OnPropertyChanged(nameof(OtherCount));
+			OnPropertyChanged(nameof(OtherCompleted));
 		}
 		public bool CanCommit() => CurrentHistoryItem?.CompletedTodoItems.Any() == true || !string.IsNullOrWhiteSpace(CurrentHistoryItem?.Notes);
 		public void CommitCurrent() {

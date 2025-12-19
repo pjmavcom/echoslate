@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 
 namespace Echoslate {
-	public class Settings {
+	public class AppDataSettings {
 		public string BasePath { get; set; }
 		public string SettingsFileName { get; set; }
 		public ObservableCollection<string> RecentFiles { get; set; }
@@ -13,12 +13,14 @@ namespace Echoslate {
 		public int PomoWorkTimerLength;
 		public int PomoBreakTimerLength;
 		public bool GlobalHotkeysEnabled;
-		public int PreviousSessionLastActiveTab;
+		
+		public string WindowTitle { get; set; }
 		
 
-		public Settings(string basePath, string settingsFileName) {
+		public AppDataSettings(string basePath, string settingsFileName, string windowTitle) {
 			BasePath = basePath;
 			SettingsFileName = settingsFileName;
+			WindowTitle = windowTitle;
 			LoadSettings();
 		}
 
@@ -72,12 +74,12 @@ namespace Echoslate {
 					break;
 				}
 
-				if (File.Exists(line)) {
+				// if (File.Exists(line)) {
 					RecentFiles.Add(line);
 					Log.Print($"Added {line} to RecentFiles");
-				} else {
-					Log.Warn($"File does not exist: {line}");
-				}
+				// } else {
+					// Log.Warn($"File does not exist: {line}");
+				// }
 			}
 
 			if (line == "WINDOWPOSITION") {
@@ -117,8 +119,6 @@ namespace Echoslate {
 			if (line == "PREVIOUSSESSIONLASTACTIVETAB") {
 				Log.Print("Reading PREVIOUSSESSIONLASTACTIVETAB...");
 				stream.ReadLine();
-				// PreviousSessionLastActiveTab = Convert.ToInt16(stream.ReadLine());
-				// Log.Print($"Previous tab set to {PreviousSessionLastActiveTab}");
 			} else {
 				Log.Error("PREVIOUSSESSIONLASTACTIVETAB could not be found.");
 				return false;
@@ -153,7 +153,13 @@ namespace Echoslate {
 
 			stream.Close();
 		}
-		public void SortRecentFiles(string recent) {
+		public void AddRecentFile(string recent) {
+			if (!RecentFiles.Contains(recent)) {
+				RecentFiles.Add(recent);
+			}
+			SortRecentFiles(recent);
+		}
+		public void SortRecentFiles(string? recent) {
 			Log.Print($"Sorting {recent} to top of list.");
 			if (RecentFiles.Contains(recent)) {
 				RecentFiles.Remove(recent);

@@ -24,7 +24,12 @@ namespace Echoslate {
 		}
 		private int _rank;
 		public int Rank {
-			get => TD.Rank[_currentFilter];
+			get {
+				if (TD.Rank.ContainsKey(_currentFilter)) {
+					return TD.Rank[_currentFilter];
+				}
+				return -1;
+			}
 			set {
 				TD.Rank[_currentFilter] = value;
 				OnPropertyChanged();
