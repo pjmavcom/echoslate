@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Echoslate;
 
 public class AppDataLoader {
-	private readonly JsonSerializerOptions _options = new() {
+	private static readonly JsonSerializerOptions Options = new() {
 																WriteIndented = true,
 																PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 																DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -18,21 +18,25 @@ public class AppDataLoader {
 
 	public AppData Data;
 
-	public AppDataLoader(string? filePath, out AppData data) {
-		Data = Load(filePath);
-		data = Data;
+	public AppDataLoader() {
+		// Data = Load(filePath);
+		// data = Data;
 		// data = new AppData { CurrentFilePath = filePath };
 		// Data = data;
 		// Load2_1SaveFile();
 	}
-	public AppData Load(string path) {
+	public static AppData Load(string path) {
+		return LoadNew(path);
+		// return Load2_1SaveFile(path);
+	}
+	public static AppData LoadNew(string path) {
 		if (!File.Exists(path)) {
 			Log.Error($"File not found: {path}");
 			return new AppData();
 		}
 
 		string json = File.ReadAllText(path);
-		AppData? data = JsonSerializer.Deserialize<AppData>(json, _options);
+		AppData? data = JsonSerializer.Deserialize<AppData>(json, Options);
 
 		if (data == null) {
 			Log.Error($"Deserialization failed: {path}");
@@ -62,8 +66,9 @@ public class AppDataLoader {
 	}
 
 
-	private void Load2_1SaveFile() {
-		StreamReader stream = new StreamReader(File.Open(Data.CurrentFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+	public static AppData Load2_1SaveFile(string path) {
+		AppData data = new AppData { CurrentFilePath = path };
+		StreamReader stream = new StreamReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
 		string? line;
 		while (true) {
@@ -73,25 +78,19 @@ public class AppDataLoader {
 			if (line != null && line.Contains("=====FILESETTINGS"))
 				break;
 
-			Data.FiltersList.Add(line);
+			data.FiltersList.Add(line);
 		}
 
 		stream.ReadLine();
+		data.FileSettings.BackupIncrement = Convert.ToInt16(stream.ReadLine());
 		stream.ReadLine();
-		// _backupIncrement = Convert.ToInt16(stream.ReadLine());
+		data.FileSettings.BackupTime = Convert.ToInt16(stream.ReadLine());
 		stream.ReadLine();
+		data.FileSettings.AutoBackup = Convert.ToBoolean(stream.ReadLine());
 		stream.ReadLine();
-		// int backupMinutes = Convert.ToInt16(stream.ReadLine());
-		// _backupTime = new TimeSpan(0, backupMinutes, 0);
-		stream.ReadLine();
-		stream.ReadLine();
-		// _autoBackup = Convert.ToBoolean(stream.ReadLine());
-		stream.ReadLine();
-		stream.ReadLine();
-		// _autoSave = Convert.ToBoolean(stream.ReadLine());
-		stream.ReadLine();
-		stream.ReadLine();
-		// ConvertProjectVersion(stream.ReadLine());
+		data.FileSettings.AutoSave = Convert.ToBoolean(stream.ReadLine());
+		stream.ReadLine(); 
+		data.FileSettings.CurrentProjectVersion = ConvertProjectVersion(stream.ReadLine());
 
 		while (true) {
 			line = stream.ReadLine();
@@ -102,7 +101,7 @@ public class AppDataLoader {
 				continue;
 
 			TodoItem td = TodoItem.Create(line);
-			Data.TodoList.Add(td);
+			data.TodoList.Add(td);
 		}
 
 		List<string> history = [];
@@ -113,7 +112,7 @@ public class AppDataLoader {
 					history = [];
 					continue;
 				case "EndVCS":
-					Data.HistoryList.Add(HistoryItem.Create(history));
+					data.HistoryList.Add(HistoryItem.Create(history));
 					continue;
 				default:
 					if (line != null) {
@@ -123,5 +122,10 @@ public class AppDataLoader {
 			}
 		}
 		stream.Close();
+		return data;
+	}
+	public static Version ConvertProjectVersion(string version) {
+		string[] v = version.Split('.');
+		 return new Version(Convert.ToInt16(v[0]), Convert.ToInt16(v[1]), Convert.ToInt16(v[2]), Convert.ToInt16(v[3]));
 	}
 }

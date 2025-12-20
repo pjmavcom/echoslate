@@ -86,7 +86,12 @@ namespace Echoslate {
 			mnuMain.Background = Brushes.Red;
 #endif
 
-			AppDataSettings appDataSettings = new AppDataSettings(BASE_PATH, SETTINGS_FILENAME, WindowTitle);
+			AppDataSettings appDataSettings = AppDataSettings.Create(WindowTitle);
+			appDataSettings.LoadSettings();
+
+			this.LocationChanged += (s, e) => appDataSettings.SaveSettings();
+			this.SizeChanged += (s, e) => appDataSettings.SaveSettings();
+			this.Closed += (s, e) => appDataSettings.SaveSettings();
 #if DEBUG
 			_autoSave = false;
 			_autoBackup = false;
@@ -98,26 +103,29 @@ namespace Echoslate {
 			DataContext = new MainWindowViewModel(appDataSettings);
 
 			if (appDataSettings == null) {
-				SetWindowPosition(new Rectangle(0, 0, 1920, 1080));
+				SetWindowPosition(new AppDataSettings());
 			} else {
-				SetWindowPosition(appDataSettings.Window);
+				SetWindowPosition(appDataSettings);
 			}
 
 			_backupTime = new TimeSpan(0, 5, 0);
 			_backupIncrement = 0;
 
-			var timer = new DispatcherTimer();
-			timer.Tick += Timer_Tick;
-			timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
-			timer.Start();
+			// var timer = new DispatcherTimer();
+			// timer.Tick += Timer_Tick;
+			// timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
+			// timer.Start();
 
 			_timeUntilBackup = _backupTime;
 		}
-		private void SetWindowPosition(Rectangle window) {
-			Top = window.Y;
-			Left = window.X;
-			Height = window.Height;
-			Width = window.Width;
+		private void SetWindowPosition(AppDataSettings settings) {
+			var mainWindow = Application.Current.MainWindow;
+
+			mainWindow.Left = settings.WindowLeft;
+			mainWindow.Top = settings.WindowTop;
+			mainWindow.Width = settings.WindowWidth;
+			mainWindow.Height = settings.WindowHeight;
+			mainWindow.WindowState = settings.WindowState;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -175,7 +183,7 @@ namespace Echoslate {
 			// string[] pathPieces = _currentOpenFile.Split('\\');
 			string path = "";
 			// for (int i = 0; i < pathPieces.Length - 1; i++)
-				// path += pathPieces[i] + "\\";
+			// path += pathPieces[i] + "\\";
 
 			string gitPath = FindGitDirectory(path);
 			_historyLogPath = path + "log.txt";

@@ -30,9 +30,10 @@ namespace Echoslate {
 			}
 		}
 		public bool Result;
-		public List<string> ResultList;
+		private List<string> _resultList;
+		public ObservableCollection<string> ResultList;
 
-		public DlgEditTabs(List<string> tabNames) {
+		public DlgEditTabs(ObservableCollection<string> tabNames) {
 			InitializeComponent();
 			DataContext = this;
 
@@ -105,8 +106,9 @@ namespace Echoslate {
 			Close();
 		});
 		public ICommand OkCommand => new RelayCommand(() => {
-			ResultList = ["All"];
-			ResultList.AddRange(TabNames);
+			_resultList = ["All"];
+			_resultList.AddRange(TabNames);
+			ResultList = new ObservableCollection<string>(_resultList);
 			Result = true;
 			Close();
 		});

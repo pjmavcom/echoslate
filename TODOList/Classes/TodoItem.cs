@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
@@ -24,27 +25,54 @@ namespace Echoslate {
 			set {
 				_todo = value;
 				ParseNewTags();
+				OnPropertyChanged();
 			}
 		}
-		
+
 		private string _notes;
 		public string Notes {
 			get => AddNewLines(_notes);
-			set => _notes = value;
+			set {
+				_notes = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private string _problem;
 		public string Problem {
 			get => AddNewLines(_problem);
-			set => _problem = value;
+			set {
+				_problem = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private string _solution;
 		public string Solution {
 			get => AddNewLines(_solution);
-			set => _solution = value;
+			set {
+				_solution = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
+		private DateTime _dateTimeStarted;
+		public DateTime DateTimeStarted {
+			get => _dateTimeStarted;
+			set {
+				_dateTimeStarted = value;
+				OnPropertyChanged();
+			}
+		}
+		private DateTime _dateTimeCompleted;
+		public DateTime DateTimeCompleted {
+			get => _dateTimeCompleted;
+			set {
+				_dateTimeCompleted = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private string _dateStarted;
 		public string DateStarted {
 			get => _dateStarted;
@@ -53,25 +81,32 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private string _timeStarted;
 		public string TimeStarted {
 			get => _timeStarted;
-			set { _timeStarted = value;
+			set {
+				_timeStarted = value;
 				OnPropertyChanged();
 			}
 		}
 
 		private string _dateCompleted;
 		private string DateCompleted {
-			set => _dateCompleted = value;
+			set {
+				_dateCompleted = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private string _timeCompleted;
 		private string TimeCompleted {
-			set => _timeCompleted = value;
+			set {
+				_timeCompleted = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private DateTime _timeTaken;
 		public DateTime TimeTaken {
 			get => _timeTaken;
@@ -81,7 +116,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private long _timeTakenInMinutes;
 		[JsonIgnore]
 		public long TimeTakenInMinutes {
@@ -92,13 +127,16 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private bool _isTimerOn;
 		public bool IsTimerOn {
 			get => _isTimerOn;
-			set => _isTimerOn = value;
+			set {
+				_isTimerOn = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private bool _isComplete;
 		public bool IsComplete {
 			get => _isComplete;
@@ -106,39 +144,53 @@ namespace Echoslate {
 				_isComplete = value;
 				DateCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT) : "-";
 				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT) : "-";
+				OnPropertyChanged();
 			}
 		}
-		
+
 		private int _severity;
 		public int Severity {
 			get => _severity;
-			set => _severity = value;
+			set {
+				_severity = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private int _kanban;
 		public int Kanban {
 			get => _kanban;
-			set => _kanban = value;
+			set {
+				_kanban = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private int _kanbanRank;
 		public int KanbanRank {
 			get => _kanbanRank;
-			set => _kanbanRank = value;
+			set {
+				_kanbanRank = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private Dictionary<string, int> _rank;
 		public Dictionary<string, int> Rank {
 			get => _rank;
-			set => _rank = value;
+			set {
+				_rank = value;
+				OnPropertyChanged();
+			}
 		}
-		
+
 		private ObservableCollection<string> _tags;
 		public ObservableCollection<string> Tags {
 			get => _tags;
 			set {
 				_tags = value;
 				ParseNewTags();
+				OnPropertyChanged();
 			}
 		}
 
@@ -157,11 +209,13 @@ namespace Echoslate {
 			}
 		}
 		[JsonIgnore]
-		public string NotesAndTags => "Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
-									  Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
+		public string NotesAndTags =>
+			"Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
+			Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
 		[JsonIgnore]
-		public string StartDateTime => _dateStarted + "" + "_" + _timeStarted;
-		
+		public string StartDateTime =>
+			_dateStarted + "" + "_" + _timeStarted;
+
 		[JsonIgnore]
 		public string Ranks {
 			get {
@@ -184,7 +238,7 @@ namespace Echoslate {
 				return result;
 			}
 		}
-		
+
 		[JsonIgnore]
 		public string TagsSorted {
 			get {
@@ -217,7 +271,15 @@ namespace Echoslate {
 			_kanbanRank = 0;
 			_tags = [];
 			_rank = [];
-			
+		}
+		public void UpdateDates() {
+			if (DateTime.TryParseExact(_dateStarted, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
+			} else {
+				parsedDate = DateTime.Today;
+			}
+			if (TimeSpan.TryParseExact(_timeStarted, @"hh\:mm", CultureInfo.InvariantCulture, out TimeSpan parsedTime)) {}
+			DateTimeStarted = parsedDate.Date + parsedTime;
+			// Log.Test($"DateTimeStarted: {DateTimeStarted}");
 		}
 		public static TodoItem Create(string newItem) {
 			string[] pieces = newItem.Split('|');
@@ -234,7 +296,7 @@ namespace Echoslate {
 
 			bool isComplete = Convert.ToBoolean(pieces[5]);
 
-			Dictionary<string, int> ranks= [];
+			Dictionary<string, int> ranks = [];
 			string[] rankPieces = pieces[6].Split(',');
 			foreach (string s in rankPieces) {
 				if (s == "") continue;
@@ -271,25 +333,24 @@ namespace Echoslate {
 									Problem = problem,
 									Solution = solution
 								};
-
 		}
 		// public TodoItem() {
-			// _tags = new ObservableCollection<string>();
-			// _todo = "";
-			// _notes = "";
-			// _problem = "";
-			// _solution = "";
-			// _dateStarted = DateTime.Now.ToString("yyyy/MM/dd");
-			// _timeStarted = DateTime.Now.ToString("HH:mm");
-			// _dateCompleted = "-";
-			// _timeCompleted = "-";
-			// _severity = 0;
-			// _rank = new Dictionary<string, int>();
+		// _tags = new ObservableCollection<string>();
+		// _todo = "";
+		// _notes = "";
+		// _problem = "";
+		// _solution = "";
+		// _dateStarted = DateTime.Now.ToString("yyyy/MM/dd");
+		// _timeStarted = DateTime.Now.ToString("HH:mm");
+		// _dateCompleted = "-";
+		// _timeCompleted = "-";
+		// _severity = 0;
+		// _rank = new Dictionary<string, int>();
 		// }
 		// public TodoItem(string newItem) {
-			// _tags = new ObservableCollection<string>();
-			// _rank = new Dictionary<string, int>();
-			// Load3_20(newItem);
+		// _tags = new ObservableCollection<string>();
+		// _rank = new Dictionary<string, int>();
+		// Load3_20(newItem);
 		// }
 		public void CleanNotes() {
 			Todo = ParseNotes(Todo);
@@ -493,7 +554,7 @@ namespace Echoslate {
 			notes = RemoveNewLines(notes);
 			problem = RemoveNewLines(problem);
 			solution = RemoveNewLines(solution);
-		
+
 			string result = _dateStarted + "|" +
 							_timeStarted + "|" +
 							_dateCompleted + "|" +
@@ -514,7 +575,7 @@ namespace Echoslate {
 			string notes = AddNewLines(_notes);
 			string problem = AddNewLines(_problem);
 			string solution = AddNewLines(_solution);
-		
+
 			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + BreakLines(_todo);
 			if (_notes != "")
 				result += Environment.NewLine + "\tNotes: " + BreakLines(notes);
@@ -522,7 +583,7 @@ namespace Echoslate {
 				result += Environment.NewLine + "\tProblem: " + BreakLines(problem);
 			if (_solution != "")
 				result += Environment.NewLine + "\tSolution: " + BreakLines(solution);
-		
+
 			return result;
 		}
 		private string BreakLines(string s) {

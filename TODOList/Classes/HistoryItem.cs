@@ -26,7 +26,10 @@ namespace Echoslate {
 		private string _title = "";
 		public string Title {
 			get => _title;
-			set => _title = value;
+			set {
+				_title = value;
+				OnPropertyChanged();
+			}
 		}
 
 		private string _dateAdded = "";
@@ -50,13 +53,19 @@ namespace Echoslate {
 		private string _notes = "";
 		public string Notes {
 			get => _notes;
-			set => _notes = value;
+			set {
+				_notes = value;
+				OnPropertyChanged();
+			}
 		}
 
 		private ObservableCollection<TodoItem> _completedTodoItems;
 		public ObservableCollection<TodoItem> CompletedTodoItems {
 			get => _completedTodoItems;
-			set => _completedTodoItems = value;
+			set {
+				_completedTodoItems = value;
+				OnPropertyChanged();
+			}
 		}
 
 		private bool _hasBeenCopied;
@@ -105,7 +114,10 @@ namespace Echoslate {
 		private bool _isCommitted;
 		public bool IsCommitted {
 			get => _isCommitted;
-			set { _isCommitted = value; }
+			set {
+				_isCommitted = value;
+				OnPropertyChanged();
+			}
 		}
 
 		private DateTime _commitDate;
@@ -156,7 +168,7 @@ namespace Echoslate {
 			_hasBeenCopied = false;
 			_isCommitted = false;
 			_commitDate = new DateTime();
-			
+
 			SortCompletedTodoItems();
 		}
 		// public HistoryItem() : this(DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT), DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT)) {
@@ -198,7 +210,7 @@ namespace Echoslate {
 				}
 				index++;
 			}
-			
+
 			for (int i = 0; i < index; i++) {
 				notes += newItem[i] + Environment.NewLine;
 			}
@@ -260,7 +272,7 @@ namespace Echoslate {
 
 		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		public void AddCompletedTodo(TodoItem td) {
-			_completedTodoItems.Add(td);
+			CompletedTodoItems.Add(td);
 			SortCompletedTodoItems();
 		}
 		public void SortCompletedTodoItems() {

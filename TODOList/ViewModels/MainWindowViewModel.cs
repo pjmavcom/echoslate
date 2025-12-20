@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Application = System.Windows.Application;
 
@@ -13,6 +17,7 @@ namespace Echoslate.ViewModels {
 	public class MainWindowViewModel : INotifyPropertyChanged {
 		private AppData Data;
 		public AppDataSettings AppDataSettings { get; set; }
+
 		private string _currentWindowTitle;
 		public string CurrentWindowTitle {
 			get => _currentWindowTitle;
@@ -21,23 +26,24 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+		// private bool _autoSave = false;
+		// private bool _autoBackup = false;
 
-		
 		public TodoListViewModel TodoListVM { get; }
 		public KanbanViewModel KanbanVM { get; }
 		public HistoryViewModel HistoryVM { get; }
 
-		private List<TodoItem> _masterTodoItemsList;
-		public List<TodoItem> MasterTodoItemsList {
+		private ObservableCollection<TodoItem> _masterTodoItemsList;
+		public ObservableCollection<TodoItem> MasterTodoItemsList {
 			get => _masterTodoItemsList;
 			set {
 				_masterTodoItemsList = value;
 				OnPropertyChanged();
 			}
 		}
-		
-		private List<HistoryItem> _masterHistoryItemsList;
-		public List<HistoryItem> MasterHistoryItemsList {
+
+		private ObservableCollection<HistoryItem> _masterHistoryItemsList;
+		public ObservableCollection<HistoryItem> MasterHistoryItemsList {
 			get => _masterHistoryItemsList;
 			set {
 				_masterHistoryItemsList = value;
@@ -46,15 +52,15 @@ namespace Echoslate.ViewModels {
 		}
 		private HistoryItem _currentHistoryItem;
 		public HistoryItem CurrentHistoryItem {
-			get => _currentHistoryItem;
+			get =>  _currentHistoryItem;
 			set {
 				_currentHistoryItem = value;
 				OnPropertyChanged();
 			}
 		}
 
-		private List<string> _masterFilterTags;
-		public List<string> MasterFilterTags {
+		private ObservableCollection<string> _masterFilterTags;
+		public ObservableCollection<string> MasterFilterTags {
 			get => _masterFilterTags;
 			set {
 				_masterFilterTags = value;
@@ -63,6 +69,16 @@ namespace Echoslate.ViewModels {
 		}
 
 		private bool _isChanged;
+		public bool IsChanged {
+			get => _isChanged;
+			set {
+				_isChanged = value;
+				OnPropertyChanged();
+			}
+		}
+		private TimeSpan _backupTimer;
+		private TimeSpan _backupTimerMax;
+
 
 		public MainWindowViewModel(AppDataSettings appDataSettings) {
 			AppDataSettings = appDataSettings;
@@ -70,15 +86,73 @@ namespace Echoslate.ViewModels {
 			KanbanVM = new KanbanViewModel();
 			HistoryVM = new HistoryViewModel();
 			
-			_masterTodoItemsList = [];
-			_masterHistoryItemsList = [];
-			_masterFilterTags = [];
-
 			if (appDataSettings.RecentFiles.Count != 0) {
 				LoadRecentFile(appDataSettings);
+				LoadCurrentData();
+			} else {
+				CreateNewFile();
 			}
+
+			
 			SetWindowTitle();
-			LoadCurrentData();
+
+			var timer = new DispatcherTimer();
+			timer.Tick += Timer_Tick;
+			timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
+			timer.Start();
+
+			_backupTimerMax = new TimeSpan(0, Data.FileSettings.BackupTime, 0);
+			// _backupTimerMax = new TimeSpan(0, 0, 10);
+			_backupTimer = _backupTimerMax;
+			Log.Print($"{_backupTimer}");
+		}
+		public void Timer_Tick(object? sender, EventArgs e) {
+			UpdateBackupTimer();
+			UpdateTodoTimers();
+			UpdatePomoTimer();
+		}
+		public void UpdateBackupTimer() {
+			_backupTimer = _backupTimer.Subtract(new TimeSpan(0, 0, 1));
+			if (_backupTimer <= TimeSpan.Zero) {
+				_backupTimer = _backupTimerMax;
+				BackupSave();
+			}
+		}
+		public void UpdateTodoTimers() {
+			foreach (TodoItem item in MasterTodoItemsList) {
+				if (item.IsTimerOn) {
+					item.TimeTaken = item.TimeTaken.AddSeconds(1);
+				}
+			}
+		}
+		public void UpdatePomoTimer() {
+			// lblPomo.Content = $"{_pomoTimer.Ticks / TimeSpan.TicksPerMinute:00}:{_pomoTimer.Second:00}";
+			// if (_isPomoTimerOn) {
+			// 	pbPomo.Background = Brushes.Maroon;
+			// 	_pomoTimer = _pomoTimer.AddSeconds(1);
+			//
+			// 	if (_isPomoWorkTimerOn) {
+			// 		long ticks = _pomoWorkTime * TimeSpan.TicksPerMinute;
+			// 		PomoTimeLeft = (int)((float)_pomoTimer.Ticks / ticks * 100);
+			// 		pbPomo.Background = Brushes.DarkGreen;
+			// 		if (_pomoTimer.Ticks < ticks)
+			// 			return;
+			//
+			// 		_isPomoWorkTimerOn = false;
+			// 		_pomoTimer = DateTime.MinValue;
+			// 	} else {
+			// 		long ticks = _pomoBreakTime * TimeSpan.TicksPerMinute;
+			// 		PomoTimeLeft = (int)((float)(ticks - _pomoTimer.Ticks) / ticks * 100);
+			// 		if (_pomoTimer.Ticks < ticks)
+			// 			return;
+			//
+			// 		_isPomoWorkTimerOn = true;
+			// 		_pomoTimer = DateTime.MinValue;
+			// 	}
+			// } else {
+			// 	pbPomo.Background = Brushes.Transparent;
+			// 	lblPomo.Background = Brushes.Transparent;
+			// }
 		}
 		public void SetWindowTitle() {
 			CurrentWindowTitle = AppDataSettings.WindowTitle + " - " + Data?.FileName;
@@ -89,20 +163,75 @@ namespace Echoslate.ViewModels {
 			HistoryVM.RebuildView();
 		}
 		public void LoadCurrentData() {
-			if (Data != null) {
-				MasterTodoItemsList = Data.TodoList;
-				MasterHistoryItemsList = Data.HistoryList;
-				MasterFilterTags = Data.FiltersList;
-				
-				if (MasterHistoryItemsList.Count != 0) {
-					CurrentHistoryItem = MasterHistoryItemsList[0];
-				}
+			
+			MasterTodoItemsList = Data.TodoList;
+			MasterFilterTags = Data.FiltersList;
+			MasterHistoryItemsList = Data.HistoryList;
+			if (MasterHistoryItemsList.Count == 0) {
+				MasterHistoryItemsList.Add(new HistoryItem());
 			}
+			CurrentHistoryItem = MasterHistoryItemsList[0];
+
+			MasterTodoItemsList.CollectionChanged += OnCollectionChanged;
+			MasterHistoryItemsList.CollectionChanged += OnCollectionChanged;
+			MasterFilterTags.CollectionChanged += OnCollectionChanged;
+			SubscribeToExistingItems();
+
 			TodoListVM.Initialize(this);
 			KanbanVM.Initialize(this);
 			HistoryVM.Initialize(this);
 			RebuildAllViews();
 			SetWindowTitle();
+			
+			foreach (TodoItem item in MasterTodoItemsList) {
+				item.UpdateDates();
+			}
+		}
+		private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+			if (e.NewItems != null) {
+				foreach (var item in e.NewItems) {
+					SubscribeToItem(item);
+				}
+			}
+
+			if (e.OldItems != null) {
+				foreach (var item in e.OldItems) {
+					UnsubscribeFromItem(item);
+				}
+			}
+			MarkAsChanged();
+			RebuildAllViews();
+		}
+		private void SubscribeToExistingItems() {
+			foreach (var item in MasterTodoItemsList) {
+				SubscribeToItem(item);
+			}
+			foreach (var item in MasterHistoryItemsList) {
+				SubscribeToItem(item);
+			}
+		}
+		private void SubscribeToItem(object item) {
+			if (item is INotifyPropertyChanged notifyItem) {
+				notifyItem.PropertyChanged += OnItemPropertyChanged;
+			}
+		}
+		private void UnsubscribeFromItem(object item) {
+			if (item is INotifyPropertyChanged notifyItem) {
+				notifyItem.PropertyChanged -= OnItemPropertyChanged;
+			}
+		}
+		private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+			MarkAsChanged();
+		}
+		private void MarkAsChanged() {
+			if (!IsChanged) {
+				IsChanged = true;
+				_ = AutoSaveAsync();
+				// Log.Test("Autosaving");
+			}
+		}
+		private void ClearChangedFlag() {
+			IsChanged = false;
 		}
 		public void LoadRecentFile(AppDataSettings? settings) {
 			while (true) {
@@ -112,7 +241,8 @@ namespace Echoslate.ViewModels {
 
 				if (File.Exists(settings.RecentFiles[0])) {
 					Log.Print($"Loading recent file {settings.RecentFiles[0]}");
-					new AppDataLoader(settings.RecentFiles[0], out Data);
+					// Data = AppDataLoader.Load2_1SaveFile(settings.RecentFiles[0]);
+					Data = AppDataLoader.Load(settings.RecentFiles[0]);
 					settings.SortRecentFiles(settings.RecentFiles[0]);
 					return;
 				}
@@ -121,26 +251,103 @@ namespace Echoslate.ViewModels {
 				settings.RecentFiles.RemoveAt(0);
 			}
 		}
+		private async Task AutoSaveAsync() {
+			if (!Data.FileSettings.AutoSave) {
+				return;
+			}
+			try {
+				await SaveToMainFileAsync();
+				ClearChangedFlag();
+			} catch (Exception ex) {
+				Log.Error($"Auto save failed: {ex.Message}");
+			}
+		}
+		private async Task SaveToMainFileAsync() {
+#if DEBUG
+			string filePath = $"C:\\MyBinaries\\TestData\\{Data.FileName}{Data.FileExtension}";
+#else
+			string filePath = AppDataSettings.RecentFiles[0];
+#endif
+			AppDataSaver saver = new AppDataSaver();
+			saver.Save(filePath, Data);
+		}
 		private void Save(string filePath) {
+#if DEBUG
+			filePath = $"C:\\MyBinaries\\TestData\\{Data.FileName}{Data.FileExtension}";
+#endif
 			AppDataSaver saver = new AppDataSaver();
 			saver.Save(filePath, Data);
 			AppDataSettings.AddRecentFile(Data.CurrentFilePath);
 			SetWindowTitle();
+			ClearChangedFlag();
 		}
 		private void Save() {
 			Save(Data.CurrentFilePath);
 		}
+		private void BackupSave() {
+			if (!Data.FileSettings.AutoBackup) {
+				return;
+			}
+
+#if DEBUG
+			string path = "C:\\MyBinaries\\TestData\\" + Data.FileName + ".bak" + Data.FileSettings.BackupIncrement;
+#else
+			string path = AppDataSettings.RecentFiles[0] + ".bak" + Data.FileSettings.BackupIncrement;
+#endif
+			Log.Print($"Backing up to: {path}");
+			AppDataSaver saver = new AppDataSaver();
+			saver.Save(path, Data);
+
+			Data.FileSettings.BackupIncrement++;
+			Data.FileSettings.BackupIncrement %= 10;
+		}
 		private void Load(string? filePath) {
-			var appDataLoader = new AppDataLoader(filePath, out Data);
+			Data = AppDataLoader.Load(filePath);
+			// Data = AppDataLoader.Load2_1SaveFile(filePath);
 			AppDataSettings.SortRecentFiles(filePath);
 			LoadCurrentData();
 			AppDataSettings.AddRecentFile(Data.CurrentFilePath);
 			SetWindowTitle();
+			ClearChangedFlag();
 		}
-		private void MenuNew() {
+		public void CreateNewFile() {
 			Data = new AppData();
+			
 			LoadCurrentData();
 			RebuildAllViews();
+			ClearChangedFlag();
+			
+			SaveFileDialog sfd = new SaveFileDialog {
+														Title = @"Select folder to save file in.",
+														FileName = Data.FileName,
+														InitialDirectory = Data.BasePath,
+														Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
+													};
+			DialogResult dr = sfd.ShowDialog();
+			if (dr != System.Windows.Forms.DialogResult.OK) {
+				Log.Warn("File not saved. Continuing...");
+				Application.Current.Shutdown();
+				return;
+			}
+			Application.Current.MainWindow?.Activate();
+			
+			Data.CurrentFilePath = sfd.FileName;
+			Save(sfd.FileName);
+			
+			Window mainWindow = Application.Current.MainWindow;
+			if (mainWindow != null) {
+				
+				mainWindow.Activate();                    // Try to activate
+				if (mainWindow.WindowState == WindowState.Minimized)
+					mainWindow.WindowState = WindowState.Normal;
+			
+				mainWindow.Topmost = true;                // Briefly force on top
+				mainWindow.Topmost = false;               // Remove topmost immediately
+				mainWindow.Focus();                       // Give it keyboard focus
+			}
+		}
+		private void MenuNew() {
+			CreateNewFile();
 		}
 		private void MenuLoad() {
 			string basePath = Data == null ? "" : Data.BasePath;
@@ -169,7 +376,7 @@ namespace Echoslate.ViewModels {
 		private void MenuSave() {
 			Save();
 		}
-		private void MenuSaveAs() {
+		public void SaveAs() {
 			Log.Print("Saving file as...");
 			SaveFileDialog sfd = new SaveFileDialog {
 														Title = @"Select folder to save file in.",
@@ -183,8 +390,23 @@ namespace Echoslate.ViewModels {
 				Log.Warn("File not saved. Continuing...");
 				return;
 			}
-			
+
+			Data.CurrentFilePath = sfd.FileName;
 			Save(sfd.FileName);
+			Window mainWindow = Application.Current.MainWindow;
+			if (mainWindow != null)
+			{
+				mainWindow.Activate();                    // Try to activate
+				if (mainWindow.WindowState == WindowState.Minimized)
+					mainWindow.WindowState = WindowState.Normal;
+
+				mainWindow.Topmost = true;                // Briefly force on top
+				mainWindow.Focus();                       // Give it keyboard focus
+				mainWindow.Topmost = false;               // Remove topmost immediately
+			}
+		}
+		private void MenuSaveAs() {
+			SaveAs();
 		}
 		private void MenuOptions() {
 			bool autoSave = false;
@@ -203,21 +425,20 @@ namespace Echoslate.ViewModels {
 			_backupTime = options.BackupTime;
 #endif
 			AutoSave();
-			
 		}
 		private void AutoSave() {
 			// _isChanged = true;
 			// _doBackup = true;
 			// if (_currentOpenFile == "") {
-				// SaveAs();
-				// return;
+			// SaveAs();
+			// return;
 			// }
 
 			// if (_autoSave) {
-				// if (AppDataSettings.RecentFiles.Count >= 1)
-				// Save(AppDataSettings.RecentFiles[0]);
-				// else
-				// SaveAs();
+			// if (AppDataSettings.RecentFiles.Count >= 1)
+			// Save(AppDataSettings.RecentFiles[0]);
+			// else
+			// SaveAs();
 			// }
 		}
 		private void MenuQuit() {
@@ -244,7 +465,7 @@ namespace Echoslate.ViewModels {
 			DlgHelp dlgH = new DlgHelp();
 			dlgH.ShowDialog();
 		}
-		
+
 		private void MenuRecentFilesLoad(string? filePath) {
 			Load(filePath);
 		}
@@ -259,7 +480,7 @@ namespace Echoslate.ViewModels {
 		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
 		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);
 		public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
-		
+
 		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(MenuRecentFilesLoad);
 		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
 

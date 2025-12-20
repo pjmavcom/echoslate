@@ -95,10 +95,14 @@ public static class Log {
 							   [CallerLineNumber] int line = 0) {
 		Write($"{Prefix(SuccessString, tag, member, file, line)} {msg}");
 	}
-	public static void Test(string tag = "", [CallerMemberName] string member = "",
+	public static void Test(object? msg = null, string tag = "", [CallerMemberName] string member = "",
 							[CallerFilePath] string file = "",
 							[CallerLineNumber] int line = 0) {
-		Write($"{Prefix(TestingString, tag, member, file, line)} Test");
+		if (msg == null) {
+			Write($"{Prefix(TestingString, tag, member, file, line)} Test");
+		} else {
+			Write($"{Prefix(TestingString, tag, member, file, line)} {msg}");
+		}
 	}
 	public static void Error(object msg,
 							 string tag = "",

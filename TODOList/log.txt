@@ -1,3 +1,28 @@
+commit 778ec404399c4152d1e87d46f3fd0aa7f51f78da
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Fri Dec 19 22:35:59 2025 +0800
+
+    20251218- v3.40.42.0 Ready to use now
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: I think it is ready to use full time. A few minor tweak left to be where this version is, but
+            smoother.
+    
+    =Bugs Squashed====================================================================================================
+    --20251219-0m |Remove recent loads file in a right click context menu
+    
+    =Other Stuff======================================================================================================
+    --20251218-0m |Try loading all RecentFiles until all are broken, then create a new file
+    --20251219-0m |Figure out the save and load functions
+            Notes: Test notes
+    --20251219-0m |If adding a brand new item, set the rank to max as it is added, then rerank it
+    --20251219-0m |Make save files JSON, and then binary?
+    --20251219-0m |Remake interface
+    --20251219-0m |Automatically apply current filter or kanban rank
+    --20251219-0m |Swap current history item text box stuff and the one youre viewing
+    --20251219-0m |Made HistoryView look nice
+    --20251219-0m |MainMenu works again
+
 commit 41781d4be593ff1042b46ac2d2c438b3d2947c19
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Thu Dec 18 16:56:28 2025 +0800

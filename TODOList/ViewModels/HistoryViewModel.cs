@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Echoslate.ViewModels {
 	public class HistoryViewModel : INotifyPropertyChanged {
+		private ObservableCollection<TodoItem> _todoList;
 		private ObservableCollection<HistoryItem> _allHistoryItems;
 
 		private HistoryItem _currentHistoryItem;
@@ -53,19 +54,23 @@ namespace Echoslate.ViewModels {
 			CopyCommitMessageCommand = new RelayCommand(CopyCommitMessage);//, () => SelectedHistoryItem?.IsCommitted == true);
 		}
 		public void Initialize(MainWindowViewModel mainWindowVM) {
-			_allHistoryItems = new ObservableCollection<HistoryItem>(mainWindowVM.MasterHistoryItemsList);
+			_todoList = mainWindowVM.MasterTodoItemsList;
+			_allHistoryItems = mainWindowVM.MasterHistoryItemsList;
 			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
 			LoadData();
 			OnPropertyChanged(nameof(CommittedHistoryItems));
 
 			CurrentHistoryItem = mainWindowVM.CurrentHistoryItem;
-			mainWindowVM.CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 		}
 		public void RebuildView() {
 			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
 		}
 
 		public void LoadData() {
+			foreach (HistoryItem historyItem in _allHistoryItems) {
+				historyItem.SortCompletedTodoItems();
+			}
 			CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
 								 new HistoryItem { Title = "Work in progressioning.", Version = new Version(3, 40, 40, 1) };
 			if (!ReferenceEquals(CurrentHistoryItem, _allHistoryItems.FirstOrDefault())) {
@@ -125,7 +130,16 @@ namespace Echoslate.ViewModels {
 				Clipboard.SetText(SelectedHistoryItem.FullCommitMessage);
 			}
 		}
-
+		public void ReactivateTodo(TodoItemHolder ih) {
+			Log.Test();
+			TodoItem item = ih.TD;
+			item.IsComplete = false;
+			if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {
+				CurrentHistoryItem.CompletedTodoItems.Remove(item);
+			}
+			_todoList.Add(item);
+		}
+		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItemHolder>(ReactivateTodo);
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

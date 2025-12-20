@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate.UserControls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             x:Name="HistoryViewRoot"
              d:DesignHeight="800" d:DesignWidth="1200"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -13,6 +14,11 @@
         <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
         <converters:WidthToColumnWidthConverter x:Key="ColumnHideConverter"
                                                 DefaultWidth="100" Threshold="700" />
+        <ContextMenu x:Key="CompletedTodoContextMenu">
+            <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.ReactivateTodoCommand}"
+                      CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      Header="Reactivate" />
+        </ContextMenu>
     </UserControl.Resources>
     <Grid Background="{StaticResource AppDarkBackground}">
         <Grid.ColumnDefinitions>
@@ -214,10 +220,9 @@
                             <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|120}"
                                             DisplayMemberBinding="{Binding VersionString}"
                                             Header="Version" />
-                            <!--  <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|150}"  -->
-                            <!--  DisplayMemberBinding="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}"  -->
-                            <!--  Header="Date" />  -->
-                            <GridViewColumn DisplayMemberBinding="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}" Header="Date">
+                            <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|150}"
+                                            DisplayMemberBinding="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}"
+                                            Header="Date">
                                 <GridViewColumn.HeaderTemplate>
                                     <DataTemplate>
                                         <TextBlock HorizontalAlignment="Center"
@@ -230,7 +235,7 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="Auto"
+                            <GridViewColumn Width="700"
                                             DisplayMemberBinding="{Binding Title}"
                                             Header="Title" />
                         </GridView>
@@ -330,7 +335,9 @@
                                                 Margin="4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
-                                                BorderThickness="1" CornerRadius="4">
+                                                BorderThickness="1"
+                                                ContextMenu="{StaticResource CompletedTodoContextMenu}"
+                                                CornerRadius="4">
                                             <TextBlock FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
                                                        Text="{Binding Todo}"

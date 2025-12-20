@@ -15,8 +15,8 @@ using Echoslate.Resources;
 
 namespace Echoslate.ViewModels {
 	public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
-		public List<TodoItem> MasterList { get; set; }
-		public List<TodoItemHolder> AllItems { get; set; }
+		public ObservableCollection<TodoItem> MasterList { get; set; }
+		public ObservableCollection<TodoItemHolder> AllItems { get; set; }
 		private ICollectionView _displayedItems;
 		public ICollectionView DisplayedItems {
 			get => _displayedItems;
@@ -25,7 +25,7 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		public List<HistoryItem> HistoryItems { get; set; }
+		public ObservableCollection<HistoryItem> HistoryItems { get; set; }
 		public HistoryItem CurrentHistoryItem { get; set; }
 
 		// public Dictionary<string, string> HashShortcuts { get; set; }
@@ -34,7 +34,7 @@ namespace Echoslate.ViewModels {
 
 		public ObservableCollection<string> AllTags { get; set; }
 		public ObservableCollection<string> CurrentVisibleTags { get; set; }
-		public List<string> MasterFilterTags { get; set; }
+		public ObservableCollection<string> MasterFilterTags { get; set; }
 		public ObservableCollection<string> FilterList { get; set; }
 		private string _prioritySortTag;
 		public string PrioritySortTag {
@@ -353,15 +353,14 @@ namespace Echoslate.ViewModels {
 			// TodoItemHolder? ih = lbTodos.SelectedItem as TodoItemHolder;
 			TodoItem? item = ih?.TD;
 			if (item != null) {
-				Log.Warn("Selected item is null.");
 				MarkTodoAsComplete(item);
 			}
+			Log.Warn("Selected item is null.");
 		}
 		public void MarkTodoAsComplete(TodoItem item) {
 			item.IsComplete = true;
 			RefreshAllItems();
 			SortCompleteTodosToHistory();
-			Log.Test();
 		}
 		public void SortCompleteTodosToHistory() {
 			foreach (TodoItemHolder ih in AllItems) {
@@ -375,6 +374,9 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		}
 		public void AddItemToHistory(TodoItem item) {
+			// if (HistoryItems.Count == 0 || HistoryItems[0].IsCommitted) {
+			// HistoryItems.Insert(0, new HistoryItem());
+			// }
 			CurrentHistoryItem = HistoryItems[0];
 			CurrentHistoryItem.AddCompletedTodo(item);
 
@@ -628,9 +630,9 @@ namespace Echoslate.ViewModels {
 			// }
 			return ihs;
 		}
-		private void ItemNotesPanel_EditTagsRequested(object sender, EventArgs e) {
-			Log.Test();
-		}
+		// private void ItemNotesPanel_EditTagsRequested(object sender, EventArgs e) {
+		// Log.Test();
+		// }
 		public ICommand ContextMenuEditCommand => new RelayCommand(ContextMenuEdit);
 		public ICommand ContextMenuDeleteCommand => new RelayCommand(() => {
 			foreach (TodoItem item in GetSelectedListBoxItems()) {
@@ -738,6 +740,7 @@ namespace Echoslate.ViewModels {
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
 		public ICommand NewTodoAddCommand => new RelayCommand(() => {
 			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+			item.DateTimeStarted = DateTime.Now;
 			ExpandHashTags(item);
 			if (CurrentFilter != "All") {
 				item.Tags.Add(CurrentFilter);
@@ -746,6 +749,20 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 			NewTodoText = "";
 		});
+		public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
+		public void AddAndComplete() {
+			
+			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+			item.DateTimeStarted = DateTime.Now;
+			ExpandHashTags(item);
+			if (CurrentFilter != "All") {
+				item.Tags.Add(CurrentFilter);
+			}
+			AddItemToMasterList(item);
+			MarkTodoAsComplete(item);
+			RefreshAll();
+			NewTodoText = "";
+		}
 		public ICommand RefreshAllCommand => new RelayCommand(() => { RefreshAll(); });
 
 		public event PropertyChangedEventHandler PropertyChanged;

@@ -58,7 +58,6 @@
     <Grid HorizontalAlignment="Stretch"
           ClipToBounds="True" TextElement.FontFamily="Source Code Pro"
           TextElement.FontSize="16">
-        <!--  DataContext="{StaticResource MainWindowVM}"  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -82,7 +81,6 @@
                     <MenuItem Command="{Binding MenuOptionsCommand}" Header="Options" />
                     <Separator />
                     <MenuItem Command="{Binding MenuQuitCommand}" Header="Quit" />
-
                 </MenuItem>
                 <MenuItem Header="Recent Loads"
                           ItemsSource="{Binding AppDataSettings.RecentFiles}"
@@ -96,7 +94,7 @@
                                 <MenuItem.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Command="{Binding Source={x:Reference MainWindowInstance}, Path=DataContext.MenuRecentFilesRemoveCommand}"
-                                                  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}, Converter={StaticResource DebugConverter}}"
+                                                  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                                   Header="Remove" />
                                     </ContextMenu>
                                 </MenuItem.ContextMenu>

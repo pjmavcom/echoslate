@@ -2,156 +2,96 @@ using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Windows;
 
 namespace Echoslate {
 	public class AppDataSettings {
-		public string BasePath { get; set; }
-		public string SettingsFileName { get; set; }
+		private static readonly JsonSerializerOptions Options = new() {
+																		  WriteIndented = true,
+																		  PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+																		  DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+																		  PropertyNameCaseInsensitive = true
+																	  };
+
+		[JsonIgnore] public string SettingsFileName { get; set; }
 		public ObservableCollection<string> RecentFiles { get; set; }
 
-		public Rectangle Window { get; set; }
-		public int PomoWorkTimerLength;
-		public int PomoBreakTimerLength;
-		public bool GlobalHotkeysEnabled;
-		
-		public string WindowTitle { get; set; }
-		
+		public double WindowLeft { get; set; }
+		public double WindowTop { get; set; }
+		public double WindowWidth { get; set; }
+		public double WindowHeight { get; set; }
+		public WindowState WindowState { get; set; } = WindowState.Normal;
 
-		public AppDataSettings(string basePath, string settingsFileName, string windowTitle) {
-			BasePath = basePath;
-			SettingsFileName = settingsFileName;
-			WindowTitle = windowTitle;
-			LoadSettings();
+		public int PomoWorkTimerLength { get; set; }
+		public int PomoBreakTimerLength { get; set; }
+		public bool GlobalHotkeysEnabled { get; set; }
+
+		[JsonIgnore] public string WindowTitle { get; set; }
+
+		public AppDataSettings() {
+			SettingsFileName = "Echoslate.Settings";
+			RecentFiles = [];
+			WindowLeft = 0;
+			WindowTop = 0;
+			WindowWidth = 1920;
+			WindowHeight = 1080;
+			WindowState = WindowState.Normal;
+
+			PomoWorkTimerLength = 25;
+			PomoBreakTimerLength = 5;
+			WindowTitle = string.Empty;
 		}
 
-		private void LoadSettings() {
-			RecentFiles = new ObservableCollection<string>();
+		public static AppDataSettings Create(string windowTitle) {
+			return new AppDataSettings { WindowTitle = windowTitle };
+		}
 
-			string filePath = BasePath + SettingsFileName;
-			if (!File.Exists(filePath)) {
-				Log.Print("Settings file does not exist. Creating new settings file.");
-				SaveSettings();
+		public void SaveSettings() {
+			var mainWindow = Application.Current.MainWindow;
+			if (mainWindow != null) {
+				WindowLeft = double.IsNaN(mainWindow.Left) ? 0 : mainWindow.Left;
+				WindowTop = double.IsNaN(mainWindow.Top) ? 0 : mainWindow.Top;
+				WindowWidth = mainWindow.Width;
+				WindowHeight = mainWindow.Height;
+				WindowState = mainWindow.WindowState;
 			}
-			StreamReader stream = new StreamReader(File.Open(filePath, FileMode.Open));
+			
+			string filePath = AppDomain.CurrentDomain.BaseDirectory + SettingsFileName;
+			Log.Print($"Saving settings file: {filePath}");
+
+			string json = JsonSerializer.Serialize(this, Options);
+			File.WriteAllText(filePath, json);
+		}
+		public void LoadSettings() {
+			string filePath = AppDomain.CurrentDomain.BaseDirectory + SettingsFileName;
+			if (!File.Exists(filePath)) {
+				Log.Warn("Settings file does not exist. Creating new settings file.");
+				SaveSettings();
+				return;
+			}
 
 			Log.Print($"Loading settings file: {filePath}");
-			if (LoadV2_1Settings(stream)) {
-				Log.Print("v2.1 settings loaded.");
+			string json = File.ReadAllText(filePath);
+			AppDataSettings? settings = JsonSerializer.Deserialize<AppDataSettings>(json, Options);
+
+			if (settings != null) {
+				RecentFiles = new ObservableCollection<string>(settings.RecentFiles);
+				
+				WindowLeft = settings.WindowLeft;
+				WindowTop = settings.WindowTop;
+				WindowWidth = settings.WindowWidth;
+				WindowHeight = settings.WindowHeight;
+				WindowState = settings.WindowState;
+				
+				PomoWorkTimerLength = settings.PomoWorkTimerLength;
+				PomoBreakTimerLength = settings.PomoBreakTimerLength;
+				GlobalHotkeysEnabled = settings.GlobalHotkeysEnabled;
 			} else {
-				stream.Close();
-				FixCorruptedSettingsFile();
-			}
-			stream.Close();
-		}
-		private void FixCorruptedSettingsFile() {
-			Log.Print("Previous settings file corrupted. Create a new settings?");
-			DlgYesNo dlgYesNo = new DlgYesNo("Corrupted or missing file",
-											 "Error with the settings file, create a new one?");
-			dlgYesNo.ShowDialog();
-			if (dlgYesNo.Result) {
+				Log.Warn("Settings file is corrupted. Creating new settings file.");
 				SaveSettings();
-				Log.Print("YES- Created new settings file.");
-				DlgYesNo dlg;
-				dlg = new DlgYesNo("New settings file created");
-				dlg.ShowDialog();
-			} else {
-				Log.Print("NO- Not creating new settings file.");
 			}
-		}
-		private bool LoadV2_1Settings(StreamReader stream) {
-			string line = stream.ReadLine();
-			if (line != "RECENTFILES") {
-				return false;
-			}
-
-			Log.Print("Reading RECENTFILES...");
-			while (line != null) {
-				line = stream.ReadLine();
-				if (line == "RECENTFILES" || line == "") {
-					continue;
-				}
-				if (line == "WINDOWPOSITION") {
-					break;
-				}
-
-				// if (File.Exists(line)) {
-					RecentFiles.Add(line);
-					Log.Print($"Added {line} to RecentFiles");
-				// } else {
-					// Log.Warn($"File does not exist: {line}");
-				// }
-			}
-
-			if (line == "WINDOWPOSITION") {
-				Log.Print("Reading WINDOWPOSITION...");
-				Window = Window with { Y = Convert.ToInt16(stream.ReadLine()) };
-				Window = Window with { X = Convert.ToInt16(stream.ReadLine()) };
-				Window = Window with { Height = Convert.ToInt16(stream.ReadLine()) };
-				Window = Window with { Width = Convert.ToInt16(stream.ReadLine()) };
-				Log.Print($"Set window position: ({Window.Y}, {Window.X}) and size: ({Window.Height}, {Window.Width})");
-			} else {
-				Log.Error("WINDOWPOSITION could not be found.");
-				return false;
-			}
-
-			line = stream.ReadLine();
-			if (line == "POMOTIMERSETTINGS") {
-				Log.Print("Reading POMOTIMERSETTINGS...");
-				PomoWorkTimerLength = Convert.ToInt16(stream.ReadLine());
-				PomoBreakTimerLength = Convert.ToInt16(stream.ReadLine());
-				Log.Print($"Pomodoro timer set to {PomoWorkTimerLength} / {PomoBreakTimerLength}");
-			} else {
-				Log.Error("POMOTIMERSETTINGS could not be found.");
-				return false;
-			}
-
-			line = stream.ReadLine();
-			if (line == "GLOBALHOTKEYS") {
-				Log.Print("Reading GLOBALHOTKEYS...");
-				GlobalHotkeysEnabled = Convert.ToBoolean(stream.ReadLine());
-				Log.Print($"Global hotkeys set to: {GlobalHotkeysEnabled}");
-			} else {
-				Log.Error("GLOBALHOTKEYS could not be found.");
-				return false;
-			}
-
-			line = stream.ReadLine();
-			if (line == "PREVIOUSSESSIONLASTACTIVETAB") {
-				Log.Print("Reading PREVIOUSSESSIONLASTACTIVETAB...");
-				stream.ReadLine();
-			} else {
-				Log.Error("PREVIOUSSESSIONLASTACTIVETAB could not be found.");
-				return false;
-			}
-
-			return true;
-		}
-		private void SaveSettings() {
-			string filePath = BasePath + SettingsFileName;
-			StreamWriter stream = new StreamWriter(File.Open(filePath, FileMode.Create));
-
-			stream.WriteLine("RECENTFILES");
-			foreach (string s in RecentFiles) {
-				if (s == "") {
-					continue;
-				}
-				stream.WriteLine(s);
-			}
-
-			stream.WriteLine("WINDOWPOSITION");
-			stream.WriteLine(Window.Y);
-			stream.WriteLine(Window.X);
-			stream.WriteLine(Window.Height);
-			stream.WriteLine(Window.Width);
-			stream.WriteLine("POMOTIMERSETTINGS");
-			stream.WriteLine(PomoWorkTimerLength);
-			stream.WriteLine(PomoBreakTimerLength);
-			stream.WriteLine("GLOBALHOTKEYS");
-			stream.WriteLine(GlobalHotkeysEnabled);
-			stream.WriteLine("PREVIOUSSESSIONLASTACTIVETAB");
-			stream.WriteLine(0);
-
-			stream.Close();
 		}
 		public void AddRecentFile(string recent) {
 			if (!RecentFiles.Contains(recent)) {

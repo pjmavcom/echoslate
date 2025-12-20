@@ -45,6 +45,7 @@ namespace Echoslate {
 		}
 		public int CurrentKanbanFilter { get; set; }
 
+		public DateTime DateTimeStarted => _td.DateTimeStarted;
 
 		public string Todo {
 			get => _td.Todo;
