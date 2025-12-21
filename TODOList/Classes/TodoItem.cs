@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using static System.Globalization.CultureInfo;
 
 namespace Echoslate {
@@ -194,6 +195,18 @@ namespace Echoslate {
 			}
 		}
 
+		private HashSet<string> _hashedTags;
+		[JsonIgnore]
+		public HashSet<string> HashedTags {
+			get {
+				if (_hashedTags == null) {
+					_hashedTags = new HashSet<string>(Tags);
+				}
+				return _hashedTags;
+			}
+		}
+
+
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		[JsonIgnore]
 		private string TagsAndTodoToSave {
@@ -220,8 +233,9 @@ namespace Echoslate {
 		public string Ranks {
 			get {
 				string result = "";
-				foreach (KeyValuePair<string, int> kvp in Rank)
+				foreach (KeyValuePair<string, int> kvp in Rank) {
 					result += kvp.Key + " # " + kvp.Value + ",";
+				}
 				return result;
 			}
 		}
@@ -271,15 +285,35 @@ namespace Echoslate {
 			_kanbanRank = 0;
 			_tags = [];
 			_rank = [];
+			Tags.CollectionChanged += (s, e) => _hashedTags = null;
 		}
 		public void UpdateDates() {
 			if (DateTime.TryParseExact(_dateStarted, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
 			} else {
 				parsedDate = DateTime.Today;
 			}
-			if (TimeSpan.TryParseExact(_timeStarted, @"hh\:mm", CultureInfo.InvariantCulture, out TimeSpan parsedTime)) {}
+			if (TimeSpan.TryParseExact(_timeStarted, @"hh\:mm", CultureInfo.InvariantCulture, out TimeSpan parsedTime)) {
+			}
 			DateTimeStarted = parsedDate.Date + parsedTime;
-			// Log.Test($"DateTimeStarted: {DateTimeStarted}");
+		}
+		public void UpdateTags(HashSet<string> tags) {
+			if (string.IsNullOrWhiteSpace(Todo)) {
+				return;
+			}
+			foreach (string t in tags) {
+				if (HashedTags.Contains(t) || string.IsNullOrWhiteSpace(t)) {
+					continue;
+				}
+				string cleanTag = t.TrimStart('#').Trim();
+				if (string.IsNullOrEmpty(cleanTag)) {
+					continue;
+				}
+				string escapedTag = Regex.Escape(cleanTag);
+				string pattern = $@"\b{escapedTag}\b";
+				if (Regex.IsMatch(Todo, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) {
+					Tags.Add(t);
+				}
+			}
 		}
 		public static TodoItem Create(string newItem) {
 			string[] pieces = newItem.Split('|');
@@ -291,11 +325,11 @@ namespace Echoslate {
 			string timeStarted = pieces[1].Trim();
 			string dateCompleted = pieces[2].Trim();
 			string timeCompleted = pieces[3].Trim();
-
+		
 			DateTime timeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
-
+		
 			bool isComplete = Convert.ToBoolean(pieces[5]);
-
+		
 			Dictionary<string, int> ranks = [];
 			string[] rankPieces = pieces[6].Split(',');
 			foreach (string s in rankPieces) {
@@ -303,10 +337,10 @@ namespace Echoslate {
 				string[] rank = s.Split('#');
 				ranks.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
 			}
-
+		
 			int severity = Convert.ToInt32(pieces[7]);
 			string todo = pieces[8].Trim();
-
+		
 			string notes = "";
 			int kanban = 0;
 			int kanbanRank = 0;
@@ -374,37 +408,37 @@ namespace Echoslate {
 				_timeStarted = _timeStarted.Substring(0, 5);
 			}
 		}
-		private void Load3_20(string newItem) {
-			string[] pieces = newItem.Split('|');
-			if (pieces.Length < 13) {
-				new DlgErrorMessage("This save file is corrupted! A todo did not load!" + Environment.NewLine + newItem).ShowDialog();
-				return;
-			}
-			_dateStarted = pieces[0].Trim();
-			_timeStarted = pieces[1].Trim();
-			_dateCompleted = pieces[2].Trim();
-			_timeCompleted = pieces[3].Trim();
-
-			TimeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
-
-			_isComplete = Convert.ToBoolean(pieces[5]);
-
-			string[] rankPieces = pieces[6].Split(',');
-			foreach (string s in rankPieces) {
-				if (s == "") continue;
-				string[] rank = s.Split('#');
-				_rank.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
-			}
-
-			_severity = Convert.ToInt32(pieces[7]);
-			Todo = pieces[8].Trim();
-
-			if (pieces.Length > 9) Notes = pieces[9].Trim();
-			if (pieces.Length > 10) Kanban = Convert.ToInt32(pieces[10].Trim());
-			if (pieces.Length > 11) KanbanRank = Convert.ToInt32(pieces[11].Trim());
-			if (pieces.Length > 12) Problem = pieces[12];
-			if (pieces.Length > 13) Solution = pieces[13];
-		}
+		// private void Load3_20(string newItem) {
+		// 	string[] pieces = newItem.Split('|');
+		// 	if (pieces.Length < 13) {
+		// 		new DlgErrorMessage("This save file is corrupted! A todo did not load!" + Environment.NewLine + newItem).ShowDialog();
+		// 		return;
+		// 	}
+		// 	_dateStarted = pieces[0].Trim();
+		// 	_timeStarted = pieces[1].Trim();
+		// 	_dateCompleted = pieces[2].Trim();
+		// 	_timeCompleted = pieces[3].Trim();
+		//
+		// 	TimeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
+		//
+		// 	_isComplete = Convert.ToBoolean(pieces[5]);
+		//
+		// 	string[] rankPieces = pieces[6].Split(',');
+		// 	foreach (string s in rankPieces) {
+		// 		if (s == "") continue;
+		// 		string[] rank = s.Split('#');
+		// 		_rank.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
+		// 	}
+		//
+		// 	_severity = Convert.ToInt32(pieces[7]);
+		// 	Todo = pieces[8].Trim();
+		//
+		// 	if (pieces.Length > 9) Notes = pieces[9].Trim();
+		// 	if (pieces.Length > 10) Kanban = Convert.ToInt32(pieces[10].Trim());
+		// 	if (pieces.Length > 11) KanbanRank = Convert.ToInt32(pieces[11].Trim());
+		// 	if (pieces.Length > 12) Problem = pieces[12];
+		// 	if (pieces.Length > 13) Solution = pieces[13];
+		// }
 		private void ParseNewTags() {
 			_todo = TagsAndTodoToSave;
 			ParseTags();

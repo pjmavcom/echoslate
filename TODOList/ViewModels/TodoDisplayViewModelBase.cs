@@ -15,6 +15,7 @@ using Echoslate.Resources;
 
 namespace Echoslate.ViewModels {
 	public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
+		public AppData Data { get; set; }
 		public ObservableCollection<TodoItem> MasterList { get; set; }
 		public ObservableCollection<TodoItemHolder> AllItems { get; set; }
 		private ICollectionView _displayedItems;
@@ -27,8 +28,6 @@ namespace Echoslate.ViewModels {
 		}
 		public ObservableCollection<HistoryItem> HistoryItems { get; set; }
 		public HistoryItem CurrentHistoryItem { get; set; }
-
-		// public Dictionary<string, string> HashShortcuts { get; set; }
 
 		public ObservableCollection<FilterButton> FilterButtons { get; set; } = [];
 
@@ -62,11 +61,11 @@ namespace Echoslate.ViewModels {
 
 		private static SolidColorBrush SeverityBrush(int severity) =>
 			severity switch {
-				3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
+				3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)),   // High = Red
 				2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
-				1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
-				0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
-				_ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
+				1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)),   // Low = Green
+				0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)),  // Off = Dark gray (your normal tag color)
+				_ => new SolidColorBrush(Color.FromRgb(25, 25, 25))   // Off = Dark gray (your normal tag color)
 			};
 		private int _currentSeverityFilter;
 		public int CurrentSeverityFilter {
@@ -139,7 +138,14 @@ namespace Echoslate.ViewModels {
 			get => _selectedTodoItem;
 			set {
 				if (_selectedTodoItem != value) {
+					if (_selectedTodoItem is TodoItemHolder item) {
+						item.TD.PropertyChanged -= TodoItem_PropertyChanged;
+					}
 					_selectedTodoItem = value;
+					if (_selectedTodoItem is TodoItemHolder newItem) {
+						newItem.TD.PropertyChanged += TodoItem_PropertyChanged;
+					}
+					
 					OnPropertyChanged();
 				}
 			}
@@ -148,10 +154,10 @@ namespace Echoslate.ViewModels {
 		public TodoDisplayViewModelBase() {
 		}
 		public virtual void Initialize(MainWindowViewModel mainWindowVM) {
+			Data = mainWindowVM.Data;
 			MasterList = mainWindowVM.MasterTodoItemsList;
 			HistoryItems = mainWindowVM.MasterHistoryItemsList;
 			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
-			// HashShortcuts = mainWindowVM.MasterHashShortcuts ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterHashShortcuts));
 
 			AllItems = [];
 			FilterButtons = [];
@@ -167,25 +173,12 @@ namespace Echoslate.ViewModels {
 		protected abstract void RefreshFilter();
 		protected abstract bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih);
 		protected abstract bool RefreshAllItems();
-		// {
-		// 	AllItems.Clear();
-		// 	foreach (TodoItem item in MasterList) {
-		// 		TodoItemHolder ih = new TodoItemHolder(item);
-		// 		ih.CurrentFilter = GetCurrentTagFilterWithoutHash();
-		// 		if (ih.Rank <= 0) {
-		// 			ih.Rank = int.MaxValue;
-		// 		}
-		//
-		// 		AllItems.Add(ih);
-		// 	}
-		//
-		// 	if (AllItems.Count == 0) {
-		// 		Log.Warn("AllItems is empty.");
-		// 		return true;
-		// 	}
-		// 	return false;
-		// }
 
+		public void TodoItem_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+			if (sender is TodoItem item) {
+				item.UpdateTags(Data.AllTags);
+			}
+		}
 		public void RebuildView() {
 			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
 		}
@@ -311,11 +304,7 @@ namespace Echoslate.ViewModels {
 		private void ContextMenuEdit() {
 			if (SelectedTodoItems[0] is not TodoItemHolder ih) {
 				return;
-			} else {
 			}
-			// if (lbTodos.SelectedItem is not TodoItemHolder ih) {
-			// 	return;
-			// }
 
 			if (SelectedTodoItems.Count > 1) {
 				List<TodoItem> items = new List<TodoItem>();
@@ -328,17 +317,6 @@ namespace Echoslate.ViewModels {
 			} else {
 				Log.Error("No items selected.");
 			}
-			// if (lbTodos.SelectedItems.Count > 1) {
-			// 	List<TodoItem> items = new List<TodoItem>();
-			// 	foreach (TodoItemHolder ihs in lbTodos.SelectedItems) {
-			// 		items.Add(ihs.TD);
-			// 	}
-			// 	MultiEditItems(items);
-			// } else if (lbTodos.SelectedItems.Count == 1) {
-			// 	EditItem(ih.TD);
-			// } else {
-			// 	Log.Error("No items selected.");
-			// }
 		}
 		public void MarkSelectedItemAsComplete() {
 			if (SelectedTodoItems == null || SelectedTodoItems.Count == 0 || SelectedTodoItems[0] == null) {
@@ -346,12 +324,8 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 			TodoItemHolder? ih = SelectedTodoItems[0] as TodoItemHolder;
-			// if (lbTodos.SelectedItem == null) {
-			// 	Log.Warn("No todos selected.");
-			// 	return;
-			// }
-			// TodoItemHolder? ih = lbTodos.SelectedItem as TodoItemHolder;
 			TodoItem? item = ih?.TD;
+			
 			if (item != null) {
 				MarkTodoAsComplete(item);
 			}
@@ -374,14 +348,8 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		}
 		public void AddItemToHistory(TodoItem item) {
-			// if (HistoryItems.Count == 0 || HistoryItems[0].IsCommitted) {
-			// HistoryItems.Insert(0, new HistoryItem());
-			// }
 			CurrentHistoryItem = HistoryItems[0];
 			CurrentHistoryItem.AddCompletedTodo(item);
-
-			// TODO: rewrite RefreshHistory()
-			// MainWindow.GetActiveWindow().RefreshHistory();
 		}
 		private void EditItem(TodoItem item) {
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash());
@@ -402,27 +370,6 @@ namespace Echoslate.ViewModels {
 				}
 
 				RefreshAll();
-				// if (MasterList.Contains(item)) {
-				// MasterList.Remove(item);
-
-				// TODO: needs to get all instances of the todo from _currentHistoryItem.CompletedTodos, CompletedBugs, CompletedFeatures
-				// TODO: check that ranks work as intended
-				// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Contains(td))
-				// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodos.Remove(td);
-
-				// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Contains(td))
-				// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosBugs.Remove(td);
-
-				// if (MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Contains(td))
-				// MainWindow.GetActiveWindow()._currentHistoryItem.CompletedTodosFeatures.Remove(td);
-
-				// MainWindow.GetActiveWindow().AddItemToMasterList(itemEditor.ResultTodoItem);
-				// AutoSave();
-				// }
-
-				// IncompleteItemsRefresh();
-				// KanbanRefresh();
-				// RefreshHistory();
 			}
 		}
 		private void CleanTodoHashRanks(TodoItem td) {
@@ -438,7 +385,25 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 			CleanTodoHashRanks(item);
+			LookForNewTags(item);
+		}
+		private void LookForNewTags(TodoItem item) {
+			bool newTagFound = false;
 			MasterList.Add(item);
+			foreach (string t in item.Tags) {
+				if (!Data.AllTags.Contains(t)) {
+					newTagFound = true;
+					Data.AllTags.Add(t);
+				}
+			}
+			if (newTagFound) {
+				UpdateTags();
+			}
+		}
+		private void UpdateTags() {
+			foreach (TodoItem item in MasterList) {
+				item.UpdateTags(Data.AllTags);
+			}
 		}
 		public void RemoveItemFromMasterList(TodoItem? item) {
 			if (item == null) {
@@ -751,7 +716,6 @@ namespace Echoslate.ViewModels {
 		});
 		public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
 		public void AddAndComplete() {
-			
 			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
 			item.DateTimeStarted = DateTime.Now;
 			ExpandHashTags(item);

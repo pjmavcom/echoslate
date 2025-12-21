@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
@@ -47,5 +48,9 @@ namespace Echoslate.UserControls {
 			remove => RemoveHandler(NotesPanelEditTagsRequestedEvent, value);
 		}
 
+		public ICommand CommitTitleEditCommand => new RelayCommand<TodoItemHolder>(ih => {
+			var binding = BindingOperations.GetBindingExpression(tbTodo, TextBox.TextProperty);
+			binding?.UpdateSource();
+		});
 	}
 }

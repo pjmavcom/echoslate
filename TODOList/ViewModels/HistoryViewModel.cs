@@ -10,6 +10,14 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Echoslate.ViewModels {
+	public enum IncrementMode {
+		None,
+		Major,
+		Minor,
+		Build,
+		Revision
+	}
+
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private ObservableCollection<TodoItem> _todoList;
 		private ObservableCollection<HistoryItem> _allHistoryItems;
@@ -23,6 +31,7 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		public bool IsCurrentSelected => SelectedHistoryItem == CurrentHistoryItem;
+		public bool CanCommit => IsCurrentSelected && CurrentHistoryItem.CompletedTodoItems.Any() && CurrentHistoryItem.Title != "";
 
 		private HistoryItem _selectedHistoryItem;
 		public HistoryItem SelectedHistoryItem {
@@ -30,7 +39,6 @@ namespace Echoslate.ViewModels {
 			set {
 				if (SetProperty(ref _selectedHistoryItem, value)) {
 					UpdateCategorizedLists();
-					OnPropertyChanged(nameof(IsCurrentSelected));
 				}
 			}
 		}
@@ -45,15 +53,21 @@ namespace Echoslate.ViewModels {
 		public int FeaturesCount => FeaturesCompleted.Count;
 		public int OtherCount => OtherCompleted.Count;
 
-		public ICommand CommitCommand { get; }
-		public ICommand CopyCommitMessageCommand { get; }
+
+		private IncrementMode _selectedIncrementMode = IncrementMode.None;
+		public IncrementMode SelectedIncrementMode {
+			get => _selectedIncrementMode;
+			set {
+				_selectedIncrementMode = value;
+				OnPropertyChanged();
+			}
+		}
 
 
 		public HistoryViewModel() {
-			CommitCommand = new RelayCommand(CommitCurrent);//, CanCommit);
-			CopyCommitMessageCommand = new RelayCommand(CopyCommitMessage);//, () => SelectedHistoryItem?.IsCommitted == true);
 		}
 		public void Initialize(MainWindowViewModel mainWindowVM) {
+			SelectedIncrementMode = mainWindowVM.Data.FileSettings.IncrementMode;
 			_todoList = mainWindowVM.MasterTodoItemsList;
 			_allHistoryItems = mainWindowVM.MasterHistoryItemsList;
 			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
@@ -70,6 +84,8 @@ namespace Echoslate.ViewModels {
 		public void LoadData() {
 			foreach (HistoryItem historyItem in _allHistoryItems) {
 				historyItem.SortCompletedTodoItems();
+				// TODO Remove this if all is well
+				// historyItem.UpdateDates();
 			}
 			CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
 								 new HistoryItem { Title = "Work in progressioning.", Version = new Version(3, 40, 40, 1) };
@@ -101,6 +117,8 @@ namespace Echoslate.ViewModels {
 					OtherCompleted.Add(new TodoItemHolder(todo));
 				}
 			}
+			OnPropertyChanged(nameof(IsCurrentSelected));
+			OnPropertyChanged(nameof(CanCommit));
 			OnPropertyChanged(nameof(BugsCount));
 			OnPropertyChanged(nameof(BugsCompleted));
 			OnPropertyChanged(nameof(FeaturesCount));
@@ -108,28 +126,41 @@ namespace Echoslate.ViewModels {
 			OnPropertyChanged(nameof(OtherCount));
 			OnPropertyChanged(nameof(OtherCompleted));
 		}
-		public bool CanCommit() => CurrentHistoryItem?.CompletedTodoItems.Any() == true || !string.IsNullOrWhiteSpace(CurrentHistoryItem?.Notes);
+		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
 		public void CommitCurrent() {
-			// CurrentHistoryItem.Version = IncrementVersion(CurrentHistoryItem.Version, selectedSegment);
 
 			CurrentHistoryItem.IsCommitted = true;
 			CurrentHistoryItem.CommitDate = DateTime.Now;
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
 
 			CurrentHistoryItem.GenerateCommitMessage();
 			CopyCommitMessage();
-
-			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = new Version(CurrentHistoryItem.Version.Major, CurrentHistoryItem.Version.Minor, CurrentHistoryItem.Version.Build + 1, 0) };
+			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 			SelectedHistoryItem = CurrentHistoryItem;
 
-			CommandManager.InvalidateRequerySuggested();
+			// CommandManager.InvalidateRequerySuggested();
+			// CurrentHistoryItem.Version = IncrementVersion(CurrentHistoryItem.Version, selectedSegment);
 		}
+		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
+			return mode switch {
+				IncrementMode.Major => new Version(currentVersion.Major + 1, currentVersion.Minor, currentVersion.Build, currentVersion.Revision),
+				IncrementMode.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build, currentVersion.Revision),
+				IncrementMode.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1, currentVersion.Revision),
+				IncrementMode.Revision => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build, currentVersion.Revision + 1),
+				IncrementMode.None => currentVersion,
+				_ => currentVersion
+			};
+		}
+		public ICommand CopyCommitMessageCommand => new RelayCommand(CopyCommitMessage);
 		public void CopyCommitMessage() {
 			if (SelectedHistoryItem?.FullCommitMessage != null) {
 				Clipboard.SetText(SelectedHistoryItem.FullCommitMessage);
 			}
 		}
+		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItemHolder>(ReactivateTodo);
 		public void ReactivateTodo(TodoItemHolder ih) {
 			Log.Test();
 			TodoItem item = ih.TD;
@@ -139,7 +170,13 @@ namespace Echoslate.ViewModels {
 			}
 			_todoList.Add(item);
 		}
-		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItemHolder>(ReactivateTodo);
+		public ICommand SelectIncrementCommand => new RelayCommand(() => {
+			var values = Enum.GetValues(typeof(IncrementMode)).Cast<IncrementMode>();
+			int currentIndex = Array.IndexOf(values.ToArray(), SelectedIncrementMode);
+			int nextIndex = (currentIndex + 1) % values.Count();
+
+			SelectedIncrementMode = values.ElementAt(nextIndex);
+		});
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

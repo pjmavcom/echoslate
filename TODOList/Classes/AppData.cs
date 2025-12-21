@@ -11,6 +11,7 @@ public class AppData {
 	public ObservableCollection<HistoryItem> HistoryList { get; set; }
 	public ObservableCollection<string> FiltersList { get; set; }
 
+	[JsonIgnore] public HashSet<string> AllTags { get; set; }
 	[JsonIgnore] public string CurrentFilePath;
 	[JsonIgnore] public string? BasePath => Path.GetDirectoryName(CurrentFilePath);
 	[JsonIgnore] public string? FileName => Path.GetFileNameWithoutExtension(CurrentFilePath);
@@ -34,6 +35,7 @@ public class AppData {
 		CurrentFilePath = string.Empty;
 		FileSettings = new AppDataFileSettings();
 
+		AllTags = [];
 		TodoList = [];
 		HistoryList = [];
 		FiltersList = [];

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Echoslate.ViewModels;
 
 namespace Echoslate;
 
@@ -38,7 +39,7 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	
+
 	private Version _currentProjectVersion;
 	public Version CurrentProjectVersion {
 		get => _currentProjectVersion;
@@ -47,21 +48,32 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	private IncrementMode _incrementMode;
+	public IncrementMode IncrementMode {
+		get => _incrementMode;
+		set {
+			_incrementMode = value;
+			OnPropertyChanged();
+		}
+	}
+
 	public AppDataFileSettings() {
 		AutoSave = false;
 		AutoBackup = false;
 		BackupIncrement = 0;
 		BackupTime = 5;
 		CurrentProjectVersion = new Version(0, 0, 0, 0);
+		IncrementMode = IncrementMode.None;
 	}
-	public static AppDataFileSettings Create(bool autoSave, bool autoBackup, int backupIncrement, int backupTime, Version version) {
+	public static AppDataFileSettings Create(bool autoSave, bool autoBackup, int backupIncrement, int backupTime, Version version, IncrementMode incrementMode = IncrementMode.None) {
 		return new AppDataFileSettings {
-										   AutoSave = autoSave,
-										   AutoBackup = autoBackup,
-										   BackupIncrement = backupIncrement,
-										   BackupTime = backupTime,
-										   CurrentProjectVersion = version
-									   };
+			AutoSave = autoSave,
+			AutoBackup = autoBackup,
+			BackupIncrement = backupIncrement,
+			BackupTime = backupTime,
+			CurrentProjectVersion = version,
+			IncrementMode = incrementMode
+		};
 	}
 
 

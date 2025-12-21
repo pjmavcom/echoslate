@@ -100,7 +100,7 @@ namespace Echoslate {
 		public DlgTodoItemEditor(TodoItem td, string? currentListHash) {
 			InitializeComponent();
 			DataContext = this;
-
+			
 			_todoItem = TodoItem.Create(td.ToString());
 			_todoItem.IsTimerOn = td.IsTimerOn;
 			_currentListHash = currentListHash ?? "All";

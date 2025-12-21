@@ -15,10 +15,19 @@
             <SolidColorBrush x:Key="RaisedBackground" Color="#343B41" />
             <SolidColorBrush x:Key="Foreground" Color="#DCDCDC" />
             <SolidColorBrush x:Key="SubtleForeground" Color="#999999" />
+            <SolidColorBrush x:Key="LightAccent" Color="#009FFF" />
             <SolidColorBrush x:Key="Accent" Color="#007ACC" />
+            <SolidColorBrush x:Key="DarkAccent" Color="#003A77" />
             <SolidColorBrush x:Key="Border" Color="#292929" />
-            <SolidColorBrush x:Key="LessThanBorder" Color="#272727" />
-            <SolidColorBrush x:Key="ButtonBackground" Color="#323232" />
+
+            <SolidColorBrush x:Key="BorderSilver" Color="#999999" />
+            <SolidColorBrush x:Key="BorderMid" Color="#444444" />
+            <SolidColorBrush x:Key="BorderDark" Color="#222222" />
+
+            <SolidColorBrush x:Key="ButtonDisabledBackground" Color="#141414" />
+            <SolidColorBrush x:Key="ButtonBackground" Color="#272727" />
+            <SolidColorBrush x:Key="ButtonHoverBackground" Color="#373737" />
+            <SolidColorBrush x:Key="ButtonPressedBackground" Color="#212121" />
 
             <!--  GLOBAL  -->
             <Style TargetType="Window">
@@ -49,7 +58,6 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="CaretBrush" Value="{StaticResource Foreground}" />
                 <Setter Property="SelectionBrush" Value="{StaticResource Accent}" />
-                <Setter Property="Padding" Value="4" />
             </Style>
             <Style TargetType="TextBlock">
                 <Setter Property="Background" Value="Transparent" />
@@ -77,16 +85,16 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="{StaticResource LessThanBorder}" />
-                                    <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Accent}" />
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonHoverBackground}" />
+                                    <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Foreground}" />
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="{StaticResource Accent}" />
-                                    <Setter Property="Foreground" Value="{StaticResource Foreground}" />
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonPressedBackground}" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Background" Value="{StaticResource AppBackground}" />
-                                    <Setter Property="Foreground" Value="{StaticResource LessThanBorder}" />
+                                    <Setter Property="Foreground" Value="{StaticResource ButtonDisabledBackground}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -588,8 +596,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
         </ResourceDictionary>
     </Application.Resources>
-
 </Application>

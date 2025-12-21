@@ -1,3 +1,38 @@
+commit bee21553cd97093944c531ef55ac55bd5975944d
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sun Dec 21 15:58:16 2025 +0800
+
+    20251220- Switching over now
+    Estimated Time: 0
+    Estimated Total Time: 0
+    
+    =Features Added===================================================================================================
+    --20251221-0m |Fix the PomoTimer
+    
+    =Other Stuff======================================================================================================
+    --20251221-0m |Fixed version numbers of existing histories
+    --20251221-0m |Versioning
+    --20251221-0m |Remove Log window for now
+    --20251221-0m |Implemented LastActiveTab in AppDataSettings
+    --20251221-0m |Fix the PomoTimer
+    --20251221-0m |If a word in a todo is already a tag, automatically add it as a tag
+
+commit ef38a7e22a9d4707a3478d03d23abfa4da2ebb5e
+Author: pjmavcom <pjmavcom@gmail.com>
+Date:   Sat Dec 20 22:04:12 2025 +0800
+
+    20251219- v3.40.43.0 Autobackup and saving
+    Estimated Time: 0
+    Estimated Total Time: 32 : 25
+    Notes: I think this can work now full time.
+    
+    =Other Stuff======================================================================================================
+    --20251220-0m |Timers are broken again. Add a timer to MainWindowViewModel
+    --20251220-0m |Autobackup
+    --20251220-0m |AutoSaving
+    --20251220-0m |Json save the app settings
+    --20251220-0m |Right click reactivate item in history window
+
 commit 778ec404399c4152d1e87d46f3fd0aa7f51f78da
 Author: pjmavcom <pjmavcom@gmail.com>
 Date:   Fri Dec 19 22:35:59 2025 +0800

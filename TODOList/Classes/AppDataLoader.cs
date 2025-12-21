@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Echoslate.ViewModels;
 
 namespace Echoslate;
 
@@ -89,8 +90,10 @@ public class AppDataLoader {
 		data.FileSettings.AutoBackup = Convert.ToBoolean(stream.ReadLine());
 		stream.ReadLine();
 		data.FileSettings.AutoSave = Convert.ToBoolean(stream.ReadLine());
-		stream.ReadLine(); 
-		data.FileSettings.CurrentProjectVersion = ConvertProjectVersion(stream.ReadLine());
+		stream.ReadLine();
+		string versionAndMode = stream.ReadLine();
+		data.FileSettings.CurrentProjectVersion = ConvertProjectVersion(versionAndMode);
+		data.FileSettings.IncrementMode = GetIncrementMode(versionAndMode);
 
 		while (true) {
 			line = stream.ReadLine();
@@ -127,5 +130,15 @@ public class AppDataLoader {
 	public static Version ConvertProjectVersion(string version) {
 		string[] v = version.Split('.');
 		 return new Version(Convert.ToInt16(v[0]), Convert.ToInt16(v[1]), Convert.ToInt16(v[2]), Convert.ToInt16(v[3]));
+	}
+	public static IncrementMode GetIncrementMode(string version) {
+		string[] v = version.Split('.');
+		return v[4] switch {
+			"0" => IncrementMode.Major,
+			"1" => IncrementMode.Minor,
+			"2" => IncrementMode.Build,
+			"3" => IncrementMode.Revision,
+			_ => IncrementMode.None
+		};
 	}
 }

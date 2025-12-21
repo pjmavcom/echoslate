@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -342,6 +344,33 @@ namespace Echoslate {
 					result += Environment.NewLine + "--" + td.ToClipboard();
 			}
 			return result;
+		}
+		public void UpdateDates() {
+			if (DateTime.TryParseExact(DateAdded, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
+			} else {
+				parsedDate = DateTime.Today;
+			}
+			if (TimeSpan.TryParseExact(TimeAdded, @"hhmmss", CultureInfo.InvariantCulture, out TimeSpan parsedTime)) {
+			}
+			CommitDate = parsedDate.Date + parsedTime;
+
+			MigrateCommitMessages();
+		}
+		private void MigrateCommitMessages() {
+			string message = Title?.Trim();
+			message = message.Remove(0, 1);
+
+			int spaceIndex = message.IndexOf(' ');
+			if (spaceIndex > 0) {
+				string versionPart = message.Substring(0, spaceIndex).Trim();
+				string titlePart = message.Substring(spaceIndex).TrimStart();
+
+				// Basic check: is it four numbers with dots?
+				if (versionPart.Count(c => c == '.') == 3 && versionPart.All(c => char.IsDigit(c) || c == '.')) {
+					Version = Version.Parse(versionPart); // Store as string or Version.Parse(versionPart)
+					Title = titlePart;
+				}
+			}
 		}
 		private string BreakLines(string s) {
 			int charLimit = 100;

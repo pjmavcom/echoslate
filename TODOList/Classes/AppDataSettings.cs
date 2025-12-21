@@ -24,11 +24,14 @@ namespace Echoslate {
 		public double WindowHeight { get; set; }
 		public WindowState WindowState { get; set; } = WindowState.Normal;
 
-		public int PomoWorkTimerLength { get; set; }
-		public int PomoBreakTimerLength { get; set; }
+		public TimeSpan PomoWorkTimerLength { get; set; }
+		public TimeSpan PomoBreakTimerLength { get; set; }
 		public bool GlobalHotkeysEnabled { get; set; }
 
+		public int LastActiveTabIndex { get; set; }
+		
 		[JsonIgnore] public string WindowTitle { get; set; }
+		
 
 		public AppDataSettings() {
 			SettingsFileName = "Echoslate.Settings";
@@ -39,8 +42,8 @@ namespace Echoslate {
 			WindowHeight = 1080;
 			WindowState = WindowState.Normal;
 
-			PomoWorkTimerLength = 25;
-			PomoBreakTimerLength = 5;
+			PomoWorkTimerLength = new TimeSpan(0, 25, 0);
+			PomoBreakTimerLength = new TimeSpan(0, 5, 0);
 			WindowTitle = string.Empty;
 		}
 
@@ -48,7 +51,7 @@ namespace Echoslate {
 			return new AppDataSettings { WindowTitle = windowTitle };
 		}
 
-		public void SaveSettings() {
+		public void SaveSettings(int lastActiveTab = -1) {
 			var mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				WindowLeft = double.IsNaN(mainWindow.Left) ? 0 : mainWindow.Left;
@@ -56,6 +59,9 @@ namespace Echoslate {
 				WindowWidth = mainWindow.Width;
 				WindowHeight = mainWindow.Height;
 				WindowState = mainWindow.WindowState;
+			}
+			if (lastActiveTab > 0) {
+				LastActiveTabIndex = lastActiveTab;
 			}
 			
 			string filePath = AppDomain.CurrentDomain.BaseDirectory + SettingsFileName;
@@ -88,6 +94,7 @@ namespace Echoslate {
 				PomoWorkTimerLength = settings.PomoWorkTimerLength;
 				PomoBreakTimerLength = settings.PomoBreakTimerLength;
 				GlobalHotkeysEnabled = settings.GlobalHotkeysEnabled;
+				LastActiveTabIndex = settings.LastActiveTabIndex;
 			} else {
 				Log.Warn("Settings file is corrupted. Creating new settings file.");
 				SaveSettings();

@@ -9,13 +9,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Application = System.Windows.Application;
 
 namespace Echoslate.ViewModels {
+	public enum PomoActiveState {
+		Idle,
+		Work,
+		Break
+	}
+
 	public class MainWindowViewModel : INotifyPropertyChanged {
-		private AppData Data;
+		public AppData Data;
 		public AppDataSettings AppDataSettings { get; set; }
 
 		private string _currentWindowTitle;
@@ -26,8 +33,6 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		// private bool _autoSave = false;
-		// private bool _autoBackup = false;
 
 		public TodoListViewModel TodoListVM { get; }
 		public KanbanViewModel KanbanVM { get; }
@@ -52,7 +57,7 @@ namespace Echoslate.ViewModels {
 		}
 		private HistoryItem _currentHistoryItem;
 		public HistoryItem CurrentHistoryItem {
-			get =>  _currentHistoryItem;
+			get => _currentHistoryItem;
 			set {
 				_currentHistoryItem = value;
 				OnPropertyChanged();
@@ -79,22 +84,107 @@ namespace Echoslate.ViewModels {
 		private TimeSpan _backupTimer;
 		private TimeSpan _backupTimerMax;
 
+		private TimeSpan _pomoTimer;
+		public TimeSpan PomoTimer {
+			get => _pomoTimer;
+			set {
+				_pomoTimer = value;
+				OnPropertyChanged();
+				UpdatePomoTimerUI();
+			}
+		}
+		private bool _isPomoTimerOn;
+		private TimeSpan _pomoWorkTime;
+		public TimeSpan PomoWorkTime {
+			get => _pomoWorkTime;
+			set {
+				_pomoWorkTime = value;
+				AppDataSettings.PomoWorkTimerLength = value;
+				OnPropertyChanged();
+			}
+		}
+		public int PomoWorkTimeMinutes {
+			get => _pomoWorkTime.Minutes;
+			set {
+				PomoWorkTime = new TimeSpan(0, value, 0);
+				OnPropertyChanged();
+			}
+		}
+		private TimeSpan _pomoTimeLeft;
+		public TimeSpan PomoTimeLeft {
+			get => _pomoTimeLeft;
+			set {
+				_pomoTimeLeft = value;
+				OnPropertyChanged();
+				UpdatePomoTimerUI();
+			}
+		}
+		private TimeSpan _pomoBreakTime;
+		public TimeSpan PomoBreakTime {
+			get => _pomoBreakTime;
+			set {
+				_pomoBreakTime = value;
+				AppDataSettings.PomoBreakTimerLength = value;
+				OnPropertyChanged();
+			}
+		}
+		public int PomoBreakTimeMinutes {
+			get => _pomoBreakTime.Minutes;
+			set {
+				PomoBreakTime = new TimeSpan(0, value, 0);
+				OnPropertyChanged();
+			}
+		}
+		public string PomoLabelContent => $"{PomoTimeLeft.Minutes:00}:{PomoTimeLeft.Seconds:00}";
+
+		private PomoActiveState _pomoState;
+		public PomoActiveState PomoState {
+			get => _pomoState;
+			set {
+				_pomoState = value;
+				OnPropertyChanged();
+				UpdatePomoTimerUI();
+			}
+		}
+		private PomoActiveState _pomoLastActiveState;
+
+		public Brush PomoBackground {
+			get => _pomoState switch {
+				PomoActiveState.Idle => Brushes.Transparent,
+				PomoActiveState.Work => Brushes.Maroon,
+				PomoActiveState.Break => Brushes.LimeGreen,
+				_ => Brushes.Transparent
+			};
+		}
+		public int PomoProgressBarValue { get; set; }
+		public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
+
+		private void UpdatePomoTimerUI() {
+			OnPropertyChanged(nameof(PomoLabelContent));
+			OnPropertyChanged(nameof(PomoBackground));
+			OnPropertyChanged(nameof(PomoProgressBarValue));
+			OnPropertyChanged(nameof(PomoIsWorkMode));
+		}
+
 
 		public MainWindowViewModel(AppDataSettings appDataSettings) {
 			AppDataSettings = appDataSettings;
 			TodoListVM = new TodoListViewModel();
 			KanbanVM = new KanbanViewModel();
 			HistoryVM = new HistoryViewModel();
-			
+
 			if (appDataSettings.RecentFiles.Count != 0) {
 				LoadRecentFile(appDataSettings);
 				LoadCurrentData();
 			} else {
 				CreateNewFile();
 			}
+			foreach (TodoItem item in MasterTodoItemsList) {
+				item.UpdateTags(Data.AllTags);
+			}
 
-			
 			SetWindowTitle();
+			SetPomoTimers();
 
 			var timer = new DispatcherTimer();
 			timer.Tick += Timer_Tick;
@@ -105,6 +195,10 @@ namespace Echoslate.ViewModels {
 			// _backupTimerMax = new TimeSpan(0, 0, 10);
 			_backupTimer = _backupTimerMax;
 			Log.Print($"{_backupTimer}");
+		}
+		private void SetPomoTimers() {
+			PomoWorkTime = AppDataSettings.PomoWorkTimerLength;
+			PomoBreakTime =  AppDataSettings.PomoBreakTimerLength;
 		}
 		public void Timer_Tick(object? sender, EventArgs e) {
 			UpdateBackupTimer();
@@ -126,33 +220,29 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		public void UpdatePomoTimer() {
-			// lblPomo.Content = $"{_pomoTimer.Ticks / TimeSpan.TicksPerMinute:00}:{_pomoTimer.Second:00}";
-			// if (_isPomoTimerOn) {
-			// 	pbPomo.Background = Brushes.Maroon;
-			// 	_pomoTimer = _pomoTimer.AddSeconds(1);
-			//
-			// 	if (_isPomoWorkTimerOn) {
-			// 		long ticks = _pomoWorkTime * TimeSpan.TicksPerMinute;
-			// 		PomoTimeLeft = (int)((float)_pomoTimer.Ticks / ticks * 100);
-			// 		pbPomo.Background = Brushes.DarkGreen;
-			// 		if (_pomoTimer.Ticks < ticks)
-			// 			return;
-			//
-			// 		_isPomoWorkTimerOn = false;
-			// 		_pomoTimer = DateTime.MinValue;
-			// 	} else {
-			// 		long ticks = _pomoBreakTime * TimeSpan.TicksPerMinute;
-			// 		PomoTimeLeft = (int)((float)(ticks - _pomoTimer.Ticks) / ticks * 100);
-			// 		if (_pomoTimer.Ticks < ticks)
-			// 			return;
-			//
-			// 		_isPomoWorkTimerOn = true;
-			// 		_pomoTimer = DateTime.MinValue;
-			// 	}
-			// } else {
-			// 	pbPomo.Background = Brushes.Transparent;
-			// 	lblPomo.Background = Brushes.Transparent;
-			// }
+			if (_isPomoTimerOn) {
+				PomoTimer = PomoTimer.Add(new TimeSpan(0, 0, 1));
+				if (PomoState == PomoActiveState.Work) {
+					double timerTicks = PomoTimer.Ticks;
+					double workTicks = PomoWorkTime.Ticks;
+					PomoProgressBarValue = 100 - (int)(100 * (timerTicks / workTicks));
+					PomoTimeLeft = PomoWorkTime - PomoTimer;
+					if (PomoTimer >= PomoWorkTime) {
+						PomoState = PomoActiveState.Break;
+						PomoTimer = new TimeSpan(0, 0, 0);
+					}
+				} else if (PomoState == PomoActiveState.Break) {
+					double timerTicks = PomoTimer.Ticks;
+					double breakTicks = PomoBreakTime.Ticks;
+					PomoProgressBarValue = 100 - (int)(100 * (timerTicks / breakTicks));
+					PomoTimeLeft = PomoBreakTime - PomoTimer;
+					if (PomoTimer >= PomoBreakTime) {
+						PomoState = PomoActiveState.Work;
+						PomoTimer = new TimeSpan(0, 0, 0);
+					}
+				}
+				_pomoLastActiveState = _pomoState;
+			}
 		}
 		public void SetWindowTitle() {
 			CurrentWindowTitle = AppDataSettings.WindowTitle + " - " + Data?.FileName;
@@ -163,12 +253,18 @@ namespace Echoslate.ViewModels {
 			HistoryVM.RebuildView();
 		}
 		public void LoadCurrentData() {
-			
 			MasterTodoItemsList = Data.TodoList;
 			MasterFilterTags = Data.FiltersList;
 			MasterHistoryItemsList = Data.HistoryList;
 			if (MasterHistoryItemsList.Count == 0) {
 				MasterHistoryItemsList.Add(new HistoryItem());
+			}
+			foreach (TodoItem item in MasterTodoItemsList) {
+				foreach (string tag in item.Tags) {
+					if (!Data.AllTags.Contains(tag)) {
+						Data.AllTags.Add(tag);
+					}
+				}
 			}
 			CurrentHistoryItem = MasterHistoryItemsList[0];
 
@@ -182,10 +278,11 @@ namespace Echoslate.ViewModels {
 			HistoryVM.Initialize(this);
 			RebuildAllViews();
 			SetWindowTitle();
-			
-			foreach (TodoItem item in MasterTodoItemsList) {
-				item.UpdateDates();
-			}
+
+			// TODO Remove this if all is well
+			// foreach (TodoItem item in MasterTodoItemsList) {
+				// item.UpdateDates();
+			// }
 		}
 		private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (e.NewItems != null) {
@@ -227,7 +324,7 @@ namespace Echoslate.ViewModels {
 			if (!IsChanged) {
 				IsChanged = true;
 				_ = AutoSaveAsync();
-				// Log.Test("Autosaving");
+				Log.Test("Autosaving");
 			}
 		}
 		private void ClearChangedFlag() {
@@ -241,7 +338,6 @@ namespace Echoslate.ViewModels {
 
 				if (File.Exists(settings.RecentFiles[0])) {
 					Log.Print($"Loading recent file {settings.RecentFiles[0]}");
-					// Data = AppDataLoader.Load2_1SaveFile(settings.RecentFiles[0]);
 					Data = AppDataLoader.Load(settings.RecentFiles[0]);
 					settings.SortRecentFiles(settings.RecentFiles[0]);
 					return;
@@ -303,7 +399,6 @@ namespace Echoslate.ViewModels {
 		}
 		private void Load(string? filePath) {
 			Data = AppDataLoader.Load(filePath);
-			// Data = AppDataLoader.Load2_1SaveFile(filePath);
 			AppDataSettings.SortRecentFiles(filePath);
 			LoadCurrentData();
 			AppDataSettings.AddRecentFile(Data.CurrentFilePath);
@@ -312,17 +407,17 @@ namespace Echoslate.ViewModels {
 		}
 		public void CreateNewFile() {
 			Data = new AppData();
-			
+
 			LoadCurrentData();
 			RebuildAllViews();
 			ClearChangedFlag();
-			
+
 			SaveFileDialog sfd = new SaveFileDialog {
-														Title = @"Select folder to save file in.",
-														FileName = Data.FileName,
-														InitialDirectory = Data.BasePath,
-														Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
-													};
+				Title = @"Select folder to save file in.",
+				FileName = Data.FileName,
+				InitialDirectory = Data.BasePath,
+				Filter = @"Echoslate files (*.echoslate)|*.echoslate|All files (*.*)|*.*"
+			};
 			DialogResult dr = sfd.ShowDialog();
 			if (dr != System.Windows.Forms.DialogResult.OK) {
 				Log.Warn("File not saved. Continuing...");
@@ -330,20 +425,19 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 			Application.Current.MainWindow?.Activate();
-			
+
 			Data.CurrentFilePath = sfd.FileName;
 			Save(sfd.FileName);
-			
+
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
-				
-				mainWindow.Activate();                    // Try to activate
+				mainWindow.Activate();
 				if (mainWindow.WindowState == WindowState.Minimized)
 					mainWindow.WindowState = WindowState.Normal;
-			
-				mainWindow.Topmost = true;                // Briefly force on top
-				mainWindow.Topmost = false;               // Remove topmost immediately
-				mainWindow.Focus();                       // Give it keyboard focus
+
+				mainWindow.Topmost = true;
+				mainWindow.Topmost = false;
+				mainWindow.Focus();
 			}
 		}
 		private void MenuNew() {
@@ -352,11 +446,10 @@ namespace Echoslate.ViewModels {
 		private void MenuLoad() {
 			string basePath = Data == null ? "" : Data.BasePath;
 			OpenFileDialog openFileDialog = new OpenFileDialog {
-																   Title = @"Open file: ",
-																   InitialDirectory = basePath,
-																   Filter =
-																	   @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
-															   };
+				Title = @"Open file: ",
+				InitialDirectory = basePath,
+				Filter = @"Echoslate files (*.echoslate)|*.echoslate|All files (*.*)|*.*"
+			};
 
 			DialogResult dr = openFileDialog.ShowDialog();
 
@@ -379,11 +472,11 @@ namespace Echoslate.ViewModels {
 		public void SaveAs() {
 			Log.Print("Saving file as...");
 			SaveFileDialog sfd = new SaveFileDialog {
-														Title = @"Select folder to save file in.",
-														FileName = Data.FileName,
-														InitialDirectory = Data.BasePath,
-														Filter = @"txt files (*.txt)|*.txt|All files (*.*)|*.*"
-													};
+				Title = @"Select folder to save file in.",
+				FileName = Data.FileName,
+				InitialDirectory = Data.BasePath,
+				Filter = @"Echoslate files (*.echoslate)|*.echoslate|All files (*.*)|*.*"
+			};
 
 			DialogResult dr = sfd.ShowDialog();
 			if (dr != System.Windows.Forms.DialogResult.OK) {
@@ -391,18 +484,19 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 
+			Application.Current.MainWindow?.Activate();
+			
 			Data.CurrentFilePath = sfd.FileName;
 			Save(sfd.FileName);
 			Window mainWindow = Application.Current.MainWindow;
-			if (mainWindow != null)
-			{
-				mainWindow.Activate();                    // Try to activate
+			if (mainWindow != null) {
+				mainWindow.Activate();
 				if (mainWindow.WindowState == WindowState.Minimized)
 					mainWindow.WindowState = WindowState.Normal;
 
-				mainWindow.Topmost = true;                // Briefly force on top
-				mainWindow.Focus();                       // Give it keyboard focus
-				mainWindow.Topmost = false;               // Remove topmost immediately
+				mainWindow.Topmost = true;
+				mainWindow.Focus();
+				mainWindow.Topmost = false;
 			}
 		}
 		private void MenuSaveAs() {
@@ -415,31 +509,6 @@ namespace Echoslate.ViewModels {
 			TimeSpan backupTime = new TimeSpan(0, 0, 0);
 			DlgOptions options = new DlgOptions(autoSave, globalHotkeys, autoBackup, backupTime);
 			options.ShowDialog();
-			if (!options.Result)
-				return;
-
-#if DEBUG
-#else
-			_autoSave = options.AutoSave;
-			_autoBackup = options.AutoBackup;
-			_backupTime = options.BackupTime;
-#endif
-			AutoSave();
-		}
-		private void AutoSave() {
-			// _isChanged = true;
-			// _doBackup = true;
-			// if (_currentOpenFile == "") {
-			// SaveAs();
-			// return;
-			// }
-
-			// if (_autoSave) {
-			// if (AppDataSettings.RecentFiles.Count >= 1)
-			// Save(AppDataSettings.RecentFiles[0]);
-			// else
-			// SaveAs();
-			// }
 		}
 		private void MenuQuit() {
 			Log.Print("Saving settings...");
@@ -483,6 +552,28 @@ namespace Echoslate.ViewModels {
 
 		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(MenuRecentFilesLoad);
 		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
+
+		public ICommand PomoTimerToggleCommand => new RelayCommand(() => {
+			_isPomoTimerOn = !_isPomoTimerOn;
+			if (_isPomoTimerOn) {
+				if (_pomoLastActiveState == PomoActiveState.Idle) {
+					PomoProgressBarValue = 0;
+					PomoState = PomoActiveState.Work;
+				} else {
+					PomoState = _pomoLastActiveState;
+				}
+			} else {
+				PomoState = PomoActiveState.Idle;
+			}
+		});
+		public ICommand PomoTimerResetCommand => new RelayCommand(() => {
+			_isPomoTimerOn = false;
+			_pomoLastActiveState = PomoActiveState.Idle;
+			PomoProgressBarValue = 0;
+			PomoState = PomoActiveState.Idle;
+			PomoTimer = TimeSpan.Zero;
+			PomoTimeLeft = TimeSpan.Zero;
+		});
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 		private void OnPropertyChanged([CallerMemberName] string? name = null)

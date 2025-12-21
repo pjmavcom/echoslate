@@ -42,7 +42,7 @@
         <!--  Command="{StaticResource StartStopTimer}"  -->
         <!--  Modifiers="Control" />  -->
     </UserControl.InputBindings>
-    <Grid>
+    <Grid Background="{StaticResource AppDarkBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -145,127 +145,153 @@
 
         <!--  Main TodoList view  -->
         <!--  x:Name="lbTodos"  -->
-        <ListBox Grid.Row="2" Grid.Column="0"
-                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                 ItemsSource="{Binding DisplayedItems}"
-                 KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                 SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
-                 SelectionMode="Extended">
-            <b:Interaction.Behaviors>
-                <!--  This syncs selection to the ViewModel automatically  -->
-                <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedTodoItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
-            </b:Interaction.Behaviors>
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="{Binding ContextMenuEditCommand}" Header="Edit" />
-                    <MenuItem Command="{Binding ContextMenuDeleteCommand}" Header="Delete" />
-                    <Separator />
-                    <MenuItem Command="{Binding ContextMenuResetTimerCommand}" Header="Reset Timer" />
-                    <Separator />
-                    <MenuItem Command="{Binding ContextMenuKanban3Command}" Header="Set Kanban: Current" />
-                    <MenuItem Command="{Binding ContextMenuKanban2Command}" Header="Set Kanban: Next" />
-                    <MenuItem Command="{Binding ContextMenuKanban1Command}" Header="Set Kanban: Backlog" />
-                    <MenuItem Command="{Binding ContextMenuKanban0Command}" Header="Set Kanban: None" />
-                    <Separator />
-                    <MenuItem Command="{Binding ContextMenuMoveToTopCommand}" Header="Move to Top" />
-                    <MenuItem Command="{Binding ContextMenuMoveToBottomCommand}" Header="Move to Bottom" />
-                    <Separator />
-                    <MenuItem Command="{Binding ContextMenuCompleteCommand}" Header="Complete" />
-                    <Separator />
-                    <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print Todo" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Height" Value="auto" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Padding" Value="0" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Height="36"
-                          Margin="2"
-                          Background="Transparent"
-                          ToolTip="{Binding NotesAndTags}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300" />
-                            <ColumnDefinition Width="172" />
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+        <Border Grid.Row="2" Grid.Column="0"
+                Margin="8,4"
+                Background="#1E1E1E" CornerRadius="7">
+            <Grid>
+                <Border BorderBrush="#999999" BorderThickness="7,7,0,0"
+                        CornerRadius="7" />
+                <Border Margin="-1"
+                        BorderBrush="#494949" BorderThickness="0,0,7,7"
+                        CornerRadius="7" IsHitTestVisible="False" />
+                <ListBox Margin="0" Padding="7,4"
+                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                         ItemsSource="{Binding DisplayedItems}"
+                         KeyboardNavigation.TabIndex="0" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
+                         SelectionMode="Extended">
+                    <b:Interaction.Behaviors>
+                        <!--  This syncs selection to the ViewModel automatically  -->
+                        <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedTodoItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
+                    </b:Interaction.Behaviors>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="{Binding ContextMenuEditCommand}" Header="Edit" />
+                            <MenuItem Command="{Binding ContextMenuDeleteCommand}" Header="Delete" />
+                            <Separator />
+                            <MenuItem Command="{Binding ContextMenuResetTimerCommand}" Header="Reset Timer" />
+                            <Separator />
+                            <MenuItem Command="{Binding ContextMenuKanban3Command}" Header="Set Kanban: Current" />
+                            <MenuItem Command="{Binding ContextMenuKanban2Command}" Header="Set Kanban: Next" />
+                            <MenuItem Command="{Binding ContextMenuKanban1Command}" Header="Set Kanban: Backlog" />
+                            <MenuItem Command="{Binding ContextMenuKanban0Command}" Header="Set Kanban: None" />
+                            <Separator />
+                            <MenuItem Command="{Binding ContextMenuMoveToTopCommand}" Header="Move to Top" />
+                            <MenuItem Command="{Binding ContextMenuMoveToBottomCommand}" Header="Move to Bottom" />
+                            <Separator />
+                            <MenuItem Command="{Binding ContextMenuCompleteCommand}" Header="Complete" />
+                            <Separator />
+                            <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print Todo" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Height" Value="auto" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="36"
+                                  Margin="2"
+                                  Background="Transparent"
+                                  ToolTip="{Binding NotesAndTags}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300" />
+                                    <ColumnDefinition Width="172" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0"
-                                   Margin="4,0"
-                                   Text="{Binding TagsSorted}"
-                                   TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow" />
-                        <TextBlock Grid.Column="1"
-                                   HorizontalAlignment="Center"
-                                   FontWeight="Medium" Foreground="#FFFF5555"
-                                   Text="{Binding DateTimeStarted}" />
-                        <TextBlock Grid.Column="2"
-                                   Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
-                                   FontWeight="SemiBold" Foreground="White"
-                                   TextAlignment="Center">
-                            <TextBlock.InputBindings>
-                                <MouseBinding Command="{Binding DataContext.ChangeSeverityCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                              CommandParameter="{Binding}"
-                                              Gesture="LeftClick" />
-                            </TextBlock.InputBindings>
-                        </TextBlock>
-                        <Grid Grid.Column="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="25" />
-                                <ColumnDefinition Width="25" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0"
-                                   HorizontalAlignment="Center"
-                                   Content="{Binding Rank}" />
-                            <Button Grid.Column="1"
-                                    Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                    CommandParameter="{Binding}"
-                                    Content="▼" FontSize="16"
-                                    FontWeight="Bold" />
-                            <Button Grid.Column="2"
-                                    Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                    CommandParameter="{Binding}"
-                                    Content="▲" FontSize="16"
-                                    FontWeight="Bold" />
-                        </Grid>
-                        <Label Grid.Column="4"
-                               HorizontalContentAlignment="Center"
-                               Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
-                               Content="{Binding TimeTakenDisplay, UpdateSourceTrigger=PropertyChanged}"
-                               Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}">
-                            <Label.InputBindings>
-                                <MouseBinding Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                              CommandParameter="{Binding}"
-                                              Gesture="LeftClick" />
-                            </Label.InputBindings>
-                        </Label>
-                        <TextBlock Grid.Column="5"
-                                   Margin="8,0,4,0"
-                                   Text="{Binding Todo}"
-                                   TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                                <TextBlock Grid.Column="0"
+                                           Margin="4,0"
+                                           Text="{Binding TagsSorted}"
+                                           TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow" />
+                                <TextBlock Grid.Column="1"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="Medium" Foreground="#FFFF5555"
+                                           Text="{Binding DateTimeStarted}" />
+                                <TextBlock Grid.Column="2"
+                                           Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
+                                           FontWeight="SemiBold" Foreground="White"
+                                           TextAlignment="Center">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Command="{Binding DataContext.ChangeSeverityCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                      CommandParameter="{Binding}"
+                                                      Gesture="LeftClick" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <Grid Grid.Column="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="25" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0"
+                                           HorizontalAlignment="Center"
+                                           Content="{Binding Rank}" />
+                                    <Button Grid.Column="1"
+                                            Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                            CommandParameter="{Binding}"
+                                            Content="▼" FontSize="16"
+                                            FontWeight="Bold" />
+                                    <Button Grid.Column="2"
+                                            Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                            CommandParameter="{Binding}"
+                                            Content="▲" FontSize="16"
+                                            FontWeight="Bold" />
+                                </Grid>
+                                <Label Grid.Column="4"
+                                       HorizontalContentAlignment="Center"
+                                       Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
+                                       Content="{Binding TimeTakenDisplay, UpdateSourceTrigger=PropertyChanged}"
+                                       Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}">
+                                    <Label.InputBindings>
+                                        <MouseBinding Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                      CommandParameter="{Binding}"
+                                                      Gesture="LeftClick" />
+                                    </Label.InputBindings>
+                                </Label>
+                                <TextBlock Grid.Column="5"
+                                           Margin="8,0,4,0"
+                                           Text="{Binding Todo}"
+                                           TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
 
         <!--  New TODOItem Editor  -->
-        <Grid Grid.Row="3" Grid.Column="0">
+        <Grid Grid.Row="3" Grid.Column="0"
+              Background="{StaticResource AppDarkBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="270" />
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0"
-                     AcceptsReturn="False" Cursor="IBeam"
-                     KeyboardNavigation.TabIndex="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     Text="{Binding NewTodoText, UpdateSourceTrigger=PropertyChanged}"
-                     TextWrapping="Wrap" />
+
+            <Border Grid.Column="0"
+                    Margin="8,4"
+                    Background="#1E1E1E" CornerRadius="7">
+                <Grid>
+                    <Border BorderBrush="#999999" BorderThickness="7,7,0,0"
+                            CornerRadius="7" />
+                    <Border Margin="-1"
+                            BorderBrush="#494949" BorderThickness="0,0,7,7"
+                            CornerRadius="7" IsHitTestVisible="False" />
+                    <TextBox Grid.Column="0"
+                             Margin="1" Padding="7,4"
+                             AcceptsReturn="False" Cursor="IBeam"
+                             KeyboardNavigation.TabIndex="1" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             Text="{Binding NewTodoText, UpdateSourceTrigger=PropertyChanged}"
+                             TextWrapping="Wrap" />
+                </Grid>
+            </Border>
+
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
