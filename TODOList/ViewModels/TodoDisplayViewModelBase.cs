@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -48,7 +49,8 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		private string _currentFilter = "All";
+
+		protected string _currentFilter = "All";
 		public string? CurrentFilter {
 			get => _currentFilter;
 			set {
@@ -145,7 +147,7 @@ namespace Echoslate.ViewModels {
 					if (_selectedTodoItem is TodoItemHolder newItem) {
 						newItem.TD.PropertyChanged += TodoItem_PropertyChanged;
 					}
-					
+
 					OnPropertyChanged();
 				}
 			}
@@ -205,17 +207,7 @@ namespace Echoslate.ViewModels {
 			}
 			OnPropertyChanged(nameof(CurrentVisibleTags));
 		}
-		public void FixRanks() {
-			if (DisplayedItems == null) {
-				return;
-			}
-			DisplayedItems.SortDescriptions.Clear();
-			DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ListSortDirection.Ascending));
-			int index = 1;
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				ih.Rank = index++;
-			}
-		}
+		public abstract void FixRanks();
 		public void RefreshDisplayedItems(bool forceRefresh = false) {
 			if (RefreshAllItems()) {
 				return;
@@ -263,6 +255,10 @@ namespace Echoslate.ViewModels {
 					break;
 				case "kanban":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Kanban", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					break;
+				case "title":
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Todo", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 			}
@@ -325,7 +321,7 @@ namespace Echoslate.ViewModels {
 			}
 			TodoItemHolder? ih = SelectedTodoItems[0] as TodoItemHolder;
 			TodoItem? item = ih?.TD;
-			
+
 			if (item != null) {
 				MarkTodoAsComplete(item);
 			}
@@ -351,7 +347,7 @@ namespace Echoslate.ViewModels {
 			CurrentHistoryItem = HistoryItems[0];
 			CurrentHistoryItem.AddCompletedTodo(item);
 		}
-		private void EditItem(TodoItem item) {
+		public void EditItem(TodoItem item) {
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash());
 			dlg.ShowDialog();
 
@@ -385,11 +381,12 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 			CleanTodoHashRanks(item);
+			item.UpdateTags(Data.AllTags);
+			MasterList.Add(item);
 			LookForNewTags(item);
 		}
 		private void LookForNewTags(TodoItem item) {
 			bool newTagFound = false;
-			MasterList.Add(item);
 			foreach (string t in item.Tags) {
 				if (!Data.AllTags.Contains(t)) {
 					newTagFound = true;
@@ -480,7 +477,7 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		}
 
-		private void ExpandHashTags(TodoItem td) {
+		protected void ExpandHashTags(TodoItem td) {
 			// UNCHECKED
 			string tempTodo = ExpandHashTagsInString(td.Todo);
 			string tempTags = ExpandHashTagsInList(td.Tags);
@@ -703,17 +700,9 @@ namespace Echoslate.ViewModels {
 		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
 		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
-		public ICommand NewTodoAddCommand => new RelayCommand(() => {
-			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
-			item.DateTimeStarted = DateTime.Now;
-			ExpandHashTags(item);
-			if (CurrentFilter != "All") {
-				item.Tags.Add(CurrentFilter);
-			}
-			AddItemToMasterList(item);
-			RefreshAll();
-			NewTodoText = "";
-		});
+		public ICommand NewTodoAddCommand => new RelayCommand(NewTodoAdd);
+		public abstract void NewTodoAdd();
+
 		public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
 		public void AddAndComplete() {
 			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };

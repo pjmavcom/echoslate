@@ -1,0 +1,39 @@
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+
+namespace Echoslate.ViewModels;
+public class WelcomeViewModel : INotifyPropertyChanged
+{
+    public ICommand CreateNewCommand { get; }
+    public ICommand OpenExistingCommand { get; }
+
+    private bool _dontShowAgain;
+    public bool DontShowAgain
+    {
+        get => _dontShowAgain;
+        set { _dontShowAgain = value; OnPropertyChanged(); }
+    }
+
+    public WelcomeViewModel(Action createNew, Action openExisting)
+    {
+        CreateNewCommand = new RelayCommand(createNew);
+        OpenExistingCommand = new RelayCommand(openExisting);
+
+        // Load saved preference
+        DontShowAgain = Properties.Settings.Default.SkipWelcome;
+    }
+
+    // Save preference when closed
+    public void SavePreference()
+    {
+        Properties.Settings.Default.SkipWelcome = DontShowAgain;
+        Properties.Settings.Default.Save();
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}

@@ -1,178 +1,322 @@
 <Window x:Class="Echoslate.DlgTodoItemEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Todo Item Edit"
-        Width="610" Height="740"
+        xmlns:converters="clr-namespace:Echoslate.Converters" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Edit Todo Item"
+        Width="1000"
+        Background="{StaticResource AppDarkBackground}"
         FocusManager.FocusedElement="{Binding ElementName=tbTodo}"
+        SizeToContent="Height"
         Style="{StaticResource {x:Type Window}}"
-        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         >
 
     <Window.InputBindings>
-        <KeyBinding Key="Enter" Command="{Binding CompleteCommand}" />
-    </Window.InputBindings>
-
-    <StackPanel Margin="10" TextElement.FontSize="16">
-
-        <!--  Severity, Rank, Time, Kanban  -->
-        <Grid Margin="0,0,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0"
-                    Width="Auto"
-                    Margin="4,0" Padding="16,8"
-                    Background="{Binding SeverityButtonBackground}"
-                    BorderThickness="0"
-                    Command="{Binding CycleSeverityCommand}"
-                    Content="Severity" FontWeight="SemiBold" Foreground="White"
+        <KeyBinding Key="Enter"
+                    Command="{Binding CompleteCommand}"
+                    Modifiers="Ctrl"
                     />
-            <Label Grid.Column="1"
-                   Margin="2"
-                   Content="Rank:"
-                   />
-            <xctk:IntegerUpDown Grid.Column="2"
-                                Width="80" Height="27"
-                                Minimum="0"
-                                Value="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
-                                />
-            <Label Grid.Column="3"
-                   Margin="2"
-                   Content="Time:"
-                   />
-            <xctk:LongUpDown Grid.Column="4"
-                             Width="80" Height="27"
-                             Minimum="0"
-                             Value="{Binding TimeInMinutes, UpdateSourceTrigger=PropertyChanged}"
-                             />
-            <TextBox Grid.Column="5"
-                     Width="70"
-                     Margin="2"
-                     Text="{Binding KanbanId, UpdateSourceTrigger=PropertyChanged}"
-                     ToolTip="Kanban/Card ID"
-                     />
-        </Grid>
+    </Window.InputBindings>
+    <Window.Resources>
+        <converters:KanbanIndexToIDConverter x:Key="KanbanIndexToIDConverter"
+                                             />
+    </Window.Resources>
 
-        <!--  TODO  -->
-        <Grid Margin="0,0,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0"
-                   Margin="2" HorizontalAlignment="Left"
-                   Content="TODO:"
-                   />
-            <TextBox Grid.Column="1"
-                     Width="490" Height="70"
-                     Margin="2"
-                     AcceptsReturn="True"
-                     Text="{Binding TodoText, UpdateSourceTrigger=PropertyChanged}"
-                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                     />
-        </Grid>
-
-        <!--  Notes  -->
-        <Grid Margin="0,0,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0"
-                   Margin="2" HorizontalAlignment="Left"
-                   Content="Notes:"
-                   />
-            <TextBox Grid.Column="1"
-                     Width="490" Height="180"
-                     Margin="2"
-                     AcceptsReturn="True"
-                     Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
-                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                     />
-        </Grid>
-
-        <!--  Tags  -->
-        <Grid Margin="0,0,0,15">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="486"
+                              />
+            <ColumnDefinition Width="486"
+                              />
+        </Grid.ColumnDefinitions>
+        <Grid Margin="7"
+              Column="0"
+              >
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="180"
+                               />
+                <RowDefinition Height="Auto"
+                               />
+                <RowDefinition Height="Auto"
+                               />
+                <RowDefinition Height="Auto"
+                               />
+                <RowDefinition Height="Auto"
+                               />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0"
-                   Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center"
-                   Content="Tags:"
-                   />
-            <Button Grid.Row="1" Grid.Column="0"
-                    Width="80" Height="32"
-                    Margin="2,2,2,5" VerticalAlignment="Top"
-                    Command="{Binding AddTagCommand}"
-                    Content="Add Tag"
-                    />
-            <ListBox Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
-                     Width="490" Height="280"
-                     Margin="2"
-                     ItemsSource="{Binding TagHolders}"
-                     SelectedItem="{Binding SelectedTag}"
-                     >
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Button Width="30" Height="26"
-                                    Margin="2"
-                                    Background="#FF6B6B"
-                                    Command="{Binding DataContext.DeleteTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="X" FontWeight="Bold" Foreground="White"
-                                    />
-                            <TextBox Grid.Column="1"
-                                     Margin="0,2,2,2"
-                                     Background="Transparent" BorderThickness="0,0,0,1"
-                                     Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
-                                     />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <!--  Top Row: Severity, Rank, Time, Kanban  -->
+
+            <!--  TODO Text  -->
+            <GroupBox Grid.Row="0"
+                      Margin="7"
+                      Background="{StaticResource ControlBackground}"
+                      FontSize="20" FontWeight="SemiBold"
+                      Foreground="{StaticResource Foreground}"
+                      Header="Title"
+                      Style="{StaticResource ThinGroupBoxStyle}"
+                      >
+                <TextBox Margin="1"
+                         AcceptsReturn="True" FontSize="15"
+                         Text="{Binding TodoText, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                         />
+
+
+            </GroupBox>
+
+            <!--  Notes  -->
+            <GroupBox Grid.Row="1" Grid.Column="0"
+                      Margin="7"
+                      Background="{StaticResource ControlBackground}"
+                      FontSize="20" FontWeight="SemiBold"
+                      Foreground="{StaticResource Foreground}"
+                      Header="Notes"
+                      Style="{StaticResource ThinGroupBoxStyle}"
+                      >
+                <TextBox Height="180"
+                         Margin="1"
+                         AcceptsReturn="True" FontSize="15"
+                         Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                         />
+            </GroupBox>
+
+            <!--  Tags  -->
+            <GroupBox Grid.Row="2" Grid.Column="0"
+                      Margin="7"
+                      Background="{StaticResource ControlBackground}"
+                      FontSize="20" FontWeight="SemiBold"
+                      Foreground="{StaticResource Foreground}"
+                      Header="Tags"
+                      Style="{StaticResource ThinGroupBoxStyle}"
+                      >
+                <Grid Margin="10,15"
+                      >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"
+                                          />
+                        <ColumnDefinition Width="*"
+                                          />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Width="90" Height="35"
+                            VerticalAlignment="Top"
+                            Command="{Binding AddTagCommand}"
+                            Content="Add Tag" FontSize="14"
+                            />
+
+                    <ListBox Grid.Column="1"
+                             Height="150"
+                             Margin="0"
+                             Background="{StaticResource ControlBackground}"
+                             ItemContainerStyle="{StaticResource TransparentListBoxItemStyle}"
+                             ItemsSource="{Binding TagHolders}"
+                             SelectedItem="{Binding SelectedTag}"
+                             >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="36"
+                                      Background="Transparent"
+                                      >
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"
+                                                          />
+                                        <ColumnDefinition Width="*"
+                                                          />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Width="30" Height="24"
+                                            Background="#FF4444"
+                                            Command="{Binding DataContext.DeleteTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Content="X" FontSize="14" FontWeight="Bold" Foreground="White"
+                                            />
+                                    <TextBox Grid.Column="1"
+                                             Height="24" MinWidth="140"
+                                             Margin="8,0,0,0"
+                                             Background="{StaticResource ButtonBackground}"
+                                             BorderThickness="0,0,0,1" FontSize="16"
+                                             Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                                             />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
+
+            <!--  Buttons  -->
+            <StackPanel Grid.Row="3" Grid.Column="0"
+                        Margin="0,10,0,0" HorizontalAlignment="Center"
+                        Orientation="Horizontal"
+                        >
+                <Button Width="140" Height="45"
+                        Margin="0,0,15,0"
+                        Background="#4CAF50"
+                        Command="{Binding CompleteCommand}"
+                        Content="Complete" FontSize="16" FontWeight="SemiBold" Foreground="White"
+                        />
+                <Button Width="140" Height="45"
+                        Margin="0,0,15,0"
+                        Command="{Binding OkCommand}"
+                        Content="OK" FontSize="16" IsDefault="True"
+                        />
+                <Button Width="140" Height="45"
+                        Background="#F44336"
+                        Command="{Binding CancelCommand}"
+                        Content="Cancel" FontSize="16" Foreground="White" IsCancel="True"
+                        />
+            </StackPanel>
         </Grid>
+        <Grid Margin="7"
+              Column="1"
+              >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="180"
+                               />
+                <RowDefinition Height="Auto"
+                               />
+                <RowDefinition Height="Auto"
+                               />
+                <RowDefinition Height="Auto"
+                               />
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0"
+                      Margin="7"
+                      Background="{StaticResource ControlBackground}"
+                      FontSize="20" FontWeight="SemiBold"
+                      Foreground="{StaticResource Foreground}"
+                      Header="Properties"
+                      Style="{StaticResource ThinGroupBoxStyle}"
+                      >
+                <Grid Margin="10,15"
+                      >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"
+                                          />
+                        <ColumnDefinition Width="Auto"
+                                          />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"
+                                       />
+                        <RowDefinition Height="Auto"
+                                       />
+                    </Grid.RowDefinitions>
 
-        <!--  Buttons  -->
-        <UniformGrid Margin="0,10" HorizontalAlignment="Center"
-                     Columns="3" Rows="1"
-                     >
-            <Button Width="160" Height="40"
-                    Margin="5"
-                    Background="#4CAF50"
-                    Command="{Binding CompleteCommand}"
-                    Content="Complete" FontSize="16" FontWeight="SemiBold" Foreground="White"
-                    />
+                    <!--  Severity Button  -->
+                    <Button Grid.Row="0" Grid.Column="0"
+                            Width="120" Height="40"
+                            HorizontalAlignment="Right" VerticalAlignment="Center"
+                            Background="{Binding SeverityButtonBackground}"
+                            Command="{Binding CycleSeverityCommand}"
+                            Content="Severity" FontSize="14" Foreground="White"
+                            Style="{StaticResource SeverityButton}"
+                            />
+                    <Grid Grid.Row="0" Grid.Column="1"
+                          Width="200"
+                          >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"
+                                              />
+                            <ColumnDefinition Width="Auto"
+                                              />
+                        </Grid.ColumnDefinitions>
+                        <!--  Rank  -->
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   FontSize="14" Text="Rank:"
+                                   />
+                        <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1"
+                                            Width="70" Height="30"
+                                            Background="{StaticResource EditorBackground}"
+                                            BorderBrush="Transparent" FontSize="14"
+                                            Foreground="{StaticResource Foreground}"
+                                            Minimum="0"
+                                            Value="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
+                                            />
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.Column="0"
+                          >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"
+                                              />
+                            <ColumnDefinition Width="Auto"
+                                              />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Margin="3" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   FontSize="14" Text="Kanban:"
+                                   />
+                        <Button Grid.Column="1"
+                                Width="120"
+                                Margin="3" HorizontalAlignment="Left"
+                                Content="{Binding KanbanId, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource KanbanIndexToIDConverter}}"
+                                FontSize="14" ToolTip="Kanban Status"
+                                />
+                    </Grid>
 
-            <Button Width="160" Height="40"
-                    Margin="5"
-                    Command="{Binding OkCommand}"
-                    Content="OK" FontSize="16" Foreground="White" IsDefault="True"
-                    />
+                    <Grid Grid.Row="1" Grid.Column="1"
+                          Width="200"
+                          >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"
+                                              />
+                            <ColumnDefinition Width="Auto"
+                                              />
+                        </Grid.ColumnDefinitions>
+                        <!--  Time  -->
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   FontSize="14" Text="Time (min):"
+                                   />
+                        <xctk:LongUpDown Grid.Row="1" Grid.Column="1"
+                                         Width="70" Height="30"
+                                         Background="{StaticResource EditorBackground}"
+                                         BorderBrush="Transparent" FontSize="14"
+                                         Foreground="{StaticResource Foreground}"
+                                         Minimum="0"
+                                         Value="{Binding TimeInMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                         />
+                    </Grid>
 
-            <Button Width="160" Height="40"
-                    Margin="5"
-                    Background=" #F44336"
-                    Command="{Binding CancelCommand}"
-                    Content="Cancel" FontSize="16" Foreground="White" IsCancel="True"
-                    />
+                </Grid>
+                <!--  Kanban ID  -->
+            </GroupBox>
 
-        </UniformGrid>
+            <!--  Problem  -->
+            <GroupBox Grid.Row="1"
+                      Margin="7"
+                      Background="{StaticResource ControlBackground}"
+                      FontSize="20" FontWeight="SemiBold"
+                      Foreground="{StaticResource Foreground}"
+                      Header="Problem"
+                      Style="{StaticResource ThinGroupBoxStyle}"
+                      >
+                <TextBox Height="180"
+                         Margin="1"
+                         AcceptsReturn="True" FontSize="15"
+                         Text="{Binding Problem, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                         />
+            </GroupBox>
 
-    </StackPanel>
+            <!--  Solution  -->
+            <GroupBox Grid.Row="2" Grid.Column="1"
+                      Margin="7"
+                      Background="{StaticResource ControlBackground}"
+                      FontSize="20" FontWeight="SemiBold"
+                      Foreground="{StaticResource Foreground}"
+                      Header="Solution"
+                      Style="{StaticResource ThinGroupBoxStyle}"
+                      >
+                <TextBox Height="180"
+                         Margin="1"
+                         AcceptsReturn="True" FontSize="15"
+                         Text="{Binding Solution, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                         />
+            </GroupBox>
+        </Grid>
+    </Grid>
 </Window>

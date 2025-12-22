@@ -5,16 +5,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Echoslate.ViewModels;
+using Echoslate.Windows;
 using Application = System.Windows.Application;
 
 
 namespace Echoslate {
 	public partial class MainWindow : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		private const string PROGRAM_VERSION = "3.99.0.0";
+		private const string PROGRAM_VERSION = "4.0.0.0";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -24,8 +26,8 @@ namespace Echoslate {
 
 		// TODO Change this path to where the EXE is.
 		private string _historyLogPath;
-		
-		
+
+
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public MainWindow() {
 			Log.Initialize();
@@ -44,33 +46,25 @@ namespace Echoslate {
 			mnuMain.Background = Brushes.Red;
 #endif
 
-			AppDataSettings appDataSettings = AppDataSettings.Create(WindowTitle);
-			appDataSettings.LoadSettings();
-			LastActiveTabIndex = appDataSettings.LastActiveTabIndex;
+			LastActiveTabIndex = AppDataSettings.LastActiveTabIndex;
+			AppDataSettings.WindowTitle = WindowTitle;
+			LocationChanged += (s, e) => AppDataSettings.SaveSettings();
+			SizeChanged += (s, e) => AppDataSettings.SaveSettings();
+			Closed += (s, e) => AppDataSettings.SaveSettings(tabControl.SelectedIndex);
 
-			LocationChanged += (s, e) => appDataSettings.SaveSettings();
-			SizeChanged += (s, e) => appDataSettings.SaveSettings();
-			Closed += (s, e) => appDataSettings.SaveSettings(tabControl.SelectedIndex);
-
-			DataContext = new MainWindowViewModel(appDataSettings);
-
-			if (appDataSettings == null) {
-				SetWindowPosition(new AppDataSettings());
-			} else {
-				SetWindowPosition(appDataSettings);
-			}
+			SetWindowPosition();
 		}
 		private void OnLoaded() {
 			tabControl.SelectedIndex = LastActiveTabIndex;
 		}
-		private void SetWindowPosition(AppDataSettings settings) {
+		private void SetWindowPosition() {
 			var mainWindow = Application.Current.MainWindow;
 
-			mainWindow.Left = settings.WindowLeft;
-			mainWindow.Top = settings.WindowTop;
-			mainWindow.Width = settings.WindowWidth;
-			mainWindow.Height = settings.WindowHeight;
-			mainWindow.WindowState = settings.WindowState;
+			mainWindow.Left = AppDataSettings.WindowLeft;
+			mainWindow.Top = AppDataSettings.WindowTop;
+			mainWindow.Width = AppDataSettings.WindowWidth;
+			mainWindow.Height = AppDataSettings.WindowHeight;
+			mainWindow.WindowState = AppDataSettings.WindowState;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -87,17 +81,17 @@ namespace Echoslate {
 			string gitPath = FindGitDirectory(path);
 			_historyLogPath = path + "log.txt";
 			ProcessStartInfo startInfo = new ProcessStartInfo {
-																  CreateNoWindow = false,
-																  UseShellExecute = false,
-																  FileName = "cmd.exe",
-																  WindowStyle = ProcessWindowStyle.Hidden
-															  };
+				CreateNoWindow = false,
+				UseShellExecute = false,
+				FileName = "cmd.exe",
+				WindowStyle = ProcessWindowStyle.Hidden
+			};
 			string args = "/c call \"" + GIT_EXE_PATH + "git\" --git-dir=\"" + gitPath + "\\.git\" log > \"" +
 						  _historyLogPath + "\"";
 			startInfo.Arguments = args;
 			Process p = new Process {
-										StartInfo = startInfo
-									};
+				StartInfo = startInfo
+			};
 			p.Start();
 			p.WaitForExit();
 

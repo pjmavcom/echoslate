@@ -11,11 +11,11 @@ namespace Echoslate;
 
 public class AppDataLoader {
 	private static readonly JsonSerializerOptions Options = new() {
-																WriteIndented = true,
-																PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-																DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-																PropertyNameCaseInsensitive = true
-															};
+		WriteIndented = true,
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+		PropertyNameCaseInsensitive = true
+	};
 
 	public AppData Data;
 
@@ -39,6 +39,11 @@ public class AppDataLoader {
 		string json = File.ReadAllText(path);
 		AppData? data = JsonSerializer.Deserialize<AppData>(json, Options);
 
+#if DEBUG
+		data.FileSettings.AutoSave = false;
+		data.FileSettings.AutoBackup = false;
+#endif
+
 		if (data == null) {
 			Log.Error($"Deserialization failed: {path}");
 			return new AppData();
@@ -52,10 +57,10 @@ public class AppDataLoader {
 				lastVersion = data.HistoryList.FirstOrDefault().Version;
 			}
 			data.CurrentHistoryItem = new HistoryItem {
-														  Title = "",
-														  IsCommitted = false,
-														  Version = new Version("0.1.2.3")
-													  };
+				Title = "",
+				IsCommitted = false,
+				Version = new Version("0.1.2.3")
+			};
 			data.HistoryList.Insert(0, data.CurrentHistoryItem);
 		}
 
@@ -129,7 +134,7 @@ public class AppDataLoader {
 	}
 	public static Version ConvertProjectVersion(string version) {
 		string[] v = version.Split('.');
-		 return new Version(Convert.ToInt16(v[0]), Convert.ToInt16(v[1]), Convert.ToInt16(v[2]), Convert.ToInt16(v[3]));
+		return new Version(Convert.ToInt16(v[0]), Convert.ToInt16(v[1]), Convert.ToInt16(v[2]), Convert.ToInt16(v[3]));
 	}
 	public static IncrementMode GetIncrementMode(string version) {
 		string[] v = version.Split('.');

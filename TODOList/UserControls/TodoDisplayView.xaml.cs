@@ -33,7 +33,7 @@ namespace Echoslate.UserControls {
 				Log.Print("Can not find ViewModel.");
 				return;
 			}
-			
+
 			vm.MarkSelectedItemAsComplete();
 		}
 		private void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {
@@ -55,11 +55,11 @@ namespace Echoslate.UserControls {
 
 			selectedTags = new List<string>(ihs.Select(x => x.Tags ?? Enumerable.Empty<string>()).Aggregate((a, b) => a.Intersect(b).ToList()));
 			TagPicker dlg = new TagPicker {
-											  SelectedTodoItems = ihs,
-											  AllAvailableTags = vm.AllTags,
-											  SelectedTags = new List<string>(selectedTags),
-											  Owner = Window.GetWindow(this)
-										  };
+				SelectedTodoItems = ihs,
+				AllAvailableTags = vm.AllTags,
+				SelectedTags = new List<string>(selectedTags),
+				Owner = Window.GetWindow(this)
+			};
 			dlg.ShowDialog();
 			if (dlg.Result) {
 				foreach (TodoItem item in ihs) {
@@ -77,5 +77,16 @@ namespace Echoslate.UserControls {
 			TodoDisplayViewModelBase? vm = (TodoDisplayViewModelBase)DataContext;
 			vm.RefreshAll();
 		});
+
+		private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+			if (sender is ListBoxItem lbItem) {
+				if (lbItem.DataContext is TodoItemHolder ih) {
+					TodoItem item = ih.TD;
+					if (DataContext is TodoDisplayViewModelBase vm) {
+						vm.EditItem(item);
+					}
+				}
+			}
+		}
 	}
 }

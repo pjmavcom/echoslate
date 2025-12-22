@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Echoslate.Components;
 
 
@@ -44,6 +46,7 @@ namespace Echoslate.ViewModels {
 			foreach (TodoItem item in MasterList) {
 				TodoItemHolder ih = new TodoItemHolder(item);
 				ih.CurrentKanbanFilter = GetCurrentKanbanFilter;
+				ih.CurrentView = View.Kanban;
 				AllItems.Add(ih);
 			}
 
@@ -55,11 +58,38 @@ namespace Echoslate.ViewModels {
 		}
 
 		public int GetCurrentKanbanFilter => CurrentFilter switch {
-												 "None" => 0,
-												 "Backlog" => 1,
-												 "Next" => 2,
-												 "Current" => 3,
-												 _ => 0
-											 };
+			"None" => 0,
+			"Backlog" => 1,
+			"Next" => 2,
+			"Current" => 3,
+			_ => 0
+		};
+		public override void NewTodoAdd() {
+			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+			item.DateTimeStarted = DateTime.Now;
+			ExpandHashTags(item);
+			item.Kanban = CurrentFilter switch {
+				"None" => 0,
+				"BackLog" => 1,
+				"Next" => 2,
+				"Current" => 3,
+				_ => 0
+			};
+
+			AddItemToMasterList(item);
+			RefreshAll();
+			NewTodoText = "";
+		}
+		public override void FixRanks() {
+			if (DisplayedItems == null) {
+				return;
+			}
+			DisplayedItems.SortDescriptions.Clear();
+			DisplayedItems.SortDescriptions.Add(new SortDescription("KanbanRank", ListSortDirection.Ascending));
+			int index = 1;
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				ih.Rank = index++;
+			}
+		}
 	}
 }

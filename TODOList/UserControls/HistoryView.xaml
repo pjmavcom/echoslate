@@ -20,6 +20,9 @@
                                                         HighlightBrush="{StaticResource Accent}"
                                                         NormalBrush="Transparent" />
         <ContextMenu x:Key="CompletedTodoContextMenu">
+            <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.EditTodoCommand}"
+                      CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      Header="Edit Todo" />
             <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.ReactivateTodoCommand}"
                       CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                       Header="Reactivate" />
@@ -178,6 +181,7 @@
                                  FontSize="14" FontWeight="SemiBold"
                                  Foreground="{StaticResource Foreground}"
                                  IsReadOnly="{Binding IsCurrentSelected, Converter={StaticResource InvertBoolConverter}}"
+                                 MouseDoubleClick="TitleTextBox_MouseDoubleClick"
                                  Text="{Binding SelectedHistoryItem.Title, UpdateSourceTrigger=PropertyChanged}"
                                  TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
                     </Grid>
@@ -352,7 +356,9 @@
                                                 Margin="4,4,4,4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
-                                                BorderThickness="1" CornerRadius="4">
+                                                BorderThickness="1"
+                                                ContextMenu="{StaticResource CompletedTodoContextMenu}"
+                                                CornerRadius="4">
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
@@ -382,7 +388,9 @@
                                                 Margin="4,4,4,4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
-                                                BorderThickness="1" CornerRadius="4">
+                                                BorderThickness="1"
+                                                ContextMenu="{StaticResource CompletedTodoContextMenu}"
+                                                CornerRadius="4">
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
@@ -448,7 +456,9 @@
                                                 Margin="4,4,8,4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
-                                                BorderThickness="1" CornerRadius="4">
+                                                BorderThickness="1"
+                                                ContextMenu="{StaticResource CompletedTodoContextMenu}"
+                                                CornerRadius="4">
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
@@ -478,7 +488,9 @@
                                                 Margin="4,4,8,4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
-                                                BorderThickness="1" CornerRadius="4">
+                                                BorderThickness="1"
+                                                ContextMenu="{StaticResource CompletedTodoContextMenu}"
+                                                CornerRadius="4">
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
@@ -508,7 +520,9 @@
                                                 Margin="4,4,8,4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
-                                                BorderThickness="1" CornerRadius="4">
+                                                BorderThickness="1"
+                                                ContextMenu="{StaticResource CompletedTodoContextMenu}"
+                                                CornerRadius="4">
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"

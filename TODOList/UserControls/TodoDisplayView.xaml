@@ -119,6 +119,7 @@
 
         <!--  Sorting options row  -->
         <StackPanel Grid.Row="1" Grid.Column="0"
+                    Margin="7,0,0,0"
                     Background="{StaticResource AppDarkBackground}"
                     Orientation="Horizontal">
             <ComboBox Width="306"
@@ -140,6 +141,10 @@
             <Button Width="110"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="active" Content="Active"
+                    KeyboardNavigation.IsTabStop="False" />
+            <Button Width="200"
+                    Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    CommandParameter="title" Content="Title"
                     KeyboardNavigation.IsTabStop="False" />
         </StackPanel>
 
@@ -189,6 +194,7 @@
                             <Setter Property="Height" Value="auto" />
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Padding" Value="0" />
+                            <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>

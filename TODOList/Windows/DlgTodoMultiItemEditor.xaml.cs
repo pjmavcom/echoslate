@@ -89,7 +89,11 @@ namespace Echoslate {
 
 			_currentFilter = currentFilter;
 			_currentSeverity = items[0].Severity;
-			_rank = items[0].Rank[_currentFilter];
+			if (items[0].CurrentView == View.Kanban) {
+				_rank = items[0].KanbanRank;
+			} else if (items[0].CurrentView == View.TodoList) {
+				_rank = items[0].Rank[_currentFilter];
+			}
 
 			CurrentSeverity = _currentSeverity;
 			CompleteButtonContent = items[0].IsComplete ? "Reactivate" : "Complete";
@@ -98,8 +102,8 @@ namespace Echoslate {
 			foreach (string tag in CommonTags) {
 				_tags.Add(new TagHolder(tag));
 			}
-			lbTags.ItemsSource = _tags;
-			lbTags.Items.Refresh();
+			// lbTags.ItemsSource = _tags;
+			// lbTags.Items.Refresh();
 
 			CenterWindowOnMouse();
 		}
@@ -137,7 +141,7 @@ namespace Echoslate {
 		}
 		private void Delete(TagHolder th) {
 			_tags.Remove(th);
-			lbTags.Items.Refresh();
+			// lbTags.Items.Refresh();
 		}
 		private void AddTag() {
 			string name = "#NEWTAG";
@@ -157,7 +161,7 @@ namespace Echoslate {
 
 			TagHolder th = new TagHolder(name + tagNumber);
 			_tags.Add(th);
-			lbTags.Items.Refresh();
+			// lbTags.Items.Refresh();
 		}
 		private void Ok() {
 			Result = true;

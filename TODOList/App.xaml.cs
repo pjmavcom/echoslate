@@ -1,25 +1,40 @@
-﻿using System.Globalization;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Media;
-using Echoslate.Converters;
-using Echoslate.Resources;
+using Echoslate.ViewModels;
+using Echoslate.Windows;
 
 namespace Echoslate {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
 	public partial class App {
-		protected override void OnStartup(StartupEventArgs e) {
-			// Force JIT of all converters
-			var converters = new IValueConverter[] {
-													   new SeverityToBrushConverter(),
-													   new BoolToLimeBrushConverter(),
-													   new BoolToTimerTextConverter(),
-												   };
-			foreach (var c in converters) c.Convert(0, typeof(Brush), null, CultureInfo.CurrentCulture);
-			
-			base.OnStartup(e);
+		private void Application_Startup(object sender, StartupEventArgs e) {
+			var appDataSettings = new AppDataSettings();
+			AppDataSettings.LoadSettings();
+			var mainVM = new MainWindowViewModel(appDataSettings);
+			var mainWindow = new MainWindow { DataContext = mainVM };
+
+			if (AppDataSettings.SkipWelcome && !string.IsNullOrEmpty(AppDataSettings.LastFilePath) && File.Exists(AppDataSettings.LastFilePath)) {
+				mainVM.Load(AppDataSettings.LastFilePath);
+				mainWindow.Show();
+				return;
+			}
+
+			var welcomeWindow = new WelcomeWindow();
+			var welcomeVM = new WelcomeViewModel(
+				createNew: () => {
+					mainVM.CreateNewFile();
+					mainWindow.Show();
+					welcomeWindow.Close();
+				},
+				openExisting: () => {
+					if (mainVM.OpenFile()) {
+						mainWindow.Show();
+						welcomeWindow.Close();
+					}
+				});
+
+			welcomeWindow.DataContext = welcomeVM;
+			welcomeWindow.Closed += (s, args) => welcomeVM.SavePreference();
+
+			welcomeWindow.ShowDialog();
 		}
 	}
 }

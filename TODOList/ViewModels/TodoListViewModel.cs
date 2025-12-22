@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,7 +10,6 @@ using Echoslate.Components;
 namespace Echoslate.ViewModels {
 	public class TodoListViewModel : TodoDisplayViewModelBase {
 		public TodoListViewModel() {
-			
 		}
 		public override void Initialize(MainWindowViewModel mainWindowVM) {
 			base.Initialize(mainWindowVM);
@@ -70,6 +70,7 @@ namespace Echoslate.ViewModels {
 			foreach (TodoItem item in MasterList) {
 				TodoItemHolder ih = new TodoItemHolder(item);
 				ih.CurrentFilter = GetCurrentTagFilterWithoutHash();
+				ih.CurrentView = View.TodoList;
 				if (ih.Rank <= 0) {
 					ih.Rank = int.MaxValue;
 				}
@@ -82,6 +83,28 @@ namespace Echoslate.ViewModels {
 				return true;
 			}
 			return false;
+		}
+		public override void NewTodoAdd() {
+			TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+			item.DateTimeStarted = DateTime.Now;
+			ExpandHashTags(item);
+			if (CurrentFilter != "All" && CurrentFilter != "Other") {
+				item.Tags.Add(CurrentFilter);
+			}
+			AddItemToMasterList(item);
+			RefreshAll();
+			NewTodoText = "";
+		}
+		public override void FixRanks() {
+			if (DisplayedItems == null) {
+				return;
+			}
+			DisplayedItems.SortDescriptions.Clear();
+			DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ListSortDirection.Ascending));
+			int index = 1;
+			foreach (TodoItemHolder ih in DisplayedItems) {
+				ih.Rank = index++;
+			}
 		}
 	}
 }

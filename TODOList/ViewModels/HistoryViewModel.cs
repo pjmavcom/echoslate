@@ -65,6 +65,13 @@ namespace Echoslate.ViewModels {
 
 
 		public HistoryViewModel() {
+			CurrentHistoryItem =  new HistoryItem { Title = "Work in progress...", Version = new Version(0, 0, 0, 0) };
+			_todoList = [];
+			_allHistoryItems = [];
+			SelectedHistoryItem = CurrentHistoryItem;
+			BugsCompleted = [];
+			FeaturesCompleted = [];
+			OtherCompleted = [];
 		}
 		public void Initialize(MainWindowViewModel mainWindowVM) {
 			SelectedIncrementMode = mainWindowVM.Data.FileSettings.IncrementMode;
@@ -169,6 +176,20 @@ namespace Echoslate.ViewModels {
 				CurrentHistoryItem.CompletedTodoItems.Remove(item);
 			}
 			_todoList.Add(item);
+		}
+		public ICommand EditTodoCommand => new RelayCommand<TodoItemHolder>(EditTodo);
+		public void EditTodo(TodoItemHolder ih) {
+			TodoItem item = ih.TD;
+			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null);
+			dlg.ShowDialog();
+			
+			if (dlg.Result) {
+				TodoItem newItem = dlg.ResultTodoItem;
+				if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {
+					CurrentHistoryItem.CompletedTodoItems.Remove(item);
+				}
+				CurrentHistoryItem.CompletedTodoItems.Add(newItem);
+			}
 		}
 		public ICommand SelectIncrementCommand => new RelayCommand(() => {
 			var values = Enum.GetValues(typeof(IncrementMode)).Cast<IncrementMode>();

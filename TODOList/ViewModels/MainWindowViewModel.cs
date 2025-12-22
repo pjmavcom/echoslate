@@ -77,10 +77,21 @@ namespace Echoslate.ViewModels {
 		public bool IsChanged {
 			get => _isChanged;
 			set {
-				_isChanged = value;
-				OnPropertyChanged();
+				if (_isChanged != value) {
+					_isChanged = value;
+					if (value) {
+						IsPendingSave = true;
+						AttemptAutoSave();
+						LastBackupAttempt = DateTime.Now;
+					}
+					OnPropertyChanged();
+				} 
 			}
 		}
+		public bool IsPendingSave { get; set; }
+		public DateTime LastBackupAttempt { get; set; }
+		private const double DebounceSeconds = 1.5;
+
 		private TimeSpan _backupTimer;
 		private TimeSpan _backupTimerMax;
 
@@ -173,12 +184,14 @@ namespace Echoslate.ViewModels {
 			KanbanVM = new KanbanViewModel();
 			HistoryVM = new HistoryViewModel();
 
-			if (appDataSettings.RecentFiles.Count != 0) {
-				LoadRecentFile(appDataSettings);
-				LoadCurrentData();
-			} else {
-				CreateNewFile();
-			}
+			// if (appDataSettings.RecentFiles.Count != 0) {
+			// 	LoadRecentFile(appDataSettings);
+			// 	LoadCurrentData();
+			// } else {
+			// 	CreateNewFile();
+			// }
+		}
+		private void SetupApplicationState() {
 			foreach (TodoItem item in MasterTodoItemsList) {
 				item.UpdateTags(Data.AllTags);
 			}
@@ -196,14 +209,29 @@ namespace Echoslate.ViewModels {
 			_backupTimer = _backupTimerMax;
 			Log.Print($"{_backupTimer}");
 		}
+
 		private void SetPomoTimers() {
 			PomoWorkTime = AppDataSettings.PomoWorkTimerLength;
-			PomoBreakTime =  AppDataSettings.PomoBreakTimerLength;
+			PomoBreakTime = AppDataSettings.PomoBreakTimerLength;
 		}
 		public void Timer_Tick(object? sender, EventArgs e) {
 			UpdateBackupTimer();
 			UpdateTodoTimers();
 			UpdatePomoTimer();
+			UpdateAutoSaveTimer();
+		}
+		public void UpdateAutoSaveTimer() {
+			if (!Data.FileSettings.AutoSave) {
+				return;
+			}
+			AttemptAutoSave();
+		}
+		private void AttemptAutoSave() {
+			if (IsPendingSave && (DateTime.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
+				_ = AutoSaveAsync();
+				Log.Test("Autosaving");
+				IsPendingSave = false;
+			}
 		}
 		public void UpdateBackupTimer() {
 			_backupTimer = _backupTimer.Subtract(new TimeSpan(0, 0, 1));
@@ -281,8 +309,9 @@ namespace Echoslate.ViewModels {
 
 			// TODO Remove this if all is well
 			// foreach (TodoItem item in MasterTodoItemsList) {
-				// item.UpdateDates();
+			// item.UpdateDates();
 			// }
+			SetupApplicationState();
 		}
 		private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (e.NewItems != null) {
@@ -323,8 +352,6 @@ namespace Echoslate.ViewModels {
 		private void MarkAsChanged() {
 			if (!IsChanged) {
 				IsChanged = true;
-				_ = AutoSaveAsync();
-				Log.Test("Autosaving");
 			}
 		}
 		private void ClearChangedFlag() {
@@ -332,25 +359,22 @@ namespace Echoslate.ViewModels {
 		}
 		public void LoadRecentFile(AppDataSettings? settings) {
 			while (true) {
-				if (settings == null || settings.RecentFiles.Count == 0) {
+				if (settings == null || AppDataSettings.RecentFiles.Count == 0) {
 					return;
 				}
 
-				if (File.Exists(settings.RecentFiles[0])) {
-					Log.Print($"Loading recent file {settings.RecentFiles[0]}");
-					Data = AppDataLoader.Load(settings.RecentFiles[0]);
-					settings.SortRecentFiles(settings.RecentFiles[0]);
+				if (File.Exists(AppDataSettings.RecentFiles[0])) {
+					Log.Print($"Loading recent file {AppDataSettings.RecentFiles[0]}");
+					Data = AppDataLoader.Load(AppDataSettings.RecentFiles[0]);
+					AppDataSettings.SortRecentFiles(AppDataSettings.RecentFiles[0]);
 					return;
 				}
 
-				Log.Error($"{settings.RecentFiles[0]} does not exist.");
-				settings.RecentFiles.RemoveAt(0);
+				Log.Error($"{AppDataSettings.RecentFiles[0]} does not exist.");
+				AppDataSettings.RecentFiles.RemoveAt(0);
 			}
 		}
 		private async Task AutoSaveAsync() {
-			if (!Data.FileSettings.AutoSave) {
-				return;
-			}
 			try {
 				await SaveToMainFileAsync();
 				ClearChangedFlag();
@@ -397,7 +421,7 @@ namespace Echoslate.ViewModels {
 			Data.FileSettings.BackupIncrement++;
 			Data.FileSettings.BackupIncrement %= 10;
 		}
-		private void Load(string? filePath) {
+		public void Load(string? filePath) {
 			Data = AppDataLoader.Load(filePath);
 			AppDataSettings.SortRecentFiles(filePath);
 			LoadCurrentData();
@@ -411,6 +435,7 @@ namespace Echoslate.ViewModels {
 			LoadCurrentData();
 			RebuildAllViews();
 			ClearChangedFlag();
+
 
 			SaveFileDialog sfd = new SaveFileDialog {
 				Title = @"Select folder to save file in.",
@@ -439,11 +464,12 @@ namespace Echoslate.ViewModels {
 				mainWindow.Topmost = false;
 				mainWindow.Focus();
 			}
+			SetupApplicationState();
 		}
 		private void MenuNew() {
 			CreateNewFile();
 		}
-		private void MenuLoad() {
+		public bool OpenFile() {
 			string basePath = Data == null ? "" : Data.BasePath;
 			OpenFileDialog openFileDialog = new OpenFileDialog {
 				Title = @"Open file: ",
@@ -454,7 +480,7 @@ namespace Echoslate.ViewModels {
 			DialogResult dr = openFileDialog.ShowDialog();
 
 			if (dr != System.Windows.Forms.DialogResult.OK) {
-				return;
+				return false;
 			}
 
 			if (_isChanged) {
@@ -465,6 +491,10 @@ namespace Echoslate.ViewModels {
 				}
 			}
 			Load(openFileDialog.FileName);
+			return true;
+		}
+		private void MenuLoad() {
+			OpenFile();
 		}
 		private void MenuSave() {
 			Save();
@@ -485,7 +515,7 @@ namespace Echoslate.ViewModels {
 			}
 
 			Application.Current.MainWindow?.Activate();
-			
+
 			Data.CurrentFilePath = sfd.FileName;
 			Save(sfd.FileName);
 			Window mainWindow = Application.Current.MainWindow;
@@ -503,12 +533,23 @@ namespace Echoslate.ViewModels {
 			SaveAs();
 		}
 		private void MenuOptions() {
-			bool autoSave = false;
-			bool globalHotkeys = false;
-			bool autoBackup = false;
-			TimeSpan backupTime = new TimeSpan(0, 0, 0);
+			bool autoSave = Data.FileSettings.AutoSave;
+			bool globalHotkeys = AppDataSettings.GlobalHotkeysEnabled;
+			bool autoBackup = Data.FileSettings.AutoBackup;
+			int backupTime = AppDataSettings.BackupTime.Minutes;
 			DlgOptions options = new DlgOptions(autoSave, globalHotkeys, autoBackup, backupTime);
 			options.ShowDialog();
+			if (options.Result) {
+#if DEBUG
+				Data.FileSettings.AutoSave = false;
+				Data.FileSettings.AutoBackup = false;
+#else
+				Data.FileSettings.AutoSave = options.AutoSave;
+				Data.FileSettings.AutoBackup = options.AutoBackup;
+#endif
+				AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
+				AppDataSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
+			}
 		}
 		private void MenuQuit() {
 			Log.Print("Saving settings...");

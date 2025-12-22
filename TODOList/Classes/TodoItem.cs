@@ -163,6 +163,7 @@ namespace Echoslate {
 			get => _kanban;
 			set {
 				_kanban = value;
+				KanbanRank = int.MaxValue;
 				OnPropertyChanged();
 			}
 		}
@@ -181,6 +182,15 @@ namespace Echoslate {
 			get => _rank;
 			set {
 				_rank = value;
+				OnPropertyChanged();
+			}
+		}
+		private View _currentView;
+		[JsonIgnore]
+		public View CurrentView {
+			get => _currentView;
+			set {
+				_currentView = value;
 				OnPropertyChanged();
 			}
 		}

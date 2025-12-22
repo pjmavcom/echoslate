@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -6,15 +9,23 @@ using System.Windows.Input;
 
 namespace Echoslate
 {
-	public partial class DlgOptions
+	public partial class DlgOptions : INotifyPropertyChanged
 	{
 		public bool AutoSave { get; set; }
 		public bool GlobalHotkeys { get; set; }
 		public bool AutoBackup { get; set; }
-		public TimeSpan BackupTime { get; set; }
+		private int _backupTime;
+		public int BackupTime {
+			get => _backupTime;
+			set {
+				_backupTime = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public bool Result;
 		
-		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, TimeSpan backupTime)
+		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, int backupTime)
 		{
 			InitializeComponent();
 			AutoSave = autoSave;
@@ -25,9 +36,8 @@ namespace Echoslate
 			cbAS.IsChecked = AutoSave;
 			cbGHK.IsChecked = GlobalHotkeys;
 			cbAB.IsChecked = AutoBackup;
+			iudBackupTime.Value = BackupTime;
 
-			int totalMinutes = BackupTime.Days * 24 * 60 +BackupTime.Hours * 60 + BackupTime.Minutes;
-			iudBackupTime.Value = totalMinutes;
 			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse()
@@ -41,14 +51,6 @@ namespace Echoslate
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
 		}
-		private void ConvertBackupTime()
-		{
-			int totalMinutes = (int) iudBackupTime.Value;
-//			int totalMinutes = Convert.ToInt32(tbBT.Text);
-			int hours = totalMinutes / 60;
-			int minutes = totalMinutes % 60;
-			BackupTime = new TimeSpan(hours, minutes, 0);
-		}
 		private void Ok_OnClick(object sender, EventArgs e)
 		{
 			if (cbAS.IsChecked != null)
@@ -57,8 +59,8 @@ namespace Echoslate
 				GlobalHotkeys = (bool) cbGHK.IsChecked;
 			if (cbAB.IsChecked != null)
 				AutoBackup = (bool) cbAB.IsChecked;
-			ConvertBackupTime();
-			
+
+			BackupTime = (int)iudBackupTime.Value;
 			Result = true;
 			Close();
 		}
@@ -66,6 +68,16 @@ namespace Echoslate
 		{
 			Result = false;
 			Close();
+		}
+		public event PropertyChangedEventHandler? PropertyChanged;
+		protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+		protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
+			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
 		}
 	}
 }

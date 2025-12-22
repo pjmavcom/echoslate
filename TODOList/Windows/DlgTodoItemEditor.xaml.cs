@@ -104,10 +104,19 @@ namespace Echoslate {
 			_todoItem = TodoItem.Create(td.ToString());
 			_todoItem.IsTimerOn = td.IsTimerOn;
 			_currentListHash = currentListHash ?? "All";
-			_previousRank = td.Rank[_currentListHash];
+			if (td.Rank.ContainsKey(_currentListHash)) {
+				_previousRank = td.Rank[_currentListHash];
+			} else {
+				_previousRank = td.KanbanRank;
+			}
 
 			CurrentSeverity = _todoItem.Severity;
-			Rank = _todoItem.Rank[_currentListHash];
+
+			if (td.Rank.ContainsKey(_currentListHash)) {
+				Rank = _todoItem.Rank[_currentListHash];
+			} else {
+				Rank = _todoItem.KanbanRank;
+			}
 			TimeInMinutes = _todoItem.TimeTakenInMinutes;
 			KanbanId = _todoItem.Kanban;
 			TodoText = _todoItem.Todo;

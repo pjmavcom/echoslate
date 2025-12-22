@@ -11,6 +11,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Echoslate {
+	public enum View {
+		TodoList,
+		Kanban
+	}
+
 	public class TodoItemHolder : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private TodoItem _td;
@@ -25,13 +30,21 @@ namespace Echoslate {
 		private int _rank;
 		public int Rank {
 			get {
-				if (TD.Rank.ContainsKey(_currentFilter)) {
-					return TD.Rank[_currentFilter];
-				}
-				return -1;
+				return CurrentView switch {
+					View.Kanban => KanbanRank,
+					View.TodoList when TD.Rank.ContainsKey(_currentFilter) => TD.Rank[_currentFilter],
+					_ => -1
+				};
 			}
 			set {
-				TD.Rank[_currentFilter] = value;
+				switch (CurrentView) {
+					case View.Kanban:
+						KanbanRank = value;
+						break;
+					case View.TodoList:
+						TD.Rank[_currentFilter] = value;
+						break;
+				}
 				OnPropertyChanged();
 			}
 		}
@@ -43,6 +56,16 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		private View _currentView;
+		public View CurrentView {
+			get => TD.CurrentView;
+			set {
+				TD.CurrentView = value;
+				
+				OnPropertyChanged();
+			}
+		}
+
 		public int CurrentKanbanFilter { get; set; }
 
 		public DateTime DateTimeStarted => _td.DateTimeStarted;
@@ -121,8 +144,8 @@ namespace Echoslate {
 			_td.PropertyChanged += (s, e) => {
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
 				if (e.PropertyName is nameof(TodoItem.TimeTaken) or
-									  nameof(TodoItem.TimeTakenInMinutes) or
-									  nameof(TodoItem.IsTimerOn)) {
+					nameof(TodoItem.TimeTakenInMinutes) or
+					nameof(TodoItem.IsTimerOn)) {
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeTakenDisplay)));
 				}
 			};

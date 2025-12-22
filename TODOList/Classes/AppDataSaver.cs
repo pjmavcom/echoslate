@@ -12,6 +12,10 @@ public class AppDataSaver {
 															};
 
 	public void Save(string path, AppData data) {
+		if (!data.FileSettings.AutoSave) {
+			return;
+		}
+		
 		data.CurrentFilePath = path;
 		string json = JsonSerializer.Serialize(data, _options);
 

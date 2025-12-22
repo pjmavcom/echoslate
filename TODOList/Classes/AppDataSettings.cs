@@ -1,57 +1,62 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
 
 namespace Echoslate {
 	public class AppDataSettings {
-		private static readonly JsonSerializerOptions Options = new() {
-																		  WriteIndented = true,
-																		  PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-																		  DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-																		  PropertyNameCaseInsensitive = true
-																	  };
+		public static bool SkipWelcome {
+			get => Properties.Settings.Default.SkipWelcome;
+			set => Properties.Settings.Default.SkipWelcome = value;
+		}
+		public static ObservableCollection<string> RecentFiles { get; set; }
+		public static string LastFilePath {
+			get => Properties.Settings.Default.LastFilePath;
+			set => Properties.Settings.Default.LastFilePath = value;
+		}
 
-		[JsonIgnore] public string SettingsFileName { get; set; }
-		public ObservableCollection<string> RecentFiles { get; set; }
+		public static double WindowLeft {
+			get => Properties.Settings.Default.WindowLeft;
+			set => Properties.Settings.Default.WindowLeft = value;
+		}
+		public static double WindowTop {
+			get => Properties.Settings.Default.WindowTop;
+			set => Properties.Settings.Default.WindowTop = value;
+		}
+		public static double WindowWidth {
+			get => Properties.Settings.Default.WindowWidth;
+			set => Properties.Settings.Default.WindowWidth = value;
+		}
+		public static double WindowHeight {
+			get => Properties.Settings.Default.WindowHeight;
+			set => Properties.Settings.Default.WindowHeight = value;
+		}
+		public static WindowState WindowState {
+			get => Properties.Settings.Default.WindowState;
+			set => Properties.Settings.Default.WindowState = value;
+		}
 
-		public double WindowLeft { get; set; }
-		public double WindowTop { get; set; }
-		public double WindowWidth { get; set; }
-		public double WindowHeight { get; set; }
-		public WindowState WindowState { get; set; } = WindowState.Normal;
+		public static TimeSpan PomoWorkTimerLength { get; set; }
+		public static TimeSpan PomoBreakTimerLength { get; set; }
+		public static bool GlobalHotkeysEnabled {
+			get => Properties.Settings.Default.GlobalHotkeysEnabled;
+			set => Properties.Settings.Default.GlobalHotkeysEnabled = value;
+		}
+		public static TimeSpan BackupTime { get; set; }
 
-		public TimeSpan PomoWorkTimerLength { get; set; }
-		public TimeSpan PomoBreakTimerLength { get; set; }
-		public bool GlobalHotkeysEnabled { get; set; }
+		public static int LastActiveTabIndex {
+			get => Properties.Settings.Default.LastActiveTabIndex;
+			set => Properties.Settings.Default.LastActiveTabIndex = value;
+		}
 
-		public int LastActiveTabIndex { get; set; }
-		
-		[JsonIgnore] public string WindowTitle { get; set; }
-		
+		public static string WindowTitle { get; set; }
+
 
 		public AppDataSettings() {
-			SettingsFileName = "Echoslate.Settings";
 			RecentFiles = [];
-			WindowLeft = 0;
-			WindowTop = 0;
-			WindowWidth = 1920;
-			WindowHeight = 1080;
-			WindowState = WindowState.Normal;
-
-			PomoWorkTimerLength = new TimeSpan(0, 25, 0);
-			PomoBreakTimerLength = new TimeSpan(0, 5, 0);
-			WindowTitle = string.Empty;
 		}
-
-		public static AppDataSettings Create(string windowTitle) {
-			return new AppDataSettings { WindowTitle = windowTitle };
-		}
-
-		public void SaveSettings(int lastActiveTab = -1) {
+		public static void SaveSettings(int lastActiveTab = -1) {
 			var mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				WindowLeft = double.IsNaN(mainWindow.Left) ? 0 : mainWindow.Left;
@@ -60,53 +65,48 @@ namespace Echoslate {
 				WindowHeight = mainWindow.Height;
 				WindowState = mainWindow.WindowState;
 			}
+			Properties.Settings.Default.PomoWorkTimer = PomoWorkTimerLength.Minutes;
+			Properties.Settings.Default.PomoBreakTimer = PomoBreakTimerLength.Minutes;
+			Properties.Settings.Default.BackupTime = BackupTime.Minutes;
+
 			if (lastActiveTab > 0) {
 				LastActiveTabIndex = lastActiveTab;
 			}
-			
-			string filePath = AppDomain.CurrentDomain.BaseDirectory + SettingsFileName;
-			Log.Print($"Saving settings file: {filePath}");
 
-			string json = JsonSerializer.Serialize(this, Options);
-			File.WriteAllText(filePath, json);
+			Properties.Settings.Default.RecentFiles ??= new StringCollection();
+			Properties.Settings.Default.RecentFiles.Clear();
+			Properties.Settings.Default.RecentFiles.AddRange(RecentFiles.ToArray());
+
+			Properties.Settings.Default.Save();
 		}
-		public void LoadSettings() {
-			string filePath = AppDomain.CurrentDomain.BaseDirectory + SettingsFileName;
-			if (!File.Exists(filePath)) {
-				Log.Warn("Settings file does not exist. Creating new settings file.");
-				SaveSettings();
-				return;
-			}
+		public static void LoadSettings() {
+			WindowLeft = Properties.Settings.Default.WindowLeft;
+			WindowTop = Properties.Settings.Default.WindowTop;
+			WindowWidth = Properties.Settings.Default.WindowWidth;
+			WindowHeight = Properties.Settings.Default.WindowHeight;
+			WindowState = Properties.Settings.Default.WindowState;
 
-			Log.Print($"Loading settings file: {filePath}");
-			string json = File.ReadAllText(filePath);
-			AppDataSettings? settings = JsonSerializer.Deserialize<AppDataSettings>(json, Options);
+			PomoWorkTimerLength = new TimeSpan(0, Properties.Settings.Default.PomoWorkTimer, 0);
+			PomoBreakTimerLength = new TimeSpan(0, Properties.Settings.Default.PomoWorkTimer, 0);
+			BackupTime = new TimeSpan(0, Properties.Settings.Default.BackupTime, 0);
 
-			if (settings != null) {
-				RecentFiles = new ObservableCollection<string>(settings.RecentFiles);
-				
-				WindowLeft = settings.WindowLeft;
-				WindowTop = settings.WindowTop;
-				WindowWidth = settings.WindowWidth;
-				WindowHeight = settings.WindowHeight;
-				WindowState = settings.WindowState;
-				
-				PomoWorkTimerLength = settings.PomoWorkTimerLength;
-				PomoBreakTimerLength = settings.PomoBreakTimerLength;
-				GlobalHotkeysEnabled = settings.GlobalHotkeysEnabled;
-				LastActiveTabIndex = settings.LastActiveTabIndex;
-			} else {
-				Log.Warn("Settings file is corrupted. Creating new settings file.");
-				SaveSettings();
+			GlobalHotkeysEnabled = Properties.Settings.Default.GlobalHotkeysEnabled;
+			LastActiveTabIndex = Properties.Settings.Default.LastActiveTabIndex;
+
+			if (Properties.Settings.Default.RecentFiles != null) {
+				RecentFiles = new ObservableCollection<string>(Properties.Settings.Default.RecentFiles.Cast<string>());
+				if (RecentFiles.Count > 0) {
+					LastFilePath = RecentFiles[0];
+				}
 			}
 		}
-		public void AddRecentFile(string recent) {
+		public static void AddRecentFile(string recent) {
 			if (!RecentFiles.Contains(recent)) {
 				RecentFiles.Add(recent);
 			}
 			SortRecentFiles(recent);
 		}
-		public void SortRecentFiles(string? recent) {
+		public static void SortRecentFiles(string? recent) {
 			Log.Print($"Sorting {recent} to top of list.");
 			if (RecentFiles.Contains(recent)) {
 				RecentFiles.Remove(recent);
