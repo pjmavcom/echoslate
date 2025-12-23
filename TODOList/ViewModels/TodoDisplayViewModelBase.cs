@@ -34,6 +34,15 @@ namespace Echoslate.ViewModels {
 
 		public ObservableCollection<string> AllTags { get; set; }
 		public ObservableCollection<string> CurrentVisibleTags { get; set; }
+		private ICollectionView _currentVisibleTagsView;
+		public ICollectionView CurrentVisibleTagsView {
+			get => _currentVisibleTagsView;
+			set {
+				_currentVisibleTagsView = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public ObservableCollection<string> MasterFilterTags { get; set; }
 		public ObservableCollection<string> FilterList { get; set; }
 		private string _prioritySortTag;
@@ -49,6 +58,17 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+		private string _selectedPrioritySortTag;
+		public string SelectedPrioritySortTag {
+			get => _selectedPrioritySortTag;
+			set {
+				if (_selectedPrioritySortTag != value) {
+					_selectedPrioritySortTag = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
 
 		protected string _currentFilter = "All";
 		public string? CurrentFilter {
@@ -160,6 +180,7 @@ namespace Echoslate.ViewModels {
 			MasterList = mainWindowVM.MasterTodoItemsList;
 			HistoryItems = mainWindowVM.MasterHistoryItemsList;
 			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
+			
 
 			AllItems = [];
 			FilterButtons = [];
@@ -167,6 +188,10 @@ namespace Echoslate.ViewModels {
 			CurrentVisibleTags = new ObservableCollection<string>(MasterFilterTags);
 			AllTags = [];
 			FilterList = new ObservableCollection<string>(MasterFilterTags);
+			// FilterList = Data.FiltersList;
+			// if (FilterList == null) {
+				// FilterList = new ObservableCollection<string>();
+			// }
 
 			CurrentSeverityFilter = -1;
 			NewTodoSeverity = 0;
@@ -185,6 +210,7 @@ namespace Echoslate.ViewModels {
 			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
 		}
 		public void GetCurrentHashTags() {
+			string currentSortTag = PrioritySortTag;
 			CurrentVisibleTags.Clear();
 			if (DisplayedItems == null || MasterList == null) {
 				return;
@@ -197,6 +223,9 @@ namespace Echoslate.ViewModels {
 					CurrentVisibleTags.Add(tag);
 				}
 			}
+			CurrentVisibleTagsView = CollectionViewSource.GetDefaultView(CurrentVisibleTags);
+			CurrentVisibleTagsView.SortDescriptions.Clear();
+			CurrentVisibleTagsView.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
 			AllTags.Clear();
 			foreach (TodoItem item in MasterList) {
 				foreach (string tag in item.Tags) {
@@ -206,6 +235,10 @@ namespace Echoslate.ViewModels {
 				}
 			}
 			OnPropertyChanged(nameof(CurrentVisibleTags));
+			if (!string.IsNullOrWhiteSpace(currentSortTag)) {
+				Log.Test();
+				PrioritySortTag = currentSortTag;
+			}
 		}
 		public abstract void FixRanks();
 		public void RefreshDisplayedItems(bool forceRefresh = false) {
@@ -564,7 +597,9 @@ namespace Echoslate.ViewModels {
 			if (dlg.Result) {
 				Log.Print("Filters successfully edited");
 				MasterFilterTags.Clear();
-				MasterFilterTags = dlg.ResultList;
+				foreach (string filter in dlg.ResultList) {
+					MasterFilterTags.Add(filter);
+				}
 				foreach (TodoItem td in MasterList) {
 					CleanTodoHashRanks(td);
 				}
@@ -717,6 +752,22 @@ namespace Echoslate.ViewModels {
 			NewTodoText = "";
 		}
 		public ICommand RefreshAllCommand => new RelayCommand(() => { RefreshAll(); });
+		public ICommand ChangeSeverityHotkeyCommand => new RelayCommand<string>(s => {
+			switch (s) {
+				case "up":
+					if (NewTodoSeverity >= 3) {
+						return;
+					}
+					NewTodoSeverity++;
+					break;
+				case "down":
+					if (NewTodoSeverity <= 0) {
+						return;}
+					NewTodoSeverity--;
+					break;
+			}
+		});
+		
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

@@ -118,7 +118,7 @@
                     Margin="7,0,0,0"
                     Command="{Binding CommitCommand}"
                     Content="Commit"
-                    IsEnabled="{Binding CanCommit, Converter={StaticResource Debug}}">
+                    IsEnabled="{Binding CanCommit}">
                 <Button.LayoutTransform>
                     <RotateTransform Angle="-90" />
                 </Button.LayoutTransform>

@@ -1,0 +1,43 @@
+<Window x:Class="Echoslate.Windows.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate.Windows"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="About Echoslate"
+        Width="500" Height="400"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+    <Grid Margin="30">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Center"
+                       FontSize="28" FontWeight="Bold"
+                       Text="Echoslate v4.0.0" />
+
+            <TextBlock FontSize="14" Text="A fast, native todo &amp; Kanban tracker for programmers"
+                       TextAlignment="Center" TextWrapping="Wrap" />
+
+            <TextBlock Margin="0,20,0,0" HorizontalAlignment="Center"
+                       Text="Made with ❤️ by [Your Name]" />
+
+            <!--  Ko-fi Link  -->
+            <TextBlock FontSize="14" TextAlignment="Center">
+                <Run Text="Support development on " />
+                <Hyperlink NavigateUri="https://ko-fi.com/yourusername" RequestNavigate="Hyperlink_RequestNavigate">
+                    Ko-fi
+                </Hyperlink>
+                <Run Text=" (buy me a coffee ☕)" />
+            </TextBlock>
+
+            <!--  GitHub Sponsors Link  -->
+            <TextBlock FontSize="14" TextAlignment="Center">
+                <Run Text="Or become a sponsor on " />
+                <Hyperlink NavigateUri="https://github.com/sponsors/yourusername" RequestNavigate="Hyperlink_RequestNavigate">
+                    GitHub Sponsors
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="0,40,0,0" HorizontalAlignment="Center"
+                       FontSize="11" Foreground="#FF888888"
+                       Text="Open source • MIT License" />
+        </StackPanel>
+    </Grid>
+</Window>

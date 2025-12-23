@@ -14,9 +14,6 @@ namespace Echoslate {
 		public string ResultTodo;
 		public int ResultRank;
 		public int ResultSeverity;
-		public bool ResultIsComplete;
-		
-		public bool Result;
 		
 		private string _todo;
 		public string Todo {
@@ -76,11 +73,6 @@ namespace Echoslate {
 		private List<TodoItem> items;
 		public readonly List<string> CommonTags;
 
-		// TODO: Remove this later
-		public DlgTodoMultiItemEditor(TodoItem td, string currentFilter, List<string> tags) {
-			InitializeComponent();
-			Close();
-		}
 		public DlgTodoMultiItemEditor(List<TodoItem> items, string currentFilter) {
 			InitializeComponent();
 			DataContext = this;
@@ -102,8 +94,6 @@ namespace Echoslate {
 			foreach (string tag in CommonTags) {
 				_tags.Add(new TagHolder(tag));
 			}
-			// lbTags.ItemsSource = _tags;
-			// lbTags.Items.Refresh();
 
 			CenterWindowOnMouse();
 		}
@@ -141,7 +131,6 @@ namespace Echoslate {
 		}
 		private void Delete(TagHolder th) {
 			_tags.Remove(th);
-			// lbTags.Items.Refresh();
 		}
 		private void AddTag() {
 			string name = "#NEWTAG";
@@ -161,17 +150,13 @@ namespace Echoslate {
 
 			TagHolder th = new TagHolder(name + tagNumber);
 			_tags.Add(th);
-			// lbTags.Items.Refresh();
 		}
 		private void Ok() {
-			Result = true;
 			SetResult();
 
 			Close();
 		}
 		private void Complete() {
-			Result = true;
-			ResultIsComplete = true;
 			SetResult();
 
 			Close();

@@ -118,7 +118,8 @@
                    Content="Tags:" />
             <Button Width="72" Height="35"
                     Command="{Binding NotesPanelAddTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                    Content="Edit Tags" />
+                    Content="Edit Tags"
+                    IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         </StackPanel>
         <ListBox Grid.Row="9"
                  Margin="3"
@@ -127,6 +128,7 @@
         <Button Grid.Row="10"
                 Width="100"
                 Command="{Binding NotesPanelCompleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                Content="Complete" />
+                Content="Complete"
+                IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

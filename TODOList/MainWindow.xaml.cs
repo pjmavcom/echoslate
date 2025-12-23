@@ -66,6 +66,31 @@ namespace Echoslate {
 			mainWindow.Height = AppDataSettings.WindowHeight;
 			mainWindow.WindowState = AppDataSettings.WindowState;
 		}
+		public void Window_PreviewKeyDown(object sender, KeyEventArgs e) {
+			if (Keyboard.Modifiers == ModifierKeys.Alt) {
+				Log.Debug(e.Key.ToString());
+				Key actualKey = (e.Key == Key.System) ? e.SystemKey : e.Key;
+				if (actualKey == Key.H) {
+					SwitchTab(-1);
+					e.Handled = true;
+				} else if (actualKey == Key.L) {
+					SwitchTab(1);
+					e.Handled = true;
+				}
+			}
+		}
+		private void SwitchTab(int direction) {
+			if (tabControl.Items.Count == 0) {
+				return;
+			}
+			int newIndex = tabControl.SelectedIndex + direction;
+			if (newIndex < 0) {
+				newIndex = 0;
+			} else if (newIndex >= tabControl.Items.Count) {
+				newIndex = tabControl.Items.Count - 1;
+			}
+			tabControl.SelectedIndex = newIndex;
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {

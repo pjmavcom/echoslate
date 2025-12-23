@@ -106,7 +106,7 @@ namespace Echoslate {
 			Close();
 		});
 		public ICommand OkCommand => new RelayCommand(() => {
-			_resultList = ["All"];
+			_resultList = [];
 			_resultList.AddRange(TabNames);
 			ResultList = new ObservableCollection<string>(_resultList);
 			Result = true;

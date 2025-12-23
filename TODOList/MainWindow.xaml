@@ -6,6 +6,7 @@
         x:Name="MainWindowInstance"
         Title="{Binding CurrentWindowTitle}"
         Width="1920" Height="1080"
+        PreviewKeyDown="Window_PreviewKeyDown"
         Style="{StaticResource {x:Type Window}}"
         mc:Ignorable="d">
 
@@ -13,6 +14,27 @@
         <converters:WorkBreakBrushConverter x:Key="WorkBreakBrushConverter" />
         <converters:ProgressToWidthConverter x:Key="ProgressToWidthConverter" />
     </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Key="S"
+                    Command="{Binding QuickSaveCommand}"
+                    Modifiers="Control" />
+        <KeyBinding Key="L"
+                    Command="{Binding QuickLoadPreviousCommand}"
+                    Modifiers="Control" />
+        <KeyBinding Key="P"
+                    Command="{Binding StartStopTimerCommand}"
+                    Modifiers="Control" />
+        <KeyBinding Key="H"
+                    Command="{Binding SwitchTabCommand}"
+                    CommandParameter="left" Gesture="Alt+H"
+                    Modifiers="Alt" />
+
+        <KeyBinding Key="L"
+                    Command="{Binding SwitchTabCommand}"
+                    CommandParameter="right" Gesture="Alt+L"
+                    Modifiers="Alt" />
+    </Window.InputBindings>
 
     <Grid HorizontalAlignment="Stretch"
           ClipToBounds="True" TextElement.FontFamily="Source Code Pro"
@@ -61,7 +83,10 @@
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                 </MenuItem>
-                <MenuItem Command="{Binding MenuHelpCommand}" Header="Help" />
+                <MenuItem Header="Help">
+                    <MenuItem Command="{Binding ShowHotkeysWindowCommand}" Header="Hotkeys" />
+                    <MenuItem Command="{Binding ShowAboutWindowCommand}" Header="About" />
+                </MenuItem>
             </Menu>
             <StackPanel Grid.Column="1"
                         HorizontalAlignment="Right"

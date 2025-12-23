@@ -42,7 +42,7 @@ namespace Echoslate.UserControls {
 				Log.Print("Can not find ViewModel.");
 				return;
 			}
-			if (vm.SelectedTodoItems[0] == null) {
+			if (vm.SelectedTodoItems.Count == 0 || vm.SelectedTodoItems[0] == null) {
 				Log.Print("No todos selected.");
 				return;
 			}
@@ -87,6 +87,12 @@ namespace Echoslate.UserControls {
 					}
 				}
 			}
+		}
+		private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			// Let your InputBindings handle it first
+			// If they don't handle it, you can add custom logic here if needed
+			// But usually, just marking as handled=false isn't needed with InputBindings
 		}
 	}
 }

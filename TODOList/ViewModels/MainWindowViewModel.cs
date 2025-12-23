@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Windows;
 using Application = System.Windows.Application;
 
 namespace Echoslate.ViewModels {
@@ -594,7 +595,8 @@ namespace Echoslate.ViewModels {
 		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(MenuRecentFilesLoad);
 		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
 
-		public ICommand PomoTimerToggleCommand => new RelayCommand(() => {
+		public ICommand PomoTimerToggleCommand => new RelayCommand(PomoTimerToggle);
+		public void PomoTimerToggle(){
 			_isPomoTimerOn = !_isPomoTimerOn;
 			if (_isPomoTimerOn) {
 				if (_pomoLastActiveState == PomoActiveState.Idle) {
@@ -606,7 +608,7 @@ namespace Echoslate.ViewModels {
 			} else {
 				PomoState = PomoActiveState.Idle;
 			}
-		});
+		}
 		public ICommand PomoTimerResetCommand => new RelayCommand(() => {
 			_isPomoTimerOn = false;
 			_pomoLastActiveState = PomoActiveState.Idle;
@@ -615,7 +617,21 @@ namespace Echoslate.ViewModels {
 			PomoTimer = TimeSpan.Zero;
 			PomoTimeLeft = TimeSpan.Zero;
 		});
-
+		public ICommand ShowAboutWindowCommand => new RelayCommand(() => {
+			new AboutWindow().Show();
+		});
+		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { new DlgHelp().Show(); });
+		
+		public ICommand QuickSaveCommand => new RelayCommand(MenuSave);
+		public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
+		public void QuickLoad() {
+			if (AppDataSettings.RecentFiles.Count > 1) {
+				MenuRecentFilesLoad(AppDataSettings.RecentFiles[1]);
+			}
+		}
+		public ICommand StartStopTimerCommand => new RelayCommand(PomoTimerToggle);
+		
+		
 		public event PropertyChangedEventHandler? PropertyChanged;
 		private void OnPropertyChanged([CallerMemberName] string? name = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

@@ -19,30 +19,14 @@
         <KeyBinding Key="Enter"
                     Command="{Binding AddAndCompleteCommand}"
                     Modifiers="Control" />
-        <!-- <KeyBinding Key="Enter" Command="{StaticResource Edit}" /> -->
-        <!--  <KeyBinding Key="Divide"  -->
-        <!--  Command="{StaticResource SwitchTab}"  -->
-        <!--  CommandParameter="left" />  -->
-        <!--  <KeyBinding Key="Multiply"  -->
-        <!--  Command="{StaticResource SwitchTab}"  -->
-        <!--  CommandParameter="right" />  -->
-        <!--  <KeyBinding Key="Subtract"  -->
-        <!--  Command="{StaticResource SwitchSeverity}"  -->
-        <!--  CommandParameter="up" />  -->
-        <!--  <KeyBinding Key="Add"  -->
-        <!--  Command="{StaticResource SwitchSeverity}"  -->
-        <!--  CommandParameter="down" />  -->
-        <!--  <KeyBinding Key="S"  -->
-        <!--  Command="{StaticResource QuickSave}"  -->
-        <!--  Modifiers="Control" />  -->
-        <!--  <KeyBinding Key="OemComma"  -->
-        <!--  Command="{StaticResource QuickLoadPrevious}"  -->
-        <!--  Modifiers="Control" />  -->
-        <!--  <KeyBinding Key="P"  -->
-        <!--  Command="{StaticResource StartStopTimer}"  -->
-        <!--  Modifiers="Control" />  -->
+        <KeyBinding Key="K"
+                    Command="{Binding ChangeSeverityHotkeyCommand}"
+                    CommandParameter="up" Modifiers="Alt" />
+        <KeyBinding Key="J"
+                    Command="{Binding ChangeSeverityHotkeyCommand}"
+                    CommandParameter="down" Modifiers="Alt" />
     </UserControl.InputBindings>
-    <Grid Background="{StaticResource AppDarkBackground}">
+    <Grid Background="{StaticResource AppDarkBackground}" PreviewKeyDown="Window_PreviewKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -123,7 +107,7 @@
                     Background="{StaticResource AppDarkBackground}"
                     Orientation="Horizontal">
             <ComboBox Width="306"
-                      ItemsSource="{Binding CurrentVisibleTags}"
+                      ItemsSource="{Binding CurrentVisibleTagsView}"
                       KeyboardNavigation.IsTabStop="False" MaxDropDownHeight="360"
                       SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}" />
             <Button Width="170"
@@ -142,7 +126,7 @@
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="active" Content="Active"
                     KeyboardNavigation.IsTabStop="False" />
-            <Button Width="200"
+            <Button Width="300"
                     Command="{Binding DataContext.SelectSortCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     CommandParameter="title" Content="Title"
                     KeyboardNavigation.IsTabStop="False" />
@@ -186,7 +170,7 @@
                             <Separator />
                             <MenuItem Command="{Binding ContextMenuCompleteCommand}" Header="Complete" />
                             <Separator />
-                            <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print Todo" />
+                            <!-- <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print Todo" /> -->
                         </ContextMenu>
                     </ListBox.ContextMenu>
                     <ListBox.ItemContainerStyle>
@@ -228,6 +212,9 @@
                                         <MouseBinding Command="{Binding DataContext.ChangeSeverityCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                       CommandParameter="{Binding}"
                                                       Gesture="LeftClick" />
+                                        <MouseBinding Command="{Binding DataContext.ChangeSeverityCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                      CommandParameter="{Binding}"
+                                                      Gesture="LeftDoubleClick" />
                                     </TextBlock.InputBindings>
                                 </TextBlock>
                                 <Grid Grid.Column="3">
@@ -238,17 +225,28 @@
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0"
                                            HorizontalAlignment="Center"
-                                           Content="{Binding Rank}" />
+                                           Content="{Binding Rank}">
+                                    </Label>
                                     <Button Grid.Column="1"
                                             Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                             CommandParameter="{Binding}"
                                             Content="▼" FontSize="16"
-                                            FontWeight="Bold" />
+                                            FontWeight="Bold">
+                                        <Button.InputBindings>
+                                            <MouseBinding Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" Gesture="LeftDoubleClick" />
+                                            <MouseBinding Gesture="LeftClick" />
+                                        </Button.InputBindings>
+                                    </Button>
                                     <Button Grid.Column="2"
                                             Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                             CommandParameter="{Binding}"
                                             Content="▲" FontSize="16"
-                                            FontWeight="Bold" />
+                                            FontWeight="Bold">
+                                        <Button.InputBindings>
+                                            <MouseBinding Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" Gesture="LeftDoubleClick" />
+                                            <MouseBinding Gesture="LeftClick" />
+                                        </Button.InputBindings>
+                                    </Button>
                                 </Grid>
                                 <Label Grid.Column="4"
                                        HorizontalContentAlignment="Center"
@@ -259,6 +257,9 @@
                                         <MouseBinding Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                       CommandParameter="{Binding}"
                                                       Gesture="LeftClick" />
+                                        <MouseBinding Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                      CommandParameter="{Binding}"
+                                                      Gesture="LeftDoubleClick" />
                                     </Label.InputBindings>
                                 </Label>
                                 <TextBlock Grid.Column="5"

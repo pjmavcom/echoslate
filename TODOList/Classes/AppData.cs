@@ -41,4 +41,19 @@ public class AppData {
 		FiltersList = [];
 		_currentHistoryItem = null;
 	}
+	public void DebugFiltersList() {
+		FiltersList.CollectionChanged += (s, e) =>
+		{
+			Log.Debug($"[Filters] CollectionChanged: Action={e.Action}");
+			if (e.OldItems != null)
+				foreach (var item in e.OldItems)
+					Log.Debug($"  Removed: {item}");
+			if (e.NewItems != null)
+				foreach (var item in e.NewItems)
+					Log.Debug($"  Added: {item}");
+
+			Log.Debug($"  Current count: {FiltersList.Count}");
+			Log.Debug($"  Items: [{string.Join(", ", FiltersList)}]");
+		};
+	}
 }

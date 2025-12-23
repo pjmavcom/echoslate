@@ -68,6 +68,7 @@ public class AppDataLoader {
 			history.CompletedTodoItems ??= [];
 		}
 		data.CurrentFilePath = path;
+		data.DebugFiltersList();
 		return data;
 	}
 
