@@ -15,9 +15,9 @@ using System.Windows;
 [assembly: AssemblyCopyright("Copyright © 2025 PJMavcom")] // Or "Copyright © 2025 Peter" — both are fine
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("4.0.2.0")]
-[assembly: AssemblyFileVersion("4.0.2.0")]
-[assembly: AssemblyInformationalVersion("4.0.2.0")] // Shows in Details as "Product version"
+[assembly: AssemblyVersion("4.0.3.0")]
+[assembly: AssemblyFileVersion("4.0.3.0")]
+[assembly: AssemblyInformationalVersion("4.0.3.0")] // Shows in Details as "Product version"
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

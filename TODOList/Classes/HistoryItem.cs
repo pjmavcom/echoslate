@@ -322,8 +322,7 @@ namespace Echoslate {
 		}
 		public string ToClipboard(string totalTimeSoFar) {
 			string result = DateAdded + "- " + Title + Environment.NewLine +
-							"Estimated Time: " + TotalTime + Environment.NewLine +
-							"Estimated Total Time: " + totalTimeSoFar;
+							"Estimated Time: " + TotalTime + Environment.NewLine;
 
 			if (!Notes.Equals(""))
 				result += Environment.NewLine + "Notes: " + BreakLines(Notes) + Environment.NewLine;

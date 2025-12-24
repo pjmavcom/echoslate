@@ -76,7 +76,26 @@ namespace Echoslate {
 				_notes = value;
 				OnPropertyChanged();
 			}
+ 		}
+
+		private string _problem;
+		public string Problem {
+			get => _problem;
+			set {
+				_problem = value;
+				OnPropertyChanged();
+			}
 		}
+
+		private string _solution;
+		public string Solution {
+			get => _solution;
+			set {
+				_solution = value;
+				OnPropertyChanged();
+			}
+		}
+
 
 		private readonly TodoItem _todoItem;
 		public TodoItem ResultTodoItem => _todoItem;
@@ -127,6 +146,8 @@ namespace Echoslate {
 			KanbanId = _todoItem.Kanban;
 			TodoText = _todoItem.Todo;
 			Notes = _todoItem.Notes;
+			Problem = _todoItem.Problem;
+			Solution = _todoItem.Solution;
 
 			Tags = new List<string>(_todoItem.Tags);
 			TagHolders = new ObservableCollection<TagHolder>();
