@@ -2,10 +2,10 @@
 
 **A fast, native todo & Kanban tracker built for programmers**
 
-[TodoListView](https://github.com/user-attachments/assets/579bdba6-860e-4712-86b2-07c2e6e2b621)
+![TodoListView](https://github.com/user-attachments/assets/579bdba6-860e-4712-86b2-07c2e6e2b621)
 ![KanbanView](https://github.com/user-attachments/assets/d7332026-6b5f-4702-8b08-1954c845d35d)
-![ItemEditor](https://github.com/user-attachments/assets/8c0b2fa5-1f54-48f3-9fe7-9beb4a190413)
 ![HistoryView](https://github.com/user-attachments/assets/1c6843e1-767b-4aa0-b660-9788ebe12aea)
+![ItemEditor](https://github.com/user-attachments/assets/8c0b2fa5-1f54-48f3-9fe7-9beb4a190413)
 
 ### Demo Videos
 Watch how I use it every day:
