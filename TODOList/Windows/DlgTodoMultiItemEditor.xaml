@@ -6,26 +6,20 @@
         Background="{StaticResource AppDarkBackground}"
         SizeToContent="Height"
         Style="{StaticResource {x:Type Window}}"
-        WindowStartupLocation="CenterOwner"
-        >
+        WindowStartupLocation="CenterOwner">
 
     <Window.InputBindings>
         <KeyBinding Key="Enter"
                     Command="{Binding CompleteCommand}"
-                    Modifiers="Ctrl"
-                    />
+                    Modifiers="Ctrl" />
     </Window.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"
-                           />
-            <RowDefinition Height="Auto"
-                           />
-            <RowDefinition Height="Auto"
-                           />
-            <RowDefinition Height="Auto"
-                           />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
 
         </Grid.RowDefinitions>
 
@@ -36,61 +30,54 @@
                   FontSize="20" FontWeight="SemiBold"
                   Foreground="{StaticResource Foreground}"
                   Header="Properties"
-                  Style="{StaticResource ThinGroupBoxStyle}"
-                  >
-            <Grid Margin="10,15"
-                  >
+                  Style="{StaticResource ThinGroupBoxStyle}">
+            <Grid Margin="10,15">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"
-                                      />
-                    <ColumnDefinition Width="140"
-                                      />
-                    <ColumnDefinition Width="100"
-                                      />
-                    <ColumnDefinition Width="*"
-                                      />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <CheckBox VerticalAlignment="Center"
-                          IsChecked="{Binding IsSeverityEnabled}"
-                          Style="{StaticResource ToggleSwitchStyle}"
-                          />
+                          IsChecked="{Binding IsSeverityChangeable}"
+                          Style="{StaticResource ToggleSwitchStyle}" />
                 <Button Grid.Column="1"
                         Width="120" Height="40"
                         HorizontalAlignment="Right" VerticalAlignment="Center"
                         Background="{Binding SeverityButtonBackground}"
                         Command="{Binding CycleSeverityCommand}"
-                        Content="Severity" FontSize="14" Foreground="White"
-                        Style="{StaticResource SeverityButton}"
-                        />
+                        Content="Severity" FontSize="14"
+                        Foreground="White"
+                        Style="{StaticResource SeverityButton}" />
 
                 <CheckBox Grid.Column="2"
                           Margin="30,0,0,0" VerticalAlignment="Center"
                           Content="Rank:" FontSize="16"
                           Foreground="{StaticResource SubtleForeground}"
-                          IsChecked="{Binding IsRankEnabled}"
-                          Style="{StaticResource ToggleSwitchStyle}"
-                          />
+                          IsChecked="{Binding IsRankChangeable}"
+                          Style="{StaticResource ToggleSwitchStyle}" />
                 <StackPanel Grid.Column="3"
                             VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            >
+                            Orientation="Horizontal">
                     <xctk:IntegerUpDown Width="70" Height="30"
                                         Background="{StaticResource EditorBackground}"
                                         BorderBrush="Transparent" FontSize="14"
                                         Foreground="{StaticResource Foreground}"
+                                        IsEnabled="{Binding IsRankEnabled}"
                                         Minimum="0"
-                                        Value="{Binding Rank, UpdateSourceTrigger=PropertyChanged}"
-                                        />
+                                        Value="{Binding Rank, UpdateSourceTrigger=PropertyChanged}" />
                     <Button Width="40"
                             Margin="8,0,5,0"
                             Command="{Binding RankToTopCommand}"
-                            Content="▲▲" ToolTip="Move to top"
-                            />
+                            Content="▲▲"
+                            IsEnabled="{Binding IsRankEnable}"
+                            ToolTip="Move to top" />
                     <Button Width="40"
                             Command="{Binding RankToBottomCommand}"
-                            Content="▼▼" ToolTip="Move to bottom"
-                            />
+                            Content="▼▼"
+                            IsEnabled="{Binding IsRankEnabled}"
+                            ToolTip="Move to bottom" />
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -102,28 +89,23 @@
                   FontSize="20" FontWeight="SemiBold"
                   Foreground="{StaticResource Foreground}"
                   Header="Title"
-                  Style="{StaticResource ThinGroupBoxStyle}"
-                  >
+                  Style="{StaticResource ThinGroupBoxStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"
-                                      />
-                    <ColumnDefinition Width="*"
-                                      />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <CheckBox Margin="10,0,0,0" VerticalAlignment="Center"
                           FontSize="16"
                           Foreground="{StaticResource SubtleForeground}"
-                          IsChecked="{Binding IsTodoEnabled}"
-                          Style="{StaticResource ToggleSwitchStyle}"
-                          />
+                          IsChecked="{Binding IsTodoChangeable}"
+                          Style="{StaticResource ToggleSwitchStyle}" />
                 <TextBox Grid.Column="1"
                          Height="60"
                          Margin="20,0,0,0"
                          AcceptsReturn="True" FontSize="15"
                          Text="{Binding Todo, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                         />
+                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
             </Grid>
         </GroupBox>
 
@@ -134,28 +116,21 @@
                   FontSize="20" FontWeight="SemiBold"
                   Foreground="{StaticResource Foreground}"
                   Header="Tags"
-                  Style="{StaticResource ThinGroupBoxStyle}"
-                  >
-            <Grid Margin="10,15"
-                  >
+                  Style="{StaticResource ThinGroupBoxStyle}">
+            <Grid Margin="10,15">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"
-                                      />
-                    <ColumnDefinition Width="*"
-                                      />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel VerticalAlignment="Top"
-                            >
+                <StackPanel VerticalAlignment="Top">
                     <Button Width="90" Height="35"
                             Command="{Binding AddTagCommand}"
-                            Content="Add Tag" FontSize="14"
-                            />
+                            Content="Add Tag" FontSize="14" />
                     <CheckBox Margin="0,10,0,8" HorizontalAlignment="Left"
                               FontSize="16"
                               Foreground="{StaticResource SubtleForeground}"
-                              IsChecked="{Binding IsTagEnabled}"
-                              Style="{StaticResource ToggleSwitchStyle}"
-                              />
+                              IsChecked="{Binding IsTagChangeable}"
+                              Style="{StaticResource ToggleSwitchStyle}" />
                 </StackPanel>
 
                 <ListBox Grid.Column="1"
@@ -163,32 +138,26 @@
                          Margin="0"
                          Background="{StaticResource ControlBackground}"
                          ItemContainerStyle="{StaticResource TransparentListBoxItemStyle}"
-                         ItemsSource="{Binding Tags}"
-                         >
+                         ItemsSource="{Binding Tags}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="36"
-                                  Background="Transparent"
-                                  >
+                            <Grid Height="36" Background="Transparent">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"
-                                                      />
-                                    <ColumnDefinition Width="*"
-                                                      />
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Button Width="30" Height="24"
                                         Background="#FF4444"
                                         Command="{Binding DataContext.DeleteTagCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                         CommandParameter="{Binding}"
-                                        Content="X" FontSize="14" FontWeight="Bold" Foreground="White"
-                                        />
+                                        Content="X" FontSize="14"
+                                        FontWeight="Bold" Foreground="White" />
                                 <TextBox Grid.Column="1"
                                          Height="24" MinWidth="140"
                                          Margin="8,0,0,0"
                                          Background="{StaticResource ButtonBackground}"
                                          BorderThickness="0,0,0,1" FontSize="16"
-                                         Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
-                                         />
+                                         Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -199,32 +168,30 @@
         <!--  Bottom Buttons  -->
         <StackPanel Grid.Row="3"
                     Margin="0,20,0,0" HorizontalAlignment="Center"
-                    Orientation="Horizontal"
-                    >
+                    Orientation="Horizontal">
             <CheckBox Margin="0,0,3,0" VerticalAlignment="Center"
                       FontSize="16"
                       Foreground="{StaticResource SubtleForeground}"
-                      IsChecked="{Binding IsCompleteEnabled}"
-                      Style="{StaticResource ToggleSwitchStyle}"
-                      />
+                      IsChecked="{Binding IsCompleteChangeable}"
+                      Style="{StaticResource ToggleSwitchStyle}" />
             <Button Width="160" Height="45"
                     Margin="0,0,15,0"
                     Background="#4CAF50"
                     Command="{Binding CompleteCommand}"
                     Content="{Binding CompleteButtonContent}"
-                    FontSize="16" FontWeight="SemiBold" Foreground="White"
-                    IsEnabled="{Binding IsCompleteEnabled}"
-                    />
+                    FontSize="16" FontWeight="SemiBold"
+                    Foreground="White"
+                    IsEnabled="{Binding IsCompleteChangeable}" />
             <Button Width="160" Height="45"
                     Margin="0,0,15,0"
                     Command="{Binding OkCommand}"
-                    Content="OK" FontSize="16" IsDefault="True"
-                    />
+                    Content="OK" FontSize="16"
+                    IsDefault="True" />
             <Button Width="160" Height="45"
                     Background="#F44336"
                     Command="{Binding CancelCommand}"
-                    Content="Cancel" FontSize="16" Foreground="White" IsCancel="True"
-                    />
+                    Content="Cancel" FontSize="16"
+                    Foreground="White" IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

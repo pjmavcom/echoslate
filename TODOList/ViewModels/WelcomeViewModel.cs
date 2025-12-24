@@ -23,14 +23,14 @@ public class WelcomeViewModel : INotifyPropertyChanged
         OpenExistingCommand = new RelayCommand(openExisting);
 
         // Load saved preference
-        DontShowAgain = Properties.Settings.Default.SkipWelcome;
+        DontShowAgain = AppSettings.Instance.SkipWelcome;
     }
 
     // Save preference when closed
     public void SavePreference()
     {
-        Properties.Settings.Default.SkipWelcome = DontShowAgain;
-        Properties.Settings.Default.Save();
+        AppSettings.Instance.SkipWelcome = DontShowAgain;
+        AppSettings.Save();
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

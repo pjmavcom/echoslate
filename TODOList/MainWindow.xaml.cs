@@ -16,7 +16,7 @@ using Application = System.Windows.Application;
 namespace Echoslate {
 	public partial class MainWindow : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		private const string PROGRAM_VERSION = "4.0.0.0";
+		private const string PROGRAM_VERSION = "4.0.2.0";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";
@@ -34,7 +34,6 @@ namespace Echoslate {
 
 			InitializeComponent();
 			Log.Print("Window Initialized");
-			Loaded += (s, e) => OnLoaded();
 
 #if DEBUG
 			PreviewKeyDown += (_, e) => {
@@ -46,25 +45,28 @@ namespace Echoslate {
 			mnuMain.Background = Brushes.Red;
 #endif
 
-			LastActiveTabIndex = AppDataSettings.LastActiveTabIndex;
-			AppDataSettings.WindowTitle = WindowTitle;
-			LocationChanged += (s, e) => AppDataSettings.SaveSettings();
-			SizeChanged += (s, e) => AppDataSettings.SaveSettings();
-			Closed += (s, e) => AppDataSettings.SaveSettings(tabControl.SelectedIndex);
+			LastActiveTabIndex = AppSettings.Instance.LastActiveTabIndex;
+			AppSettings.Instance.WindowTitle = WindowTitle;
+			Closed += (s, e) => Window_OnClosed();
+			Loaded += (s, e) => Window_OnLoaded();
 
-			SetWindowPosition();
 		}
-		private void OnLoaded() {
+		private void Window_OnClosed() {
+			AppSettings.Instance.SetWindowProperties(tabControl.SelectedIndex);
+			AppSettings.Save();
+		}
+		private void Window_OnLoaded() {
 			tabControl.SelectedIndex = LastActiveTabIndex;
+			SetWindowPosition();
 		}
 		private void SetWindowPosition() {
 			var mainWindow = Application.Current.MainWindow;
 
-			mainWindow.Left = AppDataSettings.WindowLeft;
-			mainWindow.Top = AppDataSettings.WindowTop;
-			mainWindow.Width = AppDataSettings.WindowWidth;
-			mainWindow.Height = AppDataSettings.WindowHeight;
-			mainWindow.WindowState = AppDataSettings.WindowState;
+			mainWindow.Left = AppSettings.Instance.WindowLeft;
+			mainWindow.Top = AppSettings.Instance.WindowTop;
+			mainWindow.Width = AppSettings.Instance.WindowWidth;
+			mainWindow.Height = AppSettings.Instance.WindowHeight;
+			mainWindow.WindowState = AppSettings.Instance.WindowState;
 		}
 		public void Window_PreviewKeyDown(object sender, KeyEventArgs e) {
 			if (Keyboard.Modifiers == ModifierKeys.Alt) {

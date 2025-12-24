@@ -25,12 +25,12 @@ namespace Echoslate {
 			}
 		}
 		public Brush SeverityButtonBackground => CurrentSeverity switch {
-													 3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
-													 2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
-													 1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
-													 0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
-													 _ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
-												 };
+			3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)),   // High = Red
+			2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
+			1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)),   // Low = Green
+			0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)),  // Off = Dark gray (your normal tag color)
+			_ => new SolidColorBrush(Color.FromRgb(25, 25, 25))   // Off = Dark gray (your normal tag color)
+		};
 
 		private int _rank;
 		public int Rank {
@@ -40,6 +40,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		public bool IsRankEnabled { get; set; }
 
 		private long _timeInMinutes;
 		public long TimeInMinutes {
@@ -81,49 +82,54 @@ namespace Echoslate {
 		public TodoItem ResultTodoItem => _todoItem;
 		public bool Result;
 
+		private ObservableCollection<string> AllAvailableTags;
 		private List<string> Tags { get; set; }
-		private List<TagHolder> _tagHolders;
-		public List<TagHolder> TagHolders {
+		private ObservableCollection<TagHolder> _tagHolders;
+		public ObservableCollection<TagHolder> TagHolders {
 			get => _tagHolders;
 			set {
 				_tagHolders = value;
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private List<string> ResultTags { get; set; }
 		public string SelectedTag { get; set; }
 		private readonly string _currentListHash;
 
 		private int _previousRank;
 
-		public DlgTodoItemEditor(TodoItem td, string? currentListHash) {
+		public DlgTodoItemEditor(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
 			InitializeComponent();
 			DataContext = this;
-			
+			AllAvailableTags = allAvailableTags;
+			IsRankEnabled = td.CurrentView != View.History;
+
 			_todoItem = TodoItem.Create(td.ToString());
+			_todoItem.CurrentView = td.CurrentView;
 			_todoItem.IsTimerOn = td.IsTimerOn;
 			_currentListHash = currentListHash ?? "All";
-			if (td.Rank.ContainsKey(_currentListHash)) {
-				_previousRank = td.Rank[_currentListHash];
-			} else {
-				_previousRank = td.KanbanRank;
+
+			switch (td.CurrentView) {
+				case View.TodoList:
+					_previousRank = td.Rank[_currentListHash];
+					Rank = _todoItem.Rank[_currentListHash];
+					break;
+				case View.Kanban:
+					_previousRank = td.KanbanRank;
+					Rank = _todoItem.KanbanRank;
+					break;
 			}
 
 			CurrentSeverity = _todoItem.Severity;
 
-			if (td.Rank.ContainsKey(_currentListHash)) {
-				Rank = _todoItem.Rank[_currentListHash];
-			} else {
-				Rank = _todoItem.KanbanRank;
-			}
 			TimeInMinutes = _todoItem.TimeTakenInMinutes;
 			KanbanId = _todoItem.Kanban;
 			TodoText = _todoItem.Todo;
 			Notes = _todoItem.Notes;
-			
+
 			Tags = new List<string>(_todoItem.Tags);
-			TagHolders = new List<TagHolder>();
+			TagHolders = new ObservableCollection<TagHolder>();
 			foreach (string tag in Tags) {
 				TagHolders.Add(new TagHolder(tag));
 			}
@@ -147,10 +153,17 @@ namespace Echoslate {
 		}
 		private void SetTodo() {
 			ResultTodoItem.Severity = CurrentSeverity;
-			ResultTodoItem.Rank[_currentListHash] = Rank;
+			switch (_todoItem.CurrentView) {
+				case View.TodoList:
+					ResultTodoItem.Rank[_currentListHash] = Rank;
+					break;
+				case View.Kanban:
+					ResultTodoItem.KanbanRank = Rank;
+					break;
+			}
 			ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
 			ResultTodoItem.Notes = Notes;
-			
+
 			string tempTodo = ExpandHashTagsInString(TodoText);
 			string tempTags = "";
 			ResultTags = new List<string>();
@@ -160,7 +173,7 @@ namespace Echoslate {
 			foreach (string tag in ResultTags)
 				tempTags += tag + " ";
 			tempTags = ExpandHashTagsInString(tempTags);
-			
+
 			ResultTodoItem.Tags = new ObservableCollection<string>();
 			ResultTodoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		}
@@ -186,12 +199,20 @@ namespace Echoslate {
 
 			return list.Where(s => s != "").Aggregate("", (current, s) => current + (s + " "));
 		}
-		private void Ok() {
-			Result = true;
-			SetTodo();
 
-			Close();
+		public ICommand RankToTopCommand => new RelayCommand(RankToTop);
+		private void RankToTop() {
+			Rank = 0;
 		}
+		public ICommand RankToBottomCommand => new RelayCommand(RankToBottom);
+		private void RankToBottom() {
+			Rank = int.MaxValue;
+		}
+		public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
+		public void CycleSeverity() {
+			CurrentSeverity++;
+		}
+		public ICommand CompleteCommand => new RelayCommand(Complete);
 		private void Complete() {
 			Result = true;
 			_todoItem.IsComplete = true;
@@ -199,18 +220,40 @@ namespace Echoslate {
 
 			Close();
 		}
+		public ICommand OkCommand => new RelayCommand(Ok);
+		private void Ok() {
+			Result = true;
+			SetTodo();
+
+			Close();
+		}
+		public ICommand CancelCommand => new RelayCommand(Cancel);
 		private void Cancel() {
 			Close();
 		}
-		public void CycleSeverity() {
-			CurrentSeverity++;
+		public ICommand AddTagCommand => new RelayCommand(AddTag);
+		public void AddTag() {
+			List<string> selectedTags = new(Tags);
+			TagPicker dlg = new TagPicker {
+				SelectedTodoItems = [_todoItem],
+				AllAvailableTags = AllAvailableTags,
+				SelectedTags = new List<string>(selectedTags),
+				Owner = Window.GetWindow(this)
+			};
+			dlg.ShowDialog();
+			if (dlg.Result) {
+				TagHolders.Clear();
+				foreach (string tag in selectedTags) {
+					Tags.Remove(tag);
+				}
+				foreach (string tag in dlg.SelectedTags) {
+					Tags.Add(tag);
+					TagHolders.Add(new TagHolder(tag));
+				}
+			}
+			OnPropertyChanged(nameof(TagHolders));
 		}
-		
-		public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
-		public ICommand CompleteCommand => new RelayCommand(Complete);
-		public ICommand OkCommand => new RelayCommand(Ok);
-		public ICommand CancelCommand => new RelayCommand(Cancel);	
-		
+
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

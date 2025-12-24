@@ -14,27 +14,33 @@ namespace Echoslate {
 		public string ResultTodo;
 		public int ResultRank;
 		public int ResultSeverity;
-		
+
 		private string _todo;
 		public string Todo {
 			get => _todo;
 			set {
-				_todo = value;
-				OnPropertyChanged();
+				if (_todo != value) {
+					_todo = value;
+					IsTodoChangeable = true;
+					OnPropertyChanged(nameof(IsTodoChangeable));
+					OnPropertyChanged();
+				}
 			}
 		}
-
-		public bool IsSeverityEnabled { get; set; }
-		public bool IsRankEnabled { get; set; }
-		public bool IsCompleteEnabled { get; set; }
-		public bool IsTodoEnabled { get; set; }
-		public bool IsTagEnabled { get; set; }
+		public bool IsSeverityChangeable { get; set; }
+		public bool IsRankChangeable { get; set; }
+		public bool IsCompleteChangeable { get; set; }
+		public bool IsTodoChangeable { get; set; }
+		public bool IsTagChangeable { get; set; }
 
 		public ObservableCollection<TagHolder> _tags;
 		public ObservableCollection<TagHolder> Tags {
 			get => _tags;
 			set {
+				
 				_tags = value;
+				IsTagChangeable = true;
+				OnPropertyChanged(nameof(IsRankChangeable));
 				OnPropertyChanged();
 			}
 		}
@@ -43,9 +49,13 @@ namespace Echoslate {
 			get => _rank;
 			set {
 				_rank = value;
+				IsRankChangeable = true;
+				OnPropertyChanged(nameof(IsRankChangeable));
 				OnPropertyChanged();
 			}
 		}
+		public bool IsRankEnabled { get; set; }
+
 		private int _currentSeverity;
 		public int CurrentSeverity {
 			get => _currentSeverity;
@@ -57,15 +67,15 @@ namespace Echoslate {
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(SeverityButtonBackground));
 			}
-		}		
+		}
 		public Brush SeverityButtonBackground => CurrentSeverity switch {
-													 3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)), // High = Red
-													 2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
-													 1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)), // Low = Green
-													 0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)), // Off = Dark gray (your normal tag color)
-													 _ => new SolidColorBrush(Color.FromRgb(25, 25, 25)) // Off = Dark gray (your normal tag color)
-												 };
-		
+			3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)),   // High = Red
+			2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
+			1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)),   // Low = Green
+			0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)),  // Off = Dark gray (your normal tag color)
+			_ => new SolidColorBrush(Color.FromRgb(25, 25, 25))   // Off = Dark gray (your normal tag color)
+		};
+
 		private readonly string _currentFilter;
 
 		public string CompleteButtonContent { get; set; }
@@ -77,15 +87,19 @@ namespace Echoslate {
 			InitializeComponent();
 			DataContext = this;
 
+			if (items.Count != 0) {
+				IsRankEnabled = items[0].CurrentView != View.History;
+			}
+
 			CommonTags = GetCommonTags(items);
 
 			_currentFilter = currentFilter;
 			_currentSeverity = items[0].Severity;
-			if (items[0].CurrentView == View.Kanban) {
-				_rank = items[0].KanbanRank;
-			} else if (items[0].CurrentView == View.TodoList) {
-				_rank = items[0].Rank[_currentFilter];
-			}
+			_rank = items[0].CurrentView switch {
+				View.Kanban => items[0].KanbanRank,
+				View.TodoList => items[0].Rank[_currentFilter],
+				_ => _rank
+			};
 
 			CurrentSeverity = _currentSeverity;
 			CompleteButtonContent = items[0].IsComplete ? "Reactivate" : "Complete";
@@ -100,7 +114,7 @@ namespace Echoslate {
 		private static List<string> GetCommonTags(List<TodoItem> items) {
 			return new(items.Select(x => x.Tags ?? Enumerable.Empty<string>()).Aggregate((a, b) => a.Intersect(b).ToList()));
 		}
-		
+
 		private void CenterWindowOnMouse() {
 			Window win = Application.Current.MainWindow;
 
@@ -112,25 +126,28 @@ namespace Echoslate {
 			Top = centerY - Height / 2;
 		}
 		private void SetResult() {
-			if (IsTagEnabled) {
+			if (IsTagChangeable) {
 				ResultTags = new List<string>();
 				foreach (TagHolder th in _tags) {
 					string tag = th.Text.ToUpper();
 					if (!ResultTags.Contains(tag))
-						ResultTags.Add(tag);}
+						ResultTags.Add(tag);
+				}
 			}
-			if (IsSeverityEnabled) {
+			if (IsSeverityChangeable) {
 				ResultSeverity = CurrentSeverity;
 			}
-			if (IsRankEnabled) {
+			if (IsRankChangeable) {
 				ResultRank = Rank;
 			}
-			if (IsTodoEnabled) {
+			if (IsTodoChangeable) {
 				ResultTodo = Todo;
 			}
 		}
 		private void Delete(TagHolder th) {
 			_tags.Remove(th);
+			IsTagChangeable = true;
+			OnPropertyChanged(nameof(IsTagChangeable));
 		}
 		private void AddTag() {
 			string name = "#NEWTAG";
@@ -150,6 +167,8 @@ namespace Echoslate {
 
 			TagHolder th = new TagHolder(name + tagNumber);
 			_tags.Add(th);
+			IsTagChangeable = true;
+			OnPropertyChanged(nameof(IsTagChangeable));
 		}
 		private void Ok() {
 			SetResult();
@@ -162,28 +181,34 @@ namespace Echoslate {
 			Close();
 		}
 		private void Cancel() {
-			IsTagEnabled = false;
-			IsSeverityEnabled = false;
-			IsRankEnabled = false;
-			IsTodoEnabled = false;
-			IsCompleteEnabled = false;
-			
+			IsTagChangeable = false;
+			IsSeverityChangeable = false;
+			IsRankChangeable = false;
+			IsTodoChangeable = false;
+			IsCompleteChangeable = false;
+
 			Close();
-		}
-		private void RankToTop() {
-			Rank = 0;
-		}
-		private void RankToBottom() {
-			Rank = int.MaxValue;
 		}
 		public void CycleSeverity() {
 			CurrentSeverity++;
+			IsSeverityChangeable = true;
+			OnPropertyChanged(nameof(IsSeverityChangeable));
 		}
-		
+
 		public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
 		public ICommand CancelCommand => new RelayCommand(Cancel);
 		public ICommand RankToTopCommand => new RelayCommand(RankToTop);
+		private void RankToTop() {
+			Rank = 0;
+			IsRankChangeable = true;
+			OnPropertyChanged(nameof(IsRankChangeable));
+		}
 		public ICommand RankToBottomCommand => new RelayCommand(RankToBottom);
+		private void RankToBottom() {
+			Rank = int.MaxValue;
+			IsRankChangeable = true;
+			OnPropertyChanged(nameof(IsRankChangeable));
+		}
 		public ICommand CompleteCommand => new RelayCommand(Complete);
 		public ICommand OkCommand => new RelayCommand(Ok);
 		public ICommand AddTagCommand => new RelayCommand(AddTag);

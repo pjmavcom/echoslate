@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 
 namespace Echoslate
@@ -19,6 +20,9 @@ namespace Echoslate
 			double centerY = win.Height / 2 + win.Top;
 			Left = centerX - Width / 2;
 			Top = centerY - Height / 2;
+		}
+		public void CloseButton(object sender, EventArgs e) {
+			Close();
 		}
 	}
 }

@@ -27,8 +27,8 @@
                     <CheckBox x:Name="cbAB"
                               Margin="0,0,0,12"
                               Content="Auto Backup" FontSize="15" />
-                    <CheckBox x:Name="cbGHK"
-                              Content="Enable Global Hotkeys" FontSize="15" />
+                    <CheckBox x:Name="cbWW"
+                              Content="Enable Welcome window" FontSize="15" />
                 </StackPanel>
             </GroupBox>
 

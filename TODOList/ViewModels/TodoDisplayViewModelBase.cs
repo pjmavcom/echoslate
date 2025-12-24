@@ -180,7 +180,7 @@ namespace Echoslate.ViewModels {
 			MasterList = mainWindowVM.MasterTodoItemsList;
 			HistoryItems = mainWindowVM.MasterHistoryItemsList;
 			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
-			
+
 
 			AllItems = [];
 			FilterButtons = [];
@@ -190,7 +190,7 @@ namespace Echoslate.ViewModels {
 			FilterList = new ObservableCollection<string>(MasterFilterTags);
 			// FilterList = Data.FiltersList;
 			// if (FilterList == null) {
-				// FilterList = new ObservableCollection<string>();
+			// FilterList = new ObservableCollection<string>();
 			// }
 
 			CurrentSeverityFilter = -1;
@@ -369,7 +369,7 @@ namespace Echoslate.ViewModels {
 			foreach (TodoItemHolder ih in AllItems) {
 				if (ih.TD.IsComplete) {
 					Log.Debug($"{ih.TD}");
-
+					ih.CurrentView = View.History;
 					RemoveItemFromMasterList(ih.TD);
 					AddItemToHistory(ih.TD);
 				}
@@ -381,7 +381,7 @@ namespace Echoslate.ViewModels {
 			CurrentHistoryItem.AddCompletedTodo(item);
 		}
 		public void EditItem(TodoItem item) {
-			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash());
+			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash(), AllTags);
 			dlg.ShowDialog();
 
 			Log.Debug($"{item}");
@@ -499,8 +499,17 @@ namespace Echoslate.ViewModels {
 			remainingItems.InsertRange(insertIndex, subset);
 
 			string currentFilterWithoutHash = GetCurrentTagFilterWithoutHash();
-			for (int i = 0; i < remainingItems.Count; i++) {
-				remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
+			switch (remainingItems[0].CurrentView) {
+				case View.TodoList:
+					for (int i = 0; i < remainingItems.Count; i++) {
+						remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
+					}
+					break;
+				case View.Kanban:
+					for (int i = 0; i < remainingItems.Count; i++) {
+						remainingItems[i].KanbanRank = i + 1;
+					}
+					break;
 			}
 
 			AllItems.Clear();
@@ -557,18 +566,18 @@ namespace Echoslate.ViewModels {
 			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
 			dlg.ShowDialog();
 
-			if (dlg.IsRankEnabled) {
+			if (dlg.IsRankChangeable) {
 				ReRankWithSubsetMoved(items, dlg.ResultRank);
 			}
 			foreach (TodoItem item in items) {
-				if (dlg.IsSeverityEnabled) {
+				if (dlg.IsSeverityChangeable) {
 					item.Severity = dlg.ResultSeverity;
 				}
-				if (dlg.IsTodoEnabled) {
+				if (dlg.IsTodoChangeable) {
 					item.Todo += " " + dlg.ResultTodo;
 					Log.Print($"{item.Todo}");
 				}
-				if (dlg.IsTagEnabled) {
+				if (dlg.IsTagChangeable) {
 					foreach (string tag in dlg.CommonTags) {
 						if (item.Tags.Contains(tag)) {
 							item.Tags.Remove(tag);
@@ -580,7 +589,7 @@ namespace Echoslate.ViewModels {
 						}
 					}
 				}
-				if (dlg.IsCompleteEnabled) {
+				if (dlg.IsCompleteChangeable) {
 					MarkTodoAsComplete(item);
 				}
 			}
@@ -688,19 +697,39 @@ namespace Echoslate.ViewModels {
 		});
 
 		public ICommand RankDownCommand => new RelayCommand<TodoItemHolder>(ih => {
-			var list = DisplayedItems.Cast<TodoItemHolder>()
-			   .OrderBy(h => h.Rank)
-			   .ToList();
-			if (ih != null) {
-				int visibleIndex = list.IndexOf(ih);
-				if (visibleIndex >= list.Count - 1) {
-					return;
-				}
+			switch (ih.CurrentView) {
+				case View.TodoList:
+					var list = DisplayedItems.Cast<TodoItemHolder>()
+					   .OrderBy(h => h.Rank)
+					   .ToList();
+					if (ih != null) {
+						int visibleIndex = list.IndexOf(ih);
+						if (visibleIndex >= list.Count - 1) {
+							return;
+						}
 
-				TodoItemHolder nextItem = list.ElementAt(visibleIndex + 1);
+						TodoItemHolder nextItem = list.ElementAt(visibleIndex + 1);
 
-				ih.Rank++;
-				nextItem.Rank--;
+						ih.Rank++;
+						nextItem.Rank--;
+					}
+					break;
+				case View.Kanban:
+					var kanbanList = DisplayedItems.Cast<TodoItemHolder>()
+					   .OrderBy(h => h.KanbanRank)
+					   .ToList();
+					if (ih != null) {
+						int visibleIndex = kanbanList.IndexOf(ih);
+						if (visibleIndex >= kanbanList.Count - 1) {
+							return;
+						}
+
+						TodoItemHolder nextItem = kanbanList.ElementAt(visibleIndex + 1);
+
+						ih.KanbanRank++;
+						nextItem.KanbanRank--;
+					}
+					break;
 			}
 			RefreshAll();
 		});
@@ -730,10 +759,21 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 
-		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => { CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter; });
-		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
-		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
-		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
+		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => {
+			CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter;
+		});
+		public ICommand SelectSortCommand => new RelayCommand<string>(sort => 
+		{
+			CurrentSort = sort;
+		});
+		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => 
+		{
+			CurrentSeverityFilter++;
+		});
+		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => 
+		{
+			NewTodoSeverity++;
+		});
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
 		public ICommand NewTodoAddCommand => new RelayCommand(NewTodoAdd);
 		public abstract void NewTodoAdd();
@@ -762,12 +802,13 @@ namespace Echoslate.ViewModels {
 					break;
 				case "down":
 					if (NewTodoSeverity <= 0) {
-						return;}
+						return;
+					}
 					NewTodoSeverity--;
 					break;
 			}
 		});
-		
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

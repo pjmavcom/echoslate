@@ -13,6 +13,7 @@ namespace Echoslate
 	{
 		public bool AutoSave { get; set; }
 		public bool GlobalHotkeys { get; set; }
+		public bool WelcomeWindow { get; set; }
 		public bool AutoBackup { get; set; }
 		private int _backupTime;
 		public int BackupTime {
@@ -25,16 +26,17 @@ namespace Echoslate
 
 		public bool Result;
 		
-		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, int backupTime)
+		public DlgOptions(bool autoSave, bool hotkeys, bool autoBackup, int backupTime, bool welcomeWindow)
 		{
 			InitializeComponent();
 			AutoSave = autoSave;
 			GlobalHotkeys = hotkeys;
 			AutoBackup = autoBackup;
 			BackupTime = backupTime;
+			WelcomeWindow = !welcomeWindow;
 
 			cbAS.IsChecked = AutoSave;
-			cbGHK.IsChecked = GlobalHotkeys;
+			cbWW.IsChecked = WelcomeWindow;
 			cbAB.IsChecked = AutoBackup;
 			iudBackupTime.Value = BackupTime;
 
@@ -55,8 +57,8 @@ namespace Echoslate
 		{
 			if (cbAS.IsChecked != null)
 				AutoSave = (bool) cbAS.IsChecked;
-			if (cbGHK.IsChecked != null)
-				GlobalHotkeys = (bool) cbGHK.IsChecked;
+			if (cbWW.IsChecked != null)
+				WelcomeWindow = (bool) cbWW.IsChecked;
 			if (cbAB.IsChecked != null)
 				AutoBackup = (bool) cbAB.IsChecked;
 

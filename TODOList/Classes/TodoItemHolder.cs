@@ -13,7 +13,8 @@ using System.Runtime.CompilerServices;
 namespace Echoslate {
 	public enum View {
 		TodoList,
-		Kanban
+		Kanban,
+		History
 	}
 
 	public class TodoItemHolder : INotifyPropertyChanged {

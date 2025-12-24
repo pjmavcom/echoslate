@@ -43,6 +43,9 @@
         <SubType>Designer</SubType>
       </Page>
     </ItemGroup>
+    <ItemGroup>
+        <Resource Include="Resources\Echoslate.png" />
+    </ItemGroup>
     
 
 </Project>

@@ -25,15 +25,6 @@
         <KeyBinding Key="P"
                     Command="{Binding StartStopTimerCommand}"
                     Modifiers="Control" />
-        <KeyBinding Key="H"
-                    Command="{Binding SwitchTabCommand}"
-                    CommandParameter="left" Gesture="Alt+H"
-                    Modifiers="Alt" />
-
-        <KeyBinding Key="L"
-                    Command="{Binding SwitchTabCommand}"
-                    CommandParameter="right" Gesture="Alt+L"
-                    Modifiers="Alt" />
     </Window.InputBindings>
 
     <Grid HorizontalAlignment="Stretch"
@@ -64,7 +55,7 @@
                     <MenuItem Command="{Binding MenuQuitCommand}" Header="Quit" />
                 </MenuItem>
                 <MenuItem Header="Recent Loads"
-                          ItemsSource="{Binding AppDataSettings.RecentFiles}"
+                          ItemsSource="{Binding AppSettings.RecentFiles}"
                           Tag="{Binding}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>

@@ -24,7 +24,7 @@ namespace Echoslate.ViewModels {
 
 	public class MainWindowViewModel : INotifyPropertyChanged {
 		public AppData Data;
-		public AppDataSettings AppDataSettings { get; set; }
+		public AppSettings AppSettings { get; set; }
 
 		private string _currentWindowTitle;
 		public string CurrentWindowTitle {
@@ -86,7 +86,7 @@ namespace Echoslate.ViewModels {
 						LastBackupAttempt = DateTime.Now;
 					}
 					OnPropertyChanged();
-				} 
+				}
 			}
 		}
 		public bool IsPendingSave { get; set; }
@@ -111,7 +111,7 @@ namespace Echoslate.ViewModels {
 			get => _pomoWorkTime;
 			set {
 				_pomoWorkTime = value;
-				AppDataSettings.PomoWorkTimerLength = value;
+				AppSettings.PomoWorkTimerLength = value;
 				OnPropertyChanged();
 			}
 		}
@@ -136,7 +136,7 @@ namespace Echoslate.ViewModels {
 			get => _pomoBreakTime;
 			set {
 				_pomoBreakTime = value;
-				AppDataSettings.PomoBreakTimerLength = value;
+				AppSettings.PomoBreakTimerLength = value;
 				OnPropertyChanged();
 			}
 		}
@@ -179,8 +179,8 @@ namespace Echoslate.ViewModels {
 		}
 
 
-		public MainWindowViewModel(AppDataSettings appDataSettings) {
-			AppDataSettings = appDataSettings;
+		public MainWindowViewModel(AppSettings appSettings) {
+			AppSettings = appSettings;
 			TodoListVM = new TodoListViewModel();
 			KanbanVM = new KanbanViewModel();
 			HistoryVM = new HistoryViewModel();
@@ -212,8 +212,8 @@ namespace Echoslate.ViewModels {
 		}
 
 		private void SetPomoTimers() {
-			PomoWorkTime = AppDataSettings.PomoWorkTimerLength;
-			PomoBreakTime = AppDataSettings.PomoBreakTimerLength;
+			PomoWorkTime = AppSettings.PomoWorkTimerLength;
+			PomoBreakTime = AppSettings.PomoBreakTimerLength;
 		}
 		public void Timer_Tick(object? sender, EventArgs e) {
 			UpdateBackupTimer();
@@ -274,7 +274,7 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		public void SetWindowTitle() {
-			CurrentWindowTitle = AppDataSettings.WindowTitle + " - " + Data?.FileName;
+			CurrentWindowTitle = AppSettings.WindowTitle + " - " + Data?.FileName;
 		}
 		public void RebuildAllViews() {
 			TodoListVM.RebuildView();
@@ -358,21 +358,21 @@ namespace Echoslate.ViewModels {
 		private void ClearChangedFlag() {
 			IsChanged = false;
 		}
-		public void LoadRecentFile(AppDataSettings? settings) {
+		public void LoadRecentFile(AppSettings? settings) {
 			while (true) {
-				if (settings == null || AppDataSettings.RecentFiles.Count == 0) {
+				if (settings == null || AppSettings.RecentFiles.Count == 0) {
 					return;
 				}
 
-				if (File.Exists(AppDataSettings.RecentFiles[0])) {
-					Log.Print($"Loading recent file {AppDataSettings.RecentFiles[0]}");
-					Data = AppDataLoader.Load(AppDataSettings.RecentFiles[0]);
-					AppDataSettings.SortRecentFiles(AppDataSettings.RecentFiles[0]);
+				if (File.Exists(AppSettings.RecentFiles[0])) {
+					Log.Print($"Loading recent file {AppSettings.RecentFiles[0]}");
+					Data = AppDataLoader.Load(AppSettings.RecentFiles[0]);
+					AppSettings.SortRecentFiles(AppSettings.RecentFiles[0]);
 					return;
 				}
 
-				Log.Error($"{AppDataSettings.RecentFiles[0]} does not exist.");
-				AppDataSettings.RecentFiles.RemoveAt(0);
+				Log.Error($"{AppSettings.RecentFiles[0]} does not exist.");
+				AppSettings.RecentFiles.RemoveAt(0);
 			}
 		}
 		private async Task AutoSaveAsync() {
@@ -387,7 +387,7 @@ namespace Echoslate.ViewModels {
 #if DEBUG
 			string filePath = $"C:\\MyBinaries\\TestData\\{Data.FileName}{Data.FileExtension}";
 #else
-			string filePath = AppDataSettings.RecentFiles[0];
+			string filePath = AppSettings.RecentFiles[0];
 #endif
 			AppDataSaver saver = new AppDataSaver();
 			saver.Save(filePath, Data);
@@ -398,7 +398,7 @@ namespace Echoslate.ViewModels {
 #endif
 			AppDataSaver saver = new AppDataSaver();
 			saver.Save(filePath, Data);
-			AppDataSettings.AddRecentFile(Data.CurrentFilePath);
+			AppSettings.AddRecentFile(Data.CurrentFilePath);
 			SetWindowTitle();
 			ClearChangedFlag();
 		}
@@ -413,7 +413,7 @@ namespace Echoslate.ViewModels {
 #if DEBUG
 			string path = "C:\\MyBinaries\\TestData\\" + Data.FileName + ".bak" + Data.FileSettings.BackupIncrement;
 #else
-			string path = AppDataSettings.RecentFiles[0] + ".bak" + Data.FileSettings.BackupIncrement;
+			string path = AppSettings.RecentFiles[0] + ".bak" + Data.FileSettings.BackupIncrement;
 #endif
 			Log.Print($"Backing up to: {path}");
 			AppDataSaver saver = new AppDataSaver();
@@ -424,9 +424,9 @@ namespace Echoslate.ViewModels {
 		}
 		public void Load(string? filePath) {
 			Data = AppDataLoader.Load(filePath);
-			AppDataSettings.SortRecentFiles(filePath);
+			AppSettings.SortRecentFiles(filePath);
 			LoadCurrentData();
-			AppDataSettings.AddRecentFile(Data.CurrentFilePath);
+			AppSettings.AddRecentFile(Data.CurrentFilePath);
 			SetWindowTitle();
 			ClearChangedFlag();
 		}
@@ -485,11 +485,7 @@ namespace Echoslate.ViewModels {
 			}
 
 			if (_isChanged) {
-				DlgYesNo dlgYesNo = new DlgYesNo("Close", "Maybe save first?");
-				dlgYesNo.ShowDialog();
-				if (dlgYesNo.Result) {
-					Save();
-				}
+				Save();
 			}
 			Load(openFileDialog.FileName);
 			return true;
@@ -535,10 +531,11 @@ namespace Echoslate.ViewModels {
 		}
 		private void MenuOptions() {
 			bool autoSave = Data.FileSettings.AutoSave;
-			bool globalHotkeys = AppDataSettings.GlobalHotkeysEnabled;
+			bool globalHotkeys = AppSettings.GlobalHotkeysEnabled;
 			bool autoBackup = Data.FileSettings.AutoBackup;
-			int backupTime = AppDataSettings.BackupTime.Minutes;
-			DlgOptions options = new DlgOptions(autoSave, globalHotkeys, autoBackup, backupTime);
+			int backupTime = AppSettings.BackupTime.Minutes;
+			bool welcomeWindow = AppSettings.SkipWelcome;
+			DlgOptions options = new DlgOptions(autoSave, globalHotkeys, autoBackup, backupTime, welcomeWindow);
 			options.ShowDialog();
 			if (options.Result) {
 #if DEBUG
@@ -548,8 +545,9 @@ namespace Echoslate.ViewModels {
 				Data.FileSettings.AutoSave = options.AutoSave;
 				Data.FileSettings.AutoBackup = options.AutoBackup;
 #endif
-				AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
-				AppDataSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
+				// AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
+				AppSettings.SkipWelcome = !options.WelcomeWindow;
+				AppSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
 			}
 		}
 		private void MenuQuit() {
@@ -558,11 +556,7 @@ namespace Echoslate.ViewModels {
 			Log.Print("Settings saved.");
 
 			if (_isChanged) {
-				DlgYesNo dlg = new DlgYesNo("Close", "Maybe save first?");
-				dlg.ShowDialog();
-				if (dlg.Result) {
-					Save(Data.CurrentFilePath);
-				}
+				Save(Data.CurrentFilePath);
 
 				Log.Print("Shutting down...");
 				Log.Shutdown();
@@ -581,7 +575,7 @@ namespace Echoslate.ViewModels {
 			Load(filePath);
 		}
 		private void MenuRecentFilesRemove(string? filePath) {
-			AppDataSettings.RecentFiles.Remove(filePath);
+			AppSettings.RecentFiles.Remove(filePath);
 		}
 
 		public ICommand MenuNewCommand => new RelayCommand(MenuNew);
@@ -596,7 +590,7 @@ namespace Echoslate.ViewModels {
 		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
 
 		public ICommand PomoTimerToggleCommand => new RelayCommand(PomoTimerToggle);
-		public void PomoTimerToggle(){
+		public void PomoTimerToggle() {
 			_isPomoTimerOn = !_isPomoTimerOn;
 			if (_isPomoTimerOn) {
 				if (_pomoLastActiveState == PomoActiveState.Idle) {
@@ -617,21 +611,19 @@ namespace Echoslate.ViewModels {
 			PomoTimer = TimeSpan.Zero;
 			PomoTimeLeft = TimeSpan.Zero;
 		});
-		public ICommand ShowAboutWindowCommand => new RelayCommand(() => {
-			new AboutWindow().Show();
-		});
+		public ICommand ShowAboutWindowCommand => new RelayCommand(() => { new AboutWindow().Show(); });
 		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { new DlgHelp().Show(); });
-		
+
 		public ICommand QuickSaveCommand => new RelayCommand(MenuSave);
 		public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
 		public void QuickLoad() {
-			if (AppDataSettings.RecentFiles.Count > 1) {
-				MenuRecentFilesLoad(AppDataSettings.RecentFiles[1]);
+			if (AppSettings.RecentFiles.Count > 1) {
+				MenuRecentFilesLoad(AppSettings.RecentFiles[1]);
 			}
 		}
 		public ICommand StartStopTimerCommand => new RelayCommand(PomoTimerToggle);
-		
-		
+
+
 		public event PropertyChangedEventHandler? PropertyChanged;
 		private void OnPropertyChanged([CallerMemberName] string? name = null)
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

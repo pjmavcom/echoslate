@@ -19,6 +19,7 @@ namespace Echoslate.ViewModels {
 	}
 
 	public class HistoryViewModel : INotifyPropertyChanged {
+		private AppData Data { get; set; }
 		private ObservableCollection<TodoItem> _todoList;
 		private ObservableCollection<HistoryItem> _allHistoryItems;
 
@@ -74,6 +75,7 @@ namespace Echoslate.ViewModels {
 			OtherCompleted = [];
 		}
 		public void Initialize(MainWindowViewModel mainWindowVM) {
+			Data = mainWindowVM.Data;
 			SelectedIncrementMode = mainWindowVM.Data.FileSettings.IncrementMode;
 			_todoList = mainWindowVM.MasterTodoItemsList;
 			_allHistoryItems = mainWindowVM.MasterHistoryItemsList;
@@ -83,6 +85,12 @@ namespace Echoslate.ViewModels {
 
 			CurrentHistoryItem = mainWindowVM.CurrentHistoryItem;
 			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+
+			foreach (var h in _allHistoryItems) {
+				foreach (var todoItem in h.CompletedTodoItems) {
+					todoItem.CurrentView = View.History;
+				}
+			}
 		}
 		public void RebuildView() {
 			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
@@ -180,7 +188,7 @@ namespace Echoslate.ViewModels {
 		public ICommand EditTodoCommand => new RelayCommand<TodoItemHolder>(EditTodo);
 		public void EditTodo(TodoItemHolder ih) {
 			TodoItem item = ih.TD;
-			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null);
+			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null, new ObservableCollection<string>(Data.AllTags));
 			dlg.ShowDialog();
 			
 			if (dlg.Result) {

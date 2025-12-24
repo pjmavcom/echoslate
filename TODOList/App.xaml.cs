@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using Echoslate.ViewModels;
 using Echoslate.Windows;
@@ -6,13 +7,12 @@ using Echoslate.Windows;
 namespace Echoslate {
 	public partial class App {
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			var appDataSettings = new AppDataSettings();
-			AppDataSettings.LoadSettings();
-			var mainVM = new MainWindowViewModel(appDataSettings);
+			AppSettings.Load();
+			var mainVM = new MainWindowViewModel(AppSettings.Instance);
 			var mainWindow = new MainWindow { DataContext = mainVM };
 
-			if (AppDataSettings.SkipWelcome && !string.IsNullOrEmpty(AppDataSettings.LastFilePath) && File.Exists(AppDataSettings.LastFilePath)) {
-				mainVM.Load(AppDataSettings.LastFilePath);
+			if (AppSettings.Instance.SkipWelcome && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
+				mainVM.Load(AppSettings.Instance.LastFilePath);
 				mainWindow.Show();
 				return;
 			}

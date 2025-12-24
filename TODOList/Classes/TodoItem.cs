@@ -295,7 +295,6 @@ namespace Echoslate {
 			_kanbanRank = 0;
 			_tags = [];
 			_rank = [];
-			Tags.CollectionChanged += (s, e) => _hashedTags = null;
 		}
 		public void UpdateDates() {
 			if (DateTime.TryParseExact(_dateStarted, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
@@ -328,7 +327,7 @@ namespace Echoslate {
 		public static TodoItem Create(string newItem) {
 			string[] pieces = newItem.Split('|');
 			if (pieces.Length < 13) {
-				new DlgErrorMessage("This save file is corrupted! A todo did not load!" + Environment.NewLine + newItem).ShowDialog();
+				Log.Error($"This save file is corrupted! A todo did not load! {newItem}");
 				return new TodoItem();
 			}
 			string dateStarted = pieces[0].Trim();
@@ -375,7 +374,8 @@ namespace Echoslate {
 									Kanban = kanban,
 									KanbanRank = kanbanRank,
 									Problem = problem,
-									Solution = solution
+									Solution = solution,
+									CurrentView = isComplete ? View.History : View.TodoList
 								};
 		}
 		// public TodoItem() {

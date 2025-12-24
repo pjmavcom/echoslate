@@ -4,10 +4,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="About Echoslate"
         Width="500" Height="400"
-        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource AppBackground}"
+        Foreground="{StaticResource Foreground}"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        SizeToContent="Height"
         mc:Ignorable="d">
+    <!--  WindowStartupLocation="CenterOwner"  -->
     <Grid Margin="30">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="256" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Image Grid.Row="0"
+               Width="128" Height="128"
+               Source="/Resources/Echoslate.png" Stretch="Uniform" />
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock HorizontalAlignment="Center"
                        FontSize="28" FontWeight="Bold"
                        Text="Echoslate v4.0.0" />
@@ -16,7 +29,7 @@
                        TextAlignment="Center" TextWrapping="Wrap" />
 
             <TextBlock Margin="0,20,0,0" HorizontalAlignment="Center"
-                       Text="Made with ❤️ by [Your Name]" />
+                       Text="Made with ❤️ by Peter Mavrelis" />
 
             <!--  Ko-fi Link  -->
             <TextBlock FontSize="14" TextAlignment="Center">

@@ -338,9 +338,9 @@ namespace Echoslate {
 				foreach (TodoItem td in FeaturesCompleted)
 					result += Environment.NewLine + "--" + td.ToClipboard();
 			}
-			if (CompletedTodoItems.Count > 0) {
+			if (OtherCompleted.Count > 0) {
 				result += Environment.NewLine + Environment.NewLine + "=Other Stuff======================================================================================================";
-				foreach (TodoItem td in CompletedTodoItems)
+				foreach (TodoItem td in OtherCompleted)
 					result += Environment.NewLine + "--" + td.ToClipboard();
 			}
 			return result;
