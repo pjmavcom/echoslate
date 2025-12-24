@@ -96,11 +96,10 @@
         </ListView>
 
         <!--  Close Button  -->
-        <Button Grid.Row="1"
-                Width="100" Height="35"
-                Margin="0,20,0,0" HorizontalAlignment="Center"
-                Click="CloseButton" Content="Close"
-                FontSize="14" IsCancel="True"
-                IsDefault="True" />
+        <Button Grid.Row="0"
+                Width="0" Height="0"
+                Click="CloseButton" Content=""
+                IsCancel="True" IsDefault="True"
+                Opacity="0" />
     </Grid>
 </Window>

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Navigation;
@@ -24,5 +25,8 @@ public partial class AboutWindow : Window {
 	{
 		Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
 		e.Handled = true;
+	}
+	public void CloseButton(object sender, EventArgs e) {
+		Close();
 	}
 }

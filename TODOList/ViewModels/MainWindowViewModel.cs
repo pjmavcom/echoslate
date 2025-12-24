@@ -611,8 +611,20 @@ namespace Echoslate.ViewModels {
 			PomoTimer = TimeSpan.Zero;
 			PomoTimeLeft = TimeSpan.Zero;
 		});
-		public ICommand ShowAboutWindowCommand => new RelayCommand(() => { new AboutWindow().Show(); });
-		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { new DlgHelp().Show(); });
+		public ICommand ShowAboutWindowCommand => new RelayCommand(() => {
+			var window = Application.Current.MainWindow;
+			var aboutWindow = new AboutWindow() {
+				Owner = window
+			};
+			aboutWindow.ShowDialog();
+		});
+		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => {
+			var window = Application.Current.MainWindow;
+			var hotkeys = new DlgHelp() {
+				Owner = window
+			};
+			hotkeys.ShowDialog();
+		});
 
 		public ICommand QuickSaveCommand => new RelayCommand(MenuSave);
 		public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);

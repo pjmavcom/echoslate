@@ -25,6 +25,7 @@
         <KeyBinding Key="P"
                     Command="{Binding StartStopTimerCommand}"
                     Modifiers="Control" />
+        <KeyBinding Key="F1" Command="{Binding ShowAboutWindowCommand}" />
     </Window.InputBindings>
 
     <Grid HorizontalAlignment="Stretch"
