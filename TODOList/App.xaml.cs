@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Echoslate.ViewModels;
@@ -6,6 +7,15 @@ using Echoslate.Windows;
 
 namespace Echoslate {
 	public partial class App {
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
+
+			PresentationTraceSources.DataBindingSource.Listeners.Clear();
+			PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
+			PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Warning | SourceLevels.Error;
+			PresentationTraceSources.Refresh();
+		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
 			AppSettings.Load();
 			var mainVM = new MainWindowViewModel(AppSettings.Instance);

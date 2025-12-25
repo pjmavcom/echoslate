@@ -173,106 +173,12 @@ namespace Echoslate {
 
 			SortCompletedTodoItems();
 		}
-		// public HistoryItem() : this(DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT), DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT)) {
-		// Version = new Version(7, 7, 7, 7);
-		// }
-		public static HistoryItem Create(DateTime dateTime) {
-			return Create(dateTime.ToString(MainWindow.DATE_STRING_FORMAT), dateTime.ToString(MainWindow.TIME_STRING_FORMAT));
-		}
-		// public HistoryItem(DateTime dateTime) : this(dateTime.ToString(MainWindow.DATE_STRING_FORMAT), dateTime.ToString(MainWindow.TIME_STRING_FORMAT)) {
-		// }
 		public static HistoryItem Create(string date, string time) {
 			return new HistoryItem {
 									   DateAdded = date,
 									   TimeAdded = time
 								   };
 		}
-		// public HistoryItem(string date, string time) {
-		// _completedTodoItems = new ObservableCollection<TodoItem>();
-		// _dateAdded = date;
-		// _timeAdded = time;
-		// _notes = "";
-		// Version = new Version();
-		// IsCommitted = false;
-		// SortCompletedTodoItems();
-		// }
-		public static HistoryItem Create(List<string> newItem) {
-			string[] pieces = newItem[0].Split('|');
-			bool hasBeenCopied = Convert.ToBoolean(pieces[0]);
-			string dateAdded = pieces[1];
-			string timeAdded = pieces[2];
-			string title = pieces[3];
-			string notes = AddNewLines(pieces[4]);
-
-			int index = 0;
-			newItem.RemoveAt(0);
-			foreach (string s in newItem) {
-				if (s == "VCSTodos") {
-					break;
-				}
-				index++;
-			}
-
-			for (int i = 0; i < index; i++) {
-				notes += newItem[i] + Environment.NewLine;
-			}
-
-			for (int i = 0; i <= index; i++) {
-				newItem.RemoveAt(0);
-			}
-
-			ObservableCollection<TodoItem> completedTodoItems = [];
-			foreach (string s in newItem) {
-				TodoItem td = TodoItem.Create(s);
-				completedTodoItems.Add(td);
-			}
-			return new HistoryItem() {
-										 HasBeenCopied = hasBeenCopied,
-										 DateAdded = dateAdded,
-										 TimeAdded = timeAdded,
-										 Title = title,
-										 Notes = notes,
-										 CompletedTodoItems = completedTodoItems
-									 };
-		}
-		// public HistoryItem(List<string> newItem) {
-		// _completedTodoItems = new ObservableCollection<TodoItem>();
-		// Load2_0(newItem);
-		// Version = new Version();
-		// IsCommitted = false;
-		// SortCompletedTodoItems();
-		// }
-		private void Load2_0(List<string> newItem) {
-			string[] pieces = newItem[0].Split('|');
-			_hasBeenCopied = Convert.ToBoolean(pieces[0]);
-			_dateAdded = pieces[1];
-			_timeAdded = pieces[2];
-			_title = pieces[3];
-			_notes = AddNewLines(pieces[4]);
-
-			int index = 0;
-			newItem.RemoveAt(0);
-			foreach (string s in newItem) {
-				if (s == "VCSTodos") {
-					break;
-				}
-				index++;
-			}
-			for (int i = 0; i < index; i++) {
-				_notes += newItem[i] + Environment.NewLine;
-			}
-
-			for (int i = 0; i <= index; i++) {
-				newItem.RemoveAt(0);
-			}
-
-			foreach (string s in newItem) {
-				TodoItem td = TodoItem.Create(s);
-				_completedTodoItems.Add(td);
-			}
-		}
-
-		// METHODS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// METHODS //
 		public void AddCompletedTodo(TodoItem td) {
 			CompletedTodoItems.Add(td);
 			SortCompletedTodoItems();

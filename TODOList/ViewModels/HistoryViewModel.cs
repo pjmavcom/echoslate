@@ -38,11 +38,35 @@ namespace Echoslate.ViewModels {
 		public HistoryItem SelectedHistoryItem {
 			get => _selectedHistoryItem;
 			set {
-				if (SetProperty(ref _selectedHistoryItem, value)) {
+				if (_selectedHistoryItem != value) {
+					_selectedHistoryItem = value;
 					UpdateCategorizedLists();
+					OnPropertyChanged(nameof(Title));
+					OnPropertyChanged(nameof(Notes));
 				}
 			}
 		}
+		public string Title {
+			get => SelectedHistoryItem.Title;
+			set {
+				if (SelectedHistoryItem.Title != value) {
+					SelectedHistoryItem.Title = value;
+					OnPropertyChanged();
+					SelectedHistoryItem.GenerateCommitMessage();
+				}
+			}
+		}
+		public string Notes {
+			get => SelectedHistoryItem.Notes;
+			set {
+				if (SelectedHistoryItem.Notes != value) {
+					SelectedHistoryItem.Notes = value;
+					OnPropertyChanged();
+					SelectedHistoryItem.GenerateCommitMessage();
+				}
+			}
+		}
+
 
 		public ICollectionView CommittedHistoryItems { get; set; }
 
@@ -66,7 +90,7 @@ namespace Echoslate.ViewModels {
 
 
 		public HistoryViewModel() {
-			CurrentHistoryItem =  new HistoryItem { Title = "Work in progress...", Version = new Version(0, 0, 0, 0) };
+			CurrentHistoryItem = new HistoryItem { Title = "Work in progress...", Version = new Version(0, 0, 0, 0) };
 			_todoList = [];
 			_allHistoryItems = [];
 			SelectedHistoryItem = CurrentHistoryItem;
@@ -145,7 +169,6 @@ namespace Echoslate.ViewModels {
 		}
 		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
 		public void CommitCurrent() {
-
 			CurrentHistoryItem.IsCommitted = true;
 			CurrentHistoryItem.CommitDate = DateTime.Now;
 			CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
@@ -192,7 +215,7 @@ namespace Echoslate.ViewModels {
 			TodoItem item = ih.TD;
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null, new ObservableCollection<string>(Data.AllTags));
 			dlg.ShowDialog();
-			
+
 			if (dlg.Result) {
 				TodoItem newItem = dlg.ResultTodoItem;
 				if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {

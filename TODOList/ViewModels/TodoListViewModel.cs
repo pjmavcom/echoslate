@@ -92,6 +92,7 @@ namespace Echoslate.ViewModels {
 				item.Tags.Add(CurrentFilter);
 			}
 			AddItemToMasterList(item);
+			_selectedTodoItemId = item.Id;
 			RefreshAll();
 			NewTodoText = "";
 		}

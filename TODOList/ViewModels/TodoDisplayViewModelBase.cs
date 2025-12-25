@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+using System;using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -155,6 +154,8 @@ namespace Echoslate.ViewModels {
 		}
 		public IList SelectedTodoItems { get; } = new ObservableCollection<object>();
 
+
+		protected Guid _selectedTodoItemId;
 		private object _selectedTodoItem;
 		public object SelectedTodoItem {
 			get => _selectedTodoItem;
@@ -165,6 +166,8 @@ namespace Echoslate.ViewModels {
 					}
 					_selectedTodoItem = value;
 					if (_selectedTodoItem is TodoItemHolder newItem) {
+						_selectedTodoItemId = newItem.Id;
+						Log.Debug($"{_selectedTodoItemId}");
 						newItem.TD.PropertyChanged += TodoItem_PropertyChanged;
 					}
 
@@ -203,7 +206,10 @@ namespace Echoslate.ViewModels {
 
 		public void TodoItem_PropertyChanged(object sender, PropertyChangedEventArgs e) {
 			if (sender is TodoItem item) {
-				item.UpdateTags(Data.AllTags);
+				if (item.UpdateTags(Data.AllTags)) {
+					UpdateTags();
+					RefreshAll();
+				}
 			}
 		}
 		public void RebuildView() {
@@ -233,6 +239,7 @@ namespace Echoslate.ViewModels {
 						AllTags.Add(tag);
 					}
 				}
+				LookForNewTags(item);
 			}
 			OnPropertyChanged(nameof(CurrentVisibleTags));
 			if (!string.IsNullOrWhiteSpace(currentSortTag)) {
@@ -258,6 +265,18 @@ namespace Echoslate.ViewModels {
 			RefreshFilter();
 			RefreshDisplayedItems(true);
 			GetCurrentHashTags();
+			RestoreSelection();
+		}
+		private void RestoreSelection() {
+			TodoItemHolder foundItem = null;
+			if (SelectedTodoItem == null) {
+				foreach (TodoItemHolder ih in AllItems) {
+					if (ih.HasId(_selectedTodoItemId)) {
+						foundItem = ih;
+					}
+				}
+			}
+			SelectedTodoItem = foundItem;
 		}
 		private void ApplySort(bool forceRefresh = false) {
 			if (!forceRefresh) {
@@ -418,7 +437,7 @@ namespace Echoslate.ViewModels {
 			MasterList.Add(item);
 			LookForNewTags(item);
 		}
-		private void LookForNewTags(TodoItem item) {
+		public void LookForNewTags(TodoItem item) {
 			bool newTagFound = false;
 			foreach (string t in item.Tags) {
 				if (!Data.AllTags.Contains(t)) {
@@ -690,11 +709,6 @@ namespace Echoslate.ViewModels {
 			}
 			RefreshAll();
 		});
-		public ICommand DebugPrintTodoCommand => new RelayCommand(() => {
-			foreach (TodoItem item in GetSelectedListBoxItems()) {
-				Log.Debug($"{item}");
-			}
-		});
 
 		public ICommand RankDownCommand => new RelayCommand<TodoItemHolder>(ih => {
 			switch (ih.CurrentView) {
@@ -759,21 +773,10 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 
-		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => {
-			CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter;
-		});
-		public ICommand SelectSortCommand => new RelayCommand<string>(sort => 
-		{
-			CurrentSort = sort;
-		});
-		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => 
-		{
-			CurrentSeverityFilter++;
-		});
-		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => 
-		{
-			NewTodoSeverity++;
-		});
+		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => { CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter; });
+		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
+		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
+		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
 		public ICommand NewTodoAddCommand => new RelayCommand(NewTodoAdd);
 		public abstract void NewTodoAdd();
@@ -806,6 +809,20 @@ namespace Echoslate.ViewModels {
 					}
 					NewTodoSeverity--;
 					break;
+			}
+		});
+		public ICommand DebugSearchGuidCommand => new RelayCommand(() => {
+			Guid id = new Guid(NewTodoText);
+			foreach (TodoItemHolder item in AllItems) {
+				var found = item.SearchById(id);
+				if (found != null) {
+					Log.Print($"Found Todo: {item.TD}");
+				}
+			}
+		});
+		public ICommand DebugPrintTodoCommand => new RelayCommand(() => {
+			foreach (TodoItem item in GetSelectedListBoxItems()) {
+				Log.Debug($"{item}");
 			}
 		});
 

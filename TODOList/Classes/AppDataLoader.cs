@@ -17,18 +17,8 @@ public class AppDataLoader {
 		PropertyNameCaseInsensitive = true
 	};
 
-	public AppData Data;
-
-	public AppDataLoader() {
-		// Data = Load(filePath);
-		// data = Data;
-		// data = new AppData { CurrentFilePath = filePath };
-		// Data = data;
-		// Load2_1SaveFile();
-	}
 	public static AppData Load(string path) {
 		return LoadNew(path);
-		// return Load2_1SaveFile(path);
 	}
 	public static AppData LoadNew(string path) {
 		if (!File.Exists(path)) {
@@ -70,81 +60,5 @@ public class AppDataLoader {
 		data.CurrentFilePath = path;
 		data.DebugFiltersList();
 		return data;
-	}
-
-
-	public static AppData Load2_1SaveFile(string path) {
-		AppData data = new AppData { CurrentFilePath = path };
-		StreamReader stream = new StreamReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-
-		string? line;
-		while (true) {
-			line = stream.ReadLine();
-			if (line != null && line.Contains("=====TABS"))
-				continue;
-			if (line != null && line.Contains("=====FILESETTINGS"))
-				break;
-
-			data.FiltersList.Add(line);
-		}
-
-		stream.ReadLine();
-		data.FileSettings.BackupIncrement = Convert.ToInt16(stream.ReadLine());
-		stream.ReadLine();
-		data.FileSettings.BackupTime = Convert.ToInt16(stream.ReadLine());
-		stream.ReadLine();
-		data.FileSettings.AutoBackup = Convert.ToBoolean(stream.ReadLine());
-		stream.ReadLine();
-		data.FileSettings.AutoSave = Convert.ToBoolean(stream.ReadLine());
-		stream.ReadLine();
-		string versionAndMode = stream.ReadLine();
-		data.FileSettings.CurrentProjectVersion = ConvertProjectVersion(versionAndMode);
-		data.FileSettings.IncrementMode = GetIncrementMode(versionAndMode);
-
-		while (true) {
-			line = stream.ReadLine();
-			if (line != null && line.Contains("=====VCS"))
-				break;
-
-			if (line != null && line.Contains("=====TODO"))
-				continue;
-
-			TodoItem td = TodoItem.Create(line);
-			data.TodoList.Add(td);
-		}
-
-		List<string> history = [];
-		while (line != null) {
-			line = stream.ReadLine();
-			switch (line) {
-				case "NewVCS":
-					history = [];
-					continue;
-				case "EndVCS":
-					data.HistoryList.Add(HistoryItem.Create(history));
-					continue;
-				default:
-					if (line != null) {
-						history.Add(line);
-					}
-					break;
-			}
-		}
-		stream.Close();
-		return data;
-	}
-	public static Version ConvertProjectVersion(string version) {
-		string[] v = version.Split('.');
-		return new Version(Convert.ToInt16(v[0]), Convert.ToInt16(v[1]), Convert.ToInt16(v[2]), Convert.ToInt16(v[3]));
-	}
-	public static IncrementMode GetIncrementMode(string version) {
-		string[] v = version.Split('.');
-		return v[4] switch {
-			"0" => IncrementMode.Major,
-			"1" => IncrementMode.Minor,
-			"2" => IncrementMode.Build,
-			"3" => IncrementMode.Revision,
-			_ => IncrementMode.None
-		};
 	}
 }

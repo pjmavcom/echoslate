@@ -11,15 +11,17 @@ using Echoslate.Resources;
 using Echoslate.ViewModels;
 
 namespace Echoslate.UserControls {
-	public partial class ItemNotesPanel : UserControl {
+	public partial class ItemNotesPanel : UserControl, INotifyPropertyChanged {
 		public static readonly DependencyProperty SelectedTodoItemProperty =
 			DependencyProperty.Register(nameof(SelectedTodoItem), typeof(TodoItemHolder), typeof(ItemNotesPanel), new PropertyMetadata(null));
-		
-		
+
 		public TodoItemHolder SelectedTodoItem {
 			get => (TodoItemHolder)GetValue(SelectedTodoItemProperty);
+
 			set => SetValue(SelectedTodoItemProperty, value);
 		}
+
+
 		public ItemNotesPanel() {
 			InitializeComponent();
 		}
@@ -31,18 +33,22 @@ namespace Echoslate.UserControls {
 				}
 			}
 		}
-		
+
 		public ICommand NotesPanelCompleteCommand => new RelayCommand(() => RaiseEvent(new RoutedEventArgs(NotesPanelCompleteRequestedEvent)));
+
 		public static readonly RoutedEvent NotesPanelCompleteRequestedEvent =
 			EventManager.RegisterRoutedEvent("NotesPanelCompleteRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ItemNotesPanel));
+
 		public event RoutedEventHandler NotesPanelCompleteRequested {
 			add => AddHandler(NotesPanelCompleteRequestedEvent, value);
 			remove => RemoveHandler(NotesPanelCompleteRequestedEvent, value);
 		}
-		
+
 		public ICommand NotesPanelAddTagCommand => new RelayCommand(() => RaiseEvent(new RoutedEventArgs(NotesPanelEditTagsRequestedEvent)));
-		public static readonly RoutedEvent NotesPanelEditTagsRequestedEvent = 
+
+		public static readonly RoutedEvent NotesPanelEditTagsRequestedEvent =
 			EventManager.RegisterRoutedEvent("NotesPanelEditTagsRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ItemNotesPanel));
+
 		public event RoutedEventHandler NotesPanelEditTagsRequested {
 			add => AddHandler(NotesPanelEditTagsRequestedEvent, value);
 			remove => RemoveHandler(NotesPanelEditTagsRequestedEvent, value);
@@ -52,5 +58,15 @@ namespace Echoslate.UserControls {
 			var binding = BindingOperations.GetBindingExpression(tbTodo, TextBox.TextProperty);
 			binding?.UpdateSource();
 		});
+		public event PropertyChangedEventHandler? PropertyChanged;
+		protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+		protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
+			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
 	}
 }

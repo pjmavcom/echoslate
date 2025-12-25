@@ -29,7 +29,15 @@ namespace Echoslate {
 		}
 		public bool IsSeverityChangeable { get; set; }
 		public bool IsRankChangeable { get; set; }
-		public bool IsCompleteChangeable { get; set; }
+		private bool _isCompleteChangeable;
+		public bool IsCompleteChangeable {
+			get => _isCompleteChangeable;
+			set {
+				_isCompleteChangeable = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public bool IsTodoChangeable { get; set; }
 		public bool IsTagChangeable { get; set; }
 

@@ -77,6 +77,7 @@ namespace Echoslate.ViewModels {
 			};
 
 			AddItemToMasterList(item);
+			_selectedTodoItemId = item.Id;
 			RefreshAll();
 			NewTodoText = "";
 		}

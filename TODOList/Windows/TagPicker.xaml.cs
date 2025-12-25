@@ -89,6 +89,7 @@ namespace Echoslate {
 			if (NewTagName == "") {
 				return;
 			}
+			
 			string newTag = NewTagName.ToUpper();
 			if (!newTag.StartsWith("#")) {
 				newTag = "#" + newTag;

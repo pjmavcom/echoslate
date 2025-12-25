@@ -20,6 +20,16 @@ namespace Echoslate {
 	[Serializable]
 	public class TodoItem : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
+		private Guid _id;
+		[JsonIgnore]
+		public Guid Id {
+			get => _id;
+			set {
+				_id = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private string _todo;
 		public string Todo {
 			get => AddNewLines(_todo);
@@ -216,8 +226,6 @@ namespace Echoslate {
 			}
 		}
 
-
-		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
 		[JsonIgnore]
 		private string TagsAndTodoToSave {
 			get {
@@ -279,6 +287,7 @@ namespace Echoslate {
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem() {
+			Id = Guid.NewGuid();
 			_todo = string.Empty;
 			_notes = string.Empty;
 			_problem = string.Empty;
@@ -296,6 +305,12 @@ namespace Echoslate {
 			_tags = [];
 			_rank = [];
 		}
+		public TodoItem? SearchById(Guid id) {
+			if (Id == id) {
+				return this;
+			}
+			return null;
+		}
 		public void UpdateDates() {
 			if (DateTime.TryParseExact(_dateStarted, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
 			} else {
@@ -305,9 +320,15 @@ namespace Echoslate {
 			}
 			DateTimeStarted = parsedDate.Date + parsedTime;
 		}
-		public void UpdateTags(HashSet<string> tags) {
+		public bool UpdateTags(HashSet<string> tags) {
+			bool allTagsChanged = false;
 			if (string.IsNullOrWhiteSpace(Todo)) {
-				return;
+				return false;
+			}
+			foreach (string tag in Tags) {
+				if (tags.Contains(tag)) continue;
+				tags.Add(tag);
+				allTagsChanged = true;
 			}
 			foreach (string t in tags) {
 				if (HashedTags.Contains(t) || string.IsNullOrWhiteSpace(t)) {
@@ -319,10 +340,14 @@ namespace Echoslate {
 				}
 				string escapedTag = Regex.Escape(cleanTag);
 				string pattern = $@"\b{escapedTag}\b";
-				if (Regex.IsMatch(Todo, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) {
+				if (!Regex.IsMatch(Todo, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) {
+					continue;
+				}
+				if (!Tags.Contains(t)) {
 					Tags.Add(t);
 				}
 			}
+			return allTagsChanged;
 		}
 		public static TodoItem Create(string newItem) {
 			string[] pieces = newItem.Split('|');

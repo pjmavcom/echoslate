@@ -12,6 +12,15 @@ using CommunityToolkit.Mvvm.Input;
 namespace Echoslate {
 	public partial class DlgTodoItemEditor : INotifyPropertyChanged {
 		public ObservableCollection<string> SeverityOptions { get; } = new() { "None", "Low", "Med", "High" };
+		private Guid _guid;
+		public Guid Guid {
+			get => _guid;
+			set {
+				_guid = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private int _currentSeverity;
 		public int CurrentSeverity {
 			get => _currentSeverity;
@@ -121,10 +130,15 @@ namespace Echoslate {
 		public DlgTodoItemEditor(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
 			InitializeComponent();
 			DataContext = this;
+			Guid = td.Id;
 			AllAvailableTags = allAvailableTags;
 			IsRankEnabled = td.CurrentView != View.History;
 
 			_todoItem = TodoItem.Create(td.ToString());
+			_todoItem.Id = td.Id;
+			_todoItem.DateTimeStarted = td.DateTimeStarted;
+			_todoItem.DateStarted = td.DateStarted;
+			_todoItem.TimeStarted = td.TimeStarted;
 			_todoItem.CurrentView = td.CurrentView;
 			_todoItem.IsTimerOn = td.IsTimerOn;
 			_currentListHash = currentListHash ?? "All";
@@ -182,6 +196,7 @@ namespace Echoslate {
 					ResultTodoItem.KanbanRank = Rank;
 					break;
 			}
+			ResultTodoItem.Kanban = KanbanId;
 			ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
 			ResultTodoItem.Notes = Notes;
 
@@ -273,6 +288,23 @@ namespace Echoslate {
 				}
 			}
 			OnPropertyChanged(nameof(TagHolders));
+		}
+		public ICommand DeleteTagCommand => new RelayCommand<TagHolder>(DeleteTag);
+		public void DeleteTag(TagHolder holder) {
+			string tag = holder.Text;
+			if (TagHolders.Contains(holder)) {
+				TagHolders.Remove(holder);
+			}
+			if (Tags.Contains(tag)) {
+				Tags.Remove(tag);
+			}
+			OnPropertyChanged(nameof(TagHolders));
+		}
+		public ICommand CycleKanbanCommand => new RelayCommand(CycleKanban);
+		public void CycleKanban() {
+			KanbanId++;
+			KanbanId %= 4;
+			
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

@@ -167,31 +167,59 @@
 
         <!--  Bottom Buttons  -->
         <StackPanel Grid.Row="3"
-                    Margin="0,20,0,0" HorizontalAlignment="Center"
+                    Margin="0,10,0,10" HorizontalAlignment="Center"
                     Orientation="Horizontal">
             <CheckBox Margin="0,0,3,0" VerticalAlignment="Center"
                       FontSize="16"
                       Foreground="{StaticResource SubtleForeground}"
                       IsChecked="{Binding IsCompleteChangeable}"
                       Style="{StaticResource ToggleSwitchStyle}" />
-            <Button Width="160" Height="45"
+            <Button Width="140"
                     Margin="0,0,15,0"
-                    Background="#4CAF50"
                     Command="{Binding CompleteCommand}"
                     Content="{Binding CompleteButtonContent}"
                     FontSize="16" FontWeight="SemiBold"
-                    Foreground="White"
-                    IsEnabled="{Binding IsCompleteChangeable}" />
-            <Button Width="160" Height="45"
+                    Foreground="{StaticResource Foreground}"
+                    IsEnabled="{Binding IsCompleteChangeable}">
+
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#4CAF50" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Padding="12,8"
+                                            Background="{TemplateBinding Background}"
+                                            CornerRadius="7">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                          TextElement.Foreground="{TemplateBinding Foreground}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#2E7D32" />
+                                <Setter Property="Opacity" Value="0.7" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Width="140"
                     Margin="0,0,15,0"
+                    Background="#FF0066CC" BorderBrush="#FF0077EE"
                     Command="{Binding OkCommand}"
                     Content="OK" FontSize="16"
+                    Foreground="{StaticResource Foreground}"
                     IsDefault="True" />
-            <Button Width="160" Height="45"
+            <Button Width="140"
+                    Margin="0,0,15,0"
                     Background="#F44336"
                     Command="{Binding CancelCommand}"
                     Content="Cancel" FontSize="16"
-                    Foreground="White" IsCancel="True" />
+                    Foreground="{StaticResource Foreground}"
+                    IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

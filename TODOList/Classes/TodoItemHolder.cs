@@ -28,6 +28,14 @@ namespace Echoslate {
 			get => _td;
 			set => _td = value;
 		}
+		public Guid Id {
+			get => _td.Id;
+			set {
+				_td.Id = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private int _rank;
 		public int Rank {
 			get {
@@ -150,6 +158,15 @@ namespace Echoslate {
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeTakenDisplay)));
 				}
 			};
+		}
+		public TodoItemHolder? SearchById(Guid id) {
+			if (Id == id) {
+				return this;
+			}
+			return null;
+		}
+		public bool HasId(Guid id) {
+			return Id == id;
 		}
 		public bool HasTag(string tag) {
 			return Tags.Contains(tag);

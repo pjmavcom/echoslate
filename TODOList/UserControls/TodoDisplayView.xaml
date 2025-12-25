@@ -169,7 +169,8 @@
                             <MenuItem Command="{Binding ContextMenuMoveToBottomCommand}" Header="Move to Bottom" />
                             <Separator />
                             <MenuItem Command="{Binding ContextMenuCompleteCommand}" Header="Complete" />
-                            <Separator />
+                            <!-- <Separator /> -->
+                            <!-- <MenuItem Command="{Binding DebugSearchGuidCommand}" Header="Find GUID" /> -->
                             <!-- <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print Todo" /> -->
                         </ContextMenu>
                     </ListBox.ContextMenu>
