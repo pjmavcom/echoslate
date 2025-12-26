@@ -11,12 +11,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Echoslate {
-	public enum View {
-		TodoList,
-		Kanban,
-		History
-	}
-
 	public class TodoItemHolder : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
 		private TodoItem _td;

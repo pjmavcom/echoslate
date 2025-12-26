@@ -111,15 +111,15 @@ namespace Echoslate {
 		public bool Result;
 
 		private ObservableCollection<string> AllAvailableTags;
-		private List<string> Tags { get; set; }
-		private ObservableCollection<TagHolder> _tagHolders;
-		public ObservableCollection<TagHolder> TagHolders {
-			get => _tagHolders;
-			set {
-				_tagHolders = value;
-				OnPropertyChanged();
-			}
-		}
+		private ObservableCollection<string> Tags { get; set; }
+		// private ObservableCollection<string> _tagHolders;
+		// public ObservableCollection<string> TagHolders {
+			// get => _tagHolders;
+			// set {
+				// _tagHolders = value;
+				// OnPropertyChanged();
+			// }
+		// }
 
 		private List<string> ResultTags { get; set; }
 		public string SelectedTag { get; set; }
@@ -157,11 +157,11 @@ namespace Echoslate {
 			Problem = _item.Problem;
 			Solution = _item.Solution;
 
-			Tags = new List<string>(_item.Tags);
-			TagHolders = new ObservableCollection<TagHolder>();
-			foreach (string tag in Tags) {
-				TagHolders.Add(new TagHolder(tag));
-			}
+			Tags = new ObservableCollection<string>(_item.Tags);
+			// TagHolders = new ObservableCollection<string>();
+			// foreach (string tag in Tags) {
+				// TagHolders.Add(tag);
+			// }
 
 			Notes = _item.Notes;
 			if (Notes.Contains("/n")) {
@@ -198,9 +198,9 @@ namespace Echoslate {
 			string tempTodo = ExpandHashTagsInString(TodoText);
 			string tempTags = "";
 			ResultTags = new List<string>();
-			foreach (TagHolder th in TagHolders)
-				if (!ResultTags.Contains(th.Text))
-					ResultTags.Add(th.Text);
+			foreach (string th in Tags)
+				if (!ResultTags.Contains(th))
+					ResultTags.Add(th);
 			foreach (string tag in ResultTags)
 				tempTags += tag + " ";
 			tempTags = ExpandHashTagsInString(tempTags);
@@ -273,27 +273,27 @@ namespace Echoslate {
 			};
 			dlg.ShowDialog();
 			if (dlg.Result) {
-				TagHolders.Clear();
+				// TagHolders.Clear();
 				foreach (string tag in selectedTags) {
 					Tags.Remove(tag);
 				}
 				foreach (string tag in dlg.SelectedTags) {
 					Tags.Add(tag);
-					TagHolders.Add(new TagHolder(tag));
+					// TagHolders.Add(tag);
 				}
 			}
-			OnPropertyChanged(nameof(TagHolders));
+			// OnPropertyChanged(nameof(TagHolders));
 		}
-		public ICommand DeleteTagCommand => new RelayCommand<TagHolder>(DeleteTag);
-		public void DeleteTag(TagHolder holder) {
-			string tag = holder.Text;
-			if (TagHolders.Contains(holder)) {
-				TagHolders.Remove(holder);
+		public ICommand DeleteTagCommand => new RelayCommand<string>(DeleteTag);
+		public void DeleteTag(string holder) {
+			// string tag = holder;
+			if (Tags.Contains(holder)) {
+				Tags.Remove(holder);
 			}
-			if (Tags.Contains(tag)) {
-				Tags.Remove(tag);
-			}
-			OnPropertyChanged(nameof(TagHolders));
+			// if (Tags.Contains(tag)) {
+				// Tags.Remove(tag);
+			// }
+			OnPropertyChanged(nameof(Tags));
 		}
 		public ICommand CycleKanbanCommand => new RelayCommand(CycleKanban);
 		public void CycleKanban() {

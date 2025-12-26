@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.ViewModels;
 
@@ -17,7 +13,7 @@ namespace Echoslate.UserControls {
 			InitializeComponent();
 		}
 		private void Todos_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-			foreach (TodoItemHolder ih in e.RemovedItems.OfType<TodoItemHolder>()) {
+			foreach (TodoItem ih in e.RemovedItems.OfType<TodoItem>()) {
 				ih.CleanNotes();
 			}
 		}
@@ -49,8 +45,8 @@ namespace Echoslate.UserControls {
 
 			List<TodoItem> ihs = [];
 			List<string> selectedTags = [];
-			foreach (TodoItemHolder ih in vm.SelectedTodoItems) {
-				ihs.Add(ih.TD);
+			foreach (TodoItem ih in vm.SelectedTodoItems) {
+				ihs.Add(ih);
 			}
 
 			selectedTags = new List<string>(ihs.Select(x => x.Tags ?? Enumerable.Empty<string>()).Aggregate((a, b) => a.Intersect(b).ToList()));
@@ -80,19 +76,15 @@ namespace Echoslate.UserControls {
 
 		private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
 			if (sender is ListBoxItem lbItem) {
-				if (lbItem.DataContext is TodoItemHolder ih) {
-					TodoItem item = ih.TD;
+				if (lbItem.DataContext is TodoItem ih) {
+					TodoItem item = ih;
 					if (DataContext is TodoDisplayViewModelBase vm) {
 						vm.EditItem(item);
 					}
 				}
 			}
 		}
-		private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			// Let your InputBindings handle it first
-			// If they don't handle it, you can add custom logic here if needed
-			// But usually, just marking as handled=false isn't needed with InputBindings
+		private void Window_PreviewKeyDown(object sender, KeyEventArgs e) {
 		}
 	}
 }

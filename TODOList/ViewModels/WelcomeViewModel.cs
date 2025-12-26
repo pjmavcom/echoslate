@@ -5,35 +5,33 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Echoslate.ViewModels;
-public class WelcomeViewModel : INotifyPropertyChanged
-{
-    public ICommand CreateNewCommand { get; }
-    public ICommand OpenExistingCommand { get; }
 
-    private bool _dontShowAgain;
-    public bool DontShowAgain
-    {
-        get => _dontShowAgain;
-        set { _dontShowAgain = value; OnPropertyChanged(); }
-    }
+public class WelcomeViewModel : INotifyPropertyChanged {
+	public ICommand CreateNewCommand { get; }
+	public ICommand OpenExistingCommand { get; }
 
-    public WelcomeViewModel(Action createNew, Action openExisting)
-    {
-        CreateNewCommand = new RelayCommand(createNew);
-        OpenExistingCommand = new RelayCommand(openExisting);
+	private bool _dontShowAgain;
+	public bool DontShowAgain {
+		get => _dontShowAgain;
+		set {
+			_dontShowAgain = value;
+			OnPropertyChanged();
+		}
+	}
 
-        // Load saved preference
-        DontShowAgain = AppSettings.Instance.SkipWelcome;
-    }
+	public WelcomeViewModel(Action createNew, Action openExisting) {
+		CreateNewCommand = new RelayCommand(createNew);
+		OpenExistingCommand = new RelayCommand(openExisting);
 
-    // Save preference when closed
-    public void SavePreference()
-    {
-        AppSettings.Instance.SkipWelcome = DontShowAgain;
-        AppSettings.Save();
-    }
+		DontShowAgain = AppSettings.Instance.SkipWelcome;
+	}
 
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+	public void SavePreference() {
+		AppSettings.Instance.SkipWelcome = DontShowAgain;
+		AppSettings.Save();
+	}
+
+	public event PropertyChangedEventHandler PropertyChanged;
+	protected void OnPropertyChanged([CallerMemberName] string name = null) =>
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

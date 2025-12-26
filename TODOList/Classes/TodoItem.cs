@@ -8,6 +8,12 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Echoslate {
+	public enum View {
+		TodoList,
+		Kanban,
+		History
+	}
+	
 	[Serializable]
 	public class TodoItem : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
@@ -75,11 +81,13 @@ namespace Echoslate {
 			}
 		}
 		private TimeSpan _timeTaken;
+		[JsonIgnore]
 		public TimeSpan TimeTaken {
 			get => _timeTaken;
 			set {
 				_timeTaken = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(IsTimerOn));
 			}
 		}
 		private bool _isTimerOn;
@@ -88,6 +96,7 @@ namespace Echoslate {
 			set {
 				_isTimerOn = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(TimeTaken));
 			}
 		}
 
@@ -136,6 +145,38 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		private int _currentFilterRank;
+		[JsonIgnore]
+		public int CurrentFilterRank {
+			get {
+				return CurrentView switch {
+					View.Kanban => KanbanRank,
+					View.TodoList when Rank.ContainsKey(_currentFilter) => Rank[_currentFilter],
+					_ => -1
+				};
+			}
+			set {
+				switch (CurrentView) {
+					case View.Kanban:
+						KanbanRank = value;
+						break;
+					case View.TodoList:
+						Rank[_currentFilter] = value;
+						break;
+				}
+				OnPropertyChanged();
+			}
+		}
+		[JsonIgnore]
+		public int CurrentKanbanFilter { get; set; }
+		private string _currentFilter = "All";
+		public string CurrentFilter {
+			get => _currentFilter;
+			set {
+				_currentFilter = value;
+				OnPropertyChanged();
+			}
+		}
 		
 		private View _currentView;
 		[JsonIgnore]
@@ -164,6 +205,15 @@ namespace Echoslate {
 					_hashedTags = new HashSet<string>(Tags);
 				}
 				return _hashedTags;
+			}
+		}
+		private bool _isPrioritySorted;
+		[JsonIgnore]
+		public bool IsPrioritySorted {
+			get => _isPrioritySorted;
+			set {
+				_isPrioritySorted = value;
+				OnPropertyChanged();
 			}
 		}
 
@@ -222,6 +272,10 @@ namespace Echoslate {
 				return result;
 			}
 		}
+		[JsonIgnore]
+		public bool HasTags => Tags.Count > 0;
+		[JsonIgnore]
+		public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem() {
@@ -267,6 +321,12 @@ namespace Echoslate {
 				return this;
 			}
 			return null;
+		}
+		public bool HasId(Guid id) {
+			return Id == id;
+		}
+		public bool HasTag(string tag) {
+			return Tags.Contains(tag);
 		}
 		public bool UpdateTags(HashSet<string> tags) {
 			bool allTagsChanged = false;

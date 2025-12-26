@@ -84,7 +84,7 @@
                              Margin="0"
                              Background="{StaticResource ControlBackground}"
                              ItemContainerStyle="{StaticResource TransparentListBoxItemStyle}"
-                             ItemsSource="{Binding TagHolders}"
+                             ItemsSource="{Binding Tags}"
                              SelectedItem="{Binding SelectedTag}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

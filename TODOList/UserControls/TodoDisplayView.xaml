@@ -252,7 +252,7 @@
                                 <Label Grid.Column="4"
                                        HorizontalContentAlignment="Center"
                                        Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
-                                       Content="{Binding TimeTakenDisplay, UpdateSourceTrigger=PropertyChanged}"
+                                       Content="{Binding TimeTaken, UpdateSourceTrigger=PropertyChanged}"
                                        Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}">
                                     <Label.InputBindings>
                                         <MouseBinding Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"

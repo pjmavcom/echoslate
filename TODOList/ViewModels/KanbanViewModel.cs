@@ -7,13 +7,11 @@ using Echoslate.Components;
 
 namespace Echoslate.ViewModels {
 	public class KanbanViewModel : TodoDisplayViewModelBase {
-		public KanbanViewModel() {
-		}
 		public override void Initialize(MainWindowViewModel mainWindowVM) {
 			base.Initialize(mainWindowVM);
 			CurrentFilter = "Current";
 			CurrentSort = "severity";
-			_reverseSort = false;
+			ReverseSort = false;
 			RefreshAll();
 		}
 		protected override void RefreshFilter() {
@@ -77,7 +75,7 @@ namespace Echoslate.ViewModels {
 			};
 
 			AddItemToMasterList(item);
-			_selectedTodoItemId = item.Id;
+			SelectedTodoItemId = item.Id;
 			RefreshAll();
 			NewTodoText = "";
 		}

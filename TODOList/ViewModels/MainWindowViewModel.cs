@@ -171,13 +171,6 @@ namespace Echoslate.ViewModels {
 		public int PomoProgressBarValue { get; set; }
 		public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
 
-		private void UpdatePomoTimerUI() {
-			OnPropertyChanged(nameof(PomoLabelContent));
-			OnPropertyChanged(nameof(PomoBackground));
-			OnPropertyChanged(nameof(PomoProgressBarValue));
-			OnPropertyChanged(nameof(PomoIsWorkMode));
-		}
-
 
 		public MainWindowViewModel(AppSettings appSettings) {
 			AppSettings = appSettings;
@@ -206,11 +199,9 @@ namespace Echoslate.ViewModels {
 			timer.Start();
 
 			_backupTimerMax = new TimeSpan(0, Data.FileSettings.BackupTime, 0);
-			// _backupTimerMax = new TimeSpan(0, 0, 10);
 			_backupTimer = _backupTimerMax;
 			Log.Print($"{_backupTimer}");
 		}
-
 		private void SetPomoTimers() {
 			PomoWorkTime = AppSettings.PomoWorkTimerLength;
 			PomoBreakTime = AppSettings.PomoBreakTimerLength;
@@ -273,6 +264,12 @@ namespace Echoslate.ViewModels {
 				_pomoLastActiveState = _pomoState;
 			}
 		}
+		private void UpdatePomoTimerUI() {
+			OnPropertyChanged(nameof(PomoLabelContent));
+			OnPropertyChanged(nameof(PomoBackground));
+			OnPropertyChanged(nameof(PomoProgressBarValue));
+			OnPropertyChanged(nameof(PomoIsWorkMode));
+		}
 		public void SetWindowTitle() {
 			CurrentWindowTitle = AppSettings.WindowTitle + " - " + Data?.FileName;
 		}
@@ -308,10 +305,6 @@ namespace Echoslate.ViewModels {
 			RebuildAllViews();
 			SetWindowTitle();
 
-			// TODO Remove this if all is well
-			// foreach (TodoItem item in MasterTodoItemsList) {
-			// item.UpdateDates();
-			// }
 			SetupApplicationState();
 		}
 		private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -357,23 +350,6 @@ namespace Echoslate.ViewModels {
 		}
 		private void ClearChangedFlag() {
 			IsChanged = false;
-		}
-		public void LoadRecentFile(AppSettings? settings) {
-			while (true) {
-				if (settings == null || AppSettings.RecentFiles.Count == 0) {
-					return;
-				}
-
-				if (File.Exists(AppSettings.RecentFiles[0])) {
-					Log.Print($"Loading recent file {AppSettings.RecentFiles[0]}");
-					Data = AppDataLoader.Load(AppSettings.RecentFiles[0]);
-					AppSettings.SortRecentFiles(AppSettings.RecentFiles[0]);
-					return;
-				}
-
-				Log.Error($"{AppSettings.RecentFiles[0]} does not exist.");
-				AppSettings.RecentFiles.RemoveAt(0);
-			}
 		}
 		private async Task AutoSaveAsync() {
 			try {
@@ -437,7 +413,6 @@ namespace Echoslate.ViewModels {
 			RebuildAllViews();
 			ClearChangedFlag();
 
-
 			SaveFileDialog sfd = new SaveFileDialog {
 				Title = @"Select folder to save file in.",
 				FileName = Data.FileName,
@@ -458,17 +433,15 @@ namespace Echoslate.ViewModels {
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				mainWindow.Activate();
-				if (mainWindow.WindowState == WindowState.Minimized)
+				if (mainWindow.WindowState == WindowState.Minimized) {
 					mainWindow.WindowState = WindowState.Normal;
+				}
 
 				mainWindow.Topmost = true;
 				mainWindow.Topmost = false;
 				mainWindow.Focus();
 			}
 			SetupApplicationState();
-		}
-		private void MenuNew() {
-			CreateNewFile();
 		}
 		public bool OpenFile() {
 			string basePath = Data == null ? "" : Data.BasePath;
@@ -489,12 +462,6 @@ namespace Echoslate.ViewModels {
 			}
 			Load(openFileDialog.FileName);
 			return true;
-		}
-		private void MenuLoad() {
-			OpenFile();
-		}
-		private void MenuSave() {
-			Save();
 		}
 		public void SaveAs() {
 			Log.Print("Saving file as...");
@@ -518,17 +485,34 @@ namespace Echoslate.ViewModels {
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				mainWindow.Activate();
-				if (mainWindow.WindowState == WindowState.Minimized)
+				if (mainWindow.WindowState == WindowState.Minimized) {
 					mainWindow.WindowState = WindowState.Normal;
+				}
 
 				mainWindow.Topmost = true;
 				mainWindow.Focus();
 				mainWindow.Topmost = false;
 			}
 		}
+
+
+		public ICommand MenuNewCommand => new RelayCommand(MenuNew);
+		private void MenuNew() {
+			CreateNewFile();
+		}
+		public ICommand MenuLoadCommand => new RelayCommand(MenuLoad);
+		private void MenuLoad() {
+			OpenFile();
+		}
+		public ICommand SaveCommand => new RelayCommand(MenuSave);
+		private void MenuSave() {
+			Save();
+		}
+		public ICommand MenuSaveAsCommand => new RelayCommand(MenuSaveAs);
 		private void MenuSaveAs() {
 			SaveAs();
 		}
+		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
 		private void MenuOptions() {
 			bool autoSave = Data.FileSettings.AutoSave;
 			bool globalHotkeys = AppSettings.GlobalHotkeysEnabled;
@@ -550,9 +534,9 @@ namespace Echoslate.ViewModels {
 				AppSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
 			}
 		}
+		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);
 		private void MenuQuit() {
 			Log.Print("Saving settings...");
-			// SaveSettings();
 			Log.Print("Settings saved.");
 
 			if (_isChanged) {
@@ -566,29 +550,19 @@ namespace Echoslate.ViewModels {
 			}
 			Application.Current.Shutdown();
 		}
+		public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
 		private void MenuHelp() {
 			DlgHelp dlgH = new DlgHelp();
 			dlgH.ShowDialog();
 		}
-
+		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(MenuRecentFilesLoad);
 		private void MenuRecentFilesLoad(string? filePath) {
 			Load(filePath);
 		}
+		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
 		private void MenuRecentFilesRemove(string? filePath) {
 			AppSettings.RecentFiles.Remove(filePath);
 		}
-
-		public ICommand MenuNewCommand => new RelayCommand(MenuNew);
-		public ICommand MenuLoadCommand => new RelayCommand(MenuLoad);
-		public ICommand MenuSaveCommand => new RelayCommand(MenuSave);
-		public ICommand MenuSaveAsCommand => new RelayCommand(MenuSaveAs);
-		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
-		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);
-		public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
-
-		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(MenuRecentFilesLoad);
-		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
-
 		public ICommand PomoTimerToggleCommand => new RelayCommand(PomoTimerToggle);
 		public void PomoTimerToggle() {
 			_isPomoTimerOn = !_isPomoTimerOn;
@@ -626,14 +600,12 @@ namespace Echoslate.ViewModels {
 			hotkeys.ShowDialog();
 		});
 
-		public ICommand QuickSaveCommand => new RelayCommand(MenuSave);
 		public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
 		public void QuickLoad() {
 			if (AppSettings.RecentFiles.Count > 1) {
 				MenuRecentFilesLoad(AppSettings.RecentFiles[1]);
 			}
 		}
-		public ICommand StartStopTimerCommand => new RelayCommand(PomoTimerToggle);
 
 
 		public event PropertyChangedEventHandler? PropertyChanged;

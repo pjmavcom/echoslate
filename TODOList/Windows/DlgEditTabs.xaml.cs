@@ -12,12 +12,12 @@ using Echoslate.Resources;
 
 namespace Echoslate {
 	public partial class DlgEditTabs : INotifyPropertyChanged {
-		private readonly List<TabItemHolder> _newTabItemList;
-		private ObservableCollection<string> _tabNames;
-		public ObservableCollection<string> TabNames {
-			get => _tabNames;
+		private readonly List<string> _newTabItemList;
+		private ObservableCollection<string> _filterNames;
+		public ObservableCollection<string> FilterNames {
+			get => _filterNames;
 			set {
-				_tabNames = value;
+				_filterNames = value;
 				OnPropertyChanged();
 			}
 		}
@@ -33,12 +33,12 @@ namespace Echoslate {
 		private List<string> _resultList;
 		public ObservableCollection<string> ResultList;
 
-		public DlgEditTabs(ObservableCollection<string> tabNames) {
+		public DlgEditTabs(ObservableCollection<string> filterNames) {
 			InitializeComponent();
 			DataContext = this;
 
-			TabNames = new ObservableCollection<string>(tabNames);
-			TabNames.Remove("All");
+			FilterNames = new ObservableCollection<string>(filterNames);
+			FilterNames.Remove("All");
 			CenterWindowOnMouse();
 		}
 		private void CenterWindowOnMouse() {
@@ -52,29 +52,29 @@ namespace Echoslate {
 			Top = centerY - Height / 2;
 		}
 		public ICommand NewTabCommand => new RelayCommand(() => {
-			TabNames.Add(NewTabName.CapitalizeFirstLetter());
+			FilterNames.Add(NewTabName.CapitalizeFirstLetter());
 			NewTabName = string.Empty;
 		});
 		public ICommand DeleteCommand => new RelayCommand<ListBox>(lb => {
 			List<string> tabsToRemove = lb.SelectedItems.Cast<string>().ToList();
 			foreach (string s in tabsToRemove) {
-				if (TabNames.Contains(s)) {
-					TabNames.Remove(s);
+				if (FilterNames.Contains(s)) {
+					FilterNames.Remove(s);
 				}
 			}
 		});
 		public ICommand MoveUpCommand => new RelayCommand<ListBox>(lb => {
 			HashSet<string> selectedSet = lb.SelectedItems.Cast<string>().ToHashSet();
-			List<string> listToRemove = TabNames.Where(selectedSet.Contains).ToList();
+			List<string> listToRemove = FilterNames.Where(selectedSet.Contains).ToList();
 
 			int bufferIndex = 0;
 			foreach (string s in listToRemove) {
-				int index = TabNames.IndexOf(s);
+				int index = FilterNames.IndexOf(s);
 				if (index <= bufferIndex) {
 					bufferIndex++;
 					continue;
 				}
-				(TabNames[index], TabNames[index - 1]) = (TabNames[index - 1], TabNames[index]);
+				(FilterNames[index], FilterNames[index - 1]) = (FilterNames[index - 1], FilterNames[index]);
 			}
 			lb.SelectedItems.Clear();
 			foreach (string s in listToRemove) {
@@ -83,17 +83,17 @@ namespace Echoslate {
 		});
 		public ICommand MoveDownCommand => new RelayCommand<ListBox>(lb => {
 			HashSet<string> selectedSet = lb.SelectedItems.Cast<string>().ToHashSet();
-			List<string> listToRemove = TabNames.Where(selectedSet.Contains).ToList();
+			List<string> listToRemove = FilterNames.Where(selectedSet.Contains).ToList();
 			listToRemove.Reverse();
 
-			int bufferIndex = TabNames.Count - 1;
+			int bufferIndex = FilterNames.Count - 1;
 			foreach (string s in listToRemove) {
-				int index = TabNames.IndexOf(s);
+				int index = FilterNames.IndexOf(s);
 				if (index >= bufferIndex) {
 					bufferIndex--;
 					continue;
 				}
-				(TabNames[index], TabNames[index + 1]) = (TabNames[index + 1], TabNames[index]);
+				(FilterNames[index], FilterNames[index + 1]) = (FilterNames[index + 1], FilterNames[index]);
 			}
 			listToRemove.Reverse();
 			lb.SelectedItems.Clear();
@@ -107,7 +107,7 @@ namespace Echoslate {
 		});
 		public ICommand OkCommand => new RelayCommand(() => {
 			_resultList = [];
-			_resultList.AddRange(TabNames);
+			_resultList.AddRange(FilterNames);
 			ResultList = new ObservableCollection<string>(_resultList);
 			Result = true;
 			Close();

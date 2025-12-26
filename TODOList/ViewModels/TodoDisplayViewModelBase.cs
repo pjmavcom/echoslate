@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -58,24 +57,12 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		private string _selectedPrioritySortTag;
-		public string SelectedPrioritySortTag {
-			get => _selectedPrioritySortTag;
-			set {
-				if (_selectedPrioritySortTag != value) {
-					_selectedPrioritySortTag = value;
-					OnPropertyChanged();
-				}
-			}
-		}
-
 
 		protected string _currentFilter = "All";
 		public string? CurrentFilter {
 			get => _currentFilter;
 			set {
 				_currentFilter = value;
-				// _reverseSort = false;
 				RefreshAll();
 				OnPropertyChanged();
 			}
@@ -125,8 +112,7 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		private string _previousSort = "";
-		protected bool _reverseSort;
-		private bool _previousReverseSort;
+		protected bool ReverseSort;
 
 		private string _newTodoText;
 		public string NewTodoText {
@@ -156,7 +142,7 @@ namespace Echoslate.ViewModels {
 		public IList SelectedTodoItems { get; } = new ObservableCollection<object>();
 
 
-		protected Guid _selectedTodoItemId;
+		protected Guid SelectedTodoItemId;
 		private object _selectedTodoItem;
 		public object SelectedTodoItem {
 			get => _selectedTodoItem;
@@ -167,8 +153,8 @@ namespace Echoslate.ViewModels {
 					}
 					_selectedTodoItem = value;
 					if (_selectedTodoItem is TodoItemHolder newItem) {
-						_selectedTodoItemId = newItem.Id;
-						Log.Debug($"{_selectedTodoItemId}");
+						SelectedTodoItemId = newItem.Id;
+						Log.Debug($"{SelectedTodoItemId}");
 						newItem.TD.PropertyChanged += TodoItem_PropertyChanged;
 					}
 
@@ -177,25 +163,19 @@ namespace Echoslate.ViewModels {
 			}
 		}
 
-		public TodoDisplayViewModelBase() {
-		}
+		
 		public virtual void Initialize(MainWindowViewModel mainWindowVM) {
 			Data = mainWindowVM.Data;
 			MasterList = mainWindowVM.MasterTodoItemsList;
 			HistoryItems = mainWindowVM.MasterHistoryItemsList;
 			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
 
-
 			AllItems = [];
 			FilterButtons = [];
+			AllTags = [];
 
 			CurrentVisibleTags = new ObservableCollection<string>(MasterFilterTags);
-			AllTags = [];
 			FilterList = new ObservableCollection<string>(MasterFilterTags);
-			// FilterList = Data.FiltersList;
-			// if (FilterList == null) {
-			// FilterList = new ObservableCollection<string>();
-			// }
 
 			CurrentSeverityFilter = -1;
 			NewTodoSeverity = 0;
@@ -272,7 +252,7 @@ namespace Echoslate.ViewModels {
 			TodoItemHolder foundItem = null;
 			if (SelectedTodoItem == null) {
 				foreach (TodoItemHolder ih in AllItems) {
-					if (ih.HasId(_selectedTodoItemId)) {
+					if (ih.HasId(SelectedTodoItemId)) {
 						foundItem = ih;
 					}
 				}
@@ -282,9 +262,9 @@ namespace Echoslate.ViewModels {
 		private void ApplySort(bool forceRefresh = false) {
 			if (!forceRefresh) {
 				if (_currentSort != _previousSort) {
-					_reverseSort = false;
+					ReverseSort = false;
 				} else {
-					_reverseSort = !_reverseSort;
+					ReverseSort = !ReverseSort;
 				}
 				_previousSort = _currentSort;
 			}
@@ -292,27 +272,27 @@ namespace Echoslate.ViewModels {
 			DisplayedItems.SortDescriptions.Clear();
 			switch (CurrentSort) {
 				case "date":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("DateTimeStarted", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("DateTimeStarted", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "rank":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "severity":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", _reverseSort ? ListSortDirection.Ascending : ListSortDirection.Descending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", ReverseSort ? ListSortDirection.Ascending : ListSortDirection.Descending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "active":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Active", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Active", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "kanban":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Kanban", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Kanban", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "title":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Todo", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Todo", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 			}
 		}
@@ -348,23 +328,6 @@ namespace Echoslate.ViewModels {
 		private void ResetPrioritySortTags() {
 			foreach (TodoItemHolder ih in DisplayedItems) {
 				ih.IsPrioritySorted = false;
-			}
-		}
-		private void ContextMenuEdit() {
-			if (SelectedTodoItems[0] is not TodoItemHolder ih) {
-				return;
-			}
-
-			if (SelectedTodoItems.Count > 1) {
-				List<TodoItem> items = new List<TodoItem>();
-				foreach (TodoItemHolder ihs in SelectedTodoItems) {
-					items.Add(ihs.TD);
-				}
-				MultiEditItems(items);
-			} else if (SelectedTodoItems.Count == 1) {
-				EditItem(ih.TD);
-			} else {
-				Log.Error("No items selected.");
 			}
 		}
 		public void MarkSelectedItemAsComplete() {
@@ -538,15 +501,12 @@ namespace Echoslate.ViewModels {
 			}
 			RefreshAll();
 		}
-
 		protected void ExpandHashTags(TodoItem td) {
-			// UNCHECKED
 			string tempTodo = ExpandHashTagsInString(td.Todo);
 			string tempTags = ExpandHashTagsInList(td.Tags);
 			td.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		}
 		public string ExpandHashTagsInString(string todo) {
-			// UNCHECKED
 			string[] pieces = todo.Split(' ');
 
 			List<string> list = new List<string>();
@@ -559,13 +519,7 @@ namespace Echoslate.ViewModels {
 
 					if (t.Equals("#BUGS"))
 						t = "#BUG";
-
-					// foreach (string hash in from pair in HashShortcuts
-					// where t.Equals("#" + pair.Key.ToUpper())
-					// select "#" + pair.Value) {
-					// s = hash;
-					// }
-
+					
 					s = s.ToLower();
 				}
 
@@ -575,7 +529,6 @@ namespace Echoslate.ViewModels {
 			return list.Where(s => s != "").Aggregate("", (current, s) => current + (s + " "));
 		}
 		private string ExpandHashTagsInList(ObservableCollection<string> tags) {
-			// UNCHECKED
 			string result = tags.Aggregate("", (current, s) => current + (s + " "));
 
 			result = ExpandHashTagsInString(result);
@@ -613,31 +566,9 @@ namespace Echoslate.ViewModels {
 			}
 
 			RefreshAll();
-			/*
-			IncompleteItemsRefresh();
-			KanbanRefresh();
-			*/
-		}
-		public void EditFilterBarRelayCommand() {
-			DlgEditTabs dlg = new(MasterFilterTags);
-			dlg.ShowDialog();
-			if (dlg.Result) {
-				Log.Print("Filters successfully edited");
-				MasterFilterTags.Clear();
-				foreach (string filter in dlg.ResultList) {
-					MasterFilterTags.Add(filter);
-				}
-				foreach (TodoItem td in MasterList) {
-					CleanTodoHashRanks(td);
-				}
-				RefreshAll();
-			}
 		}
 		public List<TodoItem> GetSelectedListBoxItems() {
 			List<TodoItem> items = [];
-			// foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
-			// items.Add(ih.TD);
-			// }
 
 			foreach (TodoItemHolder ih in SelectedTodoItems) {
 				items.Add(ih.TD);
@@ -649,15 +580,29 @@ namespace Echoslate.ViewModels {
 			foreach (TodoItemHolder ih in SelectedTodoItems) {
 				ihs.Add(ih);
 			}
-			// foreach (TodoItemHolder ih in lbTodos.SelectedItems) {
-			// 	ihs.Add(ih);
-			// }
 			return ihs;
 		}
-		// private void ItemNotesPanel_EditTagsRequested(object sender, EventArgs e) {
-		// Log.Test();
-		// }
 		public ICommand ContextMenuEditCommand => new RelayCommand(ContextMenuEdit);
+		private void ContextMenuEdit() {
+			if (SelectedTodoItems[0] is not TodoItemHolder ih) {
+				return;
+			}
+
+			switch (SelectedTodoItems.Count) {
+				case > 1: {
+					List<TodoItem> items = [];
+					items.AddRange(from TodoItemHolder ihs in SelectedTodoItems select ihs.TD);
+					MultiEditItems(items);
+					break;
+				}
+				case 1:
+					EditItem(ih.TD);
+					break;
+				default:
+					Log.Error("No items selected.");
+					break;
+			}
+		}
 		public ICommand ContextMenuDeleteCommand => new RelayCommand(() => {
 			foreach (TodoItem item in GetSelectedListBoxItems()) {
 				RemoveItemFromMasterList(item);
@@ -708,7 +653,6 @@ namespace Echoslate.ViewModels {
 			}
 			RefreshAll();
 		});
-
 		public ICommand RankDownCommand => new RelayCommand<TodoItemHolder>(ih => {
 			switch (ih.CurrentView) {
 				case View.TodoList:
@@ -772,11 +716,37 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 
-		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => { CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter; });
-		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
-		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
-		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
+		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => 
+		{
+			CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter;
+		});
+		public ICommand SelectSortCommand => new RelayCommand<string>(sort => 
+		{
+			CurrentSort = sort;
+		});
+		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => 
+		{
+			CurrentSeverityFilter++;
+		});
+		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => {
+			NewTodoSeverity++;
+		});
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
+		public void EditFilterBarRelayCommand() {
+			DlgEditTabs dlg = new(MasterFilterTags);
+			dlg.ShowDialog();
+			if (dlg.Result) {
+				Log.Print("Filters successfully edited");
+				MasterFilterTags.Clear();
+				foreach (string filter in dlg.ResultList) {
+					MasterFilterTags.Add(filter);
+				}
+				foreach (TodoItem td in MasterList) {
+					CleanTodoHashRanks(td);
+				}
+				RefreshAll();
+			}
+		}
 		public ICommand NewTodoAddCommand => new RelayCommand(NewTodoAdd);
 		public abstract void NewTodoAdd();
 
@@ -793,7 +763,7 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 			NewTodoText = "";
 		}
-		public ICommand RefreshAllCommand => new RelayCommand(() => { RefreshAll(); });
+		public ICommand RefreshAllCommand => new RelayCommand(RefreshAll);
 		public ICommand ChangeSeverityHotkeyCommand => new RelayCommand<string>(s => {
 			switch (s) {
 				case "up":

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -67,7 +66,6 @@ namespace Echoslate.ViewModels {
 			}
 		}
 
-
 		public ICollectionView CommittedHistoryItems { get; set; }
 
 		public ObservableCollection<TodoItemHolder> BugsCompleted { get; } = new();
@@ -77,7 +75,6 @@ namespace Echoslate.ViewModels {
 		public int BugsCount => BugsCompleted.Count;
 		public int FeaturesCount => FeaturesCompleted.Count;
 		public int OtherCount => OtherCompleted.Count;
-
 
 		private IncrementMode _selectedIncrementMode = IncrementMode.None;
 		public IncrementMode SelectedIncrementMode {
@@ -123,8 +120,6 @@ namespace Echoslate.ViewModels {
 		public void LoadData() {
 			foreach (HistoryItem historyItem in _allHistoryItems) {
 				historyItem.SortCompletedTodoItems();
-				// TODO Remove this if all is well
-				// historyItem.UpdateDates();
 			}
 			CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
 								 new HistoryItem { Title = "Work in progressioning.", Version = new Version(3, 40, 40, 1) };
@@ -180,9 +175,6 @@ namespace Echoslate.ViewModels {
 
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 			SelectedHistoryItem = CurrentHistoryItem;
-
-			// CommandManager.InvalidateRequerySuggested();
-			// CurrentHistoryItem.Version = IncrementVersion(CurrentHistoryItem.Version, selectedSegment);
 		}
 		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
 			return mode switch {
@@ -190,7 +182,6 @@ namespace Echoslate.ViewModels {
 				IncrementMode.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build, currentVersion.Revision),
 				IncrementMode.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1, currentVersion.Revision),
 				IncrementMode.Revision => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build, currentVersion.Revision + 1),
-				IncrementMode.None => currentVersion,
 				_ => currentVersion
 			};
 		}
