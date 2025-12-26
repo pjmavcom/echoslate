@@ -89,7 +89,7 @@ namespace Echoslate.ViewModels {
 			item.DateTimeStarted = DateTime.Now;
 			ExpandHashTags(item);
 			if (CurrentFilter != "All" && CurrentFilter != "Other") {
-				item.Tags.Add(CurrentFilter);
+				item.AddTag(CurrentFilter);
 			}
 			AddItemToMasterList(item);
 			_selectedTodoItemId = item.Id;

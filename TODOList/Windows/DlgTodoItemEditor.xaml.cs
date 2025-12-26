@@ -51,8 +51,8 @@ namespace Echoslate {
 		}
 		public bool IsRankEnabled { get; set; }
 
-		private long _timeInMinutes;
-		public long TimeInMinutes {
+		private int _timeInMinutes;
+		public int TimeInMinutes {
 			get => _timeInMinutes;
 			set {
 				_timeInMinutes = value;
@@ -106,8 +106,8 @@ namespace Echoslate {
 		}
 
 
-		private readonly TodoItem _todoItem;
-		public TodoItem ResultTodoItem => _todoItem;
+		private readonly TodoItem _item;
+		public TodoItem ResultTodoItem => _item;
 		public bool Result;
 
 		private ObservableCollection<string> AllAvailableTags;
@@ -130,46 +130,40 @@ namespace Echoslate {
 		public DlgTodoItemEditor(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
 			InitializeComponent();
 			DataContext = this;
-			Guid = td.Id;
-			AllAvailableTags = allAvailableTags;
-			IsRankEnabled = td.CurrentView != View.History;
-
-			_todoItem = TodoItem.Create(td.ToString());
-			_todoItem.Id = td.Id;
-			_todoItem.DateTimeStarted = td.DateTimeStarted;
-			_todoItem.DateStarted = td.DateStarted;
-			_todoItem.TimeStarted = td.TimeStarted;
-			_todoItem.CurrentView = td.CurrentView;
-			_todoItem.IsTimerOn = td.IsTimerOn;
+			_item = TodoItem.Copy(td);
 			_currentListHash = currentListHash ?? "All";
+			
+			Guid = _item.Id;
+			AllAvailableTags = allAvailableTags;
+			IsRankEnabled = _item.CurrentView != View.History;
 
-			switch (td.CurrentView) {
+			switch (_item.CurrentView) {
 				case View.TodoList:
-					_previousRank = td.Rank[_currentListHash];
-					Rank = _todoItem.Rank[_currentListHash];
+					_previousRank = _item.Rank[_currentListHash];
+					Rank = _item.Rank[_currentListHash];
 					break;
 				case View.Kanban:
-					_previousRank = td.KanbanRank;
-					Rank = _todoItem.KanbanRank;
+					_previousRank = _item.KanbanRank;
+					Rank = _item.KanbanRank;
 					break;
 			}
 
-			CurrentSeverity = _todoItem.Severity;
+			CurrentSeverity = _item.Severity;
 
-			TimeInMinutes = _todoItem.TimeTakenInMinutes;
-			KanbanId = _todoItem.Kanban;
-			TodoText = _todoItem.Todo;
-			Notes = _todoItem.Notes;
-			Problem = _todoItem.Problem;
-			Solution = _todoItem.Solution;
+			// TimeInMinutes = _item.TimeTakenInMinutes;
+			KanbanId = _item.Kanban;
+			TodoText = _item.Todo;
+			Notes = _item.Notes;
+			Problem = _item.Problem;
+			Solution = _item.Solution;
 
-			Tags = new List<string>(_todoItem.Tags);
+			Tags = new List<string>(_item.Tags);
 			TagHolders = new ObservableCollection<TagHolder>();
 			foreach (string tag in Tags) {
 				TagHolders.Add(new TagHolder(tag));
 			}
 
-			Notes = td.Notes;
+			Notes = _item.Notes;
 			if (Notes.Contains("/n")) {
 				Notes = Notes.Replace("/n", Environment.NewLine);
 			}
@@ -188,7 +182,7 @@ namespace Echoslate {
 		}
 		private void SetTodo() {
 			ResultTodoItem.Severity = CurrentSeverity;
-			switch (_todoItem.CurrentView) {
+			switch (_item.CurrentView) {
 				case View.TodoList:
 					ResultTodoItem.Rank[_currentListHash] = Rank;
 					break;
@@ -197,7 +191,8 @@ namespace Echoslate {
 					break;
 			}
 			ResultTodoItem.Kanban = KanbanId;
-			ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
+			ResultTodoItem.TimeTaken = new TimeSpan(0, TimeInMinutes, 0);
+			// ResultTodoItem.TimeTakenInMinutes = TimeInMinutes;
 			ResultTodoItem.Notes = Notes;
 
 			string tempTodo = ExpandHashTagsInString(TodoText);
@@ -251,7 +246,7 @@ namespace Echoslate {
 		public ICommand CompleteCommand => new RelayCommand(Complete);
 		private void Complete() {
 			Result = true;
-			_todoItem.IsComplete = true;
+			_item.IsComplete = true;
 			SetTodo();
 
 			Close();
@@ -271,7 +266,7 @@ namespace Echoslate {
 		public void AddTag() {
 			List<string> selectedTags = new(Tags);
 			TagPicker dlg = new TagPicker {
-				SelectedTodoItems = [_todoItem],
+				SelectedTodoItems = [_item],
 				AllAvailableTags = AllAvailableTags,
 				SelectedTags = new List<string>(selectedTags),
 				Owner = Window.GetWindow(this)

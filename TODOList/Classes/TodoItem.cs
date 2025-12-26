@@ -1,20 +1,11 @@
-/*	TodoItem.cs
- * 07-Feb-2019
- * 09:59:56
- *
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using static System.Globalization.CultureInfo;
 
 namespace Echoslate {
 	[Serializable]
@@ -83,62 +74,14 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-
-		private string _dateStarted;
-		public string DateStarted {
-			get => _dateStarted;
-			set {
-				_dateStarted = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string _timeStarted;
-		public string TimeStarted {
-			get => _timeStarted;
-			set {
-				_timeStarted = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string _dateCompleted;
-		private string DateCompleted {
-			set {
-				_dateCompleted = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private string _timeCompleted;
-		private string TimeCompleted {
-			set {
-				_timeCompleted = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private DateTime _timeTaken;
-		public DateTime TimeTaken {
+		private TimeSpan _timeTaken;
+		public TimeSpan TimeTaken {
 			get => _timeTaken;
 			set {
 				_timeTaken = value;
-				_timeTakenInMinutes = _timeTaken.Ticks / TimeSpan.TicksPerMinute;
 				OnPropertyChanged();
 			}
 		}
-
-		private long _timeTakenInMinutes;
-		[JsonIgnore]
-		public long TimeTakenInMinutes {
-			get => _timeTakenInMinutes;
-			set {
-				_timeTakenInMinutes = value;
-				_timeTaken = new DateTime(_timeTakenInMinutes * TimeSpan.TicksPerMinute);
-				OnPropertyChanged();
-			}
-		}
-
 		private bool _isTimerOn;
 		public bool IsTimerOn {
 			get => _isTimerOn;
@@ -153,8 +96,7 @@ namespace Echoslate {
 			get => _isComplete;
 			set {
 				_isComplete = value;
-				DateCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.DATE_STRING_FORMAT) : "-";
-				TimeCompleted = IsComplete ? DateTime.Now.ToString(MainWindow.TIME_STRING_FORMAT) : "-";
+				DateTimeCompleted = IsComplete ? DateTime.Now : DateTime.MinValue;
 				OnPropertyChanged();
 			}
 		}
@@ -177,7 +119,6 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-
 		private int _kanbanRank;
 		public int KanbanRank {
 			get => _kanbanRank;
@@ -195,6 +136,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		
 		private View _currentView;
 		[JsonIgnore]
 		public View CurrentView {
@@ -214,7 +156,6 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-
 		private HashSet<string> _hashedTags;
 		[JsonIgnore]
 		public HashSet<string> HashedTags {
@@ -243,9 +184,6 @@ namespace Echoslate {
 		public string NotesAndTags =>
 			"Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
 			Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
-		[JsonIgnore]
-		public string StartDateTime =>
-			_dateStarted + "" + "_" + _timeStarted;
 
 		[JsonIgnore]
 		public string Ranks {
@@ -278,7 +216,7 @@ namespace Echoslate {
 				for (int i = 0; i < _tags.Count; i++) {
 					result += _tags[i];
 					if (i != _tags.Count)
-						result += " "; // Environment.NewLine;
+						result += " ";
 				}
 
 				return result;
@@ -292,11 +230,9 @@ namespace Echoslate {
 			_notes = string.Empty;
 			_problem = string.Empty;
 			_solution = string.Empty;
-			_dateStarted = string.Empty;
-			_timeStarted = string.Empty;
-			_dateCompleted = string.Empty;
-			_timeCompleted = string.Empty;
-			_timeTaken = new DateTime();
+			_timeTaken = new TimeSpan();
+			_dateTimeStarted = DateTime.Now;
+			_dateTimeCompleted = DateTime.MaxValue;
 			_isTimerOn = false;
 			_isComplete = false;
 			_severity = 0;
@@ -304,21 +240,33 @@ namespace Echoslate {
 			_kanbanRank = 0;
 			_tags = [];
 			_rank = [];
+			_currentView = View.TodoList;
+		}
+		public static TodoItem Copy(TodoItem item, bool createNewGuid = false) {
+			return new TodoItem() {
+				Id = createNewGuid ? Guid.NewGuid() : item.Id,
+				Todo = item.Todo,
+				Notes = item.Notes,
+				Problem = item.Problem,
+				Solution = item.Solution,
+				Tags = item.Tags,
+				DateTimeStarted = item.DateTimeStarted,
+				DateTimeCompleted = item.DateTimeCompleted,
+				TimeTaken = item.TimeTaken,
+				IsTimerOn = item.IsTimerOn,
+				IsComplete = item.IsComplete,
+				Severity = item.Severity,
+				Kanban=item.Kanban,
+				KanbanRank=item.KanbanRank,
+				Rank =item.Rank,
+				CurrentView = item.CurrentView,
+			};
 		}
 		public TodoItem? SearchById(Guid id) {
 			if (Id == id) {
 				return this;
 			}
 			return null;
-		}
-		public void UpdateDates() {
-			if (DateTime.TryParseExact(_dateStarted, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
-			} else {
-				parsedDate = DateTime.Today;
-			}
-			if (TimeSpan.TryParseExact(_timeStarted, @"hh\:mm", CultureInfo.InvariantCulture, out TimeSpan parsedTime)) {
-			}
-			DateTimeStarted = parsedDate.Date + parsedTime;
 		}
 		public bool UpdateTags(HashSet<string> tags) {
 			bool allTagsChanged = false;
@@ -349,78 +297,6 @@ namespace Echoslate {
 			}
 			return allTagsChanged;
 		}
-		public static TodoItem Create(string newItem) {
-			string[] pieces = newItem.Split('|');
-			if (pieces.Length < 13) {
-				Log.Error($"This save file is corrupted! A todo did not load! {newItem}");
-				return new TodoItem();
-			}
-			string dateStarted = pieces[0].Trim();
-			string timeStarted = pieces[1].Trim();
-			string dateCompleted = pieces[2].Trim();
-			string timeCompleted = pieces[3].Trim();
-		
-			DateTime timeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
-		
-			bool isComplete = Convert.ToBoolean(pieces[5]);
-		
-			Dictionary<string, int> ranks = [];
-			string[] rankPieces = pieces[6].Split(',');
-			foreach (string s in rankPieces) {
-				if (s == "") continue;
-				string[] rank = s.Split('#');
-				ranks.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
-			}
-		
-			int severity = Convert.ToInt32(pieces[7]);
-			string todo = pieces[8].Trim();
-		
-			string notes = "";
-			int kanban = 0;
-			int kanbanRank = 0;
-			string problem = "";
-			string solution = "";
-			if (pieces.Length > 9) notes = pieces[9].Trim();
-			if (pieces.Length > 10) kanban = Convert.ToInt32(pieces[10].Trim());
-			if (pieces.Length > 11) kanbanRank = Convert.ToInt32(pieces[11].Trim());
-			if (pieces.Length > 12) problem = pieces[12];
-			if (pieces.Length > 13) solution = pieces[13];
-			return new TodoItem {
-									DateStarted = dateStarted,
-									TimeStarted = timeStarted,
-									DateCompleted = dateCompleted,
-									TimeCompleted = timeCompleted,
-									TimeTaken = timeTaken,
-									IsComplete = isComplete,
-									Rank = ranks,
-									Severity = severity,
-									Todo = todo,
-									Notes = notes,
-									Kanban = kanban,
-									KanbanRank = kanbanRank,
-									Problem = problem,
-									Solution = solution,
-									CurrentView = isComplete ? View.History : View.TodoList
-								};
-		}
-		// public TodoItem() {
-		// _tags = new ObservableCollection<string>();
-		// _todo = "";
-		// _notes = "";
-		// _problem = "";
-		// _solution = "";
-		// _dateStarted = DateTime.Now.ToString("yyyy/MM/dd");
-		// _timeStarted = DateTime.Now.ToString("HH:mm");
-		// _dateCompleted = "-";
-		// _timeCompleted = "-";
-		// _severity = 0;
-		// _rank = new Dictionary<string, int>();
-		// }
-		// public TodoItem(string newItem) {
-		// _tags = new ObservableCollection<string>();
-		// _rank = new Dictionary<string, int>();
-		// Load3_20(newItem);
-		// }
 		public void CleanNotes() {
 			Todo = ParseNotes(Todo);
 			ParseNewTags();
@@ -430,50 +306,8 @@ namespace Echoslate {
 		}
 		public void ResetTimer() {
 			IsTimerOn = false;
-			TimeTaken = new DateTime(0);
+			TimeTaken = new TimeSpan(0);
 		}
-		private void FixDateTime() {
-			if (!_dateStarted.Contains("-")) {
-				_dateStarted = _dateStarted.Insert(4, "-");
-				_dateStarted = _dateStarted.Insert(7, "-");
-			}
-
-			if (!_timeStarted.Contains(":")) {
-				_timeStarted = _timeStarted.Insert(2, ":");
-				_timeStarted = _timeStarted.Substring(0, 5);
-			}
-		}
-		// private void Load3_20(string newItem) {
-		// 	string[] pieces = newItem.Split('|');
-		// 	if (pieces.Length < 13) {
-		// 		new DlgErrorMessage("This save file is corrupted! A todo did not load!" + Environment.NewLine + newItem).ShowDialog();
-		// 		return;
-		// 	}
-		// 	_dateStarted = pieces[0].Trim();
-		// 	_timeStarted = pieces[1].Trim();
-		// 	_dateCompleted = pieces[2].Trim();
-		// 	_timeCompleted = pieces[3].Trim();
-		//
-		// 	TimeTaken = new DateTime(Convert.ToInt64(pieces[4].Trim()));
-		//
-		// 	_isComplete = Convert.ToBoolean(pieces[5]);
-		//
-		// 	string[] rankPieces = pieces[6].Split(',');
-		// 	foreach (string s in rankPieces) {
-		// 		if (s == "") continue;
-		// 		string[] rank = s.Split('#');
-		// 		_rank.Add(rank[0].Trim(), Convert.ToInt32(rank[1].Trim()));
-		// 	}
-		//
-		// 	_severity = Convert.ToInt32(pieces[7]);
-		// 	Todo = pieces[8].Trim();
-		//
-		// 	if (pieces.Length > 9) Notes = pieces[9].Trim();
-		// 	if (pieces.Length > 10) Kanban = Convert.ToInt32(pieces[10].Trim());
-		// 	if (pieces.Length > 11) KanbanRank = Convert.ToInt32(pieces[11].Trim());
-		// 	if (pieces.Length > 12) Problem = pieces[12];
-		// 	if (pieces.Length > 13) Solution = pieces[13];
-		// }
 		private void ParseNewTags() {
 			_todo = TagsAndTodoToSave;
 			ParseTags();
@@ -528,8 +362,6 @@ namespace Echoslate {
 				tempTodo += s + " ";
 			}
 
-			// TODO Figure out how to sort ObservableCollections 
-			// _tags.Sort();
 			var sorted = _tags.OrderBy(x => x).ToList();
 			_tags.Clear();
 			foreach (string s in sorted) {
@@ -616,36 +448,12 @@ namespace Echoslate {
 			}
 			return newString;
 		}
-		public override string ToString() {
-			string notes = _notes;
-			string problem = _problem;
-			string solution = _solution;
-			notes = RemoveNewLines(notes);
-			problem = RemoveNewLines(problem);
-			solution = RemoveNewLines(solution);
-
-			string result = _dateStarted + "|" +
-							_timeStarted + "|" +
-							_dateCompleted + "|" +
-							_timeCompleted + "|" +
-							_timeTaken.Ticks + "|" +
-							_isComplete + "|" +
-							Ranks + "|" +
-							_severity + "|" +
-							TagsAndTodoToSave + "|" +
-							notes + "|" +
-							_kanban + "|" +
-							_kanbanRank + "|" +
-							problem + "|" +
-							solution;
-			return result;
-		}
 		public string ToClipboard() {
 			string notes = AddNewLines(_notes);
 			string problem = AddNewLines(_problem);
 			string solution = AddNewLines(_solution);
 
-			string result = _dateCompleted + "-" + TimeTakenInMinutes + "m |" + BreakLines(_todo);
+			string result = _dateTimeCompleted + "-" + TimeTaken.Minutes + "m |" + BreakLines(_todo);
 			if (_notes != "")
 				result += Environment.NewLine + "\tNotes: " + BreakLines(notes);
 			if (_problem != "")
@@ -685,9 +493,15 @@ namespace Echoslate {
 			ParseNewTags();
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+		public event PropertyChangedEventHandler? PropertyChanged;
+		protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+		protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
+			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
 		}
 	}
 }

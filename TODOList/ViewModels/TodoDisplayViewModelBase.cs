@@ -1,4 +1,5 @@
-using System;using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -291,7 +292,7 @@ namespace Echoslate.ViewModels {
 			DisplayedItems.SortDescriptions.Clear();
 			switch (CurrentSort) {
 				case "date":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("StartDateTime", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("DateTimeStarted", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", _reverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "rank":
@@ -603,9 +604,7 @@ namespace Echoslate.ViewModels {
 						}
 					}
 					foreach (string tag in dlg.ResultTags) {
-						if (!item.Tags.Contains(tag)) {
-							item.Tags.Add(tag);
-						}
+						item.AddTag(tag);
 					}
 				}
 				if (dlg.IsCompleteChangeable) {
@@ -787,7 +786,7 @@ namespace Echoslate.ViewModels {
 			item.DateTimeStarted = DateTime.Now;
 			ExpandHashTags(item);
 			if (CurrentFilter != "All") {
-				item.Tags.Add(CurrentFilter);
+				item.AddTag(CurrentFilter);
 			}
 			AddItemToMasterList(item);
 			MarkTodoAsComplete(item);

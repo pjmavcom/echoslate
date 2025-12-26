@@ -244,7 +244,7 @@ namespace Echoslate.ViewModels {
 		public void UpdateTodoTimers() {
 			foreach (TodoItem item in MasterTodoItemsList) {
 				if (item.IsTimerOn) {
-					item.TimeTaken = item.TimeTaken.AddSeconds(1);
+					item.TimeTaken = item.TimeTaken.Add(TimeSpan.FromSeconds(1));
 				}
 			}
 		}

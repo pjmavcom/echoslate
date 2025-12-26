@@ -67,7 +67,7 @@ namespace Echoslate.UserControls {
 						item.Tags.Remove(tag);
 					}
 					foreach (string tag in dlg.SelectedTags) {
-						item.Tags.Add(tag);
+						item.AddTag(tag);
 					}
 				}
 				vm.RefreshAll();

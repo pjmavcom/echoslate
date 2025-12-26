@@ -97,7 +97,7 @@ namespace Echoslate {
 		}
 		public string NotesAndTags => _td.NotesAndTags;
 		public string TagsSorted => _td.TagsSorted;
-		public string StartDateTime => _td.StartDateTime;
+		// public string StartDateTime => _td.StartDateTime;
 		public ObservableCollection<string> Tags => _td.Tags;
 		public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
 
@@ -132,20 +132,20 @@ namespace Echoslate {
 			}
 		}
 		public bool IsTimerOn => _td.IsTimerOn;
-		public long TimeTakenInMinutes => _td.TimeTakenInMinutes;
+		// public long TimeTakenInMinutes => _td.TimeTakenInMinutes;
 		private string _timeTakenDisplay;
 		public string TimeTakenDisplay {
-			get => $"{TimeTakenInMinutes:00.##} : {TimeTaken.Second:00}";
+			get => $"{TimeTaken.Minutes:00.##} : {TimeTaken.Seconds:00}";
 		}
-		public DateTime TimeTaken {
+		public TimeSpan TimeTaken {
 			get => _td.TimeTaken;
 			set {
 				_td.TimeTaken = value;
 				OnPropertyChanged();
 			}
 		}
-		public string TimeStarted => TD.TimeStarted;
-		public string DateStarted => TD.DateStarted;
+		// public string TimeStarted => TD.TimeStarted;
+		// public string DateStarted => TD.DateStarted;
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItemHolder(TodoItem item) {
@@ -153,7 +153,7 @@ namespace Echoslate {
 			_td.PropertyChanged += (s, e) => {
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
 				if (e.PropertyName is nameof(TodoItem.TimeTaken) or
-					nameof(TodoItem.TimeTakenInMinutes) or
+					// nameof(TodoItem.TimeTakenInMinutes) or
 					nameof(TodoItem.IsTimerOn)) {
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeTakenDisplay)));
 				}
