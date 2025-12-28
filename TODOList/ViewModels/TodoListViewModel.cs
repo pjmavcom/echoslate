@@ -51,22 +51,22 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 	protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih) {
 		if (CurrentFilter == "#OTHER") {
 			foreach (string tag in FilterList) {
-				if (ih.HasTag(tag)) {
+				if (ih.TD.HasTag(tag)) {
 					return false;
 				}
 			}
 			return true;
 		}
-		return CurrentFilter == "All" || CurrentFilter == null || ih.HasTag(CurrentFilter);
+		return CurrentFilter == "All" || CurrentFilter == null || ih.TD.HasTag(CurrentFilter);
 	}
 	protected override bool RefreshAllItems() {
 		AllItems.Clear();
 		foreach (TodoItem item in MasterList) {
 			TodoItemHolder ih = new TodoItemHolder(item);
-			ih.CurrentFilter = GetCurrentTagFilterWithoutHash();
-			ih.CurrentView = View.TodoList;
-			if (ih.Rank <= 0) {
-				ih.Rank = int.MaxValue;
+			ih.TD.CurrentFilter = GetCurrentTagFilterWithoutHash();
+			ih.TD.CurrentView = View.TodoList;
+			if (ih.TD.CurrentFilterRank <= 0) {
+				ih.TD.CurrentFilterRank = int.MaxValue;
 			}
 
 			AllItems.Add(ih);
@@ -98,7 +98,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ListSortDirection.Ascending));
 		int index = 1;
 		foreach (TodoItemHolder ih in DisplayedItems) {
-			ih.Rank = index++;
+			ih.TD.CurrentFilterRank = index++;
 		}
 	}
 }

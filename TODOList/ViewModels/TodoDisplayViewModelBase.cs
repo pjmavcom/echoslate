@@ -153,7 +153,7 @@ namespace Echoslate.ViewModels {
 					}
 					_selectedTodoItem = value;
 					if (_selectedTodoItem is TodoItemHolder newItem) {
-						SelectedTodoItemId = newItem.Id;
+						SelectedTodoItemId = newItem.TD.Id;
 						Log.Debug($"{SelectedTodoItemId}");
 						newItem.TD.PropertyChanged += TodoItem_PropertyChanged;
 					}
@@ -203,7 +203,7 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 			foreach (TodoItemHolder ih in DisplayedItems) {
-				foreach (string tag in ih.Tags) {
+				foreach (string tag in ih.TD.Tags) {
 					if (CurrentVisibleTags.Contains(tag)) {
 						continue;
 					}
@@ -252,7 +252,7 @@ namespace Echoslate.ViewModels {
 			TodoItemHolder foundItem = null;
 			if (SelectedTodoItem == null) {
 				foreach (TodoItemHolder ih in AllItems) {
-					if (ih.HasId(SelectedTodoItemId)) {
+					if (ih.TD.HasId(SelectedTodoItemId)) {
 						foundItem = ih;
 					}
 				}
@@ -303,7 +303,7 @@ namespace Echoslate.ViewModels {
 
 			// Filter by Severity
 			if (CurrentSeverityFilter != -1) {
-				if (ih.Severity != CurrentSeverityFilter) {
+				if (ih.TD.Severity != CurrentSeverityFilter) {
 					return false;
 				}
 			}
@@ -315,19 +315,19 @@ namespace Echoslate.ViewModels {
 			DisplayedItems.SortDescriptions.Clear();
 
 			foreach (TodoItemHolder ih in DisplayedItems) {
-				if (ih.HasTag(PrioritySortTag)) {
-					ih.IsPrioritySorted = true;
+				if (ih.TD.HasTag(PrioritySortTag)) {
+					ih.TD.IsPrioritySorted = true;
 				}
 			}
 
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.IsPrioritySorted), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.HasTags), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.FirstTag), ListSortDirection.Ascending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.TD.IsPrioritySorted), ListSortDirection.Descending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.TD.HasTags), ListSortDirection.Descending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.TD.FirstTag), ListSortDirection.Ascending));
 			ResetPrioritySortTags();
 		}
 		private void ResetPrioritySortTags() {
 			foreach (TodoItemHolder ih in DisplayedItems) {
-				ih.IsPrioritySorted = false;
+				ih.TD.IsPrioritySorted = false;
 			}
 		}
 		public void MarkSelectedItemAsComplete() {
@@ -352,7 +352,7 @@ namespace Echoslate.ViewModels {
 			foreach (TodoItemHolder ih in AllItems) {
 				if (ih.TD.IsComplete) {
 					Log.Debug($"{ih.TD}");
-					ih.CurrentView = View.History;
+					ih.TD.CurrentView = View.History;
 					RemoveItemFromMasterList(ih.TD);
 					AddItemToHistory(ih.TD);
 				}
@@ -617,25 +617,25 @@ namespace Echoslate.ViewModels {
 		});
 		public ICommand ContextMenuKanban3Command => new RelayCommand(() => {
 			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.Kanban = 3;
+				ih.TD.Kanban = 3;
 			}
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban2Command => new RelayCommand(() => {
 			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.Kanban = 2;
+				ih.TD.Kanban = 2;
 			}
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban1Command => new RelayCommand(() => {
 			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.Kanban = 1;
+				ih.TD.Kanban = 1;
 			}
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban0Command => new RelayCommand(() => {
 			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.Kanban = 0;
+				ih.TD.Kanban = 0;
 			}
 			RefreshAll();
 		});
@@ -654,10 +654,10 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 		public ICommand RankDownCommand => new RelayCommand<TodoItemHolder>(ih => {
-			switch (ih.CurrentView) {
+			switch (ih.TD.CurrentView) {
 				case View.TodoList:
 					var list = DisplayedItems.Cast<TodoItemHolder>()
-					   .OrderBy(h => h.Rank)
+					   .OrderBy(h => h.TD.Rank)
 					   .ToList();
 					if (ih != null) {
 						int visibleIndex = list.IndexOf(ih);
@@ -667,13 +667,13 @@ namespace Echoslate.ViewModels {
 
 						TodoItemHolder nextItem = list.ElementAt(visibleIndex + 1);
 
-						ih.Rank++;
-						nextItem.Rank--;
+						ih.TD.CurrentFilterRank++;
+						nextItem.TD.CurrentFilterRank--;
 					}
 					break;
 				case View.Kanban:
 					var kanbanList = DisplayedItems.Cast<TodoItemHolder>()
-					   .OrderBy(h => h.KanbanRank)
+					   .OrderBy(h => h.TD.KanbanRank)
 					   .ToList();
 					if (ih != null) {
 						int visibleIndex = kanbanList.IndexOf(ih);
@@ -683,8 +683,8 @@ namespace Echoslate.ViewModels {
 
 						TodoItemHolder nextItem = kanbanList.ElementAt(visibleIndex + 1);
 
-						ih.KanbanRank++;
-						nextItem.KanbanRank--;
+						ih.TD.KanbanRank++;
+						nextItem.TD.KanbanRank--;
 					}
 					break;
 			}
@@ -692,7 +692,7 @@ namespace Echoslate.ViewModels {
 		});
 		public ICommand RankUpCommand => new RelayCommand<TodoItemHolder>(ih => {
 			var list = DisplayedItems.Cast<TodoItemHolder>()
-			   .OrderBy(h => h.Rank)
+			   .OrderBy(h => h.TD.Rank)
 			   .ToList();
 			if (ih != null) {
 				int visibleIndex = list.IndexOf(ih);
@@ -702,17 +702,17 @@ namespace Echoslate.ViewModels {
 
 				TodoItemHolder prevItem = list.ElementAt(visibleIndex - 1);
 
-				ih.Rank--;
-				prevItem.Rank++;
+				ih.TD.CurrentFilterRank--;
+				prevItem.TD.CurrentFilterRank++;
 			}
 			RefreshAll();
 		});
 		public ICommand ChangeSeverityCommand => new RelayCommand<TodoItemHolder>(ih => {
-			if (ih != null) ih.Severity = (ih.Severity + 1) % 4;
+			if (ih != null) ih.TD.Severity = (ih.TD.Severity + 1) % 4;
 			RefreshAll();
 		});
 		public ICommand ToggleTimerCommand => new RelayCommand<TodoItemHolder>(ih => {
-			if (ih != null) ih.TD.IsTimerOn = !ih.IsTimerOn;
+			if (ih != null) ih.TD.IsTimerOn = !ih.TD.IsTimerOn;
 			RefreshAll();
 		});
 
@@ -783,7 +783,7 @@ namespace Echoslate.ViewModels {
 		public ICommand DebugSearchGuidCommand => new RelayCommand(() => {
 			Guid id = new Guid(NewTodoText);
 			foreach (TodoItemHolder item in AllItems) {
-				var found = item.SearchById(id);
+				var found = item.TD.SearchById(id);
 				if (found != null) {
 					Log.Print($"Found Todo: {item.TD}");
 				}

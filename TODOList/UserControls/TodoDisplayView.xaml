@@ -199,14 +199,14 @@
 
                                 <TextBlock Grid.Column="0"
                                            Margin="4,0"
-                                           Text="{Binding TagsSorted}"
+                                           Text="{Binding TD.TagsSorted}"
                                            TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow" />
                                 <TextBlock Grid.Column="1"
                                            HorizontalAlignment="Center"
                                            FontWeight="Medium" Foreground="#FFFF5555"
-                                           Text="{Binding DateTimeStarted}" />
+                                           Text="{Binding TD.DateTimeStarted}" />
                                 <TextBlock Grid.Column="2"
-                                           Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
+                                           Background="{Binding TD.Severity, Converter={StaticResource SeverityToBrushConverter}}"
                                            FontWeight="SemiBold" Foreground="White"
                                            TextAlignment="Center">
                                     <TextBlock.InputBindings>
@@ -226,7 +226,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0"
                                            HorizontalAlignment="Center"
-                                           Content="{Binding Rank}">
+                                           Content="{Binding TD.CurrentFilterRank}">
                                     </Label>
                                     <Button Grid.Column="1"
                                             Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
@@ -251,9 +251,9 @@
                                 </Grid>
                                 <Label Grid.Column="4"
                                        HorizontalContentAlignment="Center"
-                                       Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
-                                       Content="{Binding TimeTaken, UpdateSourceTrigger=PropertyChanged}"
-                                       Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}">
+                                       Background="{Binding TD.IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
+                                       Content="{Binding TD.TimeTaken, UpdateSourceTrigger=PropertyChanged}"
+                                       Foreground="{Binding TD.IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}">
                                     <Label.InputBindings>
                                         <MouseBinding Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                       CommandParameter="{Binding}"
@@ -265,7 +265,7 @@
                                 </Label>
                                 <TextBlock Grid.Column="5"
                                            Margin="8,0,4,0"
-                                           Text="{Binding Todo}"
+                                           Text="{Binding TD.Todo}"
                                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                             </Grid>
                         </DataTemplate>

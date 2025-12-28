@@ -37,14 +37,14 @@ namespace Echoslate.ViewModels {
 			OnPropertyChanged(nameof(FilterButtons));
 		}
 		protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih) {
-			return ih.CurrentKanbanFilter == ih.Kanban;
+			return ih.TD.CurrentKanbanFilter == ih.TD.Kanban;
 		}
 		protected override bool RefreshAllItems() {
 			AllItems.Clear();
 			foreach (TodoItem item in MasterList) {
 				TodoItemHolder ih = new TodoItemHolder(item);
-				ih.CurrentKanbanFilter = GetCurrentKanbanFilter;
-				ih.CurrentView = View.Kanban;
+				ih.TD.CurrentKanbanFilter = GetCurrentKanbanFilter;
+				ih.TD.CurrentView = View.Kanban;
 				AllItems.Add(ih);
 			}
 
@@ -87,7 +87,7 @@ namespace Echoslate.ViewModels {
 			DisplayedItems.SortDescriptions.Add(new SortDescription("KanbanRank", ListSortDirection.Ascending));
 			int index = 1;
 			foreach (TodoItemHolder ih in DisplayedItems) {
-				ih.Rank = index++;
+				ih.TD.CurrentFilterRank = index++;
 			}
 		}
 	}
