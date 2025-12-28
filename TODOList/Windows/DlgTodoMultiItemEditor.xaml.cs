@@ -41,8 +41,8 @@ namespace Echoslate {
 		public bool IsTodoChangeable { get; set; }
 		public bool IsTagChangeable { get; set; }
 
-		public ObservableCollection<TagHolder> _tags;
-		public ObservableCollection<TagHolder> Tags {
+		public ObservableCollection<string> _tags;
+		public ObservableCollection<string> Tags {
 			get => _tags;
 			set {
 				
@@ -112,9 +112,9 @@ namespace Echoslate {
 			CurrentSeverity = _currentSeverity;
 			CompleteButtonContent = items[0].IsComplete ? "Reactivate" : "Complete";
 
-			_tags = new ObservableCollection<TagHolder>();
+			_tags = new ObservableCollection<string>();
 			foreach (string tag in CommonTags) {
-				_tags.Add(new TagHolder(tag));
+				_tags.Add(tag);
 			}
 
 			CenterWindowOnMouse();
@@ -136,8 +136,8 @@ namespace Echoslate {
 		private void SetResult() {
 			if (IsTagChangeable) {
 				ResultTags = new List<string>();
-				foreach (TagHolder th in _tags) {
-					string tag = th.Text.ToUpper();
+				foreach (string th in _tags) {
+					string tag = th.ToUpper();
 					if (!ResultTags.Contains(tag))
 						ResultTags.Add(tag);
 				}
@@ -152,7 +152,7 @@ namespace Echoslate {
 				ResultTodo = Todo;
 			}
 		}
-		private void Delete(TagHolder th) {
+		private void Delete(string th) {
 			_tags.Remove(th);
 			IsTagChangeable = true;
 			OnPropertyChanged(nameof(IsTagChangeable));
@@ -162,9 +162,9 @@ namespace Echoslate {
 			int tagNumber = 0;
 			bool nameExists = false;
 			do {
-				foreach (TagHolder t in _tags) {
-					if (t.Text == name.ToUpper() + tagNumber ||
-						t.Text == "#" + name.ToUpper() + tagNumber) {
+				foreach (string t in _tags) {
+					if (t == name.ToUpper() + tagNumber ||
+						t == "#" + name.ToUpper() + tagNumber) {
 						tagNumber++;
 						nameExists = true;
 						break;
@@ -173,7 +173,7 @@ namespace Echoslate {
 				}
 			} while (nameExists);
 
-			TagHolder th = new TagHolder(name + tagNumber);
+			string th = name + tagNumber;
 			_tags.Add(th);
 			IsTagChangeable = true;
 			OnPropertyChanged(nameof(IsTagChangeable));
@@ -220,7 +220,7 @@ namespace Echoslate {
 		public ICommand CompleteCommand => new RelayCommand(Complete);
 		public ICommand OkCommand => new RelayCommand(Ok);
 		public ICommand AddTagCommand => new RelayCommand(AddTag);
-		public ICommand DeleteTagCommand => new RelayCommand<TagHolder>(Delete);
+		public ICommand DeleteTagCommand => new RelayCommand<string>(Delete);
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

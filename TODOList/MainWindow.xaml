@@ -17,13 +17,13 @@
 
     <Window.InputBindings>
         <KeyBinding Key="S"
-                    Command="{Binding QuickSaveCommand}"
+                    Command="{Binding SaveCommand}"
                     Modifiers="Control" />
         <KeyBinding Key="L"
                     Command="{Binding QuickLoadPreviousCommand}"
                     Modifiers="Control" />
         <KeyBinding Key="P"
-                    Command="{Binding StartStopTimerCommand}"
+                    Command="{Binding PomoTimerToggleCommand}"
                     Modifiers="Control" />
         <KeyBinding Key="F1" Command="{Binding ShowAboutWindowCommand}" />
     </Window.InputBindings>

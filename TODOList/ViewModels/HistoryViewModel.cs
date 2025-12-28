@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -67,17 +66,15 @@ namespace Echoslate.ViewModels {
 			}
 		}
 
-
 		public ICollectionView CommittedHistoryItems { get; set; }
 
-		public ObservableCollection<TodoItemHolder> BugsCompleted { get; } = new();
-		public ObservableCollection<TodoItemHolder> FeaturesCompleted { get; } = new();
-		public ObservableCollection<TodoItemHolder> OtherCompleted { get; } = new();
+		public ObservableCollection<TodoItem> BugsCompleted { get; } = new();
+		public ObservableCollection<TodoItem> FeaturesCompleted { get; } = new();
+		public ObservableCollection<TodoItem> OtherCompleted { get; } = new();
 
 		public int BugsCount => BugsCompleted.Count;
 		public int FeaturesCount => FeaturesCompleted.Count;
 		public int OtherCount => OtherCompleted.Count;
-
 
 		private IncrementMode _selectedIncrementMode = IncrementMode.None;
 		public IncrementMode SelectedIncrementMode {
@@ -123,8 +120,6 @@ namespace Echoslate.ViewModels {
 		public void LoadData() {
 			foreach (HistoryItem historyItem in _allHistoryItems) {
 				historyItem.SortCompletedTodoItems();
-				// TODO Remove this if all is well
-				// historyItem.UpdateDates();
 			}
 			CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
 								 new HistoryItem { Title = "Work in progressioning.", Version = new Version(3, 40, 40, 1) };
@@ -149,11 +144,11 @@ namespace Echoslate.ViewModels {
 
 			foreach (var todo in completed) {
 				if (todo.Tags?.Contains("#BUG", StringComparer.OrdinalIgnoreCase) == true) {
-					BugsCompleted.Add(new TodoItemHolder(todo));
+					BugsCompleted.Add(TodoItem.Copy(todo));
 				} else if (todo.Tags?.Contains("#FEATURE", StringComparer.OrdinalIgnoreCase) == true) {
-					FeaturesCompleted.Add(new TodoItemHolder(todo));
+					FeaturesCompleted.Add(TodoItem.Copy(todo));
 				} else {
-					OtherCompleted.Add(new TodoItemHolder(todo));
+					OtherCompleted.Add(TodoItem.Copy(todo));
 				}
 			}
 			OnPropertyChanged(nameof(IsCurrentSelected));
@@ -180,9 +175,6 @@ namespace Echoslate.ViewModels {
 
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 			SelectedHistoryItem = CurrentHistoryItem;
-
-			// CommandManager.InvalidateRequerySuggested();
-			// CurrentHistoryItem.Version = IncrementVersion(CurrentHistoryItem.Version, selectedSegment);
 		}
 		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
 			return mode switch {
@@ -190,7 +182,6 @@ namespace Echoslate.ViewModels {
 				IncrementMode.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build, currentVersion.Revision),
 				IncrementMode.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1, currentVersion.Revision),
 				IncrementMode.Revision => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build, currentVersion.Revision + 1),
-				IncrementMode.None => currentVersion,
 				_ => currentVersion
 			};
 		}
@@ -200,19 +191,19 @@ namespace Echoslate.ViewModels {
 				Clipboard.SetText(SelectedHistoryItem.FullCommitMessage);
 			}
 		}
-		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItemHolder>(ReactivateTodo);
-		public void ReactivateTodo(TodoItemHolder ih) {
+		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItem>(ReactivateTodo);
+		public void ReactivateTodo(TodoItem ih) {
 			Log.Test();
-			TodoItem item = ih.TD;
+			TodoItem item = ih;
 			item.IsComplete = false;
 			if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {
 				CurrentHistoryItem.CompletedTodoItems.Remove(item);
 			}
 			_todoList.Add(item);
 		}
-		public ICommand EditTodoCommand => new RelayCommand<TodoItemHolder>(EditTodo);
-		public void EditTodo(TodoItemHolder ih) {
-			TodoItem item = ih.TD;
+		public ICommand EditTodoCommand => new RelayCommand<TodoItem>(EditTodo);
+		public void EditTodo(TodoItem ih) {
+			TodoItem item = ih;
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null, new ObservableCollection<string>(Data.AllTags));
 			dlg.ShowDialog();
 

@@ -32,7 +32,7 @@
                          BorderBrush="#FF444444" BorderThickness="1"
                          FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
                          Foreground="{StaticResource Foreground}"
-                         ItemsSource="{Binding TabNames}"
+                         ItemsSource="{Binding FilterNames}"
                          SelectionMode="Multiple">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">

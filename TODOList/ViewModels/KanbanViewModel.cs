@@ -7,13 +7,11 @@ using Echoslate.Components;
 
 namespace Echoslate.ViewModels {
 	public class KanbanViewModel : TodoDisplayViewModelBase {
-		public KanbanViewModel() {
-		}
 		public override void Initialize(MainWindowViewModel mainWindowVM) {
 			base.Initialize(mainWindowVM);
 			CurrentFilter = "Current";
 			CurrentSort = "severity";
-			_reverseSort = false;
+			ReverseSort = false;
 			RefreshAll();
 		}
 		protected override void RefreshFilter() {
@@ -38,22 +36,22 @@ namespace Echoslate.ViewModels {
 			}
 			OnPropertyChanged(nameof(FilterButtons));
 		}
-		protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih) {
+		protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItem ih) {
 			return ih.CurrentKanbanFilter == ih.Kanban;
 		}
 		protected override bool RefreshAllItems() {
-			AllItems.Clear();
-			foreach (TodoItem item in MasterList) {
-				TodoItemHolder ih = new TodoItemHolder(item);
-				ih.CurrentKanbanFilter = GetCurrentKanbanFilter;
-				ih.CurrentView = View.Kanban;
-				AllItems.Add(ih);
-			}
+			// AllItems.Clear();
+			// foreach (TodoItem item in MasterList) {
+				// TodoItem ih = TodoItem.Copy(item);
+				// ih.CurrentKanbanFilter = GetCurrentKanbanFilter;
+				// ih.CurrentView = View.Kanban;
+				// AllItems.Add(ih);
+			// }
 
-			if (AllItems.Count == 0) {
-				Log.Warn("AllItems is empty.");
-				return true;
-			}
+			// if (AllItems.Count == 0) {
+				// Log.Warn("AllItems is empty.");
+				// return true;
+			// }
 			return false;
 		}
 
@@ -77,7 +75,7 @@ namespace Echoslate.ViewModels {
 			};
 
 			AddItemToMasterList(item);
-			_selectedTodoItemId = item.Id;
+			SelectedTodoItemId = item.Id;
 			RefreshAll();
 			NewTodoText = "";
 		}
@@ -88,8 +86,8 @@ namespace Echoslate.ViewModels {
 			DisplayedItems.SortDescriptions.Clear();
 			DisplayedItems.SortDescriptions.Add(new SortDescription("KanbanRank", ListSortDirection.Ascending));
 			int index = 1;
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				ih.Rank = index++;
+			foreach (TodoItem ih in DisplayedItems) {
+				ih.CurrentFilterRank = index++;
 			}
 		}
 	}
