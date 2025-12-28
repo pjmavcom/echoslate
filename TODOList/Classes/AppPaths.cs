@@ -14,4 +14,9 @@ public static class AppPaths {
 		if (!Directory.Exists(AppDataFolder))
 			Directory.CreateDirectory(AppDataFolder);
 	}
+	public static void EnsureFolder(string folderName) {
+		if (!Directory.Exists(folderName)) {
+			Directory.CreateDirectory(folderName);
+		}
+	}
 }
