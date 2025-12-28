@@ -68,9 +68,9 @@ namespace Echoslate.ViewModels {
 
 		public ICollectionView CommittedHistoryItems { get; set; }
 
-		public ObservableCollection<TodoItemHolder> BugsCompleted { get; } = new();
-		public ObservableCollection<TodoItemHolder> FeaturesCompleted { get; } = new();
-		public ObservableCollection<TodoItemHolder> OtherCompleted { get; } = new();
+		public ObservableCollection<TodoItem> BugsCompleted { get; } = new();
+		public ObservableCollection<TodoItem> FeaturesCompleted { get; } = new();
+		public ObservableCollection<TodoItem> OtherCompleted { get; } = new();
 
 		public int BugsCount => BugsCompleted.Count;
 		public int FeaturesCount => FeaturesCompleted.Count;
@@ -144,11 +144,11 @@ namespace Echoslate.ViewModels {
 
 			foreach (var todo in completed) {
 				if (todo.Tags?.Contains("#BUG", StringComparer.OrdinalIgnoreCase) == true) {
-					BugsCompleted.Add(new TodoItemHolder(todo));
+					BugsCompleted.Add(TodoItem.Copy(todo));
 				} else if (todo.Tags?.Contains("#FEATURE", StringComparer.OrdinalIgnoreCase) == true) {
-					FeaturesCompleted.Add(new TodoItemHolder(todo));
+					FeaturesCompleted.Add(TodoItem.Copy(todo));
 				} else {
-					OtherCompleted.Add(new TodoItemHolder(todo));
+					OtherCompleted.Add(TodoItem.Copy(todo));
 				}
 			}
 			OnPropertyChanged(nameof(IsCurrentSelected));
@@ -191,19 +191,19 @@ namespace Echoslate.ViewModels {
 				Clipboard.SetText(SelectedHistoryItem.FullCommitMessage);
 			}
 		}
-		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItemHolder>(ReactivateTodo);
-		public void ReactivateTodo(TodoItemHolder ih) {
+		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItem>(ReactivateTodo);
+		public void ReactivateTodo(TodoItem ih) {
 			Log.Test();
-			TodoItem item = ih.TD;
+			TodoItem item = ih;
 			item.IsComplete = false;
 			if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {
 				CurrentHistoryItem.CompletedTodoItems.Remove(item);
 			}
 			_todoList.Add(item);
 		}
-		public ICommand EditTodoCommand => new RelayCommand<TodoItemHolder>(EditTodo);
-		public void EditTodo(TodoItemHolder ih) {
-			TodoItem item = ih.TD;
+		public ICommand EditTodoCommand => new RelayCommand<TodoItem>(EditTodo);
+		public void EditTodo(TodoItem ih) {
+			TodoItem item = ih;
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null, new ObservableCollection<string>(Data.AllTags));
 			dlg.ShowDialog();
 

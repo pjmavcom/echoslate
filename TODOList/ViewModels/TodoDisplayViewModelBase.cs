@@ -17,7 +17,6 @@ namespace Echoslate.ViewModels {
 	public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		public AppData Data { get; set; }
 		public ObservableCollection<TodoItem> MasterList { get; set; }
-		public ObservableCollection<TodoItemHolder> AllItems { get; set; }
 		private ICollectionView _displayedItems;
 		public ICollectionView DisplayedItems {
 			get => _displayedItems;
@@ -148,14 +147,14 @@ namespace Echoslate.ViewModels {
 			get => _selectedTodoItem;
 			set {
 				if (_selectedTodoItem != value) {
-					if (_selectedTodoItem is TodoItemHolder item) {
-						item.TD.PropertyChanged -= TodoItem_PropertyChanged;
+					if (_selectedTodoItem is TodoItem item) {
+						item.PropertyChanged -= TodoItem_PropertyChanged;
 					}
 					_selectedTodoItem = value;
-					if (_selectedTodoItem is TodoItemHolder newItem) {
-						SelectedTodoItemId = newItem.TD.Id;
+					if (_selectedTodoItem is TodoItem newItem) {
+						SelectedTodoItemId = newItem.Id;
 						Log.Debug($"{SelectedTodoItemId}");
-						newItem.TD.PropertyChanged += TodoItem_PropertyChanged;
+						newItem.PropertyChanged += TodoItem_PropertyChanged;
 					}
 
 					OnPropertyChanged();
@@ -170,7 +169,7 @@ namespace Echoslate.ViewModels {
 			HistoryItems = mainWindowVM.MasterHistoryItemsList;
 			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
 
-			AllItems = [];
+			// AllItems = [];
 			FilterButtons = [];
 			AllTags = [];
 
@@ -182,7 +181,7 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		}
 		protected abstract void RefreshFilter();
-		protected abstract bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih);
+		protected abstract bool MatchFilter(ObservableCollection<string> filterList, TodoItem ih);
 		protected abstract bool RefreshAllItems();
 
 		public void TodoItem_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -194,7 +193,7 @@ namespace Echoslate.ViewModels {
 			}
 		}
 		public void RebuildView() {
-			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
+			DisplayedItems = CollectionViewSource.GetDefaultView(MasterList);
 		}
 		public void GetCurrentHashTags() {
 			string currentSortTag = PrioritySortTag;
@@ -202,8 +201,8 @@ namespace Echoslate.ViewModels {
 			if (DisplayedItems == null || MasterList == null) {
 				return;
 			}
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				foreach (string tag in ih.TD.Tags) {
+			foreach (TodoItem ih in DisplayedItems) {
+				foreach (string tag in ih.Tags) {
 					if (CurrentVisibleTags.Contains(tag)) {
 						continue;
 					}
@@ -234,7 +233,7 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 
-			DisplayedItems = CollectionViewSource.GetDefaultView(AllItems);
+			DisplayedItems = CollectionViewSource.GetDefaultView(MasterList);
 			DisplayedItems.Filter = CombinedFilter;
 			FixRanks();
 
@@ -249,10 +248,10 @@ namespace Echoslate.ViewModels {
 			RestoreSelection();
 		}
 		private void RestoreSelection() {
-			TodoItemHolder foundItem = null;
+			TodoItem foundItem = null;
 			if (SelectedTodoItem == null) {
-				foreach (TodoItemHolder ih in AllItems) {
-					if (ih.TD.HasId(SelectedTodoItemId)) {
+				foreach (TodoItem ih in MasterList) {
+					if (ih.HasId(SelectedTodoItemId)) {
 						foundItem = ih;
 					}
 				}
@@ -273,37 +272,37 @@ namespace Echoslate.ViewModels {
 			switch (CurrentSort) {
 				case "date":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("DateTimeStarted", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "rank":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "severity":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", ReverseSort ? ListSortDirection.Ascending : ListSortDirection.Descending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "active":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Active", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "kanban":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Kanban", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 				case "title":
 					DisplayedItems.SortDescriptions.Add(new SortDescription("Todo", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
 					break;
 			}
 		}
 		private bool CombinedFilter(object item) {
-			if (item is not TodoItemHolder ih) {
+			if (item is not TodoItem ih) {
 				return false;
 			}
 
 			// Filter by Severity
 			if (CurrentSeverityFilter != -1) {
-				if (ih.TD.Severity != CurrentSeverityFilter) {
+				if (ih.Severity != CurrentSeverityFilter) {
 					return false;
 				}
 			}
@@ -314,20 +313,20 @@ namespace Echoslate.ViewModels {
 		private void ApplyPriorityTagSorting() {
 			DisplayedItems.SortDescriptions.Clear();
 
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				if (ih.TD.HasTag(PrioritySortTag)) {
-					ih.TD.IsPrioritySorted = true;
+			foreach (TodoItem ih in DisplayedItems) {
+				if (ih.HasTag(PrioritySortTag)) {
+					ih.IsPrioritySorted = true;
 				}
 			}
 
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.TD.IsPrioritySorted), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.TD.HasTags), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItemHolder.TD.FirstTag), ListSortDirection.Ascending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItem.IsPrioritySorted), ListSortDirection.Descending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItem.HasTags), ListSortDirection.Descending));
+			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItem.FirstTag), ListSortDirection.Ascending));
 			ResetPrioritySortTags();
 		}
 		private void ResetPrioritySortTags() {
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				ih.TD.IsPrioritySorted = false;
+			foreach (TodoItem ih in DisplayedItems) {
+				ih.IsPrioritySorted = false;
 			}
 		}
 		public void MarkSelectedItemAsComplete() {
@@ -335,8 +334,8 @@ namespace Echoslate.ViewModels {
 				Log.Warn("No todos selected.");
 				return;
 			}
-			TodoItemHolder? ih = SelectedTodoItems[0] as TodoItemHolder;
-			TodoItem? item = ih?.TD;
+			TodoItem? ih = SelectedTodoItems[0] as TodoItem;
+			TodoItem? item = ih;
 
 			if (item != null) {
 				MarkTodoAsComplete(item);
@@ -349,12 +348,12 @@ namespace Echoslate.ViewModels {
 			SortCompleteTodosToHistory();
 		}
 		public void SortCompleteTodosToHistory() {
-			foreach (TodoItemHolder ih in AllItems) {
-				if (ih.TD.IsComplete) {
-					Log.Debug($"{ih.TD}");
-					ih.TD.CurrentView = View.History;
-					RemoveItemFromMasterList(ih.TD);
-					AddItemToHistory(ih.TD);
+			foreach (TodoItem ih in MasterList) {
+				if (ih.IsComplete) {
+					Log.Debug($"{ih}");
+					ih.CurrentView = View.History;
+					RemoveItemFromMasterList(ih);
+					AddItemToHistory(ih);
 				}
 			}
 			RefreshAll();
@@ -446,8 +445,8 @@ namespace Echoslate.ViewModels {
 		}
 		public void ReRankWithSubsetMoved(TodoItem subset, int newRankForSubsetFirstItem) {
 			List<TodoItem> allItems = new();
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				allItems.Add(ih.TD);
+			foreach (TodoItem ih in DisplayedItems) {
+				allItems.Add(ih);
 			}
 			var remainingItems = allItems
 			   .Where(item => item != subset)
@@ -461,17 +460,12 @@ namespace Echoslate.ViewModels {
 			for (int i = 0; i < remainingItems.Count; i++) {
 				remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
 			}
-
-			AllItems.Clear();
-			foreach (TodoItem item in remainingItems) {
-				AllItems.Add(new TodoItemHolder(item));
-			}
 			RefreshAll();
 		}
 		public void ReRankWithSubsetMoved(List<TodoItem> subset, int newRankForSubsetFirstItem) {
 			List<TodoItem> allItems = new();
-			foreach (TodoItemHolder ih in DisplayedItems) {
-				allItems.Add(ih.TD);
+			foreach (TodoItem ih in DisplayedItems) {
+				allItems.Add(ih);
 			}
 			var remainingItems = allItems
 			   .Where(item => !subset.Contains(item))
@@ -493,11 +487,6 @@ namespace Echoslate.ViewModels {
 						remainingItems[i].KanbanRank = i + 1;
 					}
 					break;
-			}
-
-			AllItems.Clear();
-			foreach (TodoItem item in remainingItems) {
-				AllItems.Add(new TodoItemHolder(item));
 			}
 			RefreshAll();
 		}
@@ -570,33 +559,33 @@ namespace Echoslate.ViewModels {
 		public List<TodoItem> GetSelectedListBoxItems() {
 			List<TodoItem> items = [];
 
-			foreach (TodoItemHolder ih in SelectedTodoItems) {
-				items.Add(ih.TD);
+			foreach (TodoItem ih in SelectedTodoItems) {
+				items.Add(ih);
 			}
 			return items;
 		}
-		public List<TodoItemHolder> GetSelectedListBoxHolders() {
-			List<TodoItemHolder> ihs = [];
-			foreach (TodoItemHolder ih in SelectedTodoItems) {
+		public List<TodoItem> GetSelectedListBoxHolders() {
+			List<TodoItem> ihs = [];
+			foreach (TodoItem ih in SelectedTodoItems) {
 				ihs.Add(ih);
 			}
 			return ihs;
 		}
 		public ICommand ContextMenuEditCommand => new RelayCommand(ContextMenuEdit);
 		private void ContextMenuEdit() {
-			if (SelectedTodoItems[0] is not TodoItemHolder ih) {
+			if (SelectedTodoItems[0] is not TodoItem ih) {
 				return;
 			}
 
 			switch (SelectedTodoItems.Count) {
 				case > 1: {
 					List<TodoItem> items = [];
-					items.AddRange(from TodoItemHolder ihs in SelectedTodoItems select ihs.TD);
+					items.AddRange(from TodoItem ihs in SelectedTodoItems select ihs);
 					MultiEditItems(items);
 					break;
 				}
 				case 1:
-					EditItem(ih.TD);
+					EditItem(ih);
 					break;
 				default:
 					Log.Error("No items selected.");
@@ -616,26 +605,26 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban3Command => new RelayCommand(() => {
-			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.TD.Kanban = 3;
+			foreach (TodoItem ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 3;
 			}
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban2Command => new RelayCommand(() => {
-			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.TD.Kanban = 2;
+			foreach (TodoItem ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 2;
 			}
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban1Command => new RelayCommand(() => {
-			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.TD.Kanban = 1;
+			foreach (TodoItem ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 1;
 			}
 			RefreshAll();
 		});
 		public ICommand ContextMenuKanban0Command => new RelayCommand(() => {
-			foreach (TodoItemHolder ih in GetSelectedListBoxHolders()) {
-				ih.TD.Kanban = 0;
+			foreach (TodoItem ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = 0;
 			}
 			RefreshAll();
 		});
@@ -653,11 +642,11 @@ namespace Echoslate.ViewModels {
 			}
 			RefreshAll();
 		});
-		public ICommand RankDownCommand => new RelayCommand<TodoItemHolder>(ih => {
-			switch (ih.TD.CurrentView) {
+		public ICommand RankDownCommand => new RelayCommand<TodoItem>(ih => {
+			switch (ih.CurrentView) {
 				case View.TodoList:
-					var list = DisplayedItems.Cast<TodoItemHolder>()
-					   .OrderBy(h => h.TD.Rank)
+					var list = DisplayedItems.Cast<TodoItem>()
+					   .OrderBy(h => h.Rank)
 					   .ToList();
 					if (ih != null) {
 						int visibleIndex = list.IndexOf(ih);
@@ -665,15 +654,15 @@ namespace Echoslate.ViewModels {
 							return;
 						}
 
-						TodoItemHolder nextItem = list.ElementAt(visibleIndex + 1);
+						TodoItem nextItem = list.ElementAt(visibleIndex + 1);
 
-						ih.TD.CurrentFilterRank++;
-						nextItem.TD.CurrentFilterRank--;
+						ih.CurrentFilterRank++;
+						nextItem.CurrentFilterRank--;
 					}
 					break;
 				case View.Kanban:
-					var kanbanList = DisplayedItems.Cast<TodoItemHolder>()
-					   .OrderBy(h => h.TD.KanbanRank)
+					var kanbanList = DisplayedItems.Cast<TodoItem>()
+					   .OrderBy(h => h.KanbanRank)
 					   .ToList();
 					if (ih != null) {
 						int visibleIndex = kanbanList.IndexOf(ih);
@@ -681,18 +670,18 @@ namespace Echoslate.ViewModels {
 							return;
 						}
 
-						TodoItemHolder nextItem = kanbanList.ElementAt(visibleIndex + 1);
+						TodoItem nextItem = kanbanList.ElementAt(visibleIndex + 1);
 
-						ih.TD.KanbanRank++;
-						nextItem.TD.KanbanRank--;
+						ih.KanbanRank++;
+						nextItem.KanbanRank--;
 					}
 					break;
 			}
 			RefreshAll();
 		});
-		public ICommand RankUpCommand => new RelayCommand<TodoItemHolder>(ih => {
-			var list = DisplayedItems.Cast<TodoItemHolder>()
-			   .OrderBy(h => h.TD.Rank)
+		public ICommand RankUpCommand => new RelayCommand<TodoItem>(ih => {
+			var list = DisplayedItems.Cast<TodoItem>()
+			   .OrderBy(h => h.Rank)
 			   .ToList();
 			if (ih != null) {
 				int visibleIndex = list.IndexOf(ih);
@@ -700,19 +689,19 @@ namespace Echoslate.ViewModels {
 					return;
 				}
 
-				TodoItemHolder prevItem = list.ElementAt(visibleIndex - 1);
+				TodoItem prevItem = list.ElementAt(visibleIndex - 1);
 
-				ih.TD.CurrentFilterRank--;
-				prevItem.TD.CurrentFilterRank++;
+				ih.CurrentFilterRank--;
+				prevItem.CurrentFilterRank++;
 			}
 			RefreshAll();
 		});
-		public ICommand ChangeSeverityCommand => new RelayCommand<TodoItemHolder>(ih => {
-			if (ih != null) ih.TD.Severity = (ih.TD.Severity + 1) % 4;
+		public ICommand ChangeSeverityCommand => new RelayCommand<TodoItem>(ih => {
+			if (ih != null) ih.Severity = (ih.Severity + 1) % 4;
 			RefreshAll();
 		});
-		public ICommand ToggleTimerCommand => new RelayCommand<TodoItemHolder>(ih => {
-			if (ih != null) ih.TD.IsTimerOn = !ih.TD.IsTimerOn;
+		public ICommand ToggleTimerCommand => new RelayCommand<TodoItem>(ih => {
+			if (ih != null) ih.IsTimerOn = !ih.IsTimerOn;
 			RefreshAll();
 		});
 
@@ -782,10 +771,10 @@ namespace Echoslate.ViewModels {
 		});
 		public ICommand DebugSearchGuidCommand => new RelayCommand(() => {
 			Guid id = new Guid(NewTodoText);
-			foreach (TodoItemHolder item in AllItems) {
-				var found = item.TD.SearchById(id);
+			foreach (TodoItem item in MasterList) {
+				var found = item.SearchById(id);
 				if (found != null) {
-					Log.Print($"Found Todo: {item.TD}");
+					Log.Print($"Found Todo: {item}");
 				}
 			}
 		});

@@ -13,10 +13,10 @@ using Echoslate.ViewModels;
 namespace Echoslate.UserControls {
 	public partial class ItemNotesPanel : UserControl, INotifyPropertyChanged {
 		public static readonly DependencyProperty SelectedTodoItemProperty =
-			DependencyProperty.Register(nameof(SelectedTodoItem), typeof(TodoItemHolder), typeof(ItemNotesPanel), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(SelectedTodoItem), typeof(TodoItem), typeof(ItemNotesPanel), new PropertyMetadata(null));
 
-		public TodoItemHolder SelectedTodoItem {
-			get => (TodoItemHolder)GetValue(SelectedTodoItemProperty);
+		public TodoItem SelectedTodoItem {
+			get => (TodoItem)GetValue(SelectedTodoItemProperty);
 
 			set => SetValue(SelectedTodoItemProperty, value);
 		}
@@ -54,7 +54,7 @@ namespace Echoslate.UserControls {
 			remove => RemoveHandler(NotesPanelEditTagsRequestedEvent, value);
 		}
 
-		public ICommand CommitTitleEditCommand => new RelayCommand<TodoItemHolder>(ih => {
+		public ICommand CommitTitleEditCommand => new RelayCommand<TodoItem>(ih => {
 			var binding = BindingOperations.GetBindingExpression(tbTodo, TextBox.TextProperty);
 			binding?.UpdateSource();
 		});
