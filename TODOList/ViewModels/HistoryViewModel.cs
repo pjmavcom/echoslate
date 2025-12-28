@@ -42,6 +42,8 @@ namespace Echoslate.ViewModels {
 					UpdateCategorizedLists();
 					OnPropertyChanged(nameof(Title));
 					OnPropertyChanged(nameof(Notes));
+					_selectedHistoryItem.GenerateCommitMessage();
+					OnPropertyChanged(nameof(CommitMessage));
 				}
 			}
 		}
@@ -52,6 +54,7 @@ namespace Echoslate.ViewModels {
 					SelectedHistoryItem.Title = value;
 					OnPropertyChanged();
 					SelectedHistoryItem.GenerateCommitMessage();
+					OnPropertyChanged(nameof(CommitMessage));
 				}
 			}
 		}
@@ -62,9 +65,12 @@ namespace Echoslate.ViewModels {
 					SelectedHistoryItem.Notes = value;
 					OnPropertyChanged();
 					SelectedHistoryItem.GenerateCommitMessage();
+					OnPropertyChanged(nameof(CommitMessage));
 				}
 			}
 		}
+		public string CommitMessage => SelectedHistoryItem.FullCommitMessage;
+
 
 		public ICollectionView CommittedHistoryItems { get; set; }
 
