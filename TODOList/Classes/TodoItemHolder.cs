@@ -10,18 +10,18 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Echoslate {
-	public class TodoItemHolder : INotifyPropertyChanged {
+// namespace Echoslate {
+	// public class TodoItemHolder : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		private TodoItem _td;
+		// private TodoItem _td;
 		// private DateTime _timeTaken;
 		// private long _timeTakenInMinutes;
 
 		// PROPERTIES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// PROPERTIES //
-		public TodoItem TD {
-			get => _td;
-			set => _td = value;
-		}
+		// public TodoItem TD {
+			// get => _td;
+			// set => _td = value;
+		// }
 		// public Guid Id {
 		// 	get => _td.Id;
 		// 	set {
@@ -142,8 +142,8 @@ namespace Echoslate {
 		// public string DateStarted => TD.DateStarted;
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
-		public TodoItemHolder(TodoItem item) {
-			_td = item;
+		// public TodoItemHolder(TodoItem item) {
+			// _td = item;
 			// _td.PropertyChanged += (s, e) => {
 			// 	PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
 			// 	if (e.PropertyName is nameof(TodoItem.TimeTaken) or
@@ -152,7 +152,7 @@ namespace Echoslate {
 			// 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeTakenDisplay)));
 			// 	}
 			// };
-		}
+		// }
 		// public TodoItemHolder? SearchById(Guid id) {
 		// 	if (Id == id) {
 		// 		return this;
@@ -176,9 +176,9 @@ namespace Echoslate {
 		// 	return result;
 		// }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-}
+		// public event PropertyChangedEventHandler PropertyChanged;
+		// protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+			// PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		// }
+	// }
+// }

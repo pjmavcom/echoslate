@@ -16,7 +16,7 @@ using Application = System.Windows.Application;
 namespace Echoslate {
 	public partial class MainWindow : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-		private const string PROGRAM_VERSION = "4.0.4.0";
+		private const string PROGRAM_VERSION = "4.0.8.0";
 		public const string DATE_STRING_FORMAT = "yyyyMMdd";
 		public const string TIME_STRING_FORMAT = "HHmmss";
 		private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";

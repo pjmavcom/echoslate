@@ -48,34 +48,34 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		FilterButtons[1].Count = otherList.Count;
 		OnPropertyChanged(nameof(FilterButtons));
 	}
-	protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItemHolder ih) {
+	protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItem ih) {
 		if (CurrentFilter == "#OTHER") {
 			foreach (string tag in FilterList) {
-				if (ih.TD.HasTag(tag)) {
+				if (ih.HasTag(tag)) {
 					return false;
 				}
 			}
 			return true;
 		}
-		return CurrentFilter == "All" || CurrentFilter == null || ih.TD.HasTag(CurrentFilter);
+		return CurrentFilter == "All" || CurrentFilter == null || ih.HasTag(CurrentFilter);
 	}
 	protected override bool RefreshAllItems() {
-		AllItems.Clear();
-		foreach (TodoItem item in MasterList) {
-			TodoItemHolder ih = new TodoItemHolder(item);
-			ih.TD.CurrentFilter = GetCurrentTagFilterWithoutHash();
-			ih.TD.CurrentView = View.TodoList;
-			if (ih.TD.CurrentFilterRank <= 0) {
-				ih.TD.CurrentFilterRank = int.MaxValue;
-			}
+		// AllItems.Clear();
+		// foreach (TodoItem item in MasterList) {
+			// TodoItem ih = TodoItem.Copy(item);
+			// ih.CurrentFilter = GetCurrentTagFilterWithoutHash();
+			// ih.CurrentView = View.TodoList;
+			// if (ih.CurrentFilterRank <= 0) {
+				// ih.CurrentFilterRank = int.MaxValue;
+			// }
 
-			AllItems.Add(ih);
-		}
+			// AllItems.Add(ih);
+		// }
 
-		if (AllItems.Count == 0) {
-			Log.Warn("AllItems is empty.");
-			return true;
-		}
+		// if (AllItems.Count == 0) {
+			// Log.Warn("AllItems is empty.");
+			// return true;
+		// }
 		return false;
 	}
 	public override void NewTodoAdd() {
@@ -95,10 +95,10 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 			return;
 		}
 		DisplayedItems.SortDescriptions.Clear();
-		DisplayedItems.SortDescriptions.Add(new SortDescription("Rank", ListSortDirection.Ascending));
+		DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ListSortDirection.Ascending));
 		int index = 1;
-		foreach (TodoItemHolder ih in DisplayedItems) {
-			ih.TD.CurrentFilterRank = index++;
+		foreach (TodoItem ih in DisplayedItems) {
+			ih.CurrentFilterRank = index++;
 		}
 	}
 }
