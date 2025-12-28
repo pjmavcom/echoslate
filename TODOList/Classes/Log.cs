@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Echoslate;
 
 public static class Log {
 	private static StreamWriter _streamWriter;
@@ -23,7 +24,10 @@ public static class Log {
 				string extension = ".txt";
 
 				string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-				string newLogPath = Path.Combine(exeDir, $"{baseName}_{timestamp}{extension}");
+				string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+				string filePath = Path.Combine(localAppData, "Echoslate", "Logs");
+				AppPaths.EnsureFolder(filePath);
+				string newLogPath = Path.Combine(filePath, $"{baseName}_{timestamp}{extension}");
 
 				_streamWriter = new StreamWriter(newLogPath, append: false) { AutoFlush = true };
 
@@ -95,7 +99,9 @@ public static class Log {
 							   [CallerLineNumber] int line = 0) {
 		Write($"{Prefix(SuccessString, tag, member, file, line)} {msg}");
 	}
-	public static void Test(object? msg = null, string tag = "", [CallerMemberName] string member = "",
+	public static void Test(object? msg = null,
+							string tag = "",
+							[CallerMemberName] string member = "",
 							[CallerFilePath] string file = "",
 							[CallerLineNumber] int line = 0) {
 		if (msg == null) {
