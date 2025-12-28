@@ -239,7 +239,7 @@
             <TextBox Grid.Row="1" Grid.Column="1"
                      Height="200"
                      behaviors:ScrollBehavior.AlwaysScroll="True" IsReadOnly="True"
-                     Text="{Binding SelectedHistoryItem.FullCommitMessage}"
+                     Text="{Binding CommitMessage, Mode=OneWay}"
                      TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
         </Grid>
 
@@ -360,7 +360,7 @@
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
-                                                       Text="{Binding TD.Todo}"
+                                                       Text="{Binding Todo}"
                                                        TextWrapping="Wrap" />
                                         </Border>
                                     </DataTemplate>
@@ -423,7 +423,7 @@
                                                 CornerRadius="4">
                                             <TextBlock FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
-                                                       Text="{Binding TD.Todo}"
+                                                       Text="{Binding Todo}"
                                                        TextWrapping="Wrap" />
                                         </Border>
                                     </DataTemplate>
@@ -460,7 +460,7 @@
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
-                                                       Text="{Binding TD.Todo}"
+                                                       Text="{Binding Todo}"
                                                        TextWrapping="Wrap" />
                                         </Border>
                                     </DataTemplate>
@@ -492,7 +492,7 @@
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
-                                                       Text="{Binding TD.Todo}"
+                                                       Text="{Binding Todo}"
                                                        TextWrapping="Wrap" />
                                         </Border>
                                     </DataTemplate>
@@ -524,7 +524,7 @@
                                             <TextBlock Margin="8,6"
                                                        FontSize="14"
                                                        Foreground="{StaticResource Foreground}"
-                                                       Text="{Binding TD.Todo}"
+                                                       Text="{Binding Todo}"
                                                        TextWrapping="Wrap" />
                                         </Border>
                                     </DataTemplate>
