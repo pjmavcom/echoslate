@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +12,7 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Windows;
 using Application = System.Windows.Application;
+
 
 namespace Echoslate.ViewModels {
 	public enum PomoActiveState {
@@ -177,13 +176,6 @@ namespace Echoslate.ViewModels {
 			TodoListVM = new TodoListViewModel();
 			KanbanVM = new KanbanViewModel();
 			HistoryVM = new HistoryViewModel();
-
-			// if (appDataSettings.RecentFiles.Count != 0) {
-			// 	LoadRecentFile(appDataSettings);
-			// 	LoadCurrentData();
-			// } else {
-			// 	CreateNewFile();
-			// }
 		}
 		private void SetupApplicationState() {
 			foreach (TodoItem item in MasterTodoItemsList) {
@@ -463,6 +455,13 @@ namespace Echoslate.ViewModels {
 			Load(openFileDialog.FileName);
 			return true;
 		}
+
+
+		public ICommand MenuNewCommand => new RelayCommand(CreateNewFile);
+		public ICommand MenuLoadCommand => new RelayCommand(() => OpenFile());
+		public ICommand SaveCommand => new RelayCommand(Save);
+		public ICommand MenuSaveCommand => new RelayCommand(Save);
+		public ICommand MenuSaveAsCommand => new RelayCommand(SaveAs);
 		public void SaveAs() {
 			Log.Print("Saving file as...");
 			SaveFileDialog sfd = new SaveFileDialog {
@@ -493,24 +492,6 @@ namespace Echoslate.ViewModels {
 				mainWindow.Focus();
 				mainWindow.Topmost = false;
 			}
-		}
-
-
-		public ICommand MenuNewCommand => new RelayCommand(MenuNew);
-		private void MenuNew() {
-			CreateNewFile();
-		}
-		public ICommand MenuLoadCommand => new RelayCommand(MenuLoad);
-		private void MenuLoad() {
-			OpenFile();
-		}
-		public ICommand SaveCommand => new RelayCommand(MenuSave);
-		private void MenuSave() {
-			Save();
-		}
-		public ICommand MenuSaveAsCommand => new RelayCommand(MenuSaveAs);
-		private void MenuSaveAs() {
-			SaveAs();
 		}
 		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
 		private void MenuOptions() {
@@ -555,14 +536,8 @@ namespace Echoslate.ViewModels {
 			DlgHelp dlgH = new DlgHelp();
 			dlgH.ShowDialog();
 		}
-		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(MenuRecentFilesLoad);
-		private void MenuRecentFilesLoad(string? filePath) {
-			Load(filePath);
-		}
-		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(MenuRecentFilesRemove);
-		private void MenuRecentFilesRemove(string? filePath) {
-			AppSettings.RecentFiles.Remove(filePath);
-		}
+		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(path => Load(path));
+		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(path => AppSettings.RecentFiles.Remove(path));
 		public ICommand PomoTimerToggleCommand => new RelayCommand(PomoTimerToggle);
 		public void PomoTimerToggle() {
 			_isPomoTimerOn = !_isPomoTimerOn;
@@ -603,7 +578,7 @@ namespace Echoslate.ViewModels {
 		public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
 		public void QuickLoad() {
 			if (AppSettings.RecentFiles.Count > 1) {
-				MenuRecentFilesLoad(AppSettings.RecentFiles[1]);
+				Load(AppSettings.RecentFiles[1]);
 			}
 		}
 		
