@@ -111,7 +111,15 @@ namespace Echoslate {
 		public bool Result;
 
 		private ObservableCollection<string> AllAvailableTags;
-		private ObservableCollection<string> Tags { get; set; }
+		private ObservableCollection<string> _tags;
+		public ObservableCollection<string> Tags {
+			get => _tags;
+			set {
+				_tags = value;
+				OnPropertyChanged();
+			}
+		}
+
 		// private ObservableCollection<string> _tagHolders;
 		// public ObservableCollection<string> TagHolders {
 			// get => _tagHolders;
