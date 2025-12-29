@@ -199,11 +199,10 @@ namespace Echoslate.ViewModels {
 		}
 		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItem>(ReactivateTodo);
 		public void ReactivateTodo(TodoItem ih) {
-			Log.Test();
 			TodoItem item = ih;
 			item.IsComplete = false;
-			if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {
-				CurrentHistoryItem.CompletedTodoItems.Remove(item);
+			if (CurrentHistoryItem.RemoveCompletedTodo(item.Id)) {
+				CurrentHistoryItem.SortCompletedTodoItems();
 			}
 			_todoList.Add(item);
 		}
@@ -215,9 +214,7 @@ namespace Echoslate.ViewModels {
 
 			if (dlg.Result) {
 				TodoItem newItem = dlg.ResultTodoItem;
-				if (CurrentHistoryItem.CompletedTodoItems.Contains(item)) {
-					CurrentHistoryItem.CompletedTodoItems.Remove(item);
-				}
+				CurrentHistoryItem.RemoveCompletedTodo(newItem.Id);
 				CurrentHistoryItem.CompletedTodoItems.Add(newItem);
 			}
 		}

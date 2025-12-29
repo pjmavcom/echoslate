@@ -183,6 +183,23 @@ namespace Echoslate {
 			CompletedTodoItems.Add(td);
 			SortCompletedTodoItems();
 		}
+		public bool HasCompletedTodo(Guid id) {
+			foreach (TodoItem item in CompletedTodoItems) {
+				if (item.HasId(id)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		public bool RemoveCompletedTodo(Guid id) {
+			foreach (TodoItem item in CompletedTodoItems) {
+				if (item.HasId(id)) {
+					CompletedTodoItems.Remove(item);
+					return true;
+				}
+			}
+			return false;
+		}
 		public void SortCompletedTodoItems() {
 			BugsCompleted.Clear();
 			FeaturesCompleted.Clear();
