@@ -41,6 +41,7 @@ namespace Echoslate.ViewModels {
 		}
 		protected override void RefreshAllItems() {
 			foreach (TodoItem item in MasterList) {
+				item.CurrentKanbanFilter = GetCurrentKanbanFilter;
 				item.CurrentView = View.Kanban;
 			}
 		}
