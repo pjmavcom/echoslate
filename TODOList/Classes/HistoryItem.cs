@@ -119,8 +119,10 @@ namespace Echoslate {
 			set {
 				_isCommitted = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(IsEditing));
 			}
 		}
+		public bool IsEditing => !IsCommitted;
 
 		private DateTime _commitDate;
 		public DateTime CommitDate {

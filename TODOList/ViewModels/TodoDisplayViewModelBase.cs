@@ -11,6 +11,7 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Components;
 using Echoslate.Resources;
+using Echoslate.Windows;
 
 
 namespace Echoslate.ViewModels {
@@ -357,7 +358,22 @@ namespace Echoslate.ViewModels {
 		public void AddItemToHistory(TodoItem item) {
 			item.CurrentView = View.History;
 			CurrentHistoryItem = HistoryItems[0];
-			CurrentHistoryItem.AddCompletedTodo(item);
+
+			var uncommittedHistoryItems = HistoryItems.Where(h => !h.IsCommitted).ToList();
+
+			HistoryItem targetHistoryItem;
+
+			if (uncommittedHistoryItems.Count > 1) {
+				var dialog = new ChooseDraftWindow(uncommittedHistoryItems, CurrentHistoryItem);
+				if (dialog.ShowDialog() != true) {
+					return;
+				}
+
+				targetHistoryItem = dialog.Result;
+			} else {
+				targetHistoryItem = CurrentHistoryItem;	
+			}
+			targetHistoryItem.AddCompletedTodo(item);
 		}
 		public void EditItem(TodoItem item) {
 			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash(), AllTags);

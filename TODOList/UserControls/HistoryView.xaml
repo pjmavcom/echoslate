@@ -1,9 +1,9 @@
 <UserControl x:Class="Echoslate.UserControls.HistoryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:behaviors="clr-namespace:EchoSlate.Behaviors" xmlns:converters="clr-namespace:Echoslate.Converters"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:sys="clr-namespace:System;assembly=System.Runtime" xmlns:viewModels="clr-namespace:Echoslate.ViewModels"
-             xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:global="clr-namespace:"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:viewModels="clr-namespace:Echoslate.ViewModels" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              x:Name="HistoryViewRoot"
              d:DesignHeight="800" d:DesignWidth="1200"
              mc:Ignorable="d">
@@ -17,6 +17,13 @@
         <converters:IncrementModeToBorderBrushConverter x:Key="ModeToBrushConverter"
                                                         HighlightBrush="{StaticResource Accent}"
                                                         NormalBrush="Transparent" />
+        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeight" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <SolidColorBrush x:Key="EditingBrush" Color="#FF6200" />
+        <converters:BoolToBrushConverter x:Key="EditingBrushConverter"
+                                         FalseBrush="{StaticResource Foreground}"
+                                         TrueBrush="{StaticResource EditingBrush}" />
+
         <ContextMenu x:Key="CompletedTodoContextMenu">
             <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.EditTodoCommand}"
                       CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -25,6 +32,17 @@
                       CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                       Header="Reactivate" />
         </ContextMenu>
+        <ContextMenu x:Key="CommittedHistoryContextMenu">
+            <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.UndoCommitCommand}"
+                      CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      Header="Undo Commit" />
+            <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.RecommitCommand}"
+                      Header="Commit" Icon="↺" />
+            <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.DeleteCommand}"
+                      CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      Header="Delete" />
+        </ContextMenu>
+
     </UserControl.Resources>
     <Grid Background="{StaticResource AppDarkBackground}">
         <Grid.ColumnDefinitions>
@@ -263,11 +281,41 @@
                             CornerRadius="7">
 
                         <ListView Margin="3"
+                                  global:ListViewSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedHistoryItems}"
                                   Background="Transparent" BorderThickness="0"
                                   Foreground="{StaticResource SubtleForeground}"
-                                  ItemContainerStyle="{StaticResource ListViewItemSelectionStyle}"
                                   ItemsSource="{Binding CommittedHistoryItems}"
-                                  SelectedItem="{Binding SelectedHistoryItem}">
+                                  SelectedItem="{Binding SelectedHistoryItem}"
+                                  SelectionMode="Extended">
+                            <!--  SelectedItems="{Binding SelectedHistoryItems, Mode=OneWayToSource}"  -->
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="ContextMenu" Value="{StaticResource CommittedHistoryContextMenu}" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <Border x:Name="SelectionBorder"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        Background="Transparent" BorderBrush="Transparent"
+                                                        BorderThickness="1" SnapsToDevicePixels="True">
+                                                    <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Columns="{TemplateBinding GridView.ColumnCollection}" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="SelectionBorder" Property="BorderBrush" Value="{StaticResource Accent}" />
+                                                        <Setter TargetName="SelectionBorder" Property="Background" Value="Transparent" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="SelectionBorder" Property="Background" Value="#10FFFFFF" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.View>
                                 <GridView>
                                     <GridView.ColumnHeaderContainerStyle>
@@ -294,12 +342,20 @@
                                             </Setter>
                                         </Style>
                                     </GridView.ColumnHeaderContainerStyle>
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|120}"
-                                                    DisplayMemberBinding="{Binding VersionString}"
-                                                    Header="Version" />
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|150}"
-                                                    DisplayMemberBinding="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}"
-                                                    Header="Date">
+
+                                    <!--  Version  -->
+                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|120}" Header="Version">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock FontWeight="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}"
+                                                           Foreground="{Binding IsEditing, Converter={StaticResource EditingBrushConverter}}"
+                                                           Text="{Binding VersionString}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <!--  Date  -->
+                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|150}" Header="Date">
                                         <GridViewColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock HorizontalAlignment="Center"
@@ -308,13 +364,31 @@
                                         </GridViewColumn.HeaderTemplate>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock HorizontalAlignment="Center" Text="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}" />
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           FontWeight="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}"
+                                                           Foreground="{Binding IsEditing, Converter={StaticResource EditingBrushConverter}}"
+                                                           Text="{Binding CommitDate, StringFormat=yyyy-MM-dd HH:mm}" />
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Width="700"
-                                                    DisplayMemberBinding="{Binding Title}"
-                                                    Header="Title" />
+
+                                    <!--  Title  -->
+                                    <GridViewColumn Width="700" Header="Title">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Margin="4,2" Orientation="Horizontal">
+                                                    <TextBlock Margin="0,0,6,0" VerticalAlignment="Center"
+                                                               FontSize="12" Text="✏️ "
+                                                               Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}" />
+
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               FontWeight="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}"
+                                                               Foreground="{Binding IsEditing, Converter={StaticResource EditingBrushConverter}}"
+                                                               Text="{Binding Title}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                 </GridView>
                             </ListView.View>
                         </ListView>
