@@ -105,7 +105,7 @@ namespace Echoslate {
 			_currentSeverity = items[0].Severity;
 			_rank = items[0].CurrentView switch {
 				View.Kanban => items[0].KanbanRank,
-				View.TodoList => items[0].Rank[_currentFilter],
+				View.TodoList => items[0].CurrentFilterRank,
 				_ => _rank
 			};
 

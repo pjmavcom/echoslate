@@ -59,24 +59,10 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		}
 		return CurrentFilter == "All" || CurrentFilter == null || ih.HasTag(CurrentFilter);
 	}
-	protected override bool RefreshAllItems() {
-		// AllItems.Clear();
-		// foreach (TodoItem item in MasterList) {
-			// TodoItem ih = TodoItem.Copy(item);
-			// ih.CurrentFilter = GetCurrentTagFilterWithoutHash();
-			// ih.CurrentView = View.TodoList;
-			// if (ih.CurrentFilterRank <= 0) {
-				// ih.CurrentFilterRank = int.MaxValue;
-			// }
-
-			// AllItems.Add(ih);
-		// }
-
-		// if (AllItems.Count == 0) {
-			// Log.Warn("AllItems is empty.");
-			// return true;
-		// }
-		return false;
+	protected override void RefreshAllItems() {
+		foreach (TodoItem item in MasterList) {
+			item.CurrentView = View.TodoList;
+		}
 	}
 	public override void NewTodoAdd() {
 		TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
