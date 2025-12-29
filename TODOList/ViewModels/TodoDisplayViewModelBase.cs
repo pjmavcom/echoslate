@@ -453,9 +453,8 @@ namespace Echoslate.ViewModels {
 			insertIndex = Math.Clamp(insertIndex, 0, remainingItems.Count);
 			remainingItems.Insert(insertIndex, subset);
 
-			string currentFilterWithoutHash = GetCurrentTagFilterWithoutHash();
 			for (int i = 0; i < remainingItems.Count; i++) {
-				remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
+				remainingItems[i].CurrentFilterRank = i + 1;
 			}
 			RefreshAll();
 		}
@@ -472,11 +471,10 @@ namespace Echoslate.ViewModels {
 			insertIndex = Math.Clamp(insertIndex, 0, remainingItems.Count);
 			remainingItems.InsertRange(insertIndex, subset);
 
-			string currentFilterWithoutHash = GetCurrentTagFilterWithoutHash();
 			switch (remainingItems[0].CurrentView) {
 				case View.TodoList:
 					for (int i = 0; i < remainingItems.Count; i++) {
-						remainingItems[i].Rank[currentFilterWithoutHash] = i + 1;
+						remainingItems[i].CurrentFilterRank = i + 1;
 					}
 					break;
 				case View.Kanban:
@@ -640,45 +638,33 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 		public ICommand RankDownCommand => new RelayCommand<TodoItem>(ih => {
-			switch (ih.CurrentView) {
-				case View.TodoList:
-					var list = DisplayedItems.Cast<TodoItem>()
-					   .OrderBy(h => h.Rank)
-					   .ToList();
-					if (ih != null) {
-						int visibleIndex = list.IndexOf(ih);
-						if (visibleIndex >= list.Count - 1) {
-							return;
-						}
+			if (ih == null) {
+				return;
+			}
 
-						TodoItem nextItem = list.ElementAt(visibleIndex + 1);
+			var list = DisplayedItems.Cast<TodoItem>()
+			   .OrderBy(h => h.CurrentFilterRank)
+			   .ToList();
+			if (ih != null) {
+				int visibleIndex = list.IndexOf(ih);
+				if (visibleIndex >= list.Count - 1) {
+					return;
+				}
 
-						ih.CurrentFilterRank++;
-						nextItem.CurrentFilterRank--;
-					}
-					break;
-				case View.Kanban:
-					var kanbanList = DisplayedItems.Cast<TodoItem>()
-					   .OrderBy(h => h.KanbanRank)
-					   .ToList();
-					if (ih != null) {
-						int visibleIndex = kanbanList.IndexOf(ih);
-						if (visibleIndex >= kanbanList.Count - 1) {
-							return;
-						}
+				TodoItem nextItem = list.ElementAt(visibleIndex + 1);
 
-						TodoItem nextItem = kanbanList.ElementAt(visibleIndex + 1);
-
-						ih.KanbanRank++;
-						nextItem.KanbanRank--;
-					}
-					break;
+				ih.CurrentFilterRank++;
+				nextItem.CurrentFilterRank--;
 			}
 			RefreshAll();
 		});
 		public ICommand RankUpCommand => new RelayCommand<TodoItem>(ih => {
+			if (ih == null) {
+				return;
+			}
+
 			var list = DisplayedItems.Cast<TodoItem>()
-			   .OrderBy(h => h.Rank)
+			   .OrderBy(h => h.CurrentFilterRank)
 			   .ToList();
 			if (ih != null) {
 				int visibleIndex = list.IndexOf(ih);
