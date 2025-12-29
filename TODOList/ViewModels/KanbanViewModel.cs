@@ -39,20 +39,10 @@ namespace Echoslate.ViewModels {
 		protected override bool MatchFilter(ObservableCollection<string> filterList, TodoItem ih) {
 			return ih.CurrentKanbanFilter == ih.Kanban;
 		}
-		protected override bool RefreshAllItems() {
-			// AllItems.Clear();
-			// foreach (TodoItem item in MasterList) {
-				// TodoItem ih = TodoItem.Copy(item);
-				// ih.CurrentKanbanFilter = GetCurrentKanbanFilter;
-				// ih.CurrentView = View.Kanban;
-				// AllItems.Add(ih);
-			// }
-
-			// if (AllItems.Count == 0) {
-				// Log.Warn("AllItems is empty.");
-				// return true;
-			// }
-			return false;
+		protected override void RefreshAllItems() {
+			foreach (TodoItem item in MasterList) {
+				item.CurrentView = View.Kanban;
+			}
 		}
 
 		public int GetCurrentKanbanFilter => CurrentFilter switch {

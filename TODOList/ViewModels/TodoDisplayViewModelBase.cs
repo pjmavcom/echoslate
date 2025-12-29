@@ -182,7 +182,7 @@ namespace Echoslate.ViewModels {
 		}
 		protected abstract void RefreshFilter();
 		protected abstract bool MatchFilter(ObservableCollection<string> filterList, TodoItem ih);
-		protected abstract bool RefreshAllItems();
+		protected abstract void RefreshAllItems();
 
 		public void TodoItem_PropertyChanged(object sender, PropertyChangedEventArgs e) {
 			if (sender is TodoItem item) {
