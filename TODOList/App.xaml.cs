@@ -20,6 +20,7 @@ namespace Echoslate {
 			AppSettings.Load();
 			var mainVM = new MainWindowViewModel(AppSettings.Instance);
 			var mainWindow = new MainWindow { DataContext = mainVM };
+			mainWindow.Closing += mainVM.OnClosing;
 
 			if (AppSettings.Instance.SkipWelcome && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
 				mainVM.Load(AppSettings.Instance.LastFilePath);

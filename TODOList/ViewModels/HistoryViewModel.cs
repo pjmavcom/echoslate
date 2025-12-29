@@ -40,6 +40,9 @@ namespace Echoslate.ViewModels {
 				if (_selectedHistoryItem != value) {
 					_selectedHistoryItem = value;
 					UpdateCategorizedLists();
+					if (SelectedHistoryItem == null) {
+						return;
+					}
 					OnPropertyChanged(nameof(Title));
 					OnPropertyChanged(nameof(Notes));
 					_selectedHistoryItem.GenerateCommitMessage();
@@ -47,6 +50,15 @@ namespace Echoslate.ViewModels {
 				}
 			}
 		}
+		private ObservableCollection<HistoryItem> _selectedHistoryItems;
+		public ObservableCollection<HistoryItem> SelectedHistoryItems {
+			get => _selectedHistoryItems;
+			set {
+				_selectedHistoryItems = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public string Title {
 			get => SelectedHistoryItem.Title;
 			set {
@@ -97,6 +109,7 @@ namespace Echoslate.ViewModels {
 			_todoList = [];
 			_allHistoryItems = [];
 			SelectedHistoryItem = CurrentHistoryItem;
+			SelectedHistoryItems = [];
 			BugsCompleted = [];
 			FeaturesCompleted = [];
 			OtherCompleted = [];
@@ -200,9 +213,11 @@ namespace Echoslate.ViewModels {
 		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItem>(ReactivateTodo);
 		public void ReactivateTodo(TodoItem ih) {
 			TodoItem item = ih;
-			item.IsComplete = false;
-			if (CurrentHistoryItem.RemoveCompletedTodo(item.Id)) {
-				CurrentHistoryItem.SortCompletedTodoItems();
+			if (!SelectedHistoryItem.IsCommitted && SelectedHistoryItem.RemoveCompletedTodo(item.Id)) {
+				item.IsComplete = false;
+				SelectedHistoryItem.SortCompletedTodoItems();
+				RebuildView();
+				UpdateCategorizedLists();
 			}
 			_todoList.Add(item);
 		}
@@ -225,6 +240,40 @@ namespace Echoslate.ViewModels {
 
 			SelectedIncrementMode = values.ElementAt(nextIndex);
 		});
+		public ICommand UndoCommitCommand => new RelayCommand<HistoryItem>(UndoCommit);
+		public void UndoCommit(HistoryItem item) {
+			if (item == null) {
+				return;
+			}
+			item.IsCommitted = false;
+			Log.Print($"Undoing commit for: {item.Title}");
+		}
+		public ICommand RecommitCommand => new RelayCommand(Recommit);
+		public void Recommit() {
+			if (SelectedHistoryItems == null || SelectedHistoryItems.Count <= 0) {
+				return;
+			}
+
+			foreach (HistoryItem hItem in SelectedHistoryItems) {
+				if (hItem == CurrentHistoryItem) {
+					continue;
+				}
+				hItem.IsCommitted = true;
+				Log.Print($"Recommitted: {hItem.Title}");
+			}
+		}
+		public ICommand DeleteCommand => new RelayCommand<HistoryItem>(Delete);
+		public void Delete(HistoryItem item) {
+			if (item == null || item.CompletedTodoItems.Count > 0) {
+				return;
+			}
+			if (_allHistoryItems.Contains(item)) {
+				_allHistoryItems.Remove(item);
+				Log.Print($"Deleted: {item.Title}");
+				RebuildView();
+				UpdateCategorizedLists();
+			}
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

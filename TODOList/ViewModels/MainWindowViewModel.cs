@@ -606,6 +606,17 @@ namespace Echoslate.ViewModels {
 				MenuRecentFilesLoad(AppSettings.RecentFiles[1]);
 			}
 		}
+		
+		public void OnClosing(object? sender, CancelEventArgs e) {
+			foreach (HistoryItem item in Data.HistoryList) {
+				if (item == Data.CurrentHistoryItem) {
+					continue;
+				}
+				item.IsCommitted = true;
+			}
+			Log.Print($"All history items committed.");
+			Save();
+		}
 
 
 		public event PropertyChangedEventHandler? PropertyChanged;
