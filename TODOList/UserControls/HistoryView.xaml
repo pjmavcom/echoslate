@@ -425,7 +425,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4,4,4,4" Padding="8,6"
+                                                Margin="4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
                                                 BorderThickness="1"
@@ -457,7 +457,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4,4,4,4" Padding="8,6"
+                                                Margin="4" Padding="8,6"
                                                 Background="{StaticResource RaisedBackground}"
                                                 BorderBrush="{StaticResource Border}"
                                                 BorderThickness="1"
@@ -475,7 +475,7 @@
                         </Border>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <TextBlock Margin="4"
+                        <TextBlock Margin="0,0,0,8"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource Foreground}"
                                    Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}" />
@@ -495,7 +495,7 @@
                                                 BorderThickness="1"
                                                 ContextMenu="{StaticResource CompletedTodoContextMenu}"
                                                 CornerRadius="4">
-                                            <TextBlock FontSize="14"
+                                            <TextBlock Margin="8,6"
                                                        Foreground="{StaticResource Foreground}"
                                                        Text="{Binding Todo}"
                                                        TextWrapping="Wrap" />
