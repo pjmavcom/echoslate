@@ -162,7 +162,7 @@ namespace Echoslate.ViewModels {
 			}
 		}
 
-		
+
 		public virtual void Initialize(MainWindowViewModel mainWindowVM) {
 			Data = mainWindowVM.Data;
 			MasterList = mainWindowVM.MasterTodoItemsList;
@@ -229,9 +229,7 @@ namespace Echoslate.ViewModels {
 		}
 		public abstract void FixRanks();
 		public void RefreshDisplayedItems(bool forceRefresh = false) {
-			if (RefreshAllItems()) {
-				return;
-			}
+			RefreshAllItems();
 
 			DisplayedItems = CollectionViewSource.GetDefaultView(MasterList);
 			DisplayedItems.Filter = CombinedFilter;
@@ -348,17 +346,16 @@ namespace Echoslate.ViewModels {
 			SortCompleteTodosToHistory();
 		}
 		public void SortCompleteTodosToHistory() {
-			foreach (TodoItem ih in MasterList) {
-				if (ih.IsComplete) {
-					Log.Debug($"{ih}");
-					ih.CurrentView = View.History;
-					RemoveItemFromMasterList(ih);
-					AddItemToHistory(ih);
-				}
+			var completedItems = MasterList.Where(item => item.IsComplete).ToList();
+			foreach (TodoItem item in completedItems) {
+				Log.Print($"{item} is complete.");
+				RemoveItemFromMasterList(item);
+				AddItemToHistory(item);
 			}
 			RefreshAll();
 		}
 		public void AddItemToHistory(TodoItem item) {
+			item.CurrentView = View.History;
 			CurrentHistoryItem = HistoryItems[0];
 			CurrentHistoryItem.AddCompletedTodo(item);
 		}
@@ -508,7 +505,7 @@ namespace Echoslate.ViewModels {
 
 					if (t.Equals("#BUGS"))
 						t = "#BUG";
-					
+
 					s = s.ToLower();
 				}
 
@@ -705,21 +702,10 @@ namespace Echoslate.ViewModels {
 			RefreshAll();
 		});
 
-		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => 
-		{
-			CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter;
-		});
-		public ICommand SelectSortCommand => new RelayCommand<string>(sort => 
-		{
-			CurrentSort = sort;
-		});
-		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => 
-		{
-			CurrentSeverityFilter++;
-		});
-		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => {
-			NewTodoSeverity++;
-		});
+		public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => { CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter; });
+		public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
+		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
+		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
 		public void EditFilterBarRelayCommand() {
 			DlgEditTabs dlg = new(MasterFilterTags);
