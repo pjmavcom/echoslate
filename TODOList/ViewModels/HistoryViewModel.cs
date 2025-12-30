@@ -180,6 +180,7 @@ namespace Echoslate.ViewModels {
 			OnPropertyChanged(nameof(OtherCompleted));
 			SelectedHistoryItem.SortCompletedTodoItems();
 			SelectedHistoryItem.GenerateCommitMessage();
+			OnPropertyChanged(nameof(CommitMessage));
 		}
 		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
 		public void CommitCurrent() {
