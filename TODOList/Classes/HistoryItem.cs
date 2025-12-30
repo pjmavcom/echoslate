@@ -177,6 +177,7 @@ namespace Echoslate {
 		public List<TodoItem> BugsCompleted = [];
 		public List<TodoItem> FeaturesCompleted = [];
 		public List<TodoItem> OtherCompleted = [];
+		private string FullTitle;
 
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
@@ -231,6 +232,9 @@ namespace Echoslate {
 			}
 			FullCommitMessage = ToClipboard();
 		}
+		public void SetFullTitle() {
+			Title = FullTitle;
+		}
 		public void GenerateCommitMessage() {
 			FullCommitMessage = ToClipboard();
 		}
@@ -238,7 +242,8 @@ namespace Echoslate {
 			// string result = DateAdded + "- " + Title + Environment.NewLine +
 			// 				"Estimated Time: " + TotalTime + Environment.NewLine;
 			Scope = Scope.Replace(" ", "-");
-			string result = Type + "(" + Scope + "): " + Title + Environment.NewLine;
+			FullTitle = Type + "(" + Scope + "): " + Title;
+			string result = FullTitle + Environment.NewLine;
 
 			if (BugsCompleted.Count > 0) {
 				foreach (TodoItem td in BugsCompleted) {

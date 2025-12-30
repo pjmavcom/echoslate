@@ -232,18 +232,19 @@ namespace Echoslate.ViewModels {
 					CommitScopes.Add(newScope);
 					CommitScopes.Sort();
 				}
-				CurrentHistoryItem.IsCommitted = true;
-				CurrentHistoryItem.CommitDate = DateTime.Now;
-				CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
-
-				CurrentHistoryItem.GenerateCommitMessage();
-				CopyCommitMessage();
-				CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
-				CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
-
-				_allHistoryItems.Insert(0, CurrentHistoryItem);
-				SelectedHistoryItem = CurrentHistoryItem;
 			}
+			CurrentHistoryItem.SetFullTitle();
+			CurrentHistoryItem.IsCommitted = true;
+			CurrentHistoryItem.CommitDate = DateTime.Now;
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
+
+			CurrentHistoryItem.GenerateCommitMessage();
+			CopyCommitMessage();
+			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+
+			_allHistoryItems.Insert(0, CurrentHistoryItem);
+			SelectedHistoryItem = CurrentHistoryItem;
 		}
 		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
 			return mode switch {
