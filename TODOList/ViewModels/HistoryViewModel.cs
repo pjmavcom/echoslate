@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Resources;
 
 namespace Echoslate.ViewModels {
 	public enum IncrementMode {
@@ -83,6 +85,45 @@ namespace Echoslate.ViewModels {
 		}
 		public string CommitMessage => SelectedHistoryItem.FullCommitMessage;
 
+		private string _commitType;
+		public string CommitType {
+			get => _commitType;
+			set {
+				_commitType = value;
+				OnPropertyChanged();
+				CurrentHistoryItem.Type = _commitType;
+				CurrentHistoryItem.GenerateCommitMessage();
+				OnPropertyChanged(nameof(CommitMessage));
+			}
+		}
+		private string _commitScope;
+		public string CommitScope {
+			get => _commitScope;
+			set {
+				_commitScope = value;
+				OnPropertyChanged();
+				CurrentHistoryItem.Scope = _commitScope;
+				CurrentHistoryItem.GenerateCommitMessage();
+				OnPropertyChanged(nameof(CommitMessage));
+			}
+		}
+		private string _customScope;
+		public string CustomScope {
+			get => _customScope;
+			set {
+				_customScope = value;
+				OnPropertyChanged();
+				CurrentHistoryItem.Scope = _customScope;
+				CurrentHistoryItem.GenerateCommitMessage();
+				OnPropertyChanged(nameof(CommitMessage));
+				_commitScope = "";
+				OnPropertyChanged(nameof(CommitScope));
+			}
+		}
+
+
+		public List<string> CommitTypes { get; } = new() { "feat", "fix", "refactor", "chore", "docs" };
+		public ObservableCollection<string> CommitScopes { get; set; }
 
 		public ICollectionView CommittedHistoryItems { get; set; }
 
@@ -123,6 +164,7 @@ namespace Echoslate.ViewModels {
 			LoadData();
 			OnPropertyChanged(nameof(CommittedHistoryItems));
 
+			CommitScopes = Data.CommitScopes;
 			CurrentHistoryItem = mainWindowVM.CurrentHistoryItem;
 			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 
@@ -184,17 +226,24 @@ namespace Echoslate.ViewModels {
 		}
 		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
 		public void CommitCurrent() {
-			CurrentHistoryItem.IsCommitted = true;
-			CurrentHistoryItem.CommitDate = DateTime.Now;
-			CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
+			if (!string.IsNullOrWhiteSpace(CustomScope)) {
+				var newScope = CustomScope.Replace(" ", "-");
+				if (!CommitScopes.Contains(newScope)) {
+					CommitScopes.Add(newScope);
+					CommitScopes.Sort();
+				}
+				CurrentHistoryItem.IsCommitted = true;
+				CurrentHistoryItem.CommitDate = DateTime.Now;
+				CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
 
-			CurrentHistoryItem.GenerateCommitMessage();
-			CopyCommitMessage();
-			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
-			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+				CurrentHistoryItem.GenerateCommitMessage();
+				CopyCommitMessage();
+				CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
+				CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 
-			_allHistoryItems.Insert(0, CurrentHistoryItem);
-			SelectedHistoryItem = CurrentHistoryItem;
+				_allHistoryItems.Insert(0, CurrentHistoryItem);
+				SelectedHistoryItem = CurrentHistoryItem;
+			}
 		}
 		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
 			return mode switch {
