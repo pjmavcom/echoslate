@@ -10,6 +10,7 @@ public class AppData {
 	public ObservableCollection<TodoItem> TodoList { get; set; }
 	public ObservableCollection<HistoryItem> HistoryList { get; set; }
 	public ObservableCollection<string> FiltersList { get; set; }
+	public ObservableCollection<string> CommitScopes { get; set; }
 
 	[JsonIgnore] public HashSet<string> AllTags { get; set; }
 	[JsonIgnore] public string CurrentFilePath;
@@ -39,6 +40,7 @@ public class AppData {
 		TodoList = [];
 		HistoryList = [];
 		FiltersList = [];
+		CommitScopes = [];
 		_currentHistoryItem = null;
 	}
 	public void DebugFiltersList() {

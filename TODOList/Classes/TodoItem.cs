@@ -13,7 +13,7 @@ namespace Echoslate {
 		Kanban,
 		History
 	}
-	
+
 	[Serializable]
 	public class TodoItem : INotifyPropertyChanged {
 		// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
@@ -167,8 +167,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		[JsonIgnore]
-		public int CurrentKanbanFilter { get; set; }
+		[JsonIgnore] public int CurrentKanbanFilter { get; set; }
 		private string _currentFilter = "All";
 		public string CurrentFilter {
 			get => _currentFilter;
@@ -177,7 +176,7 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		
+
 		private View _currentView;
 		[JsonIgnore]
 		public View CurrentView {
@@ -272,10 +271,8 @@ namespace Echoslate {
 				return result;
 			}
 		}
-		[JsonIgnore]
-		public bool HasTags => Tags.Count > 0;
-		[JsonIgnore]
-		public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
+		[JsonIgnore] public bool HasTags => Tags.Count > 0;
+		[JsonIgnore] public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 		public TodoItem() {
@@ -310,9 +307,9 @@ namespace Echoslate {
 				IsTimerOn = item.IsTimerOn,
 				IsComplete = item.IsComplete,
 				Severity = item.Severity,
-				Kanban=item.Kanban,
-				KanbanRank=item.KanbanRank,
-				Rank =item.Rank,
+				Kanban = item.Kanban,
+				KanbanRank = item.KanbanRank,
+				Rank = item.Rank,
 				CurrentView = item.CurrentView,
 			};
 		}
@@ -513,34 +510,72 @@ namespace Echoslate {
 			string problem = AddNewLines(_problem);
 			string solution = AddNewLines(_solution);
 
-			string result = _dateTimeCompleted + "-" + TimeTaken.Minutes + "m |" + BreakLines(_todo);
+			string result = BreakLines(_todo);
 			if (_notes != "")
-				result += Environment.NewLine + "\tNotes: " + BreakLines(notes);
+				result += BreakLinesAddTabs(notes);
 			if (_problem != "")
-				result += Environment.NewLine + "\tProblem: " + BreakLines(problem);
+				result += "\tProblem: " + BreakLinesAddTabs(problem);
 			if (_solution != "")
-				result += Environment.NewLine + "\tSolution: " + BreakLines(solution);
+				result += "\tSolution: " + BreakLinesAddTabs(solution);
 
 			return result;
 		}
 		private string BreakLines(string s) {
-			int charLimit = 100;
+			int charLimit = 140;
 			int currentCharCount = 0;
 			string result = "";
-			string[] pieces = s.Split(' ');
-			foreach (string word in pieces) {
-				currentCharCount += word.Length + 1;
-
-				if (currentCharCount <= charLimit)
-					result += word + " ";
-				else {
-					currentCharCount = 0;
-					result += Environment.NewLine + "\t\t" + word + " ";
+			string[] sentences = s.Split("\n");
+			foreach (string sentence in sentences) {
+				var trimmed = sentence.Replace("\r", "");
+				if (trimmed.Length <= charLimit) {
+					result += trimmed + Environment.NewLine;
+					continue;
 				}
-			}
+				string[] pieces = trimmed.Split(' ');
+				foreach (string word in pieces) {
+					currentCharCount += word.Length + 1;
 
+					if (currentCharCount <= charLimit) {
+						result += word + " ";
+					} else {
+						currentCharCount = word.Length;
+						result = result.Trim();
+						result += Environment.NewLine + "\t" + word;
+					}
+				}
+				result += Environment.NewLine;
+			}
 			return result;
 		}
+		private string BreakLinesAddTabs(string s) {
+			int charLimit = 140;
+			int currentCharCount = 0;
+			string result = "";
+			string[] sentences = s.Split("\n");
+			foreach (string sentence in sentences) {
+				var trimmed = sentence.Replace("\r", "");
+				if (trimmed.Length <= charLimit) {
+					result += "\t" + trimmed + Environment.NewLine;
+					continue;
+				}
+				string[] pieces = trimmed.Split(' ');
+				foreach (string word in pieces) {
+					currentCharCount += word.Length + 1;
+
+					if (currentCharCount <= charLimit) {
+						result += word + " ";
+					} else {
+						currentCharCount = word.Length;
+						result = result.Trim();
+						result += Environment.NewLine + "\t\t" + word;
+					}
+				}
+				result += Environment.NewLine + "\t";
+			}
+			return result;
+			
+		}
+
 		private string AddNewLines(string s) {
 			return s.Replace("/n", Environment.NewLine);
 		}

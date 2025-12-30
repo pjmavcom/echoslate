@@ -16,6 +16,24 @@ using System.Text.Json.Serialization;
 
 namespace Echoslate {
 	public class HistoryItem : INotifyPropertyChanged {
+		private string _type;
+		public string Type {
+			get => _type;
+			set {
+				_type = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _scope;
+		public string Scope {
+			get => _scope;
+			set {
+				_scope = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private Version _version;
 		public Version Version {
 			get => _version;
@@ -172,14 +190,10 @@ namespace Echoslate {
 			_hasBeenCopied = false;
 			_isCommitted = false;
 			_commitDate = new DateTime();
+			_scope = string.Empty;
+			_type = string.Empty;
 
 			SortCompletedTodoItems();
-		}
-		public static HistoryItem Create(string date, string time) {
-			return new HistoryItem {
-									   DateAdded = date,
-									   TimeAdded = time
-								   };
 		}
 		public void AddCompletedTodo(TodoItem td) {
 			CompletedTodoItems.Add(td);
@@ -215,106 +229,66 @@ namespace Echoslate {
 					OtherCompleted.Add(item);
 				}
 			}
-			FullCommitMessage = ToClipboard("0");
-		}
-		public void SetCopied() {
-			HasBeenCopied = true;
-		}
-		public void ResetCopied() {
-			HasBeenCopied = false;
-		}
-		public override string ToString() {
-			string result = "NewVCS" + Environment.NewLine;
-			result += HasBeenCopied + "|" + DateAdded + "|" + TimeAdded + "|" + Title + "|" + RemoveNewLines(Notes) + Environment.NewLine;
-			result += "VCSTodos";
-			foreach (TodoItem td in CompletedTodoItems) {
-				result += Environment.NewLine + td;
-			}
-
-			foreach (TodoItem td in BugsCompleted) {
-				result += Environment.NewLine + td;
-			}
-
-			foreach (TodoItem td in FeaturesCompleted) {
-				result += Environment.NewLine + td;
-			}
-			result += Environment.NewLine;
-			result += "EndVCS" + Environment.NewLine;
-			return result;
+			FullCommitMessage = ToClipboard();
 		}
 		public void GenerateCommitMessage() {
-			FullCommitMessage = ToClipboard("0");
+			FullCommitMessage = ToClipboard();
 		}
-		public string ToClipboard(string totalTimeSoFar) {
-			string result = DateAdded + "- " + Title + Environment.NewLine +
-							"Estimated Time: " + TotalTime + Environment.NewLine;
-
-			if (!Notes.Equals(""))
-				result += Environment.NewLine + "Notes: " + BreakLines(Notes) + Environment.NewLine;
+		public string ToClipboard() {
+			// string result = DateAdded + "- " + Title + Environment.NewLine +
+			// 				"Estimated Time: " + TotalTime + Environment.NewLine;
+			Scope = Scope.Replace(" ", "-");
+			string result = Type + "(" + Scope + "): " + Title + Environment.NewLine;
 
 			if (BugsCompleted.Count > 0) {
-				result += Environment.NewLine + Environment.NewLine + "=Bugs Squashed====================================================================================================";
-				foreach (TodoItem td in BugsCompleted)
-					result += Environment.NewLine + "--" + td.ToClipboard();
+				foreach (TodoItem td in BugsCompleted) {
+					result += Environment.NewLine + "- " + td.ToClipboard();
+				}
+				result += Environment.NewLine;
 			}
 			if (FeaturesCompleted.Count > 0) {
-				result += Environment.NewLine + Environment.NewLine + "=Features Added===================================================================================================";
-				foreach (TodoItem td in FeaturesCompleted)
-					result += Environment.NewLine + "--" + td.ToClipboard();
+				foreach (TodoItem td in FeaturesCompleted) {
+					result += Environment.NewLine + "- " + td.ToClipboard();
+				}
+				result += Environment.NewLine;
 			}
 			if (OtherCompleted.Count > 0) {
-				result += Environment.NewLine + Environment.NewLine + "=Other Stuff======================================================================================================";
-				foreach (TodoItem td in OtherCompleted)
-					result += Environment.NewLine + "--" + td.ToClipboard();
+				foreach (TodoItem td in OtherCompleted) {
+					result += Environment.NewLine + "- " + td.ToClipboard();
+				}
+				result += Environment.NewLine;
+			}
+			if (!Notes.Equals("")) {
+				result += BreakLines(Notes);
 			}
 			return result;
-		}
-		public void UpdateDates() {
-			if (DateTime.TryParseExact(DateAdded, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate)) {
-			} else {
-				parsedDate = DateTime.Today;
-			}
-			if (TimeSpan.TryParseExact(TimeAdded, @"hhmmss", CultureInfo.InvariantCulture, out TimeSpan parsedTime)) {
-			}
-			CommitDate = parsedDate.Date + parsedTime;
-
-			MigrateCommitMessages();
-		}
-		private void MigrateCommitMessages() {
-			string message = Title?.Trim();
-			message = message.Remove(0, 1);
-
-			int spaceIndex = message.IndexOf(' ');
-			if (spaceIndex > 0) {
-				string versionPart = message.Substring(0, spaceIndex).Trim();
-				string titlePart = message.Substring(spaceIndex).TrimStart();
-
-				// Basic check: is it four numbers with dots?
-				if (versionPart.Count(c => c == '.') == 3 && versionPart.All(c => char.IsDigit(c) || c == '.')) {
-					Version = Version.Parse(versionPart); // Store as string or Version.Parse(versionPart)
-					Title = titlePart;
-				}
-			}
 		}
 		private string BreakLines(string s) {
-			int charLimit = 100;
+			int charLimit = 140;
 			int currentCharCount = 0;
 			string result = "";
-			string[] pieces = s.Split(' ');
-			foreach (string word in pieces) {
-				currentCharCount += word.Length + 1;
-
-				if (currentCharCount <= charLimit) {
-					result += word + " ";
-				} else {
-					currentCharCount = 0;
-					result += Environment.NewLine + "\t" + word + " ";
+			string[] sentences = s.Split("\n");
+			foreach (string sentence in sentences) {
+				var trimmed = sentence.Replace("\r", "");
+				if (trimmed.Length <= charLimit) {
+					result += trimmed + Environment.NewLine;
+					continue;
 				}
+				string[] pieces = trimmed.Split(' ');
+				foreach (string word in pieces) {
+					currentCharCount += word.Length + 1;
+
+					if (currentCharCount <= charLimit) {
+						result += word + " ";
+					} else {
+						currentCharCount = word.Length;
+						result = result.Trim();
+						result += Environment.NewLine + "\t" + word;
+					}
+				}
+				result += Environment.NewLine;
 			}
 			return result;
-		}
-		private static string AddNewLines(string s) {
-			return s.Replace("/n", Environment.NewLine);
 		}
 		private static string RemoveNewLines(string s) {
 			return s.Replace(Environment.NewLine, "/n");
