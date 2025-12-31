@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -21,7 +22,6 @@ namespace Echoslate.ViewModels {
 
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private AppData Data { get; set; }
-		private string _gitRepoPath;
 		public string GitRepoPath {
 			get => Data.FileSettings.GitRepoPath;
 			set {
@@ -29,6 +29,22 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
+		public string GitStatusMessage {
+			get => Data.FileSettings.GitStatusMessage;
+			set {
+				Data.FileSettings.GitStatusMessage = value;
+				OnPropertyChanged();
+			}
+		}
+		private string _currentGitBranch;
+		public string CurrentGitBranch {
+			get => _currentGitBranch;
+			set {
+				_currentGitBranch = value;
+				OnPropertyChanged();
+			}
+		}
+
 
 		private ObservableCollection<TodoItem> _todoList;
 		private ObservableCollection<HistoryItem> _allHistoryItems;
@@ -233,6 +249,34 @@ namespace Echoslate.ViewModels {
 			SelectedHistoryItem.GenerateCommitMessage();
 			OnPropertyChanged(nameof(CommitMessage));
 		}
+		private bool IsGitRepoValid() {
+			if (string.IsNullOrEmpty(GitRepoPath)) {
+				return false;
+			}
+			string gitDir = Path.Combine(GitRepoPath, ".git");
+			if (!Directory.Exists(gitDir)) {
+				GitStatusMessage = "⚠ Repository path no longer valid (missing .git)";
+				return false;
+			}
+			return true;
+		}
+		private void DetectCurrentGitBranch() {
+			if (!IsGitRepoValid()) {
+				CurrentGitBranch = "(Invalid repo path)";
+				return;
+			}
+		}
+		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
+			return mode switch {
+				IncrementMode.Major => new Version(currentVersion.Major + 1, currentVersion.Minor, currentVersion.Build, currentVersion.Revision),
+				IncrementMode.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build, currentVersion.Revision),
+				IncrementMode.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1, currentVersion.Revision),
+				IncrementMode.Revision => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build, currentVersion.Revision + 1),
+				_ => currentVersion
+			};
+		}
+		
+		
 		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
 		public void CommitCurrent() {
 			if (!string.IsNullOrWhiteSpace(CustomScope)) {
@@ -254,15 +298,6 @@ namespace Echoslate.ViewModels {
 
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 			SelectedHistoryItem = CurrentHistoryItem;
-		}
-		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
-			return mode switch {
-				IncrementMode.Major => new Version(currentVersion.Major + 1, currentVersion.Minor, currentVersion.Build, currentVersion.Revision),
-				IncrementMode.Minor => new Version(currentVersion.Major, currentVersion.Minor + 1, currentVersion.Build, currentVersion.Revision),
-				IncrementMode.Build => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1, currentVersion.Revision),
-				IncrementMode.Revision => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build, currentVersion.Revision + 1),
-				_ => currentVersion
-			};
 		}
 		public ICommand CopyCommitMessageCommand => new RelayCommand(CopyCommitMessage);
 		public void CopyCommitMessage() {

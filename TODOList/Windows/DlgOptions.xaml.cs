@@ -113,6 +113,16 @@ namespace Echoslate {
 
 			if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				string path = dialog.SelectedPath;
+				path = Path.GetFullPath(path);
+
+				var dir = new DirectoryInfo(path);
+				while (dir != null) {
+					if (Directory.Exists(Path.Combine(dir.FullName, ".git"))) {
+						path = dir.FullName;
+						break;
+					}
+					dir = dir.Parent;
+				}
 				if (Directory.Exists(Path.Combine(path, ".git"))) {
 					GitRepoPath = path;
 					MessageBox.Show("Git repository path set successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
