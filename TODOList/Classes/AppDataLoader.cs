@@ -18,9 +18,6 @@ public class AppDataLoader {
 	};
 
 	public static AppData Load(string path) {
-		return LoadNew(path);
-	}
-	public static AppData LoadNew(string path) {
 		if (!File.Exists(path)) {
 			Log.Error($"File not found: {path}");
 			return new AppData();
@@ -59,6 +56,9 @@ public class AppDataLoader {
 		}
 		data.CurrentFilePath = path;
 		data.DebugFiltersList();
+		data.OnDataFileLoadedOrSaved();
+		
+		Log.Debug($"Git path: {data.FileSettings.GitRepoPath}");
 		return data;
 	}
 }

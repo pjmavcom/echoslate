@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using Echoslate.ViewModels;
 
 namespace Echoslate;
@@ -48,6 +50,8 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	public string GitRepoPath { get; set; }
+	
 	private IncrementMode _incrementMode;
 	public IncrementMode IncrementMode {
 		get => _incrementMode;
@@ -56,6 +60,10 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	[JsonIgnore]
+	public string GitStatusMessage { get; set; }
+	[JsonIgnore]
+	public bool CanDetectBranch { get; set; }
 
 	public AppDataFileSettings() {
 		AutoSave = false;
@@ -74,6 +82,18 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			CurrentProjectVersion = version,
 			IncrementMode = incrementMode
 		};
+	}
+	public void UpdateGitFeaturesState() {
+		if (string.IsNullOrEmpty(GitRepoPath)) {
+			GitStatusMessage = "⚠ Git repository path not set";
+			CanDetectBranch = false;
+		} else if (Directory.Exists(Path.Combine(GitRepoPath, ".git"))) {
+			GitStatusMessage = $"✓ Repo: {Path.GetFileName(GitRepoPath)}";
+			CanDetectBranch = true;
+		} else {
+			GitStatusMessage = "⚠ Invalid repo path (no .git folder)";
+			CanDetectBranch = false;
+		}
 	}
 
 
