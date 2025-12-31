@@ -21,6 +21,15 @@ namespace Echoslate.ViewModels {
 
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private AppData Data { get; set; }
+		private string _gitRepoPath;
+		public string GitRepoPath {
+			get => Data.FileSettings.GitRepoPath;
+			set {
+				Data.FileSettings.GitRepoPath = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private ObservableCollection<TodoItem> _todoList;
 		private ObservableCollection<HistoryItem> _allHistoryItems;
 
@@ -60,7 +69,6 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-
 		public string Title {
 			get => SelectedHistoryItem.Title;
 			set {
@@ -147,6 +155,7 @@ namespace Echoslate.ViewModels {
 
 		public HistoryViewModel() {
 			CurrentHistoryItem = new HistoryItem { Title = "Work in progress...", Version = new Version(0, 0, 0, 0) };
+			
 			_todoList = [];
 			_allHistoryItems = [];
 			SelectedHistoryItem = CurrentHistoryItem;
@@ -232,18 +241,19 @@ namespace Echoslate.ViewModels {
 					CommitScopes.Add(newScope);
 					CommitScopes.Sort();
 				}
-				CurrentHistoryItem.IsCommitted = true;
-				CurrentHistoryItem.CommitDate = DateTime.Now;
-				CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
-
-				CurrentHistoryItem.GenerateCommitMessage();
-				CopyCommitMessage();
-				CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
-				CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
-
-				_allHistoryItems.Insert(0, CurrentHistoryItem);
-				SelectedHistoryItem = CurrentHistoryItem;
 			}
+			CurrentHistoryItem.SetFullTitle();
+			CurrentHistoryItem.IsCommitted = true;
+			CurrentHistoryItem.CommitDate = DateTime.Now;
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
+
+			CurrentHistoryItem.GenerateCommitMessage();
+			CopyCommitMessage();
+			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+
+			_allHistoryItems.Insert(0, CurrentHistoryItem);
+			SelectedHistoryItem = CurrentHistoryItem;
 		}
 		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
 			return mode switch {
