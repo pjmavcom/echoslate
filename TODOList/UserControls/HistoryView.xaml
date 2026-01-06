@@ -23,6 +23,7 @@
         <converters:BoolToBrushConverter x:Key="EditingBrushConverter"
                                          FalseBrush="{StaticResource Foreground}"
                                          TrueBrush="{StaticResource EditingBrush}" />
+        <converters:CommitTypeToBrushConverter x:Key="CommitTypeToBrushConverter" />
 
         <ContextMenu x:Key="CompletedTodoContextMenu">
             <MenuItem Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.EditTodoCommand}"
@@ -360,6 +361,19 @@
                                             </Setter>
                                         </Style>
                                     </GridView.ColumnHeaderContainerStyle>
+
+                                    <!--  Type Highlight  -->
+                                    <GridViewColumn Width="20">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Rectangle Width="6" Height="20"
+                                                           Margin="1,2" HorizontalAlignment="Left"
+                                                           VerticalAlignment="Stretch"
+                                                           Fill="{Binding Type, Converter={StaticResource CommitTypeToBrushConverter}}"
+                                                           RadiusX="3" RadiusY="3" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
                                     <!--  Version  -->
                                     <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|100}" Header="Version">
