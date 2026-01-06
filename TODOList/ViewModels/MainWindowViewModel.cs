@@ -413,7 +413,7 @@ namespace Echoslate.ViewModels {
 			};
 			DialogResult dr = sfd.ShowDialog();
 			if (dr != System.Windows.Forms.DialogResult.OK) {
-				Log.Warn("File not saved. Continuing...");
+				Log.Warn("File not saved. Shutting down...");
 				Application.Current.Shutdown();
 				return;
 			}
@@ -495,12 +495,7 @@ namespace Echoslate.ViewModels {
 		}
 		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
 		private void MenuOptions() {
-			bool autoSave = Data.FileSettings.AutoSave;
-			bool globalHotkeys = AppSettings.GlobalHotkeysEnabled;
-			bool autoBackup = Data.FileSettings.AutoBackup;
-			int backupTime = AppSettings.BackupTime.Minutes;
-			bool welcomeWindow = AppSettings.SkipWelcome;
-			DlgOptions options = new DlgOptions(autoSave, globalHotkeys, autoBackup, backupTime, welcomeWindow);
+			DlgOptions options = new DlgOptions(AppSettings, Data);
 			options.ShowDialog();
 			if (options.Result) {
 #if DEBUG
@@ -513,6 +508,9 @@ namespace Echoslate.ViewModels {
 				// AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
 				AppSettings.SkipWelcome = !options.WelcomeWindow;
 				AppSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
+				Data.FileSettings.CanDetectBranch = options.CanDetectBranch;
+				Data.FileSettings.GitRepoPath = options.GitRepoPath;
+				
 			}
 		}
 		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);

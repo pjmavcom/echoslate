@@ -46,7 +46,7 @@
     </UserControl.Resources>
     <Grid Background="{StaticResource AppDarkBackground}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="5*" />
             <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -187,7 +187,7 @@
                               Margin="0,0,10,0"
                               ItemsSource="{Binding CommitTypes}"
                               SelectedItem="{Binding CommitType}" />
-                    <ComboBox Width="120"
+                    <ComboBox Width="200"
                               Margin="0,0,10,0"
                               ItemsSource="{Binding CommitScopes}"
                               SelectedItem="{Binding CommitScope}" />
@@ -195,6 +195,7 @@
                     <TextBlock Margin="5,0" VerticalAlignment="Center"
                                Text=":" />
                     <TextBox Width="300" Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Command="{Binding DetectBranchCommand}" Content="Detect Branch" />
                 </StackPanel>
                 <Border Grid.Row="1"
                         Margin="8,4"
@@ -361,7 +362,7 @@
                                     </GridView.ColumnHeaderContainerStyle>
 
                                     <!--  Version  -->
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|120}" Header="Version">
+                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|100}" Header="Version">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock FontWeight="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}"
@@ -372,7 +373,7 @@
                                     </GridViewColumn>
 
                                     <!--  Date  -->
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|150}" Header="Date">
+                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|160}" Header="Date">
                                         <GridViewColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock HorizontalAlignment="Center"
@@ -389,6 +390,27 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
+                                    <!--  Type  -->
+                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=700|70}" Header="Type">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock FontWeight="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}"
+                                                           Foreground="{Binding IsEditing, Converter={StaticResource EditingBrushConverter}}"
+                                                           Text="{Binding Type}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <!--  Scope  -->
+                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=800|200}" Header="Scope">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock FontWeight="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}"
+                                                           Foreground="{Binding IsEditing, Converter={StaticResource EditingBrushConverter}}"
+                                                           Text="{Binding Scope}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                     <!--  Title  -->
                                     <GridViewColumn Width="700" Header="Title">
                                         <GridViewColumn.CellTemplate>
@@ -418,7 +440,6 @@
         <Grid Grid.Row="1" Grid.Column="1"
               Margin="7"
               Background="{StaticResource AppDarkBackground}">
-
             <Grid Margin="20">
                 <!--  Horizontal Layout  -->
                 <Grid Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}">

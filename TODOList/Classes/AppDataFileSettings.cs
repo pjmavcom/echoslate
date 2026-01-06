@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
+using System.Windows.Forms;
 using Echoslate.ViewModels;
 
 namespace Echoslate;
@@ -48,6 +52,8 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	public string GitRepoPath { get; set; }
+
 	private IncrementMode _incrementMode;
 	public IncrementMode IncrementMode {
 		get => _incrementMode;
@@ -56,6 +62,9 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	[JsonIgnore] public string GitStatusMessage { get; set; }
+	[JsonIgnore] public bool CanDetectBranch { get; set; }
+	[JsonIgnore] public bool IsGitInstalled { get; set; }
 
 	public AppDataFileSettings() {
 		AutoSave = false;
@@ -74,6 +83,73 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 			CurrentProjectVersion = version,
 			IncrementMode = incrementMode
 		};
+	}
+	public string SuggestRepoPath(string currentFilePath) {
+		string currentDir = Path.GetDirectoryName(currentFilePath);
+
+		var dir = new DirectoryInfo(currentDir);
+		while (dir != null) {
+			if (Directory.Exists(Path.Combine(dir.FullName, ".git"))) {
+				return dir.FullName;
+			}
+			dir = dir.Parent;
+		}
+		return null;
+	}
+	public bool GitInstallCheck() {
+		try {
+			var process = new Process {
+				StartInfo = new ProcessStartInfo {
+					FileName = "git",
+					Arguments = "--version",
+					UseShellExecute = false,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true,
+					CreateNoWindow = true
+				}
+			};
+			process.Start();
+			process.WaitForExit(5000);
+			return process.ExitCode == 0;
+		} catch {
+			return false;
+		}
+	}
+	public void InitGitSettings(string currentFilePath) {
+		string suggested = SuggestRepoPath(currentFilePath);
+		bool pathValid = !string.IsNullOrEmpty(suggested) && Directory.Exists(Path.Combine(suggested, ".git"));
+		IsGitInstalled = GitInstallCheck();
+
+		if (pathValid && string.IsNullOrEmpty(GitRepoPath)) {
+			var result = MessageBox.Show($"Git repository detected at:\n{suggested}\nUse this path for branch detection and scope suggestions?",
+				"Git Repository Found",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (result == DialogResult.Yes) {
+				GitRepoPath = suggested;
+				UpdateGitFeaturesState();
+				if (IsGitInstalled) {
+					Log.Debug($"Git ready ({GitStatusMessage})");
+				}
+			}
+		}
+	}
+	public void UpdateGitFeaturesState() {
+		if (Directory.Exists(Path.Combine(GitRepoPath, ".git")) && IsGitInstalled) {
+			GitStatusMessage = $"✓ Repo: {GitRepoPath}";
+			CanDetectBranch = true;
+		} else if (string.IsNullOrEmpty(GitRepoPath) && !IsGitInstalled) {
+			GitStatusMessage = "⚠ Git repository path not set\nGit is not installed - download from https://git-scm.com/downloads";
+			CanDetectBranch = false;
+		} else if (string.IsNullOrEmpty(GitRepoPath)) {
+			GitStatusMessage = "⚠ Git repository path not set";
+			CanDetectBranch = false;
+		} else if (!IsGitInstalled) {
+			GitStatusMessage = "⚠ Git not found — download from https://git-scm.com/downloads";
+			CanDetectBranch = false;
+		} else {
+			GitStatusMessage = "⚠ Invalid repo path (no .git folder)";
+			CanDetectBranch = false;
+		}
 	}
 
 

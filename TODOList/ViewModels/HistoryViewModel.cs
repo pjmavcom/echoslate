@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -21,6 +23,29 @@ namespace Echoslate.ViewModels {
 
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private AppData Data { get; set; }
+		public string GitRepoPath {
+			get => Data.FileSettings.GitRepoPath;
+			set {
+				Data.FileSettings.GitRepoPath = value;
+				OnPropertyChanged();
+			}
+		}
+		public string GitStatusMessage {
+			get => Data.FileSettings.GitStatusMessage;
+			set {
+				Data.FileSettings.GitStatusMessage = value;
+				OnPropertyChanged();
+			}
+		}
+		private string _currentGitBranch;
+		public string CurrentGitBranch {
+			get => _currentGitBranch;
+			set {
+				_currentGitBranch = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private ObservableCollection<TodoItem> _todoList;
 		private ObservableCollection<HistoryItem> _allHistoryItems;
 
@@ -60,7 +85,6 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-
 		public string Title {
 			get => SelectedHistoryItem.Title;
 			set {
@@ -147,6 +171,7 @@ namespace Echoslate.ViewModels {
 
 		public HistoryViewModel() {
 			CurrentHistoryItem = new HistoryItem { Title = "Work in progress...", Version = new Version(0, 0, 0, 0) };
+
 			_todoList = [];
 			_allHistoryItems = [];
 			SelectedHistoryItem = CurrentHistoryItem;
@@ -171,6 +196,16 @@ namespace Echoslate.ViewModels {
 			foreach (var h in _allHistoryItems) {
 				foreach (var todoItem in h.CompletedTodoItems) {
 					todoItem.CurrentView = View.History;
+				}
+			}
+			if (!string.IsNullOrEmpty(CurrentHistoryItem.Type)) {
+				CommitType = CurrentHistoryItem.Type;
+			}
+			if (!string.IsNullOrEmpty(CurrentHistoryItem.Scope)) {
+				if (CommitScopes.Contains(CurrentHistoryItem.Scope)) {
+					CommitScope = CurrentHistoryItem.Scope;
+				} else {
+					CustomScope = CurrentHistoryItem.Scope;
 				}
 			}
 		}
@@ -224,25 +259,104 @@ namespace Echoslate.ViewModels {
 			SelectedHistoryItem.GenerateCommitMessage();
 			OnPropertyChanged(nameof(CommitMessage));
 		}
-		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
-		public void CommitCurrent() {
-			if (!string.IsNullOrWhiteSpace(CustomScope)) {
-				var newScope = CustomScope.Replace(" ", "-");
-				if (!CommitScopes.Contains(newScope)) {
-					CommitScopes.Add(newScope);
-					CommitScopes.Sort();
+		private bool IsGitRepoValid() {
+			if (string.IsNullOrEmpty(GitRepoPath)) {
+				return false;
+			}
+			string gitDir = Path.Combine(GitRepoPath, ".git");
+			if (!Directory.Exists(gitDir)) {
+				GitStatusMessage = "⚠ Repository path no longer valid (missing .git)";
+				return false;
+			}
+			return true;
+		}
+		private bool IsGitInstalled() {
+			return Data.FileSettings.GitInstallCheck();
+		}
+		private void SuggestTypeAndScopeFromBranch(string branchName) {
+			if (string.IsNullOrWhiteSpace(branchName)) {
+				return;
+			}
+
+			int slashIndex = branchName.IndexOf('/');
+			if (slashIndex > 0 && slashIndex < branchName.Length - 1) {
+				string detectedType = branchName.Substring(0, slashIndex);
+				string detectedScope = branchName.Substring(slashIndex + 1).Replace("/", "-");
+
+				if (string.IsNullOrEmpty(CommitType)) {
+					CommitType = detectedType;
 				}
-				CurrentHistoryItem.IsCommitted = true;
-				CurrentHistoryItem.CommitDate = DateTime.Now;
-				CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
 
-				CurrentHistoryItem.GenerateCommitMessage();
-				CopyCommitMessage();
-				CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
-				CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+				if (string.IsNullOrEmpty(CommitScope)) {
+					if (CommitScopes.Contains(detectedScope)) {
+						CustomScope = string.Empty;
+						CommitScope = detectedScope;
+					} else {
+						CustomScope = detectedScope;
+					}
+				}
+			} else {
+				if (string.IsNullOrEmpty(CommitScope)) {
+					CommitScope = branchName;
+				}
+			}
 
-				_allHistoryItems.Insert(0, CurrentHistoryItem);
-				SelectedHistoryItem = CurrentHistoryItem;
+			UpdateCommitMessagePreview();
+		}
+		public void UpdateCommitMessagePreview() {
+			SelectedHistoryItem.GenerateCommitMessage();
+			OnPropertyChanged(nameof(CommitScope));
+			OnPropertyChanged(nameof(CustomScope));
+			OnPropertyChanged(nameof(CommitMessage));
+			OnPropertyChanged(nameof(CommitType));
+		}
+		public ICommand DetectBranchCommand => new RelayCommand(DetectBranch);
+		private void DetectBranch() {
+			CurrentGitBranch = "(detecting...)";
+
+			if (!IsGitRepoValid()) {
+				CurrentGitBranch = "(invalid repo path)";
+				return;
+			}
+
+			if (!IsGitInstalled()) {
+				CurrentGitBranch = "(git not in PATH)";
+				return;
+			}
+
+			try {
+				var process = new Process {
+					StartInfo = new ProcessStartInfo {
+						FileName = "git",
+						Arguments = "rev-parse --abbrev-ref HEAD",
+						WorkingDirectory = GitRepoPath,
+						UseShellExecute = false,
+						RedirectStandardOutput = true,
+						RedirectStandardError = true,
+						CreateNoWindow = true
+					}
+				};
+
+				process.Start();
+				string output = process.StandardOutput.ReadToEnd().Trim();
+				string error = process.StandardError.ReadToEnd().Trim();
+				process.WaitForExit();
+
+				if (process.ExitCode == 0) {
+					if (string.IsNullOrEmpty(output) || output == "HEAD") {
+						CurrentGitBranch = "(detached HEAD)";
+					} else {
+						CurrentGitBranch = output;
+
+						if (SelectedHistoryItem != null) {
+							SuggestTypeAndScopeFromBranch(output);
+						}
+					}
+				} else {
+					CurrentGitBranch = $"(git error: {error})";
+				}
+			} catch (Exception ex) {
+				CurrentGitBranch = "(failed to run git)";
 			}
 		}
 		public Version IncrementVersion(Version currentVersion, IncrementMode mode) {
@@ -253,6 +367,34 @@ namespace Echoslate.ViewModels {
 				IncrementMode.Revision => new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build, currentVersion.Revision + 1),
 				_ => currentVersion
 			};
+		}
+
+
+		public ICommand CommitCommand => new RelayCommand(CommitCurrent);
+		public void CommitCurrent() {
+			if (!string.IsNullOrWhiteSpace(CustomScope)) {
+				var newScope = CustomScope.Replace(" ", "-");
+				if (!CommitScopes.Contains(newScope)) {
+					CommitScopes.Add(newScope);
+					CommitScopes.Sort();
+				}
+				CommitScope = newScope;
+				CustomScope = string.Empty;
+			}
+
+			CurrentHistoryItem.Scope = CommitScope;
+			CurrentHistoryItem.Type = CommitType;
+			CurrentHistoryItem.IsCommitted = true;
+			CurrentHistoryItem.CommitDate = DateTime.Now;
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
+
+			CurrentHistoryItem.GenerateCommitMessage();
+			CopyCommitMessage();
+			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
+			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+
+			_allHistoryItems.Insert(0, CurrentHistoryItem);
+			SelectedHistoryItem = CurrentHistoryItem;
 		}
 		public ICommand CopyCommitMessageCommand => new RelayCommand(CopyCommitMessage);
 		public void CopyCommitMessage() {
