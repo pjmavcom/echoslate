@@ -297,7 +297,12 @@ namespace Echoslate.ViewModels {
 				}
 			} else {
 				if (string.IsNullOrEmpty(CommitScope)) {
-					CommitScope = branchName;
+					if (CommitScopes.Contains(branchName)) {
+						CustomScope = string.Empty;
+						CommitScope = branchName;
+					} else {
+						CustomScope = branchName;
+					}
 				}
 			}
 
@@ -381,8 +386,9 @@ namespace Echoslate.ViewModels {
 				CommitScope = newScope;
 				CustomScope = string.Empty;
 			}
-
-			CurrentHistoryItem.Scope = CommitScope;
+			if (!string.IsNullOrEmpty(CommitScope)) {
+				CurrentHistoryItem.Scope = CommitScope;
+			}
 			CurrentHistoryItem.Type = CommitType;
 			CurrentHistoryItem.IsCommitted = true;
 			CurrentHistoryItem.CommitDate = DateTime.Now;
@@ -390,7 +396,7 @@ namespace Echoslate.ViewModels {
 
 			CurrentHistoryItem.GenerateCommitMessage();
 			CopyCommitMessage();
-			
+
 			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
 			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 
