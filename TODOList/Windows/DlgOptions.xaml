@@ -1,6 +1,6 @@
 <Window x:Class="Echoslate.DlgOptions"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:behaviors="clr-namespace:Echoslate.Behaviors"
         Title="Options"
         Width="700" MinWidth="380"
         Background="{StaticResource AppDarkBackground}"
@@ -67,10 +67,14 @@
                             Orientation="Horizontal">
                     <TextBlock Margin="0,0,12,0" VerticalAlignment="Center"
                                FontSize="14" Text="Create backup every" />
-                    <xctk:IntegerUpDown Width="80"
-                                        FontSize="15" Increment="5"
-                                        Maximum="1440" Minimum="5"
-                                        Value="{Binding BackupTime}" />
+                    <Border BorderBrush="#494949" BorderThickness="1">
+                        <TextBlock Width="80"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True" behaviors:MouseWheelNumericBehavior.Minimum="5"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="BackupTime" FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Text="{Binding BackupTime}"
+                                   TextAlignment="Center" ToolTip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                    </Border>
                     <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
                                FontSize="14" Text="minutes" />
                 </StackPanel>
