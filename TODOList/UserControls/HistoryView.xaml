@@ -70,66 +70,98 @@
                         Grid.ColumnSpan="2"
                         Margin="10"
                         Orientation="Horizontal">
-                <Button Width="70" Height="35"
-                        Command="{Binding SelectIncrementCommand}"
-                        Content="Version" />
-                <Border Margin="3" Padding="3"
-                        BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Major}}"
-                        BorderThickness="2" CornerRadius="3">
-                    <wpfTool:IntegerUpDown Width="60" Height="30"
-                                           Margin="0"
-                                           Background="{StaticResource EditorBackground}"
-                                           BorderBrush="Transparent"
-                                           Foreground="{StaticResource Foreground}"
-                                           IsEnabled="{Binding IsCurrentSelected}"
-                                           Minimum="0"
-                                           Value="{Binding SelectedHistoryItem.VersionMajor, UpdateSourceTrigger=PropertyChanged}" />
-                </Border>
-                <TextBlock VerticalAlignment="Center"
-                           Foreground="{StaticResource Foreground}"
-                           Text="." />
-                <Border Margin="3" Padding="3"
-                        BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Minor}}"
-                        BorderThickness="2" CornerRadius="3">
-                    <wpfTool:IntegerUpDown Width="60" Height="30"
-                                           Margin="0"
-                                           Background="{StaticResource EditorBackground}"
-                                           BorderBrush="Transparent"
-                                           Foreground="{StaticResource Foreground}"
-                                           IsEnabled="{Binding IsCurrentSelected}"
-                                           Minimum="0"
-                                           Value="{Binding SelectedHistoryItem.VersionMinor, UpdateSourceTrigger=PropertyChanged}" />
-                </Border>
-                <TextBlock VerticalAlignment="Center"
-                           Foreground="{StaticResource Foreground}"
-                           Text="." />
-                <Border Margin="3" Padding="3"
-                        BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Build}}"
-                        BorderThickness="2" CornerRadius="3">
-                    <wpfTool:IntegerUpDown Width="60" Height="30"
-                                           Margin="0"
-                                           Background="{StaticResource EditorBackground}"
-                                           BorderBrush="Transparent"
-                                           Foreground="{StaticResource Foreground}"
-                                           IsEnabled="{Binding IsCurrentSelected}"
-                                           Minimum="0"
-                                           Value="{Binding SelectedHistoryItem.VersionBuild, UpdateSourceTrigger=PropertyChanged}" />
-                </Border>
-                <TextBlock VerticalAlignment="Center"
-                           Foreground="{StaticResource Foreground}"
-                           Text="." />
-                <Border Margin="3" Padding="3"
-                        BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Revision}}"
-                        BorderThickness="2" CornerRadius="3">
-                    <wpfTool:IntegerUpDown Width="60" Height="30"
-                                           Margin="0"
-                                           Background="{StaticResource EditorBackground}"
-                                           BorderBrush="Transparent"
-                                           Foreground="{StaticResource Foreground}"
-                                           IsEnabled="{Binding IsCurrentSelected}"
-                                           Minimum="0"
-                                           Value="{Binding SelectedHistoryItem.VersionRevision, UpdateSourceTrigger=PropertyChanged}" />
-                </Border>
+                <TextBlock Margin="0,0,10,0" VerticalAlignment="Center"
+                           FontWeight="SemiBold" Text="Current version:" />
+
+                <Button Command="{Binding BumpMajorCommand}"
+                        Content="{Binding CurrentHistoryItem.VersionMajor}"
+                        Style="{StaticResource VersionNumberButtonStyle}"
+                        ToolTip="Bump major version — resets minor, patch, and build" />
+
+                <TextBlock Margin="5,0" VerticalAlignment="Center"
+                           FontSize="20" Text="." />
+
+                <Button Command="{Binding BumpMinorCommand}"
+                        Content="{Binding CurrentHistoryItem.VersionMinor}"
+                        Style="{StaticResource VersionNumberButtonStyle}"
+                        ToolTip="Bump minor version — resets build and revision" />
+
+                <TextBlock Margin="5,0" VerticalAlignment="Center"
+                           FontSize="20" Text="." />
+
+                <Button Command="{Binding BumpBuildCommand}"
+                        Content="{Binding CurrentHistoryItem.VersionBuild}"
+                        Style="{StaticResource VersionNumberButtonStyle}"
+                        ToolTip="Bump build version — resets revision" />
+
+                <TextBlock Margin="5,0" VerticalAlignment="Center"
+                           FontSize="20" Text="." />
+
+                <Button Command="{Binding BumpRevisionCommand}"
+                        Content="{Binding CurrentHistoryItem.VersionRevision}"
+                        Style="{StaticResource VersionNumberButtonStyle}"
+                        ToolTip="Bump revision number" />
+
+                <!--  <Button Width="70" Height="35"  -->
+                <!--  Command="{Binding SelectIncrementCommand}"  -->
+                <!--  Content="Version" />  -->
+                <!--  <Border Margin="3" Padding="3"  -->
+                <!--  BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Major}}"  -->
+                <!--  BorderThickness="2" CornerRadius="3">  -->
+                <!--  <wpfTool:IntegerUpDown Width="60" Height="30"  -->
+                <!--  Margin="0"  -->
+                <!--  Background="{StaticResource EditorBackground}"  -->
+                <!--  BorderBrush="Transparent"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  IsEnabled="{Binding IsCurrentSelected}"  -->
+                <!--  Minimum="0"  -->
+                <!--  Value="{Binding SelectedHistoryItem.VersionMajor, UpdateSourceTrigger=PropertyChanged}" />  -->
+                <!-- </Border> -->
+                <!--  <TextBlock VerticalAlignment="Center"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  Text="." />  -->
+                <!--  <Border Margin="3" Padding="3"  -->
+                <!--  BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Minor}}"  -->
+                <!--  BorderThickness="2" CornerRadius="3">  -->
+                <!--  <wpfTool:IntegerUpDown Width="60" Height="30"  -->
+                <!--  Margin="0"  -->
+                <!--  Background="{StaticResource EditorBackground}"  -->
+                <!--  BorderBrush="Transparent"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  IsEnabled="{Binding IsCurrentSelected}"  -->
+                <!--  Minimum="0"  -->
+                <!--  Value="{Binding SelectedHistoryItem.VersionMinor, UpdateSourceTrigger=PropertyChanged}" />  -->
+                <!-- </Border> -->
+                <!--  <TextBlock VerticalAlignment="Center"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  Text="." />  -->
+                <!--  <Border Margin="3" Padding="3"  -->
+                <!--  BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Build}}"  -->
+                <!--  BorderThickness="2" CornerRadius="3">  -->
+                <!--  <wpfTool:IntegerUpDown Width="60" Height="30"  -->
+                <!--  Margin="0"  -->
+                <!--  Background="{StaticResource EditorBackground}"  -->
+                <!--  BorderBrush="Transparent"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  IsEnabled="{Binding IsCurrentSelected}"  -->
+                <!--  Minimum="0"  -->
+                <!--  Value="{Binding SelectedHistoryItem.VersionBuild, UpdateSourceTrigger=PropertyChanged}" />  -->
+                <!-- </Border> -->
+                <!--  <TextBlock VerticalAlignment="Center"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  Text="." />  -->
+                <!--  <Border Margin="3" Padding="3"  -->
+                <!--  BorderBrush="{Binding SelectedIncrementMode, Converter={StaticResource ModeToBrushConverter}, ConverterParameter={x:Static viewModels:IncrementMode.Revision}}"  -->
+                <!--  BorderThickness="2" CornerRadius="3">  -->
+                <!--  <wpfTool:IntegerUpDown Width="60" Height="30"  -->
+                <!--  Margin="0"  -->
+                <!--  Background="{StaticResource EditorBackground}"  -->
+                <!--  BorderBrush="Transparent"  -->
+                <!--  Foreground="{StaticResource Foreground}"  -->
+                <!--  IsEnabled="{Binding IsCurrentSelected}"  -->
+                <!--  Minimum="0"  -->
+                <!--  Value="{Binding SelectedHistoryItem.VersionRevision, UpdateSourceTrigger=PropertyChanged}" />  -->
+                <!-- </Border> -->
             </StackPanel>
             <Button Grid.Row="1" Grid.Column="0"
                     Margin="7,0,0,0"

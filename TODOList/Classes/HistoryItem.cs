@@ -111,6 +111,8 @@ namespace Echoslate {
 			set {
 				Version = new Version(value, Version.Minor, Version.Build, Version.Revision);
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(Version));
+				OnPropertyChanged(nameof(VersionString));
 			}
 		}
 		[JsonIgnore]
@@ -119,6 +121,8 @@ namespace Echoslate {
 			set {
 				Version = new Version(Version.Major, value, Version.Build, Version.Revision);
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(Version));
+				OnPropertyChanged(nameof(VersionString));
 			}
 		}
 		[JsonIgnore]
@@ -127,6 +131,8 @@ namespace Echoslate {
 			set {
 				Version = new Version(Version.Major, Version.Minor, value, Version.Revision);
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(Version));
+				OnPropertyChanged(nameof(VersionString));
 			}
 		}
 		[JsonIgnore]
@@ -135,6 +141,8 @@ namespace Echoslate {
 			set {
 				Version = new Version(Version.Major, Version.Minor, Version.Build, value);
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(Version));
+				OnPropertyChanged(nameof(VersionString));
 			}
 		}
 		[JsonIgnore] public string VersionString => Version.ToString();

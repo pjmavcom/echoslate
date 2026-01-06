@@ -390,6 +390,7 @@ namespace Echoslate.ViewModels {
 
 			CurrentHistoryItem.GenerateCommitMessage();
 			CopyCommitMessage();
+			
 			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
 			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 
@@ -466,6 +467,24 @@ namespace Echoslate.ViewModels {
 				UpdateCategorizedLists();
 			}
 		}
+
+		public ICommand BumpMajorCommand => new RelayCommand(() => {
+			CurrentHistoryItem.VersionMajor++;
+			CurrentHistoryItem.VersionMinor = 0;
+			CurrentHistoryItem.VersionBuild = 0;
+			CurrentHistoryItem.VersionRevision = 0;
+		});
+		public ICommand BumpMinorCommand => new RelayCommand(() => {
+			CurrentHistoryItem.VersionMinor++;
+			CurrentHistoryItem.VersionBuild = 0;
+			CurrentHistoryItem.VersionRevision = 0;
+		});
+		public ICommand BumpBuildCommand => new RelayCommand(() => {
+			CurrentHistoryItem.VersionBuild++;
+			CurrentHistoryItem.VersionRevision = 0;
+		});
+		public ICommand BumpRevisionCommand => new RelayCommand(() => { CurrentHistoryItem.VersionRevision++; });
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
