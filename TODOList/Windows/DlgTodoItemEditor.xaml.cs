@@ -215,6 +215,8 @@ namespace Echoslate {
 
 			ResultTodoItem.Tags = new ObservableCollection<string>();
 			ResultTodoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
+			ResultTodoItem.Problem = Problem;
+			ResultTodoItem.Solution = Solution;
 		}
 		public static string ExpandHashTagsInString(string todo) {
 			string[] pieces = todo.Split(' ');

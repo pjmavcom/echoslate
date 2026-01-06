@@ -383,11 +383,8 @@ namespace Echoslate.ViewModels {
 					CommitScopes.Add(newScope);
 					CommitScopes.Sort();
 				}
-				CommitScope = newScope;
 				CustomScope = string.Empty;
-			}
-			if (!string.IsNullOrEmpty(CommitScope)) {
-				CurrentHistoryItem.Scope = CommitScope;
+				CommitScope = newScope;
 			}
 			CurrentHistoryItem.Type = CommitType;
 			CurrentHistoryItem.IsCommitted = true;
