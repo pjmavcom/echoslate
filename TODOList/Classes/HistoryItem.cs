@@ -33,6 +33,14 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
+		private string _branch;
+		public string Branch {
+			get => _branch;
+			set {
+				_branch = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private Version _version;
 		public Version Version {
@@ -177,7 +185,9 @@ namespace Echoslate {
 		public List<TodoItem> BugsCompleted = [];
 		public List<TodoItem> FeaturesCompleted = [];
 		public List<TodoItem> OtherCompleted = [];
-		private string FullTitle;
+
+		private string _fullTitle;
+		public string FullTitle => Type + "(" + Scope + "): " + Title;
 
 
 		// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
@@ -232,17 +242,24 @@ namespace Echoslate {
 			}
 			FullCommitMessage = ToClipboard();
 		}
-		public void SetFullTitle() {
-			Title = FullTitle;
-		}
 		public void GenerateCommitMessage() {
 			FullCommitMessage = ToClipboard();
 		}
 		public string ToClipboard() {
-			// string result = DateAdded + "- " + Title + Environment.NewLine +
-			// 				"Estimated Time: " + TotalTime + Environment.NewLine;
+			// if (Title.Contains("(")) {
+			// 	int scopeIndex = Title.IndexOf("(");
+			// 	int scopeEndIndex = Title.IndexOf(")");
+			// 	string type = Title.Substring(0, scopeIndex);
+			// 	string scope = Title.Substring(scopeIndex + 1, scopeEndIndex - scopeIndex - 1);
+			// 	if (string.IsNullOrEmpty(Type)) {
+			// 		Type = type;
+			// 	}
+			// 	if (string.IsNullOrEmpty(Scope)) {
+			// 		Scope = scope;
+			// 		Title = Title.Substring(scopeEndIndex + 2);
+			// 	}
+			// }
 			Scope = Scope.Replace(" ", "-");
-			FullTitle = Type + "(" + Scope + "): " + Title;
 			string result = FullTitle + Environment.NewLine;
 
 			if (BugsCompleted.Count > 0) {

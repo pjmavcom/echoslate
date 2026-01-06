@@ -509,6 +509,8 @@ namespace Echoslate.ViewModels {
 				AppSettings.SkipWelcome = !options.WelcomeWindow;
 				AppSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
 				Data.FileSettings.CanDetectBranch = options.CanDetectBranch;
+				Data.FileSettings.GitRepoPath = options.GitRepoPath;
+				
 			}
 		}
 		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);

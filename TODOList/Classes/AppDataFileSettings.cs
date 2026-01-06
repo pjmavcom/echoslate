@@ -96,7 +96,7 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 		}
 		return null;
 	}
-	private bool GitInstallCheck() {
+	public bool GitInstallCheck() {
 		try {
 			var process = new Process {
 				StartInfo = new ProcessStartInfo {
