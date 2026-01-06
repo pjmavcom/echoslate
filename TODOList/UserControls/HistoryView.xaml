@@ -3,7 +3,7 @@
              xmlns:behaviors="clr-namespace:EchoSlate.Behaviors" xmlns:converters="clr-namespace:Echoslate.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:global="clr-namespace:"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-             xmlns:viewModels="clr-namespace:Echoslate.ViewModels" xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:viewModels="clr-namespace:Echoslate.ViewModels"
              x:Name="HistoryViewRoot"
              d:DesignHeight="800" d:DesignWidth="1200"
              mc:Ignorable="d">
