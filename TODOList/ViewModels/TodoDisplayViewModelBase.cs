@@ -76,7 +76,8 @@ namespace Echoslate.ViewModels {
 					value = -1;
 				}
 				_currentSeverityFilter = value;
-				CurrentSeverityBrush = SeverityBrush(CurrentSeverityFilter);
+				CurrentSeverityBrush = AppServices.BrushService.GetBrushForSeverity(CurrentSeverityFilter);
+				
 				RefreshAll();
 				OnPropertyChanged();
 			}
@@ -119,7 +120,7 @@ namespace Echoslate.ViewModels {
 			get => _newTodoSeverity;
 			set {
 				_newTodoSeverity = value % 4;
-				NewTodoSeverityBrush = SeverityBrush(NewTodoSeverity);
+				NewTodoSeverityBrush = AppServices.BrushService.GetBrushForSeverity(NewTodoSeverity);
 				OnPropertyChanged();
 			}
 		}
