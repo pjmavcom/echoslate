@@ -2,13 +2,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
@@ -17,9 +15,6 @@ using Echoslate.Windows;
 using Application = System.Windows.Application;
 using DialogResult = System.Windows.Forms.DialogResult;
 using WindowState = Echoslate.Core.Services.WindowState;
-
-// using Application = System.Windows.Application;
-// using DialogResult = System.Windows.Forms.DialogResult;
 
 
 namespace Echoslate.Core.ViewModels {
@@ -168,22 +163,11 @@ namespace Echoslate.Core.ViewModels {
 		}
 		private PomoActiveState _pomoLastActiveState;
 
-		// TODO: I don't think this is needed at all. Check if the pomo works
-		// Then search and uncomment the OnPropertyChanged later here...
-		// public Brush PomoBackground {
-		// 	get => _pomoState switch {
-		// 		PomoActiveState.Idle => Brushes.Transparent,
-		// 		PomoActiveState.Work => Brushes.Maroon,
-		// 		PomoActiveState.Break => Brushes.LimeGreen,
-		// 		_ => Brushes.Transparent
-		// 	};
-		// }
 		public int PomoProgressBarValue { get; set; }
 		public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
 
 
-		public MainWindowViewModel(AppSettings appSettings){//,
-								   // IMessageDialogService messageDialogService) {
+		public MainWindowViewModel(AppSettings appSettings){
 			AppSettings = appSettings;
 			TodoListVM = new TodoListViewModel();
 			KanbanVM = new KanbanViewModel();
@@ -270,17 +254,11 @@ namespace Echoslate.Core.ViewModels {
 		}
 		private void UpdatePomoTimerUI() {
 			OnPropertyChanged(nameof(PomoLabelContent));
-			// OnPropertyChanged(nameof(PomoBackground));
 			OnPropertyChanged(nameof(PomoProgressBarValue));
 			OnPropertyChanged(nameof(PomoIsWorkMode));
 		}
 		public void SetWindowTitle() {
 			CurrentWindowTitle = AppSettings.WindowTitle + " - " + Data?.FileName;
-		}
-		public void RebuildAllViews() {
-			TodoListVM.RebuildView();
-			KanbanVM.RebuildView();
-			HistoryVM.RebuildView();
 		}
 		public void LoadCurrentData() {
 			MasterTodoItemsList = Data.TodoList;
@@ -306,7 +284,6 @@ namespace Echoslate.Core.ViewModels {
 			TodoListVM.Initialize(this);
 			KanbanVM.Initialize(this);
 			HistoryVM.Initialize(this);
-			RebuildAllViews();
 			SetWindowTitle();
 
 			SetupApplicationState();
@@ -324,7 +301,6 @@ namespace Echoslate.Core.ViewModels {
 				}
 			}
 			MarkAsChanged();
-			RebuildAllViews();
 		}
 		private void SubscribeToExistingItems() {
 			foreach (var item in MasterTodoItemsList) {
@@ -417,7 +393,6 @@ namespace Echoslate.Core.ViewModels {
 			Data = new AppData();
 
 			LoadCurrentData();
-			RebuildAllViews();
 			ClearChangedFlag();
 
 			SaveFileDialog sfd = new SaveFileDialog {

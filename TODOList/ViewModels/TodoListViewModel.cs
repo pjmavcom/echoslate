@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using Echoslate.Core.Components;
 using Echoslate.Core.Models;
@@ -80,8 +79,9 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		if (DisplayedItems == null) {
 			return;
 		}
-		DisplayedItems.SortDescriptions.Clear();
-		DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ListSortDirection.Ascending));
+		// DisplayedItems.SortDescriptions.Clear();
+		// DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ListSortDirection.Ascending));
+		CurrentSortMethod = items => items.OrderBy(i => i.CurrentFilterRank);
 		int index = 1;
 		foreach (TodoItem ih in DisplayedItems) {
 			ih.CurrentFilterRank = index++;

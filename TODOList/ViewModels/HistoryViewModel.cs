@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
@@ -144,7 +143,11 @@ namespace Echoslate.Core.ViewModels {
 		public List<string> CommitTypes { get; } = new() { "feat", "fix", "refactor", "chore", "docs" };
 		public ObservableCollection<string> CommitScopes { get; set; }
 
-		public ICollectionView CommittedHistoryItems { get; set; }
+		public IEnumerable<HistoryItem> CommittedHistoryItems {
+			get {
+				return _allHistoryItems;
+			} 
+		}
 
 		public ObservableCollection<TodoItem> BugsCompleted { get; } = new();
 		public ObservableCollection<TodoItem> FeaturesCompleted { get; } = new();
@@ -180,7 +183,6 @@ namespace Echoslate.Core.ViewModels {
 			SelectedIncrementMode = mainWindowVM.Data.FileSettings.IncrementMode;
 			_todoList = mainWindowVM.MasterTodoItemsList;
 			_allHistoryItems = mainWindowVM.MasterHistoryItemsList;
-			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
 			LoadData();
 			OnPropertyChanged(nameof(CommittedHistoryItems));
 
@@ -204,10 +206,6 @@ namespace Echoslate.Core.ViewModels {
 				}
 			}
 		}
-		public void RebuildView() {
-			CommittedHistoryItems = CollectionViewSource.GetDefaultView(_allHistoryItems);
-		}
-
 		public void LoadData() {
 			foreach (HistoryItem historyItem in _allHistoryItems) {
 				historyItem.SortCompletedTodoItems();
@@ -407,7 +405,6 @@ namespace Echoslate.Core.ViewModels {
 			if (!SelectedHistoryItem.IsCommitted && SelectedHistoryItem.RemoveCompletedTodo(item.Id)) {
 				item.IsComplete = false;
 				SelectedHistoryItem.SortCompletedTodoItems();
-				RebuildView();
 				UpdateCategorizedLists();
 			}
 			_todoList.Add(item);
@@ -461,7 +458,6 @@ namespace Echoslate.Core.ViewModels {
 			if (_allHistoryItems.Contains(item)) {
 				_allHistoryItems.Remove(item);
 				Log.Print($"Deleted: {item.Title}");
-				RebuildView();
 				UpdateCategorizedLists();
 			}
 		}

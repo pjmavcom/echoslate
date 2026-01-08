@@ -1,6 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Linq;
 using Echoslate.Core.Components;
 using Echoslate.Core.Models;
 
@@ -73,8 +73,9 @@ namespace Echoslate.Core.ViewModels {
 			if (DisplayedItems == null) {
 				return;
 			}
-			DisplayedItems.SortDescriptions.Clear();
-			DisplayedItems.SortDescriptions.Add(new SortDescription("KanbanRank", ListSortDirection.Ascending));
+			// DisplayedItems.SortDescriptions.Clear();
+			// DisplayedItems.SortDescriptions.Add(new SortDescription("KanbanRank", ListSortDirection.Ascending));
+			CurrentSortMethod = items => items.OrderBy(i => i.KanbanRank);
 			int index = 1;
 			foreach (TodoItem ih in DisplayedItems) {
 				ih.CurrentFilterRank = index++;

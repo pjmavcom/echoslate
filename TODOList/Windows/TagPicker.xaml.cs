@@ -1,10 +1,11 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
@@ -19,14 +20,10 @@ namespace Echoslate {
 				OnPropertyChanged();
 			}
 		}
-		private ICollectionView _allAvailableTagsView;
-		public ICollectionView AllAvailableTagsView {
+		public IEnumerable AllAvailableTagsView {
 			get {
-				if (_allAvailableTagsView == null) {
-					_allAvailableTagsView = CollectionViewSource.GetDefaultView(AllAvailableTags);
-					_allAvailableTagsView.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
-				}
-				return _allAvailableTagsView;
+				var items = AllAvailableTags.OrderBy(t => t, StringComparer.OrdinalIgnoreCase);
+				return items;
 			}
 		}
 

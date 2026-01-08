@@ -18,14 +18,21 @@ namespace Echoslate.Core.ViewModels {
 	public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		public AppData Data { get; set; }
 		public ObservableCollection<TodoItem> MasterList { get; set; }
-		private ICollectionView _displayedItems;
-		public ICollectionView DisplayedItems {
-			get => _displayedItems;
-			set {
-				_displayedItems = value;
-				OnPropertyChanged();
+		public IEnumerable<TodoItem> DisplayedItems {
+			get {
+				var items = MasterList.Where(item => CombinedFilter(item));
+				return CurrentSortMethod(items);
 			}
 		}
+		private Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> _currentSortMethod = items => items.OrderByDescending(i => i.Rank);
+		public Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> CurrentSortMethod {
+			get => _currentSortMethod;
+			set {
+				_currentSortMethod = value ?? (items => items.OrderByDescending(i => i.Rank));
+				OnPropertyChanged(nameof(DisplayedItems));
+			}
+		}
+
 		public ObservableCollection<HistoryItem> HistoryItems { get; set; }
 		public HistoryItem CurrentHistoryItem { get; set; }
 
@@ -33,12 +40,10 @@ namespace Echoslate.Core.ViewModels {
 
 		public ObservableCollection<string> AllTags { get; set; }
 		public ObservableCollection<string> CurrentVisibleTags { get; set; }
-		private ICollectionView _currentVisibleTagsView;
-		public ICollectionView CurrentVisibleTagsView {
-			get => _currentVisibleTagsView;
-			set {
-				_currentVisibleTagsView = value;
-				OnPropertyChanged();
+		public IEnumerable<string> CurrentVisibleTagsView {
+			get {
+				var items = CurrentVisibleTags.OrderBy(t => t, StringComparer.OrdinalIgnoreCase);
+				return items;
 			}
 		}
 
@@ -77,7 +82,7 @@ namespace Echoslate.Core.ViewModels {
 				}
 				_currentSeverityFilter = value;
 				CurrentSeverityBrush = AppServices.BrushService.GetBrushForSeverity(CurrentSeverityFilter);
-				
+
 				RefreshAll();
 				OnPropertyChanged();
 			}
@@ -163,7 +168,6 @@ namespace Echoslate.Core.ViewModels {
 			HistoryItems = mainWindowVM.MasterHistoryItemsList;
 			MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
 
-			// AllItems = [];
 			FilterButtons = [];
 			AllTags = [];
 
@@ -186,9 +190,6 @@ namespace Echoslate.Core.ViewModels {
 				}
 			}
 		}
-		public void RebuildView() {
-			DisplayedItems = CollectionViewSource.GetDefaultView(MasterList);
-		}
 		public void GetCurrentHashTags() {
 			string currentSortTag = PrioritySortTag;
 			CurrentVisibleTags.Clear();
@@ -203,9 +204,8 @@ namespace Echoslate.Core.ViewModels {
 					CurrentVisibleTags.Add(tag);
 				}
 			}
-			CurrentVisibleTagsView = CollectionViewSource.GetDefaultView(CurrentVisibleTags);
-			CurrentVisibleTagsView.SortDescriptions.Clear();
-			CurrentVisibleTagsView.SortDescriptions.Add(new SortDescription("", ListSortDirection.Ascending));
+			OnPropertyChanged(nameof(CurrentVisibleTagsView));
+			
 			AllTags.Clear();
 			foreach (TodoItem item in MasterList) {
 				foreach (string tag in item.Tags) {
@@ -224,14 +224,8 @@ namespace Echoslate.Core.ViewModels {
 		public abstract void FixRanks();
 		public void RefreshDisplayedItems(bool forceRefresh = false) {
 			RefreshAllItems();
-
-			DisplayedItems = CollectionViewSource.GetDefaultView(MasterList);
-			DisplayedItems.Filter = CombinedFilter;
 			FixRanks();
-
 			ApplySort(forceRefresh);
-
-			DisplayedItems?.Refresh();
 		}
 		public void RefreshAll() {
 			RefreshFilter();
@@ -260,30 +254,31 @@ namespace Echoslate.Core.ViewModels {
 				_previousSort = _currentSort;
 			}
 
-			DisplayedItems.SortDescriptions.Clear();
 			switch (CurrentSort) {
 				case "date":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("DateTimeStarted", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					CurrentSortMethod = ReverseSort
+						? items => items.OrderByDescending(i => i.DateTimeStarted).ThenBy(i => i.CurrentFilterRank)
+						: items => items.OrderBy(i => i.DateTimeStarted).ThenBy(i => i.CurrentFilterRank);
 					break;
 				case "rank":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					CurrentSortMethod = ReverseSort
+						? items => items.OrderByDescending(i => i.CurrentFilterRank)
+						: items => items.OrderBy(i => i.CurrentFilterRank);
 					break;
 				case "severity":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Severity", ReverseSort ? ListSortDirection.Ascending : ListSortDirection.Descending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					CurrentSortMethod = ReverseSort
+						? items => items.OrderBy(i => i.Severity).ThenBy(i => i.CurrentFilterRank)
+						: items => items.OrderByDescending(i => i.Severity).ThenBy(i => i.CurrentFilterRank);
 					break;
 				case "active":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Active", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					break;
-				case "kanban":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Kanban", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					CurrentSortMethod = ReverseSort
+						? items => items.OrderByDescending(i => i.IsTimerOn).ThenBy(i => i.CurrentFilterRank)
+						: items => items.OrderBy(i => i.IsTimerOn).ThenBy(i => i.CurrentFilterRank);
 					break;
 				case "title":
-					DisplayedItems.SortDescriptions.Add(new SortDescription("Todo", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
-					DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ReverseSort ? ListSortDirection.Descending : ListSortDirection.Ascending));
+					CurrentSortMethod = ReverseSort
+						? items => items.OrderByDescending(i => i.Todo).ThenBy(i => i.CurrentFilterRank)
+						: items => items.OrderBy(i => i.Todo).ThenBy(i => i.CurrentFilterRank);
 					break;
 			}
 		}
@@ -303,17 +298,13 @@ namespace Echoslate.Core.ViewModels {
 			return MatchFilter(FilterList, ih);
 		}
 		private void ApplyPriorityTagSorting() {
-			DisplayedItems.SortDescriptions.Clear();
-
 			foreach (TodoItem ih in DisplayedItems) {
 				if (ih.HasTag(PrioritySortTag)) {
 					ih.IsPrioritySorted = true;
 				}
 			}
 
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItem.IsPrioritySorted), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItem.HasTags), ListSortDirection.Descending));
-			DisplayedItems.SortDescriptions.Add(new SortDescription(nameof(TodoItem.FirstTag), ListSortDirection.Ascending));
+			CurrentSortMethod = items => items.OrderByDescending(i => i.IsPrioritySorted).ThenByDescending(i => i.HasTags).ThenBy(i => i.FirstTag);
 			ResetPrioritySortTags();
 		}
 		private void ResetPrioritySortTags() {
@@ -364,7 +355,7 @@ namespace Echoslate.Core.ViewModels {
 
 				targetHistoryItem = dialog.Result;
 			} else {
-				targetHistoryItem = CurrentHistoryItem;	
+				targetHistoryItem = CurrentHistoryItem;
 			}
 			targetHistoryItem.AddCompletedTodo(item);
 		}

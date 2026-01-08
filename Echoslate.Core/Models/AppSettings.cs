@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Echoslate.Core.Services;
 
-// using System.Windows;
 
 namespace Echoslate.Core.Models {
 	public class AppSettings {
