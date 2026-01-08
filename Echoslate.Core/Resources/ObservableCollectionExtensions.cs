@@ -1,8 +1,6 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
-namespace Echoslate.Resources;
+namespace Echoslate.Core.Resources;
 
 public static class ObservableCollectionExtensions {
 	public static void Sort<T>(this ObservableCollection<T> collection) where T : IComparable<T> {

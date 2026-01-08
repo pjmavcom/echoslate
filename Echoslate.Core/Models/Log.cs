@@ -1,8 +1,6 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using Echoslate;
+
+namespace Echoslate.Core.Models;
 
 public static class Log {
 	private static StreamWriter _streamWriter;

@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Echoslate;
+namespace Echoslate.Core.Models;
 
 public class HotkeyItem : INotifyPropertyChanged{
 	private string _hotkey;

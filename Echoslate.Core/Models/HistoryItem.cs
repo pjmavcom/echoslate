@@ -5,16 +5,12 @@
  *
  */
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
-namespace Echoslate {
+namespace Echoslate.Core.Models {
 	public class HistoryItem : INotifyPropertyChanged {
 		private string _type;
 		public string Type {

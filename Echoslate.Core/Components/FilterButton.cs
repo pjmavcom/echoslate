@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Echoslate.Components;
+namespace Echoslate.Core.Components;
 
 public class FilterButton : INotifyPropertyChanged {
 	public string Filter { get; }
