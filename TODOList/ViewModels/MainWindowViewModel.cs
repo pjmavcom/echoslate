@@ -10,9 +10,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 using Echoslate.Windows;
 using Application = System.Windows.Application;
+using DialogResult = System.Windows.Forms.DialogResult;
+using WindowState = Echoslate.Core.Services.WindowState;
 
+// using Application = System.Windows.Application;
+// using DialogResult = System.Windows.Forms.DialogResult;
 
 namespace Echoslate.ViewModels {
 	public enum PomoActiveState {
@@ -22,6 +28,7 @@ namespace Echoslate.ViewModels {
 	}
 
 	public class MainWindowViewModel : INotifyPropertyChanged {
+		private IMessageDialogService _messageDialogService;
 		public AppData Data;
 		public AppSettings AppSettings { get; set; }
 
@@ -171,7 +178,8 @@ namespace Echoslate.ViewModels {
 		public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
 
 
-		public MainWindowViewModel(AppSettings appSettings) {
+		public MainWindowViewModel(AppSettings appSettings){//,
+								   // IMessageDialogService messageDialogService) {
 			AppSettings = appSettings;
 			TodoListVM = new TodoListViewModel();
 			KanbanVM = new KanbanViewModel();
@@ -392,6 +400,9 @@ namespace Echoslate.ViewModels {
 		}
 		public void Load(string? filePath) {
 			Data = AppDataLoader.Load(filePath);
+			GitHelper.InitGitSettings(Data);
+			
+			
 			AppSettings.SortRecentFiles(filePath);
 			LoadCurrentData();
 			AppSettings.AddRecentFile(Data.CurrentFilePath);

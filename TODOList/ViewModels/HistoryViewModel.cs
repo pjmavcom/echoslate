@@ -20,6 +20,8 @@ namespace Echoslate.ViewModels {
 		Build,
 		Revision
 	}
+using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private AppData Data { get; set; }
@@ -271,7 +273,7 @@ namespace Echoslate.ViewModels {
 			return true;
 		}
 		private bool IsGitInstalled() {
-			return Data.FileSettings.GitInstallCheck();
+			return GitHelper.GitInstallCheck();
 		}
 		private void SuggestTypeAndScopeFromBranch(string branchName) {
 			if (string.IsNullOrWhiteSpace(branchName)) {

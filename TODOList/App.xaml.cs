@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Echoslate.ViewModels;
+using Echoslate.Core.Models;
+using Echoslate.Core.Services;
+using Echoslate.Services;
 using Echoslate.Windows;
 
 namespace Echoslate {
@@ -17,7 +20,12 @@ namespace Echoslate {
 			PresentationTraceSources.Refresh();
 		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
+			AppServices.Initialize(new WpfBrushService(), new WpfMessageDialogService());
 			AppSettings.Load();
+			// WpfMessageDialogService wpfMessageDialogService = new();
+			GitHelper.Initialize(AppServices.MessageDialogService);
+			// GitHelper.Initialize(wpfMessageDialogService);
+			
 			var mainVM = new MainWindowViewModel(AppSettings.Instance);
 			var mainWindow = new MainWindow { DataContext = mainVM };
 			mainWindow.Closing += mainVM.OnClosing;
