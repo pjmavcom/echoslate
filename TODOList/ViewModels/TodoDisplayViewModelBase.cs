@@ -68,14 +68,6 @@ namespace Echoslate.ViewModels {
 			}
 		}
 
-		private static SolidColorBrush SeverityBrush(int severity) =>
-			severity switch {
-				3 => new SolidColorBrush(Color.FromRgb(190, 0, 0)),   // High = Red
-				2 => new SolidColorBrush(Color.FromRgb(200, 160, 0)), // Med = Yellow/Orange
-				1 => new SolidColorBrush(Color.FromRgb(0, 140, 0)),   // Low = Green
-				0 => new SolidColorBrush(Color.FromRgb(50, 50, 50)),  // Off = Dark gray (your normal tag color)
-				_ => new SolidColorBrush(Color.FromRgb(25, 25, 25))   // Off = Dark gray (your normal tag color)
-			};
 		private int _currentSeverityFilter;
 		public int CurrentSeverityFilter {
 			get => _currentSeverityFilter;
@@ -89,8 +81,8 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		private SolidColorBrush _currentSeverityBrush;
-		public SolidColorBrush CurrentSeverityBrush {
+		private object _currentSeverityBrush;
+		public object CurrentSeverityBrush {
 			get => _currentSeverityBrush;
 			set {
 				_currentSeverityBrush = value;
@@ -131,8 +123,8 @@ namespace Echoslate.ViewModels {
 				OnPropertyChanged();
 			}
 		}
-		private SolidColorBrush _newTodoSeverityBrush;
-		public SolidColorBrush NewTodoSeverityBrush {
+		private object _newTodoSeverityBrush;
+		public object NewTodoSeverityBrush {
 			get => _newTodoSeverityBrush;
 			set {
 				_newTodoSeverityBrush = value;
