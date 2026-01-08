@@ -3,11 +3,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
@@ -25,6 +25,9 @@ namespace Echoslate.Core.ViewModels {
 	}
 
 	public class MainWindowViewModel : INotifyPropertyChanged {
+		private PeriodicTimer? _timer;
+		private Task? _timerTask;
+		
 		private IMessageDialogService _messageDialogService;
 		public AppData Data;
 		public AppSettings AppSettings { get; set; }
@@ -179,26 +182,33 @@ namespace Echoslate.Core.ViewModels {
 			}
 
 			SetWindowTitle();
+			
 			SetPomoTimers();
-
-			var timer = new DispatcherTimer();
-			timer.Tick += Timer_Tick;
-			timer.Interval = new TimeSpan(TimeSpan.TicksPerSecond);
-			timer.Start();
-
 			_backupTimerMax = new TimeSpan(0, Data.FileSettings.BackupTime, 0);
 			_backupTimer = _backupTimerMax;
 			Log.Print($"{_backupTimer}");
+			
+			StartTimer();
 		}
 		private void SetPomoTimers() {
 			PomoWorkTime = AppSettings.PomoWorkTimerLength;
 			PomoBreakTime = AppSettings.PomoBreakTimerLength;
 		}
-		public void Timer_Tick(object? sender, EventArgs e) {
-			UpdateBackupTimer();
-			UpdateTodoTimers();
-			UpdatePomoTimer();
-			UpdateAutoSaveTimer();
+		private async void StartTimer() {
+			_timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+
+			while (await _timer.WaitForNextTickAsync()) {
+				await Application.Current.Dispatcher.InvokeAsync(() => {
+					UpdateBackupTimer();
+					UpdateTodoTimers();
+					UpdatePomoTimer();
+					UpdateAutoSaveTimer();
+				});
+			}
+		}
+		public void StopTimer() {
+			_timer?.Dispose();
+			_timer = null;
 		}
 		public void UpdateAutoSaveTimer() {
 			if (!Data.FileSettings.AutoSave) {
@@ -576,6 +586,7 @@ namespace Echoslate.Core.ViewModels {
 				}
 				item.IsCommitted = true;
 			}
+			StopTimer();
 			Log.Print($"All history items committed.");
 			Save();
 		}
