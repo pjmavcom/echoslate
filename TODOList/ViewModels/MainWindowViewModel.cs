@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,7 +21,8 @@ using WindowState = Echoslate.Core.Services.WindowState;
 // using Application = System.Windows.Application;
 // using DialogResult = System.Windows.Forms.DialogResult;
 
-namespace Echoslate.ViewModels {
+
+namespace Echoslate.Core.ViewModels {
 	public enum PomoActiveState {
 		Idle,
 		Work,
@@ -166,14 +168,16 @@ namespace Echoslate.ViewModels {
 		}
 		private PomoActiveState _pomoLastActiveState;
 
-		public Brush PomoBackground {
-			get => _pomoState switch {
-				PomoActiveState.Idle => Brushes.Transparent,
-				PomoActiveState.Work => Brushes.Maroon,
-				PomoActiveState.Break => Brushes.LimeGreen,
-				_ => Brushes.Transparent
-			};
-		}
+		// TODO: I don't think this is needed at all. Check if the pomo works
+		// Then search and uncomment the OnPropertyChanged later here...
+		// public Brush PomoBackground {
+		// 	get => _pomoState switch {
+		// 		PomoActiveState.Idle => Brushes.Transparent,
+		// 		PomoActiveState.Work => Brushes.Maroon,
+		// 		PomoActiveState.Break => Brushes.LimeGreen,
+		// 		_ => Brushes.Transparent
+		// 	};
+		// }
 		public int PomoProgressBarValue { get; set; }
 		public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
 
@@ -266,7 +270,7 @@ namespace Echoslate.ViewModels {
 		}
 		private void UpdatePomoTimerUI() {
 			OnPropertyChanged(nameof(PomoLabelContent));
-			OnPropertyChanged(nameof(PomoBackground));
+			// OnPropertyChanged(nameof(PomoBackground));
 			OnPropertyChanged(nameof(PomoProgressBarValue));
 			OnPropertyChanged(nameof(PomoIsWorkMode));
 		}
@@ -436,8 +440,8 @@ namespace Echoslate.ViewModels {
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				mainWindow.Activate();
-				if (mainWindow.WindowState == WindowState.Minimized) {
-					mainWindow.WindowState = WindowState.Normal;
+				if (mainWindow.WindowState == (System.Windows.WindowState)WindowState.Minimized) {
+					mainWindow.WindowState = (System.Windows.WindowState)WindowState.Normal;
 				}
 
 				mainWindow.Topmost = true;
@@ -495,8 +499,8 @@ namespace Echoslate.ViewModels {
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				mainWindow.Activate();
-				if (mainWindow.WindowState == WindowState.Minimized) {
-					mainWindow.WindowState = WindowState.Normal;
+				if (mainWindow.WindowState == (System.Windows.WindowState)WindowState.Minimized) {
+					mainWindow.WindowState = (System.Windows.WindowState)WindowState.Normal;
 				}
 
 				mainWindow.Topmost = true;
@@ -521,7 +525,6 @@ namespace Echoslate.ViewModels {
 				AppSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
 				Data.FileSettings.CanDetectBranch = options.CanDetectBranch;
 				Data.FileSettings.GitRepoPath = options.GitRepoPath;
-				
 			}
 		}
 		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);
@@ -590,7 +593,7 @@ namespace Echoslate.ViewModels {
 				Load(AppSettings.RecentFiles[1]);
 			}
 		}
-		
+
 		public void OnClosing(object? sender, CancelEventArgs e) {
 			foreach (HistoryItem item in Data.HistoryList) {
 				if (item == Data.CurrentHistoryItem) {

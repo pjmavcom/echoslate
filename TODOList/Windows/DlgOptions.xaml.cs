@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Core.Models;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 

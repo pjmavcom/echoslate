@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using Echoslate.Components;
+using Echoslate.Core.Components;
 
 namespace Echoslate.Converters;
 

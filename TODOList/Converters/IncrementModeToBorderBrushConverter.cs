@@ -2,7 +2,8 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using Echoslate.ViewModels;
+using Echoslate.Core.Models;
+using Echoslate.Core.ViewModels;
 
 namespace Echoslate.Converters;
 

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Core.Models;
 
 namespace Echoslate {
 	public partial class DlgTodoItemEditor : INotifyPropertyChanged {

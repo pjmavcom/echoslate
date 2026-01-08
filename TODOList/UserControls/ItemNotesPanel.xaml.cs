@@ -7,8 +7,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Core.Models;
+using Echoslate.Core.ViewModels;
 using Echoslate.Resources;
-using Echoslate.ViewModels;
 
 namespace Echoslate.UserControls {
 	public partial class ItemNotesPanel : UserControl, INotifyPropertyChanged {

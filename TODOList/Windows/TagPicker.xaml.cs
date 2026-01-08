@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Core.Models;
 
 namespace Echoslate {
 	public partial class TagPicker : Window, INotifyPropertyChanged {

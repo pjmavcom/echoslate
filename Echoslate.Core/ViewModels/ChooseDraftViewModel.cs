@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Echoslate.Core.Models;
 
-namespace Echoslate.Windows {
+namespace Echoslate.Core.ViewModels {
 	public partial class ChooseDraftViewModel : ObservableObject {
 		public ObservableCollection<HistoryItem> Drafts { get; }
 

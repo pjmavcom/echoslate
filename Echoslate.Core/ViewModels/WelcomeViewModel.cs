@@ -1,10 +1,10 @@
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Echoslate.Core.Models;
 
-namespace Echoslate.ViewModels;
+namespace Echoslate.Core.ViewModels;
 
 public class WelcomeViewModel : INotifyPropertyChanged {
 	public ICommand CreateNewCommand { get; }

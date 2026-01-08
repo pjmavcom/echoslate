@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Echoslate.Components;
+using Echoslate.Core.Components;
+using Echoslate.Core.Models;
 
-
-namespace Echoslate.ViewModels {
+namespace Echoslate.Core.ViewModels {
 	public class KanbanViewModel : TodoDisplayViewModelBase {
 		public override void Initialize(MainWindowViewModel mainWindowVM) {
 			base.Initialize(mainWindowVM);

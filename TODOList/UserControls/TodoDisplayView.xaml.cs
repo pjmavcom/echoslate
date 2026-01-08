@@ -5,7 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Echoslate.ViewModels;
+using Echoslate.Core.Models;
+using Echoslate.Core.ViewModels;
 
 namespace Echoslate.UserControls {
 	public partial class TodoDisplayView : UserControl {

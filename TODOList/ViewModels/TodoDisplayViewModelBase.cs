@@ -7,15 +7,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
-using Echoslate.Components;
-using Echoslate.Resources;
+using Echoslate.Core.Components;
 using Echoslate.Core.Models;
+using Echoslate.Core.Resources;
+using Echoslate.Core.Services;
 using Echoslate.Windows;
 
-
-namespace Echoslate.ViewModels {
+namespace Echoslate.Core.ViewModels {
 	public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		public AppData Data { get; set; }
 		public ObservableCollection<TodoItem> MasterList { get; set; }
@@ -652,7 +651,7 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 
-			var list = DisplayedItems.Cast<TodoItem>()
+			var list = Enumerable.Cast<TodoItem>(DisplayedItems)
 			   .OrderBy(h => h.CurrentFilterRank)
 			   .ToList();
 			if (ih != null) {
@@ -673,7 +672,7 @@ namespace Echoslate.ViewModels {
 				return;
 			}
 
-			var list = DisplayedItems.Cast<TodoItem>()
+			var list = Enumerable.Cast<TodoItem>(DisplayedItems)
 			   .OrderBy(h => h.CurrentFilterRank)
 			   .ToList();
 			if (ih != null) {

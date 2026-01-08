@@ -10,18 +10,11 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Echoslate.Resources;
-
-namespace Echoslate.ViewModels {
-	public enum IncrementMode {
-		None,
-		Major,
-		Minor,
-		Build,
-		Revision
-	}
 using Echoslate.Core.Models;
+using Echoslate.Core.Resources;
 using Echoslate.Core.Services;
+
+namespace Echoslate.Core.ViewModels {
 
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private AppData Data { get; set; }

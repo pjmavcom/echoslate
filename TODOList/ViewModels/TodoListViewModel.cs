@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using Echoslate.Components;
+using Echoslate.Core.Components;
 using Echoslate.Core.Models;
 
-
-namespace Echoslate.ViewModels;
+namespace Echoslate.Core.ViewModels;
 
 public class TodoListViewModel : TodoDisplayViewModelBase {
 	protected override void RefreshFilter() {

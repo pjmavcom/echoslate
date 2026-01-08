@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Echoslate.Core.Models;
+using Echoslate.Core.ViewModels;
 
 namespace Echoslate.Windows {
 	public partial class ChooseDraftWindow : Window {
@@ -9,7 +11,7 @@ namespace Echoslate.Windows {
 		public ChooseDraftWindow(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null) {
 			InitializeComponent();
 
-			var vm = new ChooseDraftViewModel(drafts, defaultDraft);
+			var vm = new Core.ViewModels.ChooseDraftViewModel(drafts, defaultDraft);
 			DataContext = vm;
 			CenterWindow();
 		}
@@ -26,7 +28,7 @@ namespace Echoslate.Windows {
 		}
 
 		private void Ok_Click(object sender, RoutedEventArgs e) {
-			var vm = (ChooseDraftViewModel)DataContext;
+			ChooseDraftViewModel vm = (ChooseDraftViewModel)DataContext;
 			Result = vm.SelectedHistoryItem;
 
 			if (Result != null) {

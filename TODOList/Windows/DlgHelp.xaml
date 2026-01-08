@@ -1,6 +1,6 @@
 <Window x:Class="Echoslate.DlgHelp"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:echoslate="clr-namespace:Echoslate"
+        xmlns:echoslate="clr-namespace:Echoslate" xmlns:models="clr-namespace:Echoslate.Core.Models;assembly=Echoslate.Core"
         Title="Echoslate Hotkeys"
         Width="500" Height="500"
         Background="#FF1E1E1E" ResizeMode="NoResize"
@@ -80,16 +80,16 @@
             <!--  Better way: use ItemsSource with a simple class (recommended)  -->
             <!--  Delete the above ListViewItem block and use this instead if you want clean MVVM-ish style  -->
             <ListView.ItemsSource>
-                <x:Array Type="echoslate:HotkeyItem">
-                    <echoslate:HotkeyItem Description="Add new Todo item" Hotkey="Enter" />
-                    <echoslate:HotkeyItem Description="Quick complete selected Todo item" Hotkey="Ctrl + Enter" />
-                    <echoslate:HotkeyItem Description="Previous tab" Hotkey="Alt + H" />
-                    <echoslate:HotkeyItem Description="Next tab" Hotkey="Alt + L" />
-                    <echoslate:HotkeyItem Description="Decrease severity (quick-add)" Hotkey="Alt + J" />
-                    <echoslate:HotkeyItem Description="Increase severity (quick-add)" Hotkey="Alt + K" />
-                    <echoslate:HotkeyItem Description="Quick save" Hotkey="Ctrl + S" />
-                    <echoslate:HotkeyItem Description="Quick load previous file" Hotkey="Ctrl + L" />
-                    <echoslate:HotkeyItem Description="Toggle Pomodoro/work timer" Hotkey="Ctrl + P" />
+                <x:Array Type="models:HotkeyItem">
+                    <models:HotkeyItem Description="Add new Todo item" Hotkey="Enter" />
+                    <models:HotkeyItem Description="Quick complete selected Todo item" Hotkey="Ctrl + Enter" />
+                    <models:HotkeyItem Description="Previous tab" Hotkey="Alt + H" />
+                    <models:HotkeyItem Description="Next tab" Hotkey="Alt + L" />
+                    <models:HotkeyItem Description="Decrease severity (quick-add)" Hotkey="Alt + J" />
+                    <models:HotkeyItem Description="Increase severity (quick-add)" Hotkey="Alt + K" />
+                    <models:HotkeyItem Description="Quick save" Hotkey="Ctrl + S" />
+                    <models:HotkeyItem Description="Quick load previous file" Hotkey="Ctrl + L" />
+                    <models:HotkeyItem Description="Toggle Pomodoro/work timer" Hotkey="Ctrl + P" />
                     <!--  Add more here easily  -->
                 </x:Array>
             </ListView.ItemsSource>
