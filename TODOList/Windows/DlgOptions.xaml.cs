@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -109,11 +110,9 @@ namespace Echoslate {
 		}
 		public ICommand ChooseGitRepoPathCommand => new RelayCommand(ChooseGitRepoPath);
 		private void ChooseGitRepoPath() {
-			var dialog = new FolderBrowserDialog(); // or CommonOpenFileDialog for modern look
-			dialog.Description = "Select the root folder of your Git repository (.git folder should be here)";
-
-			if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				string path = dialog.SelectedPath;
+			string folder = AppServices.FileDialogService.ChooseFolder(GitRepoPath, "Select the root folder of your Git repository (.git folder should be here)");
+			if (folder != null) {
+				string path = folder;
 				path = Path.GetFullPath(path);
 
 				var dir = new DirectoryInfo(path);

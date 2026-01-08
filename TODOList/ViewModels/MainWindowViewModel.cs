@@ -27,7 +27,7 @@ namespace Echoslate.Core.ViewModels {
 	public class MainWindowViewModel : INotifyPropertyChanged {
 		private PeriodicTimer? _timer;
 		private Task? _timerTask;
-		
+
 		private IMessageDialogService _messageDialogService;
 		public AppData Data;
 		public AppSettings AppSettings { get; set; }
@@ -170,7 +170,7 @@ namespace Echoslate.Core.ViewModels {
 		public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
 
 
-		public MainWindowViewModel(AppSettings appSettings){
+		public MainWindowViewModel(AppSettings appSettings) {
 			AppSettings = appSettings;
 			TodoListVM = new TodoListViewModel();
 			KanbanVM = new KanbanViewModel();
@@ -182,12 +182,12 @@ namespace Echoslate.Core.ViewModels {
 			}
 
 			SetWindowTitle();
-			
+
 			SetPomoTimers();
 			_backupTimerMax = new TimeSpan(0, Data.FileSettings.BackupTime, 0);
 			_backupTimer = _backupTimerMax;
 			Log.Print($"{_backupTimer}");
-			
+
 			StartTimer();
 		}
 		private void SetPomoTimers() {
@@ -195,6 +195,9 @@ namespace Echoslate.Core.ViewModels {
 			PomoBreakTime = AppSettings.PomoBreakTimerLength;
 		}
 		private async void StartTimer() {
+			if (_timer != null) {
+				return;
+			}
 			_timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
 
 			while (await _timer.WaitForNextTickAsync()) {
@@ -391,8 +394,8 @@ namespace Echoslate.Core.ViewModels {
 		public void Load(string? filePath) {
 			Data = AppDataLoader.Load(filePath);
 			GitHelper.InitGitSettings(Data);
-			
-			
+
+
 			AppSettings.SortRecentFiles(filePath);
 			LoadCurrentData();
 			AppSettings.AddRecentFile(Data.CurrentFilePath);
@@ -405,22 +408,16 @@ namespace Echoslate.Core.ViewModels {
 			LoadCurrentData();
 			ClearChangedFlag();
 
-			SaveFileDialog sfd = new SaveFileDialog {
-				Title = @"Select folder to save file in.",
-				FileName = Data.FileName,
-				InitialDirectory = Data.BasePath,
-				Filter = @"Echoslate files (*.echoslate)|*.echoslate|All files (*.*)|*.*"
-			};
-			DialogResult dr = sfd.ShowDialog();
-			if (dr != System.Windows.Forms.DialogResult.OK) {
+			string saveFile = AppServices.FileDialogService.SaveFile(Data.FileName, Data.BasePath);
+			if (saveFile == null) {
 				Log.Warn("File not saved. Shutting down...");
 				Application.Current.Shutdown();
 				return;
 			}
 			Application.Current.MainWindow?.Activate();
 
-			Data.CurrentFilePath = sfd.FileName;
-			Save(sfd.FileName);
+			Data.CurrentFilePath = saveFile;
+			Save(saveFile);
 
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
@@ -437,22 +434,15 @@ namespace Echoslate.Core.ViewModels {
 		}
 		public bool OpenFile() {
 			string basePath = Data == null ? "" : Data.BasePath;
-			OpenFileDialog openFileDialog = new OpenFileDialog {
-				Title = @"Open file: ",
-				InitialDirectory = basePath,
-				Filter = @"Echoslate files (*.echoslate)|*.echoslate|All files (*.*)|*.*"
-			};
 
-			DialogResult dr = openFileDialog.ShowDialog();
-
-			if (dr != System.Windows.Forms.DialogResult.OK) {
+			string loadFile = AppServices.FileDialogService.OpenFile(basePath);
+			if (loadFile == null) {
 				return false;
 			}
-
 			if (_isChanged) {
 				Save();
 			}
-			Load(openFileDialog.FileName);
+			Load(loadFile);
 			return true;
 		}
 
@@ -464,23 +454,18 @@ namespace Echoslate.Core.ViewModels {
 		public ICommand MenuSaveAsCommand => new RelayCommand(SaveAs);
 		public void SaveAs() {
 			Log.Print("Saving file as...");
-			SaveFileDialog sfd = new SaveFileDialog {
-				Title = @"Select folder to save file in.",
-				FileName = Data.FileName,
-				InitialDirectory = Data.BasePath,
-				Filter = @"Echoslate files (*.echoslate)|*.echoslate|All files (*.*)|*.*"
-			};
 
-			DialogResult dr = sfd.ShowDialog();
-			if (dr != System.Windows.Forms.DialogResult.OK) {
+			string saveFile = AppServices.FileDialogService.SaveFile(Data.FileName, Data.BasePath);
+			if (saveFile == null) {
 				Log.Warn("File not saved. Continuing...");
 				return;
 			}
 
 			Application.Current.MainWindow?.Activate();
 
-			Data.CurrentFilePath = sfd.FileName;
-			Save(sfd.FileName);
+			Data.CurrentFilePath = saveFile;
+			Save(saveFile);
+			
 			Window mainWindow = Application.Current.MainWindow;
 			if (mainWindow != null) {
 				mainWindow.Activate();

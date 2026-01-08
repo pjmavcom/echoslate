@@ -8,6 +8,7 @@ using Echoslate.Core.Services;
 using Echoslate.Core.ViewModels;
 using Echoslate.Services;
 using Echoslate.Windows;
+using Echoslate.WPF.Services;
 using WindowState = Echoslate.Core.Services.WindowState;
 
 
@@ -23,7 +24,7 @@ namespace Echoslate {
 			PresentationTraceSources.Refresh();
 		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			AppServices.Initialize(new WpfBrushService(), new WpfMessageDialogService());
+			AppServices.Initialize(new WpfBrushService(), new WpfMessageDialogService(), new WpfFileDialogService(Application.Current.MainWindow));
 			AppSettings.Load();
 			// WpfMessageDialogService wpfMessageDialogService = new();
 			GitHelper.Initialize(AppServices.MessageDialogService);
