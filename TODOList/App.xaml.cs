@@ -24,7 +24,7 @@ namespace Echoslate {
 			PresentationTraceSources.Refresh();
 		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			AppServices.Initialize(new WpfBrushService(), new WpfMessageDialogService(), new WpfFileDialogService(Application.Current.MainWindow));
+			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfMessageDialogService(), new WpfFileDialogService(Application.Current.MainWindow), new WpfDispatcherService());
 			AppSettings.Load();
 			// WpfMessageDialogService wpfMessageDialogService = new();
 			GitHelper.Initialize(AppServices.MessageDialogService);

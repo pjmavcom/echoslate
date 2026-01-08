@@ -201,7 +201,7 @@ namespace Echoslate.Core.ViewModels {
 			_timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
 
 			while (await _timer.WaitForNextTickAsync()) {
-				await Application.Current.Dispatcher.InvokeAsync(() => {
+				await AppServices.DispatcherService.InvokeAsync(() => {
 					UpdateBackupTimer();
 					UpdateTodoTimers();
 					UpdatePomoTimer();
@@ -411,25 +411,11 @@ namespace Echoslate.Core.ViewModels {
 			string saveFile = AppServices.FileDialogService.SaveFile(Data.FileName, Data.BasePath);
 			if (saveFile == null) {
 				Log.Warn("File not saved. Shutting down...");
-				Application.Current.Shutdown();
+				AppServices.ApplicationService.Shutdown();
 				return;
 			}
-			Application.Current.MainWindow?.Activate();
-
 			Data.CurrentFilePath = saveFile;
 			Save(saveFile);
-
-			Window mainWindow = Application.Current.MainWindow;
-			if (mainWindow != null) {
-				mainWindow.Activate();
-				if (mainWindow.WindowState == (System.Windows.WindowState)WindowState.Minimized) {
-					mainWindow.WindowState = (System.Windows.WindowState)WindowState.Normal;
-				}
-
-				mainWindow.Topmost = true;
-				mainWindow.Topmost = false;
-				mainWindow.Focus();
-			}
 			SetupApplicationState();
 		}
 		public bool OpenFile() {
@@ -460,23 +446,8 @@ namespace Echoslate.Core.ViewModels {
 				Log.Warn("File not saved. Continuing...");
 				return;
 			}
-
-			Application.Current.MainWindow?.Activate();
-
 			Data.CurrentFilePath = saveFile;
 			Save(saveFile);
-			
-			Window mainWindow = Application.Current.MainWindow;
-			if (mainWindow != null) {
-				mainWindow.Activate();
-				if (mainWindow.WindowState == (System.Windows.WindowState)WindowState.Minimized) {
-					mainWindow.WindowState = (System.Windows.WindowState)WindowState.Normal;
-				}
-
-				mainWindow.Topmost = true;
-				mainWindow.Focus();
-				mainWindow.Topmost = false;
-			}
 		}
 		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
 		private void MenuOptions() {
@@ -511,7 +482,7 @@ namespace Echoslate.Core.ViewModels {
 				Log.Print("Shutting down...");
 				Log.Shutdown();
 			}
-			Application.Current.Shutdown();
+			AppServices.ApplicationService.Shutdown();
 		}
 		public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
 		private void MenuHelp() {
@@ -543,17 +514,12 @@ namespace Echoslate.Core.ViewModels {
 			PomoTimeLeft = TimeSpan.Zero;
 		});
 		public ICommand ShowAboutWindowCommand => new RelayCommand(() => {
-			var window = Application.Current.MainWindow;
-			var aboutWindow = new AboutWindow() {
-				Owner = window
-			};
+			// var window = AppServices.ApplicationService.GetMainWindow();
+			var aboutWindow = new AboutWindow();
 			aboutWindow.ShowDialog();
 		});
 		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => {
-			var window = Application.Current.MainWindow;
-			var hotkeys = new DlgHelp() {
-				Owner = window
-			};
+			var hotkeys = new DlgHelp();
 			hotkeys.ShowDialog();
 		});
 
