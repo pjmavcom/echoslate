@@ -45,6 +45,14 @@
     <ItemGroup>
         <Resource Include="Resources\Echoslate.png" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Echoslate.Core\Echoslate.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Classes\" />
+      <Folder Include="Components\" />
+      <Folder Include="Models\" />
+    </ItemGroup>
     
 
 </Project>

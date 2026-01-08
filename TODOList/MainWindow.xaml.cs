@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Echoslate.ViewModels;
+using Echoslate.Core.Models;
 using Echoslate.Windows;
 using Application = System.Windows.Application;
 
@@ -52,7 +52,7 @@ namespace Echoslate {
 
 		}
 		private void Window_OnClosed() {
-			AppSettings.Instance.SetWindowProperties(tabControl.SelectedIndex);
+			AppSettings.Instance.LastActiveTabIndex = tabControl.SelectedIndex;
 			AppSettings.Save();
 		}
 		private void Window_OnLoaded() {
@@ -66,7 +66,11 @@ namespace Echoslate {
 			mainWindow.Top = AppSettings.Instance.WindowTop;
 			mainWindow.Width = AppSettings.Instance.WindowWidth;
 			mainWindow.Height = AppSettings.Instance.WindowHeight;
-			mainWindow.WindowState = AppSettings.Instance.WindowState;
+			mainWindow.WindowState = AppSettings.Instance.WindowState switch {
+				Core.Services.WindowState.Maximized => WindowState.Maximized,
+				Core.Services.WindowState.Minimized => WindowState.Minimized,
+				_ => WindowState.Normal
+			};
 		}
 		public void Window_PreviewKeyDown(object sender, KeyEventArgs e) {
 			if (Keyboard.Modifiers == ModifierKeys.Alt) {
