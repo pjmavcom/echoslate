@@ -11,6 +11,7 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Components;
 using Echoslate.Resources;
+using Echoslate.Core.Models;
 using Echoslate.Windows;
 
 

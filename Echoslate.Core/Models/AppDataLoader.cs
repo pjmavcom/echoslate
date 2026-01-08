@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Echoslate.ViewModels;
 
-namespace Echoslate;
+namespace Echoslate.Core.Models;
 
 public class AppDataLoader {
 	private static readonly JsonSerializerOptions Options = new() {
@@ -56,7 +50,7 @@ public class AppDataLoader {
 		}
 		data.CurrentFilePath = path;
 		data.DebugFiltersList();
-		data.OnDataFileLoadedOrSaved();
+		// data.OnDataFileLoadedOrSaved();
 		
 		Log.Debug($"Git path: {data.FileSettings.GitRepoPath}");
 		return data;

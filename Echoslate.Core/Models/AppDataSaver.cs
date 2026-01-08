@@ -1,8 +1,7 @@
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Echoslate;
+namespace Echoslate.Core.Models;
 
 public class AppDataSaver {
 	private readonly JsonSerializerOptions _options = new() {
@@ -24,6 +23,6 @@ public class AppDataSaver {
 			Directory.CreateDirectory(directory);
 
 		File.WriteAllText(path, json);
-		data.OnDataFileLoadedOrSaved();
+		// data.OnDataFileLoadedOrSaved();
 	}
 }

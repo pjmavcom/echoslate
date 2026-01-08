@@ -1,7 +1,4 @@
-using System;
-using System.IO;
-
-namespace Echoslate;
+namespace Echoslate.Core.Models;
 
 public static class AppPaths {
 	public static string AppDataFolder => Path.Combine(

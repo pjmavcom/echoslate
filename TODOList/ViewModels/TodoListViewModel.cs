@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Echoslate.Components;
+using Echoslate.Core.Models;
 
 
 namespace Echoslate.ViewModels;

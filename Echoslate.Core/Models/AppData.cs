@@ -1,12 +1,7 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Text.Json.Serialization;
-using System.Windows.Forms;
-using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace Echoslate;
+namespace Echoslate.Core.Models;
 
 public class AppData {
 	public AppDataFileSettings FileSettings { get; set; }
@@ -45,9 +40,6 @@ public class AppData {
 		FiltersList = [];
 		CommitScopes = [];
 		_currentHistoryItem = null;
-	}
-	public void OnDataFileLoadedOrSaved() {
-		FileSettings.InitGitSettings(CurrentFilePath);
 	}
 	public void DebugFiltersList() {
 		FiltersList.CollectionChanged += (s, e) =>

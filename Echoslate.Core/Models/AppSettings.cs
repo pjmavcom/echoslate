@@ -1,11 +1,11 @@
-using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Windows;
+using Echoslate.Core.Services;
 
-namespace Echoslate {
+// using System.Windows;
+
+namespace Echoslate.Core.Models {
 	public class AppSettings {
 		private static readonly JsonSerializerOptions _options = new() {
 			WriteIndented = true,                              // pretty print
@@ -43,19 +43,7 @@ namespace Echoslate {
 		public AppSettings() {
 			RecentFiles = [];
 		}
-		public void SetWindowProperties(int lastActiveTab = -1) {
-			var mainWindow = Application.Current.MainWindow;
-			if (mainWindow != null) {
-				WindowLeft = double.IsNaN(mainWindow.Left) ? 0 : mainWindow.Left;
-				WindowTop = double.IsNaN(mainWindow.Top) ? 0 : mainWindow.Top;
-				WindowWidth = mainWindow.Width;
-				WindowHeight = mainWindow.Height;
-				WindowState = mainWindow.WindowState;
-			}
-			if (lastActiveTab > 0) {
-				LastActiveTabIndex = lastActiveTab;
-			}
-		}
+	
 		public static void Save() {
 			AppPaths.EnsureFolder();
 			Directory.CreateDirectory(Path.GetDirectoryName(SettingsFile)!);
