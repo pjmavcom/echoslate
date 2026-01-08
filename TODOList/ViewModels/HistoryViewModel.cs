@@ -396,7 +396,7 @@ namespace Echoslate.Core.ViewModels {
 		public ICommand CopyCommitMessageCommand => new RelayCommand(CopyCommitMessage);
 		public void CopyCommitMessage() {
 			if (SelectedHistoryItem?.FullCommitMessage != null) {
-				Clipboard.SetText(SelectedHistoryItem.FullCommitMessage);
+				AppServices.ClipboardService.SetText(SelectedHistoryItem.FullCommitMessage);
 			}
 		}
 		public ICommand ReactivateTodoCommand => new RelayCommand<TodoItem>(ReactivateTodo);
