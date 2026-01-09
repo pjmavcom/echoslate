@@ -70,34 +70,44 @@
                         Margin="10"
                         Orientation="Horizontal">
                 <TextBlock Margin="0,0,10,0" VerticalAlignment="Center"
-                           FontWeight="SemiBold" Text="Current version:" />
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource SubtleForeground}"
+                           Text="Current version:" />
 
-                <Button Command="{Binding BumpMajorCommand}"
+                <Button Width="30"
+                        Command="{Binding BumpMajorCommand}"
                         Content="{Binding CurrentHistoryItem.VersionMajor}"
+                        Foreground="{StaticResource Foreground}"
                         Style="{StaticResource VersionNumberButtonStyle}"
                         ToolTip="Bump major version — resets minor, patch, and build" />
 
                 <TextBlock Margin="5,0" VerticalAlignment="Center"
                            FontSize="20" Text="." />
 
-                <Button Command="{Binding BumpMinorCommand}"
+                <Button Width="30"
+                        Command="{Binding BumpMinorCommand}"
                         Content="{Binding CurrentHistoryItem.VersionMinor}"
+                        Foreground="{StaticResource Foreground}"
                         Style="{StaticResource VersionNumberButtonStyle}"
                         ToolTip="Bump minor version — resets build and revision" />
 
                 <TextBlock Margin="5,0" VerticalAlignment="Center"
                            FontSize="20" Text="." />
 
-                <Button Command="{Binding BumpBuildCommand}"
+                <Button Width="30"
+                        Command="{Binding BumpBuildCommand}"
                         Content="{Binding CurrentHistoryItem.VersionBuild}"
+                        Foreground="{StaticResource Foreground}"
                         Style="{StaticResource VersionNumberButtonStyle}"
                         ToolTip="Bump build version — resets revision" />
 
                 <TextBlock Margin="5,0" VerticalAlignment="Center"
                            FontSize="20" Text="." />
 
-                <Button Command="{Binding BumpRevisionCommand}"
+                <Button Width="30"
+                        Command="{Binding BumpRevisionCommand}"
                         Content="{Binding CurrentHistoryItem.VersionRevision}"
+                        Foreground="{StaticResource Foreground}"
                         Style="{StaticResource VersionNumberButtonStyle}"
                         ToolTip="Bump revision number" />
 

@@ -270,19 +270,16 @@ namespace Echoslate.Core.Models {
 				foreach (TodoItem td in BugsCompleted) {
 					result += Environment.NewLine + "- " + td.ToClipboard();
 				}
-				result += Environment.NewLine;
 			}
 			if (FeaturesCompleted.Count > 0) {
 				foreach (TodoItem td in FeaturesCompleted) {
 					result += Environment.NewLine + "- " + td.ToClipboard();
 				}
-				result += Environment.NewLine;
 			}
 			if (OtherCompleted.Count > 0) {
 				foreach (TodoItem td in OtherCompleted) {
 					result += Environment.NewLine + "- " + td.ToClipboard();
 				}
-				result += Environment.NewLine;
 			}
 			if (!Notes.Equals("")) {
 				result += BreakLines(Notes);

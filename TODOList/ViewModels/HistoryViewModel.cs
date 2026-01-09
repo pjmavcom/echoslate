@@ -14,7 +14,6 @@ using Echoslate.Core.Resources;
 using Echoslate.Core.Services;
 
 namespace Echoslate.Core.ViewModels {
-
 	public class HistoryViewModel : INotifyPropertyChanged {
 		private AppData Data { get; set; }
 		public string GitRepoPath {
@@ -144,9 +143,7 @@ namespace Echoslate.Core.ViewModels {
 		public ObservableCollection<string> CommitScopes { get; set; }
 
 		public IEnumerable<HistoryItem> CommittedHistoryItems {
-			get {
-				return _allHistoryItems;
-			} 
+			get { return _allHistoryItems; }
 		}
 
 		public ObservableCollection<TodoItem> BugsCompleted { get; } = new();
@@ -276,27 +273,27 @@ namespace Echoslate.Core.ViewModels {
 				string detectedType = branchName.Substring(0, slashIndex);
 				string detectedScope = branchName.Substring(slashIndex + 1).Replace("/", "-");
 
-				if (string.IsNullOrEmpty(CommitType)) {
-					CommitType = detectedType;
-				}
+				// if (string.IsNullOrEmpty(CommitType)) {
+				CommitType = detectedType;
+				// }
 
-				if (string.IsNullOrEmpty(CommitScope)) {
-					if (CommitScopes.Contains(detectedScope)) {
-						CustomScope = string.Empty;
-						CommitScope = detectedScope;
-					} else {
-						CustomScope = detectedScope;
-					}
+				// if (string.IsNullOrEmpty(CommitScope)) {
+				if (CommitScopes.Contains(detectedScope)) {
+					CustomScope = string.Empty;
+					CommitScope = detectedScope;
+				} else {
+					CustomScope = detectedScope;
 				}
+				// }
 			} else {
-				if (string.IsNullOrEmpty(CommitScope)) {
-					if (CommitScopes.Contains(branchName)) {
-						CustomScope = string.Empty;
-						CommitScope = branchName;
-					} else {
-						CustomScope = branchName;
-					}
+				// if (string.IsNullOrEmpty(CommitScope)) {
+				if (CommitScopes.Contains(branchName)) {
+					CustomScope = string.Empty;
+					CommitScope = branchName;
+				} else {
+					CustomScope = branchName;
 				}
+				// }
 			}
 
 			UpdateCommitMessagePreview();
@@ -389,6 +386,8 @@ namespace Echoslate.Core.ViewModels {
 
 			CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
 			CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+			CurrentHistoryItem.Type = CommitType;
+			CurrentHistoryItem.Scope =  CommitScope;
 
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 			SelectedHistoryItem = CurrentHistoryItem;

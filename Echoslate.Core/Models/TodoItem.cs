@@ -328,7 +328,9 @@ namespace Echoslate.Core.Models {
 				return false;
 			}
 			foreach (string tag in Tags) {
-				if (tags.Contains(tag)) continue;
+				if (tags.Contains(tag)) {
+					continue;
+				}
 				tags.Add(tag);
 				allTagsChanged = true;
 			}
@@ -379,26 +381,42 @@ namespace Echoslate.Core.Models {
 			List<string> list = new List<string>();
 			for (int index = 0; index < pieces.Length; index++) {
 				string s = pieces[index];
-				if (s == "") continue;
+				if (s == "") {
+					continue;
+				}
 
 				if (s.Contains('#')) {
-					if (index == 0) isBeginningTag = true;
+					if (index == 0) {
+						isBeginningTag = true;
+					}
 
 					var t = s.ToUpper();
-					if (t.Equals("#FEATURES") || t.Equals("#F")) t = "#FEATURE";
-					if (t.Equals("#BUGS") || t.Equals("#B")) t = "#BUG";
+					if (t.Equals("#FEATURES") || t.Equals("#F")) {
+						t = "#FEATURE";
+					}
+					if (t.Equals("#BUGS") || t.Equals("#B")) {
+						t = "#BUG";
+					}
 
-					if (!_tags.Contains(t)) _tags.Add(t);
+					if (!_tags.Contains(t)) {
+						_tags.Add(t);
+					}
 
 					s = s.Remove(0, 1);
 					s = s.ToLower();
-					if (s.Equals("f")) s = "feature";
-					if (s.Equals("b")) s = "bug";
+					if (s.Equals("f")) {
+						s = "feature";
+					}
+					if (s.Equals("b")) {
+						s = "bug";
+					}
 				} else {
 					isBeginningTag = false;
 				}
 
-				if (isBeginningTag) continue;
+				if (isBeginningTag) {
+					continue;
+				}
 
 				if (index == 0 ||
 					index > 0 && pieces[index - 1].Contains(". ") ||
@@ -412,7 +430,9 @@ namespace Echoslate.Core.Models {
 
 			string tempTodo = "";
 			foreach (string s in list) {
-				if (s == "") continue;
+				if (s == "") {
+					continue;
+				}
 				tempTodo += s + " ";
 			}
 
@@ -435,15 +455,17 @@ namespace Echoslate.Core.Models {
 					s = UpperFirstLetter(s);
 				}
 
-				if (s.Contains("/n") || s.Contains(Environment.NewLine))
+				if (s.Contains("/n") || s.Contains(Environment.NewLine)) {
 					s = UpperFirstLetterOfNewLine(s);
+				}
 				list.Add(s);
 			}
 
 			string tempNotes = "";
 			foreach (string s in list) {
-				if (s == "")
+				if (s == "") {
 					continue;
+				}
 				tempNotes += s + " ";
 			}
 
@@ -466,7 +488,9 @@ namespace Echoslate.Core.Models {
 
 			string tempTodo = "";
 			foreach (string s in list) {
-				if (s == "") continue;
+				if (s == "") {
+					continue;
+				}
 				tempTodo += s + " ";
 			}
 
@@ -495,10 +519,11 @@ namespace Echoslate.Core.Models {
 					newString += part;
 					continue;
 				}
-				if (part[0] == 'n')
+				if (part[0] == 'n') {
 					newString += "/n" + UpperFirstLetter(part.Remove(0, 1));
-				else
+				} else {
 					newString += "/" + part;
+				}
 			}
 			return newString;
 		}
@@ -508,12 +533,15 @@ namespace Echoslate.Core.Models {
 			string solution = AddNewLines(_solution);
 
 			string result = BreakLines(_todo);
-			if (_notes != "")
-				result += BreakLinesAddTabs(notes);
-			if (_problem != "")
+			if (_notes != "") {
+				result += "\t" + BreakLinesAddTabs(notes);
+			}
+			if (_problem != "") {
 				result += "\tProblem: " + BreakLinesAddTabs(problem);
-			if (_solution != "")
+			}
+			if (_solution != "") {
 				result += "\tSolution: " + BreakLinesAddTabs(solution);
+			}
 
 			return result;
 		}
@@ -552,7 +580,7 @@ namespace Echoslate.Core.Models {
 			foreach (string sentence in sentences) {
 				var trimmed = sentence.Replace("\r", "");
 				if (trimmed.Length <= charLimit) {
-					result += "\t" + trimmed + Environment.NewLine;
+					result += trimmed + Environment.NewLine;
 					continue;
 				}
 				string[] pieces = trimmed.Split(' ');
@@ -562,15 +590,14 @@ namespace Echoslate.Core.Models {
 					if (currentCharCount <= charLimit) {
 						result += word + " ";
 					} else {
-						currentCharCount = word.Length;
+						currentCharCount = word.Length + 1;
 						result = result.Trim();
-						result += Environment.NewLine + "\t\t" + word;
+						result += Environment.NewLine + "\t  " + word + " ";
 					}
 				}
 				result += Environment.NewLine + "\t";
 			}
-			return result;
-			
+			return result.TrimEnd(['\r', '\n', '\t']);
 		}
 
 		private string AddNewLines(string s) {
@@ -580,8 +607,9 @@ namespace Echoslate.Core.Models {
 			return s.Replace(Environment.NewLine, "/n");
 		}
 		public void AddTag(string tag) {
-			if (!_tags.Contains(tag) && tag != string.Empty)
+			if (!_tags.Contains(tag) && tag != string.Empty) {
 				_tags.Add(tag);
+			}
 			ParseNewTags();
 		}
 
@@ -590,7 +618,9 @@ namespace Echoslate.Core.Models {
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 		protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
-			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			if (EqualityComparer<T>.Default.Equals(field, value)) {
+				return false;
+			}
 			field = value;
 			OnPropertyChanged(propertyName);
 			return true;
