@@ -1,15 +1,9 @@
-<Window x:Class="Echoslate.Windows.AboutWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Echoslate.Windows"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="About Echoslate"
-        Width="500" Height="400"
-        Background="{StaticResource AppBackground}"
-        Foreground="{StaticResource Foreground}"
-        ResizeMode="NoResize" ShowInTaskbar="False"
-        SizeToContent="Height"
-        mc:Ignorable="d">
-    <!--  WindowStartupLocation="CenterOwner"  -->
+<UserControl x:Class="Echoslate.Windows.AboutWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Background="{StaticResource AppBackground}"
+             Foreground="{StaticResource Foreground}"
+             mc:Ignorable="d">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="256" />
@@ -55,8 +49,7 @@
         </StackPanel>
         <Button Grid.Row="0"
                 Width="0" Height="0"
-                Click="CloseButton" Content=""
-                IsCancel="True" IsDefault="True"
-                Opacity="0" />
+                Content="" IsCancel="True"
+                IsDefault="True" Opacity="0" />
     </Grid>
-</Window>
+</UserControl>

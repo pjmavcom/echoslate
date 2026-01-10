@@ -24,14 +24,11 @@ namespace Echoslate {
 			PresentationTraceSources.Refresh();
 		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfMessageDialogService(), new WpfFileDialogService(Application.Current.MainWindow), new WpfDispatcherService(), new WpfClipboardService());
+			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfMessageDialogService(), new WpfFileDialogService(Current.MainWindow), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(Current.MainWindow));
 			AppSettings.Load();
-			// WpfMessageDialogService wpfMessageDialogService = new();
 			GitHelper.Initialize(AppServices.MessageDialogService);
-			// GitHelper.Initialize(wpfMessageDialogService);
 			
 			var mainVM = new MainWindowViewModel(AppSettings.Instance);
-			// var mainVM = new MainWindowViewModel(AppSettings.Instance, wpfMessageDialogService);
 			MainWindow = new MainWindow { DataContext = mainVM };
 
 			MainWindow.Closing += mainVM.OnClosing;

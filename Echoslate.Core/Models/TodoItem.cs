@@ -580,7 +580,7 @@ namespace Echoslate.Core.Models {
 			foreach (string sentence in sentences) {
 				var trimmed = sentence.Replace("\r", "");
 				if (trimmed.Length <= charLimit) {
-					result += trimmed + Environment.NewLine;
+					result += trimmed + Environment.NewLine + "\t";
 					continue;
 				}
 				string[] pieces = trimmed.Split(' ');

@@ -5,16 +5,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
 using Echoslate.Windows;
-using Application = System.Windows.Application;
-using DialogResult = System.Windows.Forms.DialogResult;
-using WindowState = Echoslate.Core.Services.WindowState;
 
 
 namespace Echoslate.Core.ViewModels {
@@ -513,11 +508,10 @@ namespace Echoslate.Core.ViewModels {
 			PomoTimer = TimeSpan.Zero;
 			PomoTimeLeft = TimeSpan.Zero;
 		});
-		public ICommand ShowAboutWindowCommand => new RelayCommand(() => {
-			// var window = AppServices.ApplicationService.GetMainWindow();
-			var aboutWindow = new AboutWindow();
-			aboutWindow.ShowDialog();
-		});
+		public ICommand ShowAboutWindowCommand => new RelayCommand(ShowAboutWindow);
+		public async void ShowAboutWindow() {
+			await AppServices.DialogService.ShowDialogAsync(new AboutWindow(), "About Echoslate");
+		}
 		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => {
 			var hotkeys = new DlgHelp();
 			hotkeys.ShowDialog();
