@@ -2,7 +2,7 @@ using System.Windows;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Echoslate.Core.Services;
-using Application = System.Windows.Application;
+using Echoslate.Windows;
 using DialogResult = Echoslate.Core.Services.DialogResult;
 using MessageBox = System.Windows.MessageBox;
 
@@ -14,10 +14,34 @@ namespace Echoslate.WPF.Services {
 		public WpfDialogService(Window owner) {
 			_owner = owner;
 		}
+		public async Task<bool> ShowAboutAsync() {
+			return await ShowDialogAsync(new AboutWindow(), "About Echoslate");
+		}
+		public Task<bool> ShowHelpAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowOptionsAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowWelcomeWindowAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowTagPickerAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowTodoItemEditorAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowTodoMultiItemEditorAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowEditTabsAsync() {
+			throw new System.NotImplementedException();
+		}
+		public Task<bool> ShowChoosDraftAsync() {
+			throw new System.NotImplementedException();
+		}
 		public Task<bool> ShowDialogAsync(object view, string title) {
-			if (_owner == null) {
-				GetOwner();
-			}
 			var window = new Window {
 				Content = view,
 				Title = title,
@@ -32,9 +56,6 @@ namespace Echoslate.WPF.Services {
 			return Task.FromResult(dialogResult == true);
 		}
 		public Task<T?> ShowDialogAsync<T>(object view, string title) {
-			if (_owner == null) {
-				GetOwner();
-			}
 			return Task.Run(() => {
 				var window = new Window {
 					Content = view,
@@ -58,13 +79,7 @@ namespace Echoslate.WPF.Services {
 				return default(T);
 			});
 		}
-		private void GetOwner() {
-			_owner = Application.Current.MainWindow;
-		}
 		public string? OpenFile(string initialDirectory, string filter) {
-			if (_owner == null) {
-				GetOwner();
-			}
 			var dialog = new OpenFileDialog {
 				Filter = filter,
 				InitialDirectory = initialDirectory
@@ -74,9 +89,6 @@ namespace Echoslate.WPF.Services {
 		}
 
 		public string? SaveFile(string defaultName, string initialDirectory, string filter) {
-			if (_owner == null) {
-				GetOwner();
-			}
 			var dialog = new SaveFileDialog {
 				Filter = filter,
 				FileName = defaultName,
@@ -87,9 +99,6 @@ namespace Echoslate.WPF.Services {
 		}
 
 		public string? ChooseFolder(string initialDirectory, string description) {
-			if (_owner == null) {
-				GetOwner();
-			}
 			var dialog = new FolderBrowserDialog {
 				Description = description,
 				UseDescriptionForTitle = true,

@@ -509,7 +509,7 @@ namespace Echoslate.Core.ViewModels {
 		});
 		public ICommand ShowAboutWindowCommand => new RelayCommand(ShowAboutWindow);
 		public async void ShowAboutWindow() {
-			await AppServices.DialogService.ShowDialogAsync(new AboutWindow(), "About Echoslate");
+			await AppServices.DialogService.ShowAboutAsync();
 		}
 		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => {
 			var hotkeys = new DlgHelp();

@@ -23,11 +23,11 @@ namespace Echoslate {
 			PresentationTraceSources.Refresh();
 		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(Current.MainWindow));
 			AppSettings.Load();
 			
 			var mainVM = new MainWindowViewModel(AppSettings.Instance);
 			MainWindow = new MainWindow { DataContext = mainVM };
+			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(Current.MainWindow));
 
 			MainWindow.Closing += mainVM.OnClosing;
 			MainWindow.Closing += SaveWindowProperties;
