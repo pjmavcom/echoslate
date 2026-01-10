@@ -1,3 +1,6 @@
+using Echoslate.Core.Models;
+using Echoslate.Core.ViewModels;
+
 namespace Echoslate.Core.Services;
 
 public enum DialogResult {
@@ -26,7 +29,7 @@ public enum DialogIcon {
 public interface IDialogService {
 	Task<bool> ShowAboutAsync();
 	Task<bool> ShowHelpAsync();
-	Task<bool> ShowOptionsAsync();
+	Task<OptionsViewModel?> ShowOptionsAsync(AppSettings appSettings, AppData appData);
 	Task<bool> ShowWelcomeWindowAsync();
 	Task<bool> ShowTagPickerAsync();
 	Task<bool> ShowTodoItemEditorAsync();

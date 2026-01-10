@@ -444,22 +444,25 @@ namespace Echoslate.Core.ViewModels {
 			Save(saveFile);
 		}
 		public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
-		private void MenuOptions() {
-			DlgOptions options = new DlgOptions(AppSettings, Data);
-			options.ShowDialog();
-			if (options.Result) {
+		private async void MenuOptions() {
+			Task<OptionsViewModel?> vmTask = AppServices.DialogService.ShowOptionsAsync(AppSettings, Data);
+			OptionsViewModel? vm = await vmTask;
+			if (vm == null) {
+				return;
+			}
+			if (vm.Result) {
 #if DEBUG
 				Data.FileSettings.AutoSave = false;
 				Data.FileSettings.AutoBackup = false;
 #else
-				Data.FileSettings.AutoSave = options.AutoSave;
-				Data.FileSettings.AutoBackup = options.AutoBackup;
+				Data.FileSettings.AutoSave = vm.AutoSave;
+				Data.FileSettings.AutoBackup = vm.AutoBackup;
 #endif
 				// AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
-				AppSettings.SkipWelcome = !options.WelcomeWindow;
-				AppSettings.BackupTime = new TimeSpan(0, options.BackupTime, 0);
-				Data.FileSettings.CanDetectBranch = options.CanDetectBranch;
-				Data.FileSettings.GitRepoPath = options.GitRepoPath;
+				AppSettings.SkipWelcome = !vm.WelcomeWindow;
+				AppSettings.BackupTime = new TimeSpan(0, vm.BackupTime, 0);
+				Data.FileSettings.CanDetectBranch = vm.CanDetectBranch;
+				Data.FileSettings.GitRepoPath = vm.GitRepoPath;
 			}
 		}
 		public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);
@@ -480,8 +483,7 @@ namespace Echoslate.Core.ViewModels {
 		}
 		public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
 		private void MenuHelp() {
-			DlgHelp dlgH = new DlgHelp();
-			dlgH.ShowDialog();
+			AppServices.DialogService.ShowHelpAsync();
 		}
 		public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(path => Load(path));
 		public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(path => AppSettings.RecentFiles.Remove(path));
@@ -507,15 +509,8 @@ namespace Echoslate.Core.ViewModels {
 			PomoTimer = TimeSpan.Zero;
 			PomoTimeLeft = TimeSpan.Zero;
 		});
-		public ICommand ShowAboutWindowCommand => new RelayCommand(ShowAboutWindow);
-		public async void ShowAboutWindow() {
-			await AppServices.DialogService.ShowAboutAsync();
-		}
-		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => {
-			var hotkeys = new DlgHelp();
-			hotkeys.ShowDialog();
-		});
-
+		public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync(); });
+		public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowHelpAsync(); });
 		public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
 		public void QuickLoad() {
 			if (AppSettings.RecentFiles.Count > 1) {

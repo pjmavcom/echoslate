@@ -1,7 +1,9 @@
 using System.Windows;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Echoslate.Core.Models;
 using Echoslate.Core.Services;
+using Echoslate.Core.ViewModels;
 using Echoslate.Windows;
 using DialogResult = Echoslate.Core.Services.DialogResult;
 using MessageBox = System.Windows.MessageBox;
@@ -17,10 +19,13 @@ namespace Echoslate.WPF.Services {
 		public async Task<bool> ShowAboutAsync() {
 			return await ShowDialogAsync(new AboutWindow(), "About Echoslate");
 		}
-		public Task<bool> ShowHelpAsync() {
-			throw new System.NotImplementedException();
+		public async Task<bool> ShowHelpAsync() {
+			return await ShowDialogAsync(new HelpWindow(), "Hotkey Help");
 		}
-		public Task<bool> ShowOptionsAsync() {
+		public async Task<OptionsViewModel?> ShowOptionsAsync(AppSettings appSettings, AppData appData) {
+			OptionsViewModel vm = new OptionsViewModel(appSettings, appData);
+			Options view = new Options(vm);
+			return await ShowDialogAsync<OptionsViewModel>(view, "Options");
 			throw new System.NotImplementedException();
 		}
 		public Task<bool> ShowWelcomeWindowAsync() {
@@ -55,29 +60,31 @@ namespace Echoslate.WPF.Services {
 			bool? dialogResult = window.ShowDialog();
 			return Task.FromResult(dialogResult == true);
 		}
-		public Task<T?> ShowDialogAsync<T>(object view, string title) {
-			return Task.Run(() => {
-				var window = new Window {
-					Content = view,
-					Title = title,
-					Owner = _owner,
-					WindowStartupLocation = WindowStartupLocation.CenterOwner,
-					SizeToContent = SizeToContent.WidthAndHeight,
-					ResizeMode = ResizeMode.NoResize,
-					ShowInTaskbar = false
-				};
+		public Task<T?> ShowDialogAsync<T>(object view, string title = "Dialog") {
+			var window = new Window {
+				Content = view,
+				Title = title,
+				Owner = _owner,
+				WindowStartupLocation = WindowStartupLocation.CenterOwner,
+				SizeToContent = SizeToContent.WidthAndHeight,
+				ResizeMode = ResizeMode.NoResize,
+				ShowInTaskbar = false
+			};
 
-				bool? dialogResult = window.ShowDialog();
+			bool? dialogResult = window.ShowDialog();
 
-				if (dialogResult == true && view is FrameworkElement fe && fe.DataContext != null) {
+			if (dialogResult == true && view is FrameworkElement fe && fe.DataContext != null) {
+				if (fe.DataContext is T vm) {
+					return Task.FromResult(vm);
+				} else {
 					var prop = fe.DataContext.GetType().GetProperty("Result");
-					if (prop != null && prop.PropertyType == typeof(T)) {
-						return (T?)prop.GetValue(fe.DataContext);
+					if (prop != null && prop.PropertyType is T result) {
+						return Task.FromResult(result);
 					}
 				}
+			}
 
-				return default(T);
-			});
+			return Task.FromResult(default(T));
 		}
 		public string? OpenFile(string initialDirectory, string filter) {
 			var dialog = new OpenFileDialog {
