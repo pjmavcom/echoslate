@@ -4,18 +4,14 @@ using Echoslate.Core.Models;
 namespace Echoslate.Core.Services;
 
 public static class GitHelper {
-	private static IMessageDialogService _messageDialogService;
 	
-	public static void Initialize(IMessageDialogService messageDialogService) {
-		_messageDialogService = messageDialogService;
-	}
 	public static void InitGitSettings(AppData data) {
 		string suggested = SuggestRepoPath(data.CurrentFilePath);
 		bool pathValid = !string.IsNullOrEmpty(suggested) && Directory.Exists(Path.Combine(suggested, ".git"));
 		data.FileSettings.IsGitInstalled = GitInstallCheck();
 
 		if (pathValid && string.IsNullOrEmpty(data.FileSettings.GitRepoPath)) {
-			Core.Services.DialogResult result = _messageDialogService.Show($"Git repository detected at:\n{suggested}\nUse this path for branch detection and scope suggestions?", "Git Repository Found", DialogButton.YesNo, DialogIcon.Question);
+			Core.Services.DialogResult result = AppServices.DialogService.Show($"Git repository detected at:\n{suggested}\nUse this path for branch detection and scope suggestions?", "Git Repository Found", DialogButton.YesNo, DialogIcon.Question);
 			if (result == (Core.Services.DialogResult)DialogResult.Yes) {
 				data.FileSettings.GitRepoPath = suggested;
 				UpdateGitFeaturesState(data);

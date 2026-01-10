@@ -110,7 +110,7 @@ namespace Echoslate {
 		}
 		public ICommand ChooseGitRepoPathCommand => new RelayCommand(ChooseGitRepoPath);
 		private void ChooseGitRepoPath() {
-			string folder = AppServices.FileDialogService.ChooseFolder(GitRepoPath, "Select the root folder of your Git repository (.git folder should be here)");
+			string folder = AppServices.DialogService.ChooseFolder(GitRepoPath, "Select the root folder of your Git repository (.git folder should be here)");
 			if (folder != null) {
 				string path = folder;
 				path = Path.GetFullPath(path);

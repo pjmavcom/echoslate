@@ -23,7 +23,6 @@ namespace Echoslate.Core.ViewModels {
 		private PeriodicTimer? _timer;
 		private Task? _timerTask;
 
-		private IMessageDialogService _messageDialogService;
 		public AppData Data;
 		public AppSettings AppSettings { get; set; }
 
@@ -403,7 +402,7 @@ namespace Echoslate.Core.ViewModels {
 			LoadCurrentData();
 			ClearChangedFlag();
 
-			string saveFile = AppServices.FileDialogService.SaveFile(Data.FileName, Data.BasePath);
+			string saveFile = AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
 			if (saveFile == null) {
 				Log.Warn("File not saved. Shutting down...");
 				AppServices.ApplicationService.Shutdown();
@@ -416,7 +415,7 @@ namespace Echoslate.Core.ViewModels {
 		public bool OpenFile() {
 			string basePath = Data == null ? "" : Data.BasePath;
 
-			string loadFile = AppServices.FileDialogService.OpenFile(basePath);
+			string loadFile = AppServices.DialogService.OpenFile(basePath);
 			if (loadFile == null) {
 				return false;
 			}
@@ -436,7 +435,7 @@ namespace Echoslate.Core.ViewModels {
 		public void SaveAs() {
 			Log.Print("Saving file as...");
 
-			string saveFile = AppServices.FileDialogService.SaveFile(Data.FileName, Data.BasePath);
+			string saveFile = AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
 			if (saveFile == null) {
 				Log.Warn("File not saved. Continuing...");
 				return;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -24,9 +23,8 @@ namespace Echoslate {
 			PresentationTraceSources.Refresh();
 		}
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfMessageDialogService(), new WpfFileDialogService(Current.MainWindow), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(Current.MainWindow));
+			AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(Current.MainWindow));
 			AppSettings.Load();
-			GitHelper.Initialize(AppServices.MessageDialogService);
 			
 			var mainVM = new MainWindowViewModel(AppSettings.Instance);
 			MainWindow = new MainWindow { DataContext = mainVM };
