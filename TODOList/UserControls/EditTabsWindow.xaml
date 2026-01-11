@@ -1,11 +1,9 @@
-<Window x:Class="Echoslate.DlgEditTabs"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:behaviors="clr-namespace:Echoslate.Behaviors"
-        Title="Edit Tabs"
-        Width="360" Height="540"
-        Background="{StaticResource AppDarkBackground}"
-        Foreground="{StaticResource Foreground}"
-        ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+<UserControl x:Class="Echoslate.Windows.EditTabsWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:Echoslate.Behaviors"
+             Width="360" Height="540"
+             Background="{StaticResource AppDarkBackground}"
+             Foreground="{StaticResource Foreground}">
 
     <Grid Margin="3">
         <Grid.RowDefinitions>
@@ -34,6 +32,9 @@
                          Foreground="{StaticResource Foreground}"
                          ItemsSource="{Binding FilterNames}"
                          SelectionMode="Multiple">
+                    <b:Interaction.Behaviors>
+                        <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
+                    </b:Interaction.Behaviors>
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="4,2" />
@@ -111,20 +112,13 @@
                     Padding="10,8"
                     BorderBrush="#FF666666"
                     Command="{Binding DeleteCommand}"
-                    CommandParameter="{Binding ElementName=lbTabs}"
                     Content="Delete" Foreground="#FFE0E0E0" />
-
             <Button Width="60"
-                    BorderBrush="#FF555555"
-                    Command="{Binding MoveUpCommand}"
-                    CommandParameter="{Binding ElementName=lbTabs}"
+                    BorderBrush="#FF555555" Click="MoveUp_OnClick"
                     Content="▲" FontSize="18"
                     FontWeight="Bold" Foreground="#FFE0E0E0" />
-
             <Button Width="60"
-                    BorderBrush="#FF555555"
-                    Command="{Binding MoveDownCommand}"
-                    CommandParameter="{Binding ElementName=lbTabs}"
+                    BorderBrush="#FF555555" Click="MoveDown_OnClick"
                     Content="▼" FontSize="18"
                     FontWeight="Bold" Foreground="#FFE0E0E0" />
         </StackPanel>
@@ -136,13 +130,13 @@
             <Button Width="120"
                     Padding="12,10"
                     Background="#FF0066CC" BorderBrush="#FF0077EE"
-                    Command="{Binding OkCommand}"
-                    Content="OK" FontWeight="SemiBold"
+                    Click="OK_OnClick" Content="OK"
+                    FontWeight="SemiBold"
                     Foreground="{StaticResource Foreground}" />
             <Button Width="120"
                     Padding="12,10"
-                    Command="{Binding CancelCommand}"
-                    Content="Cancel" IsCancel="True" />
+                    Click="Cancel_OnClick" Content="Cancel"
+                    IsCancel="True" />
         </StackPanel>
     </Grid>
-</Window>
+</UserControl>

@@ -11,21 +11,17 @@ public partial class Options : UserControl {
 		DataContext = vm;
 	}
 	private void Cancel_OnClick(object sender, RoutedEventArgs e) {
-		if (DataContext is OptionsViewModel vm) {
-			if (this.Parent is Window window) {
-				vm.Result = false;
-				window.DialogResult = true;
-				window.Close();
-			}
+		if (DataContext is OptionsViewModel vm && Parent is Window window) {
+			vm.Result = false;
+			window.DialogResult = true;
+			window.Close();
 		}
 	}
 	private void Ok_OnClick(object sender, RoutedEventArgs e) {
-		if (DataContext is OptionsViewModel vm) {
-			if (this.Parent is Window window) {
-				vm.Result = true;
-				window.DialogResult = true;
-				window.Close();
-			}
+		if (DataContext is OptionsViewModel vm && Parent is Window window) {
+			vm.Result = true;
+			window.DialogResult = true;
+			window.Close();
 		}
 	}
 }

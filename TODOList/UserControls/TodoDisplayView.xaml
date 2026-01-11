@@ -150,7 +150,6 @@
                          SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
                          SelectionMode="Extended">
                     <b:Interaction.Behaviors>
-                        <!--  This syncs selection to the ViewModel automatically  -->
                         <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedTodoItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
                     </b:Interaction.Behaviors>
                     <ListBox.ContextMenu>

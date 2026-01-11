@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,7 +28,6 @@ namespace Echoslate.WPF.Services {
 			OptionsViewModel vm = new OptionsViewModel(appSettings, appData);
 			Options view = new Options(vm);
 			return await ShowDialogAsync<OptionsViewModel>(view, "Options");
-			throw new System.NotImplementedException();
 		}
 		public Task<bool> ShowWelcomeWindowAsync() {
 			throw new System.NotImplementedException();
@@ -40,8 +41,10 @@ namespace Echoslate.WPF.Services {
 		public Task<bool> ShowTodoMultiItemEditorAsync() {
 			throw new System.NotImplementedException();
 		}
-		public Task<bool> ShowEditTabsAsync() {
-			throw new System.NotImplementedException();
+		public async Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames) {
+			EditTabsViewModel vm = new EditTabsViewModel(filterNames);
+			EditTabsWindow view = new EditTabsWindow(vm);
+			return await ShowDialogAsync<EditTabsViewModel>(view, "Edit Tabs");
 		}
 		public Task<bool> ShowChoosDraftAsync() {
 			throw new System.NotImplementedException();

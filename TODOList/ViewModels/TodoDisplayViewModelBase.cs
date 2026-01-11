@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -205,7 +206,7 @@ namespace Echoslate.Core.ViewModels {
 				}
 			}
 			OnPropertyChanged(nameof(CurrentVisibleTagsView));
-			
+
 			AllTags.Clear();
 			foreach (TodoItem item in MasterList) {
 				foreach (string tag in item.Tags) {
@@ -693,13 +694,16 @@ namespace Echoslate.Core.ViewModels {
 		public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
 		public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
 		public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
-		public void EditFilterBarRelayCommand() {
-			DlgEditTabs dlg = new(MasterFilterTags);
-			dlg.ShowDialog();
-			if (dlg.Result) {
+		public async void EditFilterBarRelayCommand() {
+			Task<EditTabsViewModel> vmTask = AppServices.DialogService.ShowEditTabsAsync(MasterFilterTags);
+			EditTabsViewModel? vm = await vmTask;
+			if (vm == null) {
+				return;
+			}
+			if (vm.Result) {
 				Log.Print("Filters successfully edited");
 				MasterFilterTags.Clear();
-				foreach (string filter in dlg.ResultList) {
+				foreach (string filter in vm.ResultList) {
 					MasterFilterTags.Add(filter);
 				}
 				foreach (TodoItem td in MasterList) {

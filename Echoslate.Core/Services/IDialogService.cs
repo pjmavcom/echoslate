@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Echoslate.Core.Models;
 using Echoslate.Core.ViewModels;
 
@@ -34,7 +35,7 @@ public interface IDialogService {
 	Task<bool> ShowTagPickerAsync();
 	Task<bool> ShowTodoItemEditorAsync();
 	Task<bool> ShowTodoMultiItemEditorAsync();
-	Task<bool> ShowEditTabsAsync();
+	Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames);
 	Task<bool> ShowChoosDraftAsync();
 	
 	Task<bool> ShowDialogAsync(object view, string title);
