@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -46,8 +47,10 @@ namespace Echoslate.WPF.Services {
 			EditTabsWindow view = new EditTabsWindow(vm);
 			return await ShowDialogAsync<EditTabsViewModel>(view, "Edit Tabs");
 		}
-		public Task<bool> ShowChoosDraftAsync() {
-			throw new System.NotImplementedException();
+		public async Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null) {
+			ChooseDraftViewModel vm = new ChooseDraftViewModel(drafts, defaultDraft);
+			ChooseDraftWindow view = new ChooseDraftWindow(vm);
+			return await ShowDialogAsync<ChooseDraftViewModel>(view, "Append to which draft?");
 		}
 		public Task<bool> ShowDialogAsync(object view, string title) {
 			var window = new Window {

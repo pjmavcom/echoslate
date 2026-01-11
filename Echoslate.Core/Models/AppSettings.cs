@@ -14,7 +14,7 @@ namespace Echoslate.Core.Models {
 
 		public bool SkipWelcome { get; set; }
 		public ObservableCollection<string> RecentFiles { get; set; }
-		public string LastFilePath { get; set; }
+		[JsonIgnore] public string LastFilePath { get; set; }
 
 		public double WindowLeft { get; set; }
 		public double WindowTop { get; set; }
@@ -42,7 +42,7 @@ namespace Echoslate.Core.Models {
 		public AppSettings() {
 			RecentFiles = [];
 		}
-	
+
 		public static void Save() {
 			AppPaths.EnsureFolder();
 			Directory.CreateDirectory(Path.GetDirectoryName(SettingsFile)!);
@@ -60,8 +60,8 @@ namespace Echoslate.Core.Models {
 					if (loaded != null) {
 						Instance.SkipWelcome = loaded.SkipWelcome;
 						Instance.RecentFiles = loaded.RecentFiles;
-						Instance.LastFilePath = loaded.LastFilePath;
-						
+						CleanRecentFiles();
+
 						Instance.WindowLeft = loaded.WindowLeft;
 						Instance.WindowTop = loaded.WindowTop;
 						Instance.WindowWidth = loaded.WindowWidth;
@@ -73,7 +73,7 @@ namespace Echoslate.Core.Models {
 							Instance.WindowHeight = 1080;
 						}
 						Instance.WindowState = loaded.WindowState;
-						
+
 						Instance.PomoWorkTimerLength = loaded.PomoWorkTimerLength;
 						if (Instance.PomoWorkTimerLength == TimeSpan.Zero) {
 							Instance.PomoWorkTimerLength = new TimeSpan(0, 25, 0);
@@ -87,7 +87,7 @@ namespace Echoslate.Core.Models {
 						if (Instance.BackupTime == TimeSpan.Zero) {
 							Instance.BackupTime = new TimeSpan(0, 5, 0);
 						}
-						
+
 						Instance.LastActiveTabIndex = loaded.LastActiveTabIndex;
 						Instance.WindowTitle = loaded.WindowTitle;
 					}
@@ -112,6 +112,19 @@ namespace Echoslate.Core.Models {
 			while (RecentFiles.Count >= 10) {
 				Log.Print($"Removing excess file: {RecentFiles[RecentFiles.Count - 1]}");
 				RecentFiles.RemoveAt(RecentFiles.Count - 1);
+			}
+		}
+		public static void CleanRecentFiles() {
+			var list = Instance.RecentFiles.ToList();
+			foreach (string path in list) {
+				if (!File.Exists(path)) {
+					Instance.RecentFiles.Remove(path);
+				}
+			}
+			if (Instance.RecentFiles.Count > 0) {
+				Instance.LastFilePath = Instance.RecentFiles.FirstOrDefault();
+			} else {
+				Instance.SkipWelcome = false;
 			}
 		}
 	}

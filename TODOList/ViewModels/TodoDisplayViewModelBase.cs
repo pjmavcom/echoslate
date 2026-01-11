@@ -340,7 +340,7 @@ namespace Echoslate.Core.ViewModels {
 			}
 			RefreshAll();
 		}
-		public void AddItemToHistory(TodoItem item) {
+		public async void AddItemToHistory(TodoItem item) {
 			item.CurrentView = View.History;
 			CurrentHistoryItem = HistoryItems[0];
 
@@ -349,12 +349,13 @@ namespace Echoslate.Core.ViewModels {
 			HistoryItem targetHistoryItem;
 
 			if (uncommittedHistoryItems.Count > 1) {
-				var dialog = new ChooseDraftWindow(uncommittedHistoryItems, CurrentHistoryItem);
-				if (dialog.ShowDialog() != true) {
+				Task<ChooseDraftViewModel?> vmTask = AppServices.DialogService.ShowChooseDraftAsync(uncommittedHistoryItems, CurrentHistoryItem);
+				ChooseDraftViewModel vm = await vmTask;
+				if (vm == null) {
 					return;
 				}
 
-				targetHistoryItem = dialog.Result;
+				targetHistoryItem = vm.ResultHistoryItem;
 			} else {
 				targetHistoryItem = CurrentHistoryItem;
 			}
