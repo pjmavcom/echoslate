@@ -4,7 +4,6 @@ using Echoslate.Core.Models;
 namespace Echoslate.Core.Services;
 
 public static class GitHelper {
-	
 	public static void InitGitSettings(AppData data) {
 		string suggested = SuggestRepoPath(data.CurrentFilePath);
 		bool pathValid = !string.IsNullOrEmpty(suggested) && Directory.Exists(Path.Combine(suggested, ".git"));

@@ -53,7 +53,6 @@ public static class Log {
 
 	private static void Write(string msg) {
 		lock (_lock) {
-			// Console.WriteLine(msg);
 			if (Console.OpenStandardOutput() != Stream.Null) {
 				Console.WriteLine(msg);
 			}

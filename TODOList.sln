@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TODOList", "TODOList\TODOList.csproj", "{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echoslate.Wpf", "Echoslate.Wpf\Echoslate.Wpf.csproj", "{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echoslate.Core", "Echoslate.Core\Echoslate.Core.csproj", "{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}"
 EndProject

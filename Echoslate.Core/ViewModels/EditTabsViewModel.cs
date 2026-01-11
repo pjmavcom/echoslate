@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Echoslate.Core.Models;
 using Echoslate.Core.Resources;
 
 namespace Echoslate.Core.ViewModels;
@@ -27,7 +26,6 @@ public class EditTabsViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 
 	private string _newTabName;
 	public string NewTabName {

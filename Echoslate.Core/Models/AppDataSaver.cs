@@ -23,6 +23,5 @@ public class AppDataSaver {
 			Directory.CreateDirectory(directory);
 
 		File.WriteAllText(path, json);
-		// data.OnDataFileLoadedOrSaved();
 	}
 }

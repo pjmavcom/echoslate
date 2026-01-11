@@ -11,7 +11,6 @@ public static class ObservableCollectionExtensions {
 		}
 	}
 
-	// Optional: case-insensitive for strings
 	public static void Sort(this ObservableCollection<string> collection, StringComparison comparison = StringComparison.OrdinalIgnoreCase) {
 		var sorted = collection.OrderBy(x => x, StringComparer.Create(System.Globalization.CultureInfo.CurrentCulture, comparison == StringComparison.OrdinalIgnoreCase)).ToList();
 

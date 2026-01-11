@@ -50,7 +50,6 @@ public class AppDataLoader {
 		}
 		data.CurrentFilePath = path;
 		data.DebugFiltersList();
-		// data.OnDataFileLoadedOrSaved();
 		
 		Log.Debug($"Git path: {data.FileSettings.GitRepoPath}");
 		return data;

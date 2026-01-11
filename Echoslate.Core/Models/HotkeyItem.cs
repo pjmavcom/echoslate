@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Echoslate.Core.Models;
 
-public class HotkeyItem : INotifyPropertyChanged{
+public class HotkeyItem : INotifyPropertyChanged {
 	private string _hotkey;
 	public string Hotkey {
 		get => _hotkey;
@@ -20,7 +20,6 @@ public class HotkeyItem : INotifyPropertyChanged{
 			OnPropertyChanged();
 		}
 	}
-
 
 
 	public event PropertyChangedEventHandler? PropertyChanged;

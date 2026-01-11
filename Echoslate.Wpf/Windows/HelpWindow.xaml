@@ -1,0 +1,100 @@
+<UserControl x:Class="Echoslate.Wpf.Windows.HelpWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:Echoslate.Core.Models;assembly=Echoslate.Core"
+             Background="#FF1E1E1E">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Hotkey List  -->
+        <ListView Grid.Row="0"
+                  Background="Transparent" BorderThickness="0"
+                  Foreground="{StaticResource SubtleForeground}"
+                  ItemContainerStyle="{StaticResource ListViewItemSelectionStyle}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.View>
+                <GridView>
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource AppDarkBackground}" />
+                            <Setter Property="Foreground" Value="{StaticResource SubtleForeground}" />
+                            <Setter Property="BorderThickness" Value="0,0,1,1" />
+                            <Setter Property="FontWeight" Value="SemiBold" />
+                            <Setter Property="Padding" Value="8,4" />
+                            <Setter Property="HorizontalContentAlignment" Value="Left" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="GridViewColumnHeader">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
+                    <GridViewColumn Width="180">
+                        <GridViewColumn.Header>
+                            <TextBlock FontWeight="Bold" Foreground="#FFCCCCCC"
+                                       Text="Hotkey" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="5,8"
+                                           FontFamily="Consolas" FontWeight="SemiBold"
+                                           Foreground="#FF88CCFF"
+                                           Text="{Binding Hotkey}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="300">
+                        <GridViewColumn.Header>
+                            <TextBlock FontWeight="Bold" Foreground="#FFCCCCCC"
+                                       Text="Action" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="5,8"
+                                           Foreground="#FFE0E0E0"
+                                           Text="{Binding Description}"
+                                           TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+
+            <!--  Better way: use ItemsSource with a simple class (recommended)  -->
+            <!--  Delete the above ListViewItem block and use this instead if you want clean MVVM-ish style  -->
+            <ListView.ItemsSource>
+                <x:Array Type="models:HotkeyItem">
+                    <models:HotkeyItem Description="Add new Todo item" Hotkey="Enter" />
+                    <models:HotkeyItem Description="Quick complete selected Todo item" Hotkey="Ctrl + Enter" />
+                    <models:HotkeyItem Description="Previous tab" Hotkey="Alt + H" />
+                    <models:HotkeyItem Description="Next tab" Hotkey="Alt + L" />
+                    <models:HotkeyItem Description="Decrease severity (quick-add)" Hotkey="Alt + J" />
+                    <models:HotkeyItem Description="Increase severity (quick-add)" Hotkey="Alt + K" />
+                    <models:HotkeyItem Description="Quick save" Hotkey="Ctrl + S" />
+                    <models:HotkeyItem Description="Quick load previous file" Hotkey="Ctrl + L" />
+                    <models:HotkeyItem Description="Toggle Pomodoro/work timer" Hotkey="Ctrl + P" />
+                    <!--  Add more here easily  -->
+                </x:Array>
+            </ListView.ItemsSource>
+        </ListView>
+
+        <!--  Close Button  -->
+        <Button Grid.Row="0"
+                Width="0" Height="0"
+                Content="" IsCancel="True"
+                IsDefault="True" Opacity="0" />
+    </Grid>
+</UserControl>

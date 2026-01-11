@@ -76,8 +76,6 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		if (DisplayedItems == null) {
 			return;
 		}
-		// DisplayedItems.SortDescriptions.Clear();
-		// DisplayedItems.SortDescriptions.Add(new SortDescription("CurrentFilterRank", ListSortDirection.Ascending));
 		CurrentSortMethod = items => items.OrderBy(i => i.CurrentFilterRank);
 		int index = 1;
 		foreach (TodoItem ih in DisplayedItems) {
