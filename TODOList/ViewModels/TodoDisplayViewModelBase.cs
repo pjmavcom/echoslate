@@ -361,22 +361,18 @@ namespace Echoslate.Core.ViewModels {
 			}
 			targetHistoryItem.AddCompletedTodo(item);
 		}
-		public void EditItem(TodoItem item) {
-			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, GetCurrentTagFilterWithoutHash(), AllTags);
-			dlg.ShowDialog();
-
-			Log.Debug($"{item}");
-			Log.Debug($"{dlg.ResultTodoItem}");
-
-			if (dlg.Result) {
-				TodoItem newItem = dlg.ResultTodoItem;
+		public async void EditItem(TodoItem item) {
+			Task<TodoItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoItemEditorAsync(item, GetCurrentTagFilterWithoutHash(), AllTags);
+			TodoItemEditorViewModel? vm = await vmTask;
+			if (vm != null) {
+				TodoItem newItem = vm.ResultTodoItem;
 				RemoveItemFromMasterList(item);
 				AddItemToMasterList(newItem);
 
 				if (newItem.IsComplete) {
 					MarkTodoAsComplete(newItem);
 				} else {
-					ReRankWithSubsetMoved(newItem, dlg.Rank);
+					ReRankWithSubsetMoved(newItem, vm.Rank);
 				}
 
 				RefreshAll();

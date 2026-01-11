@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -409,13 +410,12 @@ namespace Echoslate.Core.ViewModels {
 			_todoList.Add(item);
 		}
 		public ICommand EditTodoCommand => new RelayCommand<TodoItem>(EditTodo);
-		public void EditTodo(TodoItem ih) {
+		public async void EditTodo(TodoItem ih) {
 			TodoItem item = ih;
-			DlgTodoItemEditor dlg = new DlgTodoItemEditor(item, null, new ObservableCollection<string>(Data.AllTags));
-			dlg.ShowDialog();
-
-			if (dlg.Result) {
-				TodoItem newItem = dlg.ResultTodoItem;
+			Task<TodoItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoItemEditorAsync(item, null, new ObservableCollection<string>(Data.AllTags));
+			TodoItemEditorViewModel? vm = await vmTask;
+			if (vm != null) {
+				TodoItem newItem = vm.ResultTodoItem;
 				CurrentHistoryItem.RemoveCompletedTodo(newItem.Id);
 				CurrentHistoryItem.CompletedTodoItems.Add(newItem);
 			}

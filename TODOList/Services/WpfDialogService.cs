@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
@@ -39,8 +37,10 @@ namespace Echoslate.WPF.Services {
 			TagPicker view = new TagPicker(vm);
 			return await ShowDialogAsync<TagPickerViewModel>(view, "Tag Picker");
 		}
-		public Task<bool> ShowTodoItemEditorAsync() {
-			throw new System.NotImplementedException();
+		public async Task<TodoItemEditorViewModel?> ShowTodoItemEditorAsync(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
+			TodoItemEditorViewModel vm = new TodoItemEditorViewModel(td, currentListHash, allAvailableTags);
+			TodoItemEditorWindow view = new TodoItemEditorWindow(vm);
+			return await ShowDialogAsync<TodoItemEditorViewModel>(view, "Edit Todo Item");
 		}
 		public Task<bool> ShowTodoMultiItemEditorAsync() {
 			throw new System.NotImplementedException();
