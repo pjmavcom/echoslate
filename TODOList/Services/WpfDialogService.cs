@@ -42,8 +42,10 @@ namespace Echoslate.WPF.Services {
 			TodoItemEditorWindow view = new TodoItemEditorWindow(vm);
 			return await ShowDialogAsync<TodoItemEditorViewModel>(view, "Edit Todo Item");
 		}
-		public Task<bool> ShowTodoMultiItemEditorAsync() {
-			throw new System.NotImplementedException();
+		public async Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter) {
+			TodoMultiItemEditorViewModel vm = new TodoMultiItemEditorViewModel(items, currentFilter);
+			TodoMultiItemEditorWindow view = new TodoMultiItemEditorWindow(vm);
+			return await ShowDialogAsync<TodoMultiItemEditorViewModel>(view, "Edit Multiple Todo Items");
 		}
 		public async Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames) {
 			EditTabsViewModel vm = new EditTabsViewModel(filterNames);

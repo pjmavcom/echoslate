@@ -1,19 +1,13 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Components;
 using Echoslate.Core.Models;
 using Echoslate.Core.Resources;
 using Echoslate.Core.Services;
-using Echoslate.Windows;
 
 namespace Echoslate.Core.ViewModels {
 	public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
@@ -516,33 +510,38 @@ namespace Echoslate.Core.ViewModels {
 			result = ExpandHashTagsInString(result);
 			return result;
 		}
-		private void MultiEditItems(List<TodoItem> items) {
+		private async void MultiEditItems(List<TodoItem> items) {
 			string tagFilter = GetCurrentTagFilterWithoutHash();
-			DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
-			dlg.ShowDialog();
+			Task<TodoMultiItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoMultiItemEditorAsync(items, tagFilter);
+			TodoMultiItemEditorViewModel? vm = await vmTask;
+			if (vm == null) {
+				return;
+			}
+			// DlgTodoMultiItemEditor dlg = new DlgTodoMultiItemEditor(items, tagFilter);
+			// dlg.ShowDialog();
 
-			if (dlg.IsRankChangeable) {
-				ReRankWithSubsetMoved(items, dlg.ResultRank);
+			if (vm.IsRankChangeable) {
+				ReRankWithSubsetMoved(items, vm.ResultRank);
 			}
 			foreach (TodoItem item in items) {
-				if (dlg.IsSeverityChangeable) {
-					item.Severity = dlg.ResultSeverity;
+				if (vm.IsSeverityChangeable) {
+					item.Severity = vm.ResultSeverity;
 				}
-				if (dlg.IsTodoChangeable) {
-					item.Todo += " " + dlg.ResultTodo;
+				if (vm.IsTodoChangeable) {
+					item.Todo += " " + vm.ResultTodo;
 					Log.Print($"{item.Todo}");
 				}
-				if (dlg.IsTagChangeable) {
-					foreach (string tag in dlg.CommonTags) {
+				if (vm.IsTagChangeable) {
+					foreach (string tag in vm.CommonTags) {
 						if (item.Tags.Contains(tag)) {
 							item.Tags.Remove(tag);
 						}
 					}
-					foreach (string tag in dlg.ResultTags) {
+					foreach (string tag in vm.ResultTags) {
 						item.AddTag(tag);
 					}
 				}
-				if (dlg.IsCompleteChangeable) {
+				if (vm.IsCompleteChangeable) {
 					MarkTodoAsComplete(item);
 				}
 			}

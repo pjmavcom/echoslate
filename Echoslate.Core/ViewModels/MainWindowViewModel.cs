@@ -1,16 +1,11 @@
-using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
-using Echoslate.Windows;
-
 
 namespace Echoslate.Core.ViewModels {
 	public enum PomoActiveState {

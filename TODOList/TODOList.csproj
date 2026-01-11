@@ -70,6 +70,11 @@
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+      <Page Update="UserControls\TodoMultiItemEditorWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
     <ItemGroup>
         <Resource Include="Resources\Echoslate.png" />
@@ -81,6 +86,7 @@
       <Folder Include="Classes\" />
       <Folder Include="Components\" />
       <Folder Include="Models\" />
+      <Folder Include="ViewModels\" />
     </ItemGroup>
     
 
