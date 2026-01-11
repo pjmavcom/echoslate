@@ -4,11 +4,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
+using Echoslate.Core.ViewModels;
 
 namespace Echoslate {
 	public partial class DlgTodoItemEditor : INotifyPropertyChanged {
@@ -274,36 +277,29 @@ namespace Echoslate {
 			Close();
 		}
 		public ICommand AddTagCommand => new RelayCommand(AddTag);
-		public void AddTag() {
+		public async void AddTag() {
 			List<string> selectedTags = new(Tags);
-			TagPicker dlg = new TagPicker {
-				SelectedTodoItems = [_item],
-				AllAvailableTags = AllAvailableTags,
-				SelectedTags = new List<string>(selectedTags),
-				Owner = Window.GetWindow(this)
-			};
-			dlg.ShowDialog();
-			if (dlg.Result) {
-				// TagHolders.Clear();
+
+			Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync([_item], AllAvailableTags, new List<string>(selectedTags));
+			TagPickerViewModel tpvm = await vmTask;
+			
+			if (tpvm == null) {
+				return;
+			}
+			if (tpvm.Result) {
 				foreach (string tag in selectedTags) {
 					Tags.Remove(tag);
 				}
-				foreach (string tag in dlg.SelectedTags) {
+				foreach (string tag in tpvm.SelectedTags) {
 					Tags.Add(tag);
-					// TagHolders.Add(tag);
 				}
 			}
-			// OnPropertyChanged(nameof(TagHolders));
 		}
 		public ICommand DeleteTagCommand => new RelayCommand<string>(DeleteTag);
 		public void DeleteTag(string holder) {
-			// string tag = holder;
 			if (Tags.Contains(holder)) {
 				Tags.Remove(holder);
 			}
-			// if (Tags.Contains(tag)) {
-				// Tags.Remove(tag);
-			// }
 			OnPropertyChanged(nameof(Tags));
 		}
 		public ICommand CycleKanbanCommand => new RelayCommand(CycleKanban);

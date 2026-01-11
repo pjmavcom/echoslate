@@ -32,9 +32,6 @@
                          Foreground="{StaticResource Foreground}"
                          ItemsSource="{Binding FilterNames}"
                          SelectionMode="Multiple">
-                    <b:Interaction.Behaviors>
-                        <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
-                    </b:Interaction.Behaviors>
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="4,2" />

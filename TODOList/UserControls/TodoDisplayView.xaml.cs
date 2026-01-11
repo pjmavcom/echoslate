@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 using Echoslate.Core.ViewModels;
 
 namespace Echoslate.UserControls {
@@ -33,7 +35,7 @@ namespace Echoslate.UserControls {
 
 			vm.MarkSelectedItemAsComplete();
 		}
-		private void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {
+		private async void NotesPanelEditTagsRequested(object sender, RoutedEventArgs e) {
 			TodoDisplayViewModelBase? vm = (TodoDisplayViewModelBase)DataContext;
 			if (vm == null) {
 				Log.Print("Can not find ViewModel.");
@@ -51,19 +53,18 @@ namespace Echoslate.UserControls {
 			}
 
 			selectedTags = new List<string>(ihs.Select(x => x.Tags ?? Enumerable.Empty<string>()).Aggregate((a, b) => a.Intersect(b).ToList()));
-			TagPicker dlg = new TagPicker {
-				SelectedTodoItems = ihs,
-				AllAvailableTags = vm.AllTags,
-				SelectedTags = new List<string>(selectedTags),
-				Owner = Window.GetWindow(this)
-			};
-			dlg.ShowDialog();
-			if (dlg.Result) {
+
+			Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync(ihs, vm.AllTags, new List<string>(selectedTags));
+			TagPickerViewModel tpvm = await vmTask;
+			if (tpvm == null) {
+				return;
+			}
+			if (tpvm.Result) {
 				foreach (TodoItem item in ihs) {
 					foreach (string tag in selectedTags) {
 						item.Tags.Remove(tag);
 					}
-					foreach (string tag in dlg.SelectedTags) {
+					foreach (string tag in tpvm.SelectedTags) {
 						item.AddTag(tag);
 					}
 				}
