@@ -533,16 +533,34 @@ public class TodoItem : INotifyPropertyChanged {
 		string solution = AddNewLines(_solution);
 
 		string result = BreakLines(_todo);
+		result += GetNotesProblemSolution();
+
+		return result;
+	}
+	public string GetNotesProblemSolution() {
+		string result = "";
 		if (_notes != "") {
-			result += "\t" + BreakLinesAddTabs(notes);
+			result += "\t" + BreakLinesAddTabs(_notes);
 		}
 		if (_problem != "") {
-			result += "\tProblem: " + BreakLinesAddTabs(problem);
+			result += "\tProblem: " + BreakLinesAddTabs(_problem);
 		}
 		if (_solution != "") {
-			result += "\tSolution: " + BreakLinesAddTabs(solution);
+			result += "\tSolution: " + BreakLinesAddTabs(_solution);
 		}
-
+		return result;
+	}
+	public string GetNotesProblemSolutionWithoutTabs() {
+		string result = "";
+		if (_notes != "") {
+			result += BreakLines(_notes);
+		}
+		if (_problem != "") {
+			result += "Problem: " + BreakLines(_problem);
+		}
+		if (_solution != "") {
+			result += "Solution: " + BreakLines(_solution);
+		}
 		return result;
 	}
 	private string BreakLines(string s) {

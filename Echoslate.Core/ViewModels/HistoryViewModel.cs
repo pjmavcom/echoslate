@@ -161,7 +161,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 
 
 	public HistoryViewModel() {
-		CurrentHistoryItem = new HistoryItem { Title = "Work in progress...", Version = new Version(0, 0, 0, 0) };
+		CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = new Version(0, 0, 0, 0) };
 
 		_todoList = [];
 		_allHistoryItems = [];
@@ -204,7 +204,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			historyItem.SortCompletedTodoItems();
 		}
 		CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
-							 new HistoryItem { Title = "Work in progressioning.", Version = new Version(3, 40, 40, 1) };
+							 new HistoryItem { Title = "Work in progress", Version = new Version(3, 40, 40, 1) };
 		if (!ReferenceEquals(CurrentHistoryItem, _allHistoryItems.FirstOrDefault())) {
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 		}
@@ -243,6 +243,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(OtherCompleted));
 		SelectedHistoryItem.SortCompletedTodoItems();
 		SelectedHistoryItem.GenerateCommitMessage();
+		OnPropertyChanged(nameof(Title));
 		OnPropertyChanged(nameof(CommitMessage));
 	}
 	private bool IsGitRepoValid() {
@@ -393,6 +394,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		if (!SelectedHistoryItem.IsCommitted && SelectedHistoryItem.RemoveCompletedTodo(item.Id)) {
 			item.IsComplete = false;
 			SelectedHistoryItem.SortCompletedTodoItems();
+			if (SelectedHistoryItem.CompletedTodoItems.Count == 0) {
+				Title = "Work in progress";
+				Notes = "";
+			}
 			UpdateCategorizedLists();
 		}
 		_todoList.Add(item);

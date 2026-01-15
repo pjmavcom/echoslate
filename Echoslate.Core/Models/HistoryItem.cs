@@ -204,6 +204,10 @@ public class HistoryItem : INotifyPropertyChanged {
 		SortCompletedTodoItems();
 	}
 	public void AddCompletedTodo(TodoItem td) {
+		if (CompletedTodoItems.Count == 0 && (Title == "Work in progress" || string.IsNullOrEmpty(Title))) {
+			Title = td.Todo;
+			Notes = td.GetNotesProblemSolutionWithoutTabs();
+		}
 		CompletedTodoItems.Add(td);
 		SortCompletedTodoItems();
 	}
@@ -248,16 +252,25 @@ public class HistoryItem : INotifyPropertyChanged {
 
 		if (BugsCompleted.Count > 0) {
 			foreach (TodoItem td in BugsCompleted) {
+				if (td.Todo == Title) {
+					continue;
+				}
 				result += Environment.NewLine + "- " + td.ToClipboard();
 			}
 		}
 		if (FeaturesCompleted.Count > 0) {
 			foreach (TodoItem td in FeaturesCompleted) {
+				if (td.Todo == Title) {
+					continue;
+				}
 				result += Environment.NewLine + "- " + td.ToClipboard();
 			}
 		}
 		if (OtherCompleted.Count > 0) {
 			foreach (TodoItem td in OtherCompleted) {
+				if (td.Todo == Title) {
+					continue;
+				}
 				result += Environment.NewLine + "- " + td.ToClipboard();
 			}
 		}
