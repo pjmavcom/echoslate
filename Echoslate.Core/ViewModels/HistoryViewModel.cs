@@ -243,7 +243,6 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(OtherCompleted));
 		SelectedHistoryItem.SortCompletedTodoItems();
 		SelectedHistoryItem.GenerateCommitMessage();
-		OnPropertyChanged(nameof(Title));
 		OnPropertyChanged(nameof(CommitMessage));
 	}
 	private bool IsGitRepoValid() {
