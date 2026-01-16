@@ -396,6 +396,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			SelectedHistoryItem.SortCompletedTodoItems();
 			if (SelectedHistoryItem.CompletedTodoItems.Count == 0) {
 				Title = "Work in progress";
+				Notes = "";
 			}
 			UpdateCategorizedLists();
 		}

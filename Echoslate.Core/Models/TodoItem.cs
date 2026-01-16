@@ -534,13 +534,13 @@ public class TodoItem : INotifyPropertyChanged {
 
 		string result = BreakLines(_todo);
 		if (_notes != "") {
-			result += "\t" + BreakLinesAddTabs(notes);
+			result += "\t" + BreakLinesAddTabs(notes) + Environment.NewLine;
 		}
 		if (_problem != "") {
-			result += "\tProblem: " + BreakLinesAddTabs(problem);
+			result += "\tProblem: " + BreakLinesAddTabs(problem) + Environment.NewLine;
 		}
 		if (_solution != "") {
-			result += "\tSolution: " + BreakLinesAddTabs(solution);
+			result += "\tSolution: " + BreakLinesAddTabs(solution) + Environment.NewLine;
 		}
 
 		return result;
