@@ -69,6 +69,7 @@ public partial class TodoDisplayView : UserControl {
 					item.AddTag(tag);
 				}
 			}
+			vm.CleanAllTodoHashRanks();
 			vm.RefreshAll();
 		}
 	}

@@ -37,13 +37,12 @@ public class AppData {
 		AllTags = [];
 		TodoList = [];
 		HistoryList = [];
-		FiltersList = [];
+		FiltersList = ["All", "Other", "Bug", "Feature"];
 		CommitScopes = [];
 		_currentHistoryItem = null;
 	}
 	public void DebugFiltersList() {
-		FiltersList.CollectionChanged += (s, e) =>
-		{
+		FiltersList.CollectionChanged += (s, e) => {
 			Log.Debug($"[Filters] CollectionChanged: Action={e.Action}");
 			if (e.OldItems != null)
 				foreach (var item in e.OldItems)
