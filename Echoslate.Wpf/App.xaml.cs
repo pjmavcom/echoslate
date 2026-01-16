@@ -26,18 +26,24 @@ public partial class App {
 
 		var mainVM = new MainWindowViewModel(AppSettings.Instance);
 		MainWindow = new MainWindow { DataContext = mainVM };
-		AppServices.Initialize(new WpfApplicationService(), new WpfBrushService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(Current.MainWindow));
+		AppServices.Initialize(mainVM, new WpfApplicationService(), new WpfBrushService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(MainWindow));
+		AppServices.ApplicationService.Initialize(MainWindow);
 
 		MainWindow.Closing += mainVM.OnClosing;
 		MainWindow.Closing += SaveWindowProperties;
 
 		if (AppSettings.Instance.SkipWelcome && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
 			mainVM.Load(AppSettings.Instance.LastFilePath);
-			MainWindow.Show();
+			AppServices.ApplicationService.Show();
 			return;
 		}
 
-		AppServices.DialogService.ShowWelcomeWindowAsync();
+		bool success = await AppServices.DialogService.ShowWelcomeWindowAsync();
+		if (success) {
+			AppServices.ApplicationService.Show();
+		} else {
+			AppServices.ApplicationService.Shutdown();
+		}
 	}
 	public void SaveWindowProperties(object? sender, CancelEventArgs cancelEventArgs) {
 		if (MainWindow != null) {
