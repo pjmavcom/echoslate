@@ -178,6 +178,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 
 		CurrentSeverityFilter = -1;
 		NewTodoSeverity = 0;
+		CleanAllTodoHashRanks();
 		RefreshAll();
 	}
 	protected abstract void RefreshFilter();
@@ -376,15 +377,32 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				ReRankWithSubsetMoved(newItem, vm.Rank);
 			}
 
+			CleanAllTodoHashRanks();
 			RefreshAll();
+		}
+	}
+	public void CleanAllTodoHashRanks() {
+		foreach (TodoItem item in MasterList) {
+			foreach (string tag in MasterFilterTags) {
+				if (!item.Rank.ContainsKey(tag) && item.HasTag(tag)) {
+					item.Rank.Add(tag, -1);
+				}
+			}
+			foreach (string tag in item.Rank.Keys) {
+				if (!MasterFilterTags.Contains(tag) && !item.HasTag(tag)) {
+					item.Rank.Remove(tag);
+				}
+			}
 		}
 	}
 	private void CleanTodoHashRanks(TodoItem td) {
 		List<string> remove = (from pair in td.Rank where !MasterFilterTags.Contains(pair.Key) select pair.Key).ToList();
-		foreach (string hash in remove)
+		foreach (string hash in remove) {
 			td.Rank.Remove(hash);
-		foreach (string name in MasterFilterTags.Where(name => !td.Rank.ContainsKey(name)))
+		}
+		foreach (string name in MasterFilterTags.Where(name => !td.Rank.ContainsKey(name))) {
 			td.Rank.Add(name, -1);
+		}
 	}
 	public void AddItemToMasterList(TodoItem item) {
 		if (MasterListContains(item) >= 0) {
@@ -551,6 +569,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			}
 		}
 
+		CleanAllTodoHashRanks();
 		RefreshAll();
 	}
 	public List<TodoItem> GetSelectedListBoxItems() {
@@ -704,12 +723,14 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		if (vm.Result) {
 			Log.Print("Filters successfully edited");
 			MasterFilterTags.Clear();
+			MasterFilterTags.Add("All");
+			MasterFilterTags.Add("Other");
+			MasterFilterTags.Add("Bug");
+			MasterFilterTags.Add("Feature");
 			foreach (string filter in vm.ResultList) {
 				MasterFilterTags.Add(filter);
 			}
-			foreach (TodoItem td in MasterList) {
-				CleanTodoHashRanks(td);
-			}
+			CleanAllTodoHashRanks();
 			RefreshAll();
 		}
 	}

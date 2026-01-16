@@ -58,6 +58,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 	protected override void RefreshAllItems() {
 		foreach (TodoItem item in MasterList) {
 			item.CurrentView = View.TodoList;
+			item.CurrentFilter = CurrentFilter;
 		}
 	}
 	public override void NewTodoAdd() {
@@ -69,6 +70,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		}
 		AddItemToMasterList(item);
 		SelectedTodoItemId = item.Id;
+		CleanAllTodoHashRanks();
 		RefreshAll();
 		NewTodoText = "";
 	}
