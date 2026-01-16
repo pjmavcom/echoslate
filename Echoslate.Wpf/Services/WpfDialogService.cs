@@ -33,7 +33,7 @@ public class WpfDialogService : IDialogService {
 	public async Task<bool> ShowWelcomeWindowAsync() {
 		WelcomeViewModel vm = new WelcomeViewModel();
 		WelcomeWindow view = new WelcomeWindow(vm);
-		return await ShowDialogAsync(view, "Welcome to Echoslate");
+		return await ShowDialogAsync(view, "Welcome to Echoslate", null);
 	}
 	public async Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, List<string> selectedTags) {
 		TagPickerViewModel vm = new TagPickerViewModel(todoItems, allTags, selectedTags);
@@ -61,10 +61,13 @@ public class WpfDialogService : IDialogService {
 		return await ShowDialogAsync<ChooseDraftViewModel>(view, "Append to which draft?");
 	}
 	public Task<bool> ShowDialogAsync(object view, string title) {
+		return ShowDialogAsync(view, title, _owner);
+	}
+	public Task<bool> ShowDialogAsync(object view, string title, Window owner) {
 		var window = new Window {
 			Content = view,
 			Title = title,
-			Owner = _owner,
+			Owner = owner,
 			WindowStartupLocation = WindowStartupLocation.CenterOwner,
 			SizeToContent = SizeToContent.WidthAndHeight,
 			ResizeMode = ResizeMode.NoResize,

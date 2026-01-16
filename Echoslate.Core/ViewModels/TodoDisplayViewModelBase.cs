@@ -16,6 +16,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public ObservableCollection<TodoItem> MasterList { get; set; }
 	public IEnumerable<TodoItem> DisplayedItems {
 		get {
+			if (MasterList == null) {
+				return null;
+			}
 			var items = MasterList.Where(item => CombinedFilter(item));
 			return CurrentSortMethod(items);
 		}
@@ -38,6 +41,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public ObservableCollection<string> CurrentVisibleTags { get; set; }
 	public IEnumerable<string> CurrentVisibleTagsView {
 		get {
+			if (CurrentVisibleTags == null) {
+				return null;
+			}
 			var items = CurrentVisibleTags.OrderBy(t => t, StringComparer.OrdinalIgnoreCase);
 			return items;
 		}

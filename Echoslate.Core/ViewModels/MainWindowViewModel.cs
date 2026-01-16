@@ -362,6 +362,9 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		ClearChangedFlag();
 	}
 	private void Save() {
+		if (Data == null || !File.Exists(Data.CurrentFilePath)) {
+			return;
+		}
 		Save(Data.CurrentFilePath);
 	}
 	private void BackupSave() {
@@ -515,11 +518,13 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {
-		foreach (HistoryItem item in Data.HistoryList) {
-			if (item == Data.CurrentHistoryItem) {
-				continue;
+		if (Data != null && Data.HistoryList != null) {
+			foreach (HistoryItem item in Data.HistoryList) {
+				if (item == Data.CurrentHistoryItem) {
+					continue;
+				}
+				item.IsCommitted = true;
 			}
-			item.IsCommitted = true;
 		}
 		StopTimer();
 		Log.Print($"All history items committed.");
