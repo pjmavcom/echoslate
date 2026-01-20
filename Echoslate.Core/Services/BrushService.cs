@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using Echoslate.Core.Services;
 using Echoslate.Core.Theming;
 
-namespace Echoslate.Wpf.Services;
+namespace Echoslate.Core.Services;
 
-public class WpfBrushService : IBrushService {
+public class BrushService : IBrushService {
 	static Func<ColorRgba, object>? _brushFactory { get; set; }
-
+	
 	public object AppBackgroundBrush => CreateBrush(ColorRgba.AppBackground);
 	public object ForegroundBrush => CreateBrush(ColorRgba.Foreground);
 	public object AccentBrush => CreateBrush(ColorRgba.Accent);
@@ -23,8 +19,8 @@ public class WpfBrushService : IBrushService {
 		{ "docs", ColorRgba.DocsYellow },
 	};
 
-	public WpfBrushService() {
-		_brushFactory = (color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+	public BrushService() {
+		_brushFactory = rgba => null;
 	}
 	public void SetBrushFactory(Func<ColorRgba, object> factory) {
 		_brushFactory = factory ?? throw new ArgumentNullException(nameof(factory));

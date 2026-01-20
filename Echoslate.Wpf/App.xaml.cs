@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
 using Echoslate.Core.ViewModels;
@@ -26,7 +27,8 @@ public partial class App {
 
 		var mainVM = new MainWindowViewModel(AppSettings.Instance);
 		MainWindow = new MainWindow { DataContext = mainVM };
-		AppServices.Initialize(mainVM, new WpfApplicationService(), new WpfBrushService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(MainWindow));
+		AppServices.Initialize(mainVM, new WpfApplicationService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(MainWindow));
+		AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
 		AppServices.ApplicationService.Initialize(MainWindow);
 
 		MainWindow.Closing += mainVM.OnClosing;
