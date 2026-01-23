@@ -68,8 +68,8 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 	[JsonIgnore] public bool IsGitInstalled { get; set; }
 
 	public AppDataFileSettings() {
-		AutoSave = false;
-		AutoBackup = false;
+		AutoSave = true;
+		AutoBackup = true;
 		BackupIncrement = 0;
 		BackupTime = 5;
 		CurrentProjectVersion = new Version(0, 0, 0, 0);
