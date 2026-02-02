@@ -85,6 +85,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Echoslate.Core\Echoslate.Core.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\Echoslate.png" />
+    </ItemGroup>
     
 
 </Project>

@@ -1,12 +1,15 @@
-<Window x:Class="Echoslate.Avalonia.MainWindow"
-        xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="Echoslate"
-        d:DesignHeight="450"
-        d:DesignWidth="800"
-        mc:Ignorable="d">
+<Window
+    x:Class="Echoslate.Avalonia.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+    Title="Echoslate"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainWindowViewModel"
+    mc:Ignorable="d">
 
     <Window.Resources>
         <!-- <converters:ProgressToWidthConverter x:Key="ProgressToWidthConverter" /> -->
@@ -26,10 +29,11 @@
     <!-- <KeyBinding Key="F1" Command="{Binding ShowAboutWindowCommand}" /> -->
     <!-- </Window.InputBindings> -->
 
-    <Grid HorizontalAlignment="Stretch"
-          ClipToBounds="True"
-          TextElement.FontFamily="Source Code Pro"
-          TextElement.FontSize="16">
+    <Grid
+        HorizontalAlignment="Stretch"
+        ClipToBounds="True"
+        TextElement.FontFamily="Source Code Pro"
+        TextElement.FontSize="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -39,49 +43,53 @@
                 <ColumnDefinition Width="500" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <!--  <Menu Name="mnuMain"  -->
-            <!--  Grid.Column="0"  -->
-            <!--  FontSize="16">  -->
-            <!--     <MenuItem Header="_File"> -->
-            <!--         <MenuItem Command="{Binding MenuNewCommand}" Header="New" /> -->
-            <!--         <Separator /> -->
-            <!--         <MenuItem Command="{Binding MenuLoadCommand}" Header="Load" /> -->
-            <!--         <Separator /> -->
-            <!--         <MenuItem Command="{Binding MenuSaveCommand}" Header="Save" /> -->
-            <!--         <MenuItem Command="{Binding MenuSaveAsCommand}" Header="SaveAs" /> -->
-            <!--         <Separator /> -->
-            <!--         <MenuItem Command="{Binding MenuOptionsCommand}" Header="Options" /> -->
-            <!--         <Separator /> -->
-            <!--         <MenuItem Command="{Binding MenuQuitCommand}" Header="Quit" /> -->
-            <!--     </MenuItem> -->
-            <!--  <MenuItem Header="Recent Loads"  -->
-            <!--  ItemsSource="{Binding AppSettings.RecentFiles}"  -->
-            <!--  Tag="{Binding}">  -->
-            <!--         <MenuItem.ItemTemplate> -->
-            <!--             <DataTemplate> -->
-            <!--  <MenuItem Command="{Binding DataContext.MenuRecentFilesLoadCommand, RelativeSource={RelativeSource AncestorType=Window}}"  -->
-            <!--  CommandParameter="{Binding}"  -->
-            <!--  Header="{Binding}"  -->
-            <!--  Tag="{Binding}">  -->
-            <!--                     <MenuItem.ContextMenu> -->
-            <!--                         <ContextMenu> -->
-            <!--  <MenuItem Command="{Binding Source={x:Reference MainWindowInstance}, Path=DataContext.MenuRecentFilesRemoveCommand}"  -->
-            <!--  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}}"  -->
-            <!--  Header="Remove" />  -->
-            <!--                         </ContextMenu> -->
-            <!--                     </MenuItem.ContextMenu> -->
-            <!--                 </MenuItem> -->
-            <!--             </DataTemplate> -->
-            <!--         </MenuItem.ItemTemplate> -->
-            <!--     </MenuItem> -->
-            <!--     <MenuItem Header="Help"> -->
-            <!--         <MenuItem Command="{Binding ShowHotkeysWindowCommand}" Header="Hotkeys" /> -->
-            <!--         <MenuItem Command="{Binding ShowAboutWindowCommand}" Header="About" /> -->
-            <!--     </MenuItem> -->
-            <!-- </Menu> -->
-            <StackPanel Grid.Column="1"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
+            <Menu
+                Name="mnuMain"
+                Grid.Column="0"
+                FontSize="16">
+                <MenuItem Header="_File">
+                    <MenuItem Command="{Binding MenuNewCommand}" Header="New" />
+                    <Separator />
+                    <MenuItem Command="{Binding MenuLoadCommand}" Header="Load" />
+                    <Separator />
+                    <MenuItem Command="{Binding MenuSaveCommand}" Header="Save" />
+                    <MenuItem Command="{Binding MenuSaveAsCommand}" Header="SaveAs" />
+                    <Separator />
+                    <MenuItem Command="{Binding MenuOptionsCommand}" Header="Options" />
+                    <Separator />
+                    <MenuItem Command="{Binding MenuQuitCommand}" Header="Quit" />
+                </MenuItem>
+                <MenuItem
+                    Header="Recent Loads"
+                    ItemsSource="{Binding AppSettings.RecentFiles}"
+                    Tag="{Binding}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem
+                                Command="{Binding MenuRecentFilesLoadCommand, RelativeSource={RelativeSource AncestorType=vm:MainWindowViewModel}}"
+                                CommandParameter="{Binding}"
+                                Header="{Binding}"
+                                Tag="{Binding}">
+                                <!-- <MenuItem.ContextMenu> -->
+                                <!-- <ContextMenu> -->
+                                <!--  <MenuItem Command="{Binding Source={x:Reference MainWindowInstance}, Path=DataContext.MenuRecentFilesRemoveCommand}"  -->
+                                <!--  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}}"  -->
+                                <!--  Header="Remove" />  -->
+                                <!-- </ContextMenu> -->
+                                <!-- </MenuItem.ContextMenu> -->
+                            </MenuItem>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Command="{Binding ShowHotkeysWindowCommand}" Header="Hotkeys" />
+                    <MenuItem Command="{Binding ShowAboutWindowCommand}" Header="About" />
+                </MenuItem>
+            </Menu>
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
                 <Grid>
                     <!--  <ProgressBar Height="30"  -->
                     <!--  Margin="10,5"  -->
@@ -131,10 +139,8 @@
                     <!--     </Label.InputBindings> -->
                     <!-- </Label> -->
                 </Grid>
-                <Label Width="100"
-                       Content="Work: " />
-                <Border BorderBrush="#494949"
-                        BorderThickness="1">
+                <Label Width="100" Content="Work: " />
+                <Border BorderBrush="#494949" BorderThickness="1">
                     <!--  <TextBlock Width="80"  -->
                     <!--  behaviors:MouseWheelNumericBehavior.Enabled="True" behaviors:MouseWheelNumericBehavior.Minimum="1"  -->
                     <!--  behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes" FontSize="18"  -->
@@ -142,10 +148,8 @@
                     <!--  Text="{Binding PomoWorkTimeMinutes}"  -->
                     <!--  TextAlignment="Center" ToolTip="Mouse wheel: ±1 | Shift+wheel: ±5" />  -->
                 </Border>
-                <Label Width="100"
-                       Content="Break: " />
-                <Border BorderBrush="#494949"
-                        BorderThickness="1">
+                <Label Width="100" Content="Break: " />
+                <Border BorderBrush="#494949" BorderThickness="1">
                     <!--  <TextBlock Width="80"  -->
                     <!--  behaviors:MouseWheelNumericBehavior.Enabled="True" behaviors:MouseWheelNumericBehavior.Minimum="1"  -->
                     <!--  behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes" FontSize="18"  -->
@@ -155,27 +159,31 @@
                 </Border>
             </StackPanel>
         </Grid>
-        <TabControl Name="tabControl"
-                    Grid.Row="1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    ClipToBounds="True">
+        <TabControl
+            Name="tabControl"
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ClipToBounds="True">
 
-            <TabItem Name="tabHistory"
-                     Header="History"
-                     KeyboardNavigation.IsTabStop="False">
+            <TabItem
+                Name="tabHistory"
+                Header="History"
+                KeyboardNavigation.IsTabStop="False">
                 <!-- <views:HistoryView DataContext="{Binding HistoryVM}" /> -->
             </TabItem>
 
-            <TabItem HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center"
-                     Header="Todo List">
+            <TabItem
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Header="Todo List">
                 <!-- <views:TodoDisplayView DataContext="{Binding TodoListVM}" /> -->
             </TabItem>
 
-            <TabItem HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center"
-                     Header="Kanban">
+            <TabItem
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Header="Kanban">
                 <!-- <views:TodoDisplayView DataContext="{Binding KanbanVM}" /> -->
             </TabItem>
 

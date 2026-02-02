@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
 using Echoslate.Core.Models;
 
 namespace Echoslate.Avalonia;
@@ -18,7 +19,7 @@ public partial class MainWindow : Window {
 		InitializeComponent();
 
 #if DEBUG
-		// mnuMain.Background = Brushes.Red;
+		mnuMain.Background = Brushes.Red;
 #endif
 		Log.Print("Window Initialized");
 
@@ -35,7 +36,6 @@ public partial class MainWindow : Window {
 			Close();
 			e.Handled = true;
 		}
-		// mnuMain.Background = Brushes.Red;
 #endif
 		// if (Keyboard.Modifiers == ModifierKeys.Alt) {
 			// Log.Debug(e.Key.ToString());

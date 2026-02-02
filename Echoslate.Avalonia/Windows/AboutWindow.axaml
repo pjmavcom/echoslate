@@ -1,12 +1,12 @@
 <UserControl
-    x:Class="Echoslate.Wpf.Windows.AboutWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="Echoslate.Avalonia.Windows.AboutWindow"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
     Background="{StaticResource AppBackground}"
-    Foreground="{StaticResource Foreground}"
-    mc:Ignorable="d">
+    Foreground="{StaticResource Foreground}">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="256" />
@@ -41,24 +41,28 @@
                 Text="Made with ❤️ by Peter Mavrelis" />
 
             <!--  Ko-fi Link  -->
-            <TextBlock FontSize="14" TextAlignment="Center">
-                <Run Text="Support development on " />
-                <Hyperlink NavigateUri="https://ko-fi.com/pjmavcom" RequestNavigate="Hyperlink_RequestNavigate">
-                    Ko-fi
-                </Hyperlink>
-                <Run Text=" (buy me a coffee ☕)" />
-            </TextBlock>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Text="Support development on " />
+
+                <TextBlock
+                    Cursor="Hand"
+                    Foreground="Blue"
+                    PointerPressed="KoFiLink_PointerPressed"
+                    Text="Ko-fi"
+                    TextDecorations="Underline" />
+                <TextBlock Text=" (buy me a coffee ☕)" />
+            </StackPanel>
 
             <!--  GitHub Sponsors Link  -->
-            <TextBlock FontSize="14" TextAlignment="Center">
-                <Run Text="Feedback &amp; issues on" />
-                <Hyperlink
-                    Foreground="#FF0066FF"
-                    NavigateUri="https://github.com/pjmavcom/echoslate"
-                    RequestNavigate="Hyperlink_RequestNavigate">
-                    GitHub
-                </Hyperlink>
-            </TextBlock>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Text="Feedback &amp; issues on" />
+                <TextBlock
+                    Cursor="Hand"
+                    Foreground="Blue"
+                    PointerPressed="GitHubLink_PointerPressed"
+                    Text="GitHub"
+                    TextDecorations="Underline" />
+            </StackPanel>
 
             <TextBlock
                 Margin="0,40,0,0"

@@ -25,6 +25,9 @@
 
     <ItemGroup>
       <Folder Include="Views\" />
-      <Folder Include="Windows\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Include="Resources\Echoslate.png" />
     </ItemGroup>
 </Project>
