@@ -1,10 +1,13 @@
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Echoslate.Avalonia.Services;
+using Echoslate.Avalonia.Windows;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
 using Echoslate.Core.ViewModels;
@@ -13,18 +16,20 @@ namespace Echoslate.Avalonia;
 
 public partial class App : Application {
 	private MainWindow MainWindow;
-	
+
 	public override void Initialize() {
 		AvaloniaXamlLoader.Load(this);
 	}
-	public override void OnFrameworkInitializationCompleted() {
+	public async override void OnFrameworkInitializationCompleted() {
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 			AppSettings.Load();
-			
+
 			MainWindowViewModel mainVM = new(AppSettings.Instance);
-			MainWindow = new() { DataContext = mainVM };
+			MainWindow = new() {
+				DataContext = mainVM
+			};
 			desktop.MainWindow = MainWindow;
-			
+
 			AppServices.Initialize(mainVM, new AvaloniaApplicationService(desktop), new AvaloniaDispatcherService(), new AvaloniaClipboardService(MainWindow), new AvaloniaDialogService(MainWindow));
 			AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
 			AppServices.ApplicationService.Initialize(MainWindow);
@@ -35,17 +40,36 @@ public partial class App : Application {
 			if (AppSettings.Instance.SkipWelcome && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
 				mainVM.Load(AppSettings.Instance.LastFilePath);
 				AppServices.ApplicationService.Show();
+				return;
 			}
-			
-			// bool success = await AppServices.DialogService.ShowWelcomeWindowAsync();
-			// if (success) {
-				// AppServices.ApplicationService.Show();
-			// } else {
-				// AppServices.ApplicationService.Shutdown();
-			// }
+
+			WelcomeViewModel vm = new WelcomeViewModel();
+			WelcomeWindow view = new WelcomeWindow(vm);
+			var window = new Window {
+				Content = view,
+				Title = "Welcome to Echoslate",
+				WindowStartupLocation = WindowStartupLocation.CenterScreen,
+				SizeToContent = SizeToContent.WidthAndHeight,
+				ShowInTaskbar = true,
+				CanResize = false
+			};
+			desktop.MainWindow = window;
+			window.Show();
+			await WaitForCloseAsync(window);
+			if (view.Result) {
+				desktop.MainWindow = MainWindow;
+				AppServices.ApplicationService.Show();
+			} else {
+				AppServices.ApplicationService.Shutdown();
+			}
 		}
 
 		base.OnFrameworkInitializationCompleted();
+	}
+	private static Task WaitForCloseAsync(Window w) {
+		var tcs = new TaskCompletionSource();
+		w.Closed += (_, _) => tcs.TrySetResult();
+		return tcs.Task;
 	}
 	public void SaveWindowProperties(object? sender, CancelEventArgs cancelEventArgs) {
 		// if (MainWindow != null) {

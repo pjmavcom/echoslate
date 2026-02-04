@@ -1,0 +1,64 @@
+<UserControl
+    x:Class="Echoslate.Avalonia.Windows.WelcomeWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+    Width="490"
+    Height="370"
+    x:DataType="local:WelcomeViewModel"
+    Background="{Binding BrushService.AppDarkBackgroundBrush}"
+    BorderBrush="{Binding BrushService.BorderBrush}">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Title  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,30"
+            HorizontalAlignment="Center"
+            FontSize="24"
+            FontWeight="SemiBold"
+            Foreground="White"
+            Text="Welcome to Echoslate!" />
+
+        <!--  Buttons  -->
+        <StackPanel
+            Grid.Row="1"
+            Margin="15"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <Button
+                Width="400"
+                Height="50"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="CreateNew_OnClick"
+                Content="🗎 Create a new file"
+                FontSize="16" />
+
+            <Button
+                Width="400"
+                Height="50"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="OpenExisting_OnClick"
+                Content="📂 Open an existing file"
+                FontSize="16" />
+        </StackPanel>
+
+        <!--  Checkbox  -->
+        <CheckBox
+            Grid.Row="2"
+            Margin="0,30,0,0"
+            HorizontalAlignment="Center"
+            Content="Don't show this again (always open last used file)"
+            Foreground="{Binding BrushService.ForegroundBrush}"
+            IsChecked="{Binding DontShowAgain}" />
+    </Grid>
+</UserControl>

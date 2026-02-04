@@ -1,10 +1,13 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 
 namespace Echoslate.Core.ViewModels;
 
 public class WelcomeViewModel : INotifyPropertyChanged {
+	public IBrushService BrushService => AppServices.BrushService;
+	
 	private bool _dontShowAgain;
 	public bool DontShowAgain {
 		get => _dontShowAgain;
