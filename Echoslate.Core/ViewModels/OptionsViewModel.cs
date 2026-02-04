@@ -8,6 +8,8 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public class OptionsViewModel : INotifyPropertyChanged {
+	public IBrushService BrushService => AppServices.BrushService;
+	
 	private bool _autoSave;
 	public bool AutoSave {
 		get => _autoSave;

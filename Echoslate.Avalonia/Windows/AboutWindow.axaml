@@ -3,10 +3,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    d:DesignHeight="300"
-    d:DesignWidth="400"
-    Background="{StaticResource AppBackground}"
-    Foreground="{StaticResource Foreground}">
+    xmlns:services="clr-namespace:Echoslate.Core.Services;assembly=Echoslate.Core"
+    Background="{Binding AppBackgroundBrush, Source={x:Static services:AppServices.BrushService}}"
+    Foreground="{Binding ForegroundBrush, Source={x:Static services:AppServices.BrushService}}">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="256" />

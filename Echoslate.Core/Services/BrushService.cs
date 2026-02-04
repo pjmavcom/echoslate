@@ -6,8 +6,28 @@ public class BrushService : IBrushService {
 	static Func<ColorRgba, object>? _brushFactory { get; set; }
 	
 	public object AppBackgroundBrush => CreateBrush(ColorRgba.AppBackground);
+	public object AppDarkBackgroundBrush => CreateBrush(ColorRgba.AppDarkBackground);
+	public object ControlBackgroundBrush => CreateBrush(ColorRgba.ControlBackground);
+	public object EditorBackgroundBrush => CreateBrush(ColorRgba.EditorBackground);
+	public object RaisedBackgroundBrush => CreateBrush(ColorRgba.RaisedBackground);
+	
 	public object ForegroundBrush => CreateBrush(ColorRgba.Foreground);
+	public object SubtleForegroundBrush => CreateBrush(ColorRgba.SubtleForeground);
+	
+	public object LightAccentBrush => CreateBrush(ColorRgba.LightAccent);
 	public object AccentBrush => CreateBrush(ColorRgba.Accent);
+	public object DarkAccentBrush => CreateBrush(ColorRgba.DarkAccent);
+	
+	public object BorderBrush => CreateBrush(ColorRgba.Border);
+	public object BorderSilverBrush => CreateBrush(ColorRgba.BorderSilver);
+	public object BorderMidBrush => CreateBrush(ColorRgba.BorderMid);
+	public object BorderDarkBrush => CreateBrush(ColorRgba.BorderDark);
+
+	public object ButtonDisabledBackgroundBrush => CreateBrush(ColorRgba.ButtonDisabledBackground);
+	public object ButtonBackgroundBrush => CreateBrush(ColorRgba.ButtonBackground);
+	public object ButtonHoverBackgroundBrush => CreateBrush(ColorRgba.ButtonHoverBackground);
+	public object ButtonPressedBackgroundBrush => CreateBrush(ColorRgba.ButtonPressedBackground);
+	
 	public object WarningBrush => CreateBrush(ColorRgba.DangerRed);
 	public static object DefaultBrush => CreateBrush(ColorRgba.ChoreGray);
 

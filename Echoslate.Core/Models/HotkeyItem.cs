@@ -21,7 +21,10 @@ public class HotkeyItem : INotifyPropertyChanged {
 		}
 	}
 
-
+	public HotkeyItem(string hotkey, string description) {
+		Hotkey = hotkey;
+		Description = description;
+	}
 	public event PropertyChangedEventHandler? PropertyChanged;
 	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -18,11 +18,13 @@ public class AvaloniaDialogService : IDialogService {
 	public async Task<bool> ShowAboutAsync() {
 		return await ShowDialogAsync(new AboutWindow(), "About Echoslate");
 	}
-	public Task<bool> ShowHelpAsync() {
-		throw new System.NotImplementedException();
+	public async Task<bool> ShowHelpAsync() {
+		return await ShowDialogAsync(new HelpWindow(), "Hotkey Help");
 	}
-	public Task<OptionsViewModel?> ShowOptionsAsync(AppSettings appSettings, AppData appData) {
-		throw new System.NotImplementedException();
+	public async Task<OptionsViewModel?> ShowOptionsAsync(AppSettings appSettings, AppData appData) {
+		OptionsViewModel vm = new OptionsViewModel(appSettings, appData);
+		OptionsWindow view = new OptionsWindow(vm);
+		return await ShowDialogAsync<OptionsViewModel>(view, "Options");
 	}
 	public Task<bool> ShowWelcomeWindowAsync() {
 		throw new System.NotImplementedException();
