@@ -9,6 +9,8 @@ public readonly struct ColorRgba(byte r, byte g, byte b, byte a = 255) {
 	public static readonly ColorRgba Default = new(127, 127, 127);
 	public static readonly ColorRgba White = new(255, 255, 255);
 	public static readonly ColorRgba Black = new(0, 0, 0);
+
+	public static readonly ColorRgba Transparent = new(0, 0, 0, 0);
 	
 	public static readonly ColorRgba AccentBlue = new(0, 122, 204);
 	public static readonly ColorRgba SuccessGreen = new(40, 167, 69);
@@ -27,7 +29,7 @@ public readonly struct ColorRgba(byte r, byte g, byte b, byte a = 255) {
 
 	public static readonly ColorRgba AppBackground = new(43, 43, 43);
 
-	// ControlBrushKey}" Color= "Transparent" />
+	
 	public static readonly ColorRgba HighlightBrushKey = new(43, 87, 154);
 	public static readonly ColorRgba AppDarkBackground = new(30, 31, 34);
 	public static readonly ColorRgba ControlBackground = new(14, 14, 14);

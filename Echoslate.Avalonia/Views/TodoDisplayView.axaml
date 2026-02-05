@@ -1,41 +1,20 @@
 <UserControl
-    x:Class="Echoslate.Wpf.Views.TodoDisplayView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="Echoslate.Avalonia.Views.TodoDisplayView"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:behaviors="clr-namespace:Echoslate.Wpf.Behaviors"
-    xmlns:converters="clr-namespace:Echoslate.Wpf.Converters"
+    xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+    xmlns:converters="clr-namespace:Echoslate.Avalonia.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:Echoslate.Wpf.Views"
+    xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
     d:DesignHeight="500"
     d:DesignWidth="1400"
-    IsVisibleChanged="TodoListView_IsVisibleChanged"
-    mc:Ignorable="d">
+    x:DataType="local:TodoDisplayViewModelBase">
     <UserControl.Resources>
         <converters:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
         <converters:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
         <converters:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
-        <converters:IsTagSelectedConverter x:Key="IsTagSelectedConverter" />
     </UserControl.Resources>
-    <UserControl.InputBindings>
-        <KeyBinding Key="Enter" Command="{Binding NewTodoAddCommand}" />
-        <KeyBinding
-            Key="Enter"
-            Command="{Binding AddAndCompleteCommand}"
-            Modifiers="Control" />
-        <KeyBinding
-            Key="K"
-            Command="{Binding ChangeSeverityHotkeyCommand}"
-            CommandParameter="up"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="J"
-            Command="{Binding ChangeSeverityHotkeyCommand}"
-            CommandParameter="down"
-            Modifiers="Alt" />
-    </UserControl.InputBindings>
-    <Grid Background="{StaticResource AppDarkBackground}" PreviewKeyDown="Window_PreviewKeyDown">
+    <Grid Background="{DynamicResource AppDarkBackgroundBrush}" KeyDown="Window_KeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -47,18 +26,17 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <!--  Filter button bar  -->
-        <Grid Grid.Row="0" Background="{StaticResource AppDarkBackground}">
+        <Grid Grid.Row="0" Background="{DynamicResource AppDarkBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button
                 Grid.Column="0"
-                Width="Auto"
                 Background="{Binding CurrentSeverityBrush}"
+                Classes="severity-button"
                 Command="{Binding CycleSeverityFilterCommand}"
-                Content="Severity"
-                Style="{StaticResource SeverityButton}" />
+                Content="Severity" />
             <ItemsControl
                 Grid.Column="1"
                 Margin="10,10,10,5"
@@ -72,28 +50,11 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button
+                            Classes="filter-button"
+                            Classes.selected="{Binding IsSelected}"
                             Command="{Binding SelectCommand}"
                             CommandParameter="{Binding}"
-                            Content="{Binding DisplayTitle}">
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource FilterButton}" TargetType="Button">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#5A5A5A" />
-                                        </Trigger>
-                                        <DataTrigger Value="True">
-                                            <DataTrigger.Binding>
-                                                <MultiBinding Converter="{StaticResource IsTagSelectedConverter}">
-                                                    <Binding Path="." />
-                                                    <Binding Path="DataContext.CurrentFilter" RelativeSource="{RelativeSource AncestorType=UserControl}" />
-                                                </MultiBinding>
-                                            </DataTrigger.Binding>
-                                            <Setter Property="Background" Value="#0078D7" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                            Content="{Binding DisplayTitle}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ContextMenu>
@@ -105,21 +66,18 @@
         </Grid>
 
         <!--  Items NotesPanel  -->
-        <views:ItemNotesPanelView
-            x:Name="itemNotesPanel"
-            Grid.Row="0"
-            Grid.RowSpan="4"
-            Grid.Column="1"
-            NotesPanelCompleteRequested="NotesPanelCompleteRequested"
-            NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
-            SelectedTodoItem="{Binding DataContext.SelectedTodoItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" />
+        <!--  <views:ItemNotesPanelView x:Name="itemNotesPanel"  -->
+        <!--  Grid.Row="0" Grid.RowSpan="4"  -->
+        <!--  Grid.Column="1"  -->
+        <!--  NotesPanelCompleteRequested="NotesPanelCompleteRequested" NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"  -->
+        <!--  SelectedTodoItem="{Binding DataContext.SelectedTodoItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" />  -->
 
         <!--  Sorting options row  -->
         <StackPanel
             Grid.Row="1"
             Grid.Column="0"
             Margin="7,0,0,0"
-            Background="{StaticResource AppDarkBackground}"
+            Background="{DynamicResource AppDarkBackgroundBrush}"
             Orientation="Horizontal">
             <ComboBox
                 Width="306"
@@ -160,7 +118,6 @@
         </StackPanel>
 
         <!--  Main TodoList view  -->
-        <!--  x:Name="lbTodos"  -->
         <Border
             Grid.Row="2"
             Grid.Column="0"
@@ -181,16 +138,12 @@
                 <ListBox
                     Margin="0"
                     Padding="7,4"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
+                    behaviors:ListBoxSelectedItemsBehavior.SelectedItems="{Binding SelectedTodoItems, Mode=TwoWay}"
+                    DoubleTapped="ListBox_DoubleTapped"
                     ItemsSource="{Binding DisplayedItems}"
                     KeyboardNavigation.TabIndex="0"
                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                    SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
-                    SelectionMode="Extended">
-                    <b:Interaction.Behaviors>
-                        <behaviors:SelectedItemsBehavior SelectedItems="{Binding DataContext.SelectedTodoItems, RelativeSource={RelativeSource AncestorType=ListBox}, Mode=OneWay}" />
-                    </b:Interaction.Behaviors>
+                    SelectionMode="Multiple">
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Command="{Binding ContextMenuEditCommand}" Header="Edit" />
@@ -209,24 +162,23 @@
                             <MenuItem Command="{Binding ContextMenuCompleteCommand}" Header="Complete" />
                             <!-- <Separator /> -->
                             <!-- <MenuItem Command="{Binding DebugSearchGuidCommand}" Header="Find GUID" /> -->
-                            <!-- <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print Todo" /> -->
+                            <!-- <MenuItem Command="{Binding DebugPrintTodoCommand}" Header="Debug Print To do" /> -->
                         </ContextMenu>
                     </ListBox.ContextMenu>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Height" Value="auto" />
+                    <ListBox.ItemContainerTheme>
+                        <ControlTheme BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                            <Setter Property="Height" Value="40" />
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Padding" Value="0" />
-                            <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
+                        </ControlTheme>
+                    </ListBox.ItemContainerTheme>
                     <ListBox.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:CompileBindings="False">
                             <Grid
                                 Height="36"
                                 Margin="2"
                                 Background="Transparent"
-                                ToolTip="{Binding NotesAndTags}">
+                                ToolTip.Tip="{Binding NotesAndTags}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="300" />
                                     <ColumnDefinition Width="172" />
@@ -251,20 +203,11 @@
                                 <TextBlock
                                     Grid.Column="2"
                                     Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
+                                    DoubleTapped="Severity_OnDoubleTapped"
                                     FontWeight="SemiBold"
                                     Foreground="White"
-                                    TextAlignment="Center">
-                                    <TextBlock.InputBindings>
-                                        <MouseBinding
-                                            Command="{Binding DataContext.ChangeSeverityCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                            CommandParameter="{Binding}"
-                                            Gesture="LeftClick" />
-                                        <MouseBinding
-                                            Command="{Binding DataContext.ChangeSeverityCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                            CommandParameter="{Binding}"
-                                            Gesture="LeftDoubleClick" />
-                                    </TextBlock.InputBindings>
-                                </TextBlock>
+                                    PointerPressed="Severity_OnPointerPressed"
+                                    TextAlignment="Center" />
                                 <Grid Grid.Column="3">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50" />
@@ -277,46 +220,32 @@
                                         Content="{Binding CurrentFilterRank}" />
                                     <Button
                                         Grid.Column="1"
-                                        Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        Command="{Binding $parent[ListBox].DataContext.RankDownCommand}"
                                         CommandParameter="{Binding}"
                                         Content="▼"
                                         FontSize="16"
-                                        FontWeight="Bold">
-                                        <Button.InputBindings>
-                                            <MouseBinding Command="{Binding DataContext.RankDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" Gesture="LeftDoubleClick" />
-                                            <MouseBinding Gesture="LeftClick" />
-                                        </Button.InputBindings>
-                                    </Button>
+                                        FontWeight="Bold" />
                                     <Button
                                         Grid.Column="2"
-                                        Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        Command="{Binding $parent[ListBox].DataContext.RankUpCommand}"
                                         CommandParameter="{Binding}"
                                         Content="▲"
                                         FontSize="16"
-                                        FontWeight="Bold">
-                                        <Button.InputBindings>
-                                            <MouseBinding Command="{Binding DataContext.RankUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" Gesture="LeftDoubleClick" />
-                                            <MouseBinding Gesture="LeftClick" />
-                                        </Button.InputBindings>
-                                    </Button>
+                                        FontWeight="Bold" />
                                 </Grid>
-                                <Label
+                                <Button
                                     Grid.Column="4"
+                                    Padding="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
                                     Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
+                                    BorderThickness="0"
+                                    Command="{Binding $parent[ListBox].DataContext.ToggleTimerCommand}"
+                                    CommandParameter="{Binding}"
                                     Content="{Binding TimeTaken, UpdateSourceTrigger=PropertyChanged}"
-                                    Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}">
-                                    <Label.InputBindings>
-                                        <MouseBinding
-                                            Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                            CommandParameter="{Binding}"
-                                            Gesture="LeftClick" />
-                                        <MouseBinding
-                                            Command="{Binding DataContext.ToggleTimerCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                            CommandParameter="{Binding}"
-                                            Gesture="LeftDoubleClick" />
-                                    </Label.InputBindings>
-                                </Label>
+                                    Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}" />
                                 <TextBlock
                                     Grid.Column="5"
                                     Margin="8,0,4,0"
@@ -334,7 +263,7 @@
         <Grid
             Grid.Row="3"
             Grid.Column="0"
-            Background="{StaticResource AppDarkBackground}">
+            Background="{DynamicResource AppDarkBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="270" />
@@ -376,20 +305,30 @@
                 </Grid.RowDefinitions>
                 <Button
                     Grid.Column="0"
-                    Width="Auto"
-                    Background="{Binding NewTodoSeverityBrush}"
-                    Command="{Binding CycleNewTodoSeverityCommand}"
-                    Content="Severity"
-                    Foreground="White"
-                    Style="{StaticResource SeverityButton}" />
-                <Button
-                    Grid.Row="1"
-                    Width="Auto"
                     Margin="4,0"
                     Padding="16,8"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="{Binding NewTodoSeverityBrush}"
+                    Classes="severity-button"
+                    Command="{Binding CycleNewTodoSeverityCommand}"
+                    Content="Severity"
+                    Foreground="White" />
+                <Button
+                    Grid.Row="1"
+                    Margin="4,0"
+                    Padding="16,8"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
                     BorderThickness="0"
                     Command="{Binding NewTodoAddCommand}"
                     Content="Add"
+                    CornerRadius="7"
+                    FontWeight="SemiBold"
                     KeyboardNavigation.TabIndex="3" />
             </Grid>
         </Grid>

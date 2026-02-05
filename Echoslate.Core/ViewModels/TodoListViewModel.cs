@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Echoslate.Core.Components;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 
 namespace Echoslate.Core.ViewModels;
 
@@ -28,7 +29,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		foreach (string filter in FilterList) {
 			int count = 0;
 			if (filter == "All") {
-				FilterButtons.Add(new FilterButton(filter, MasterList.Count));
+				FilterButtons.Add(new FilterButton(filter, MasterList.Count, SelectTagCommand));
 				continue;
 			}
 			foreach (TodoItem item in MasterList) {
@@ -39,7 +40,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 					}
 				}
 			}
-			FilterButtons.Add(new FilterButton(filter, count));
+			FilterButtons.Add(new FilterButton(filter, count, SelectTagCommand));
 		}
 		FilterButtons[1].Count = otherList.Count;
 		OnPropertyChanged(nameof(FilterButtons));

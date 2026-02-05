@@ -9,6 +9,8 @@ public interface IBrushService {
 	void SetBrushFactory(Func<ColorRgba, object> factory);
 	static abstract object CreateBrush(ColorRgba color);
 
+	object TransparentBrush { get; }
+	
 	object AppBackgroundBrush { get; }
 	object AppDarkBackgroundBrush { get; }
 	object ControlBackgroundBrush { get; }
@@ -31,6 +33,11 @@ public interface IBrushService {
 	object ButtonBackgroundBrush { get; }
 	object ButtonHoverBackgroundBrush { get; }
 	object ButtonPressedBackgroundBrush { get; }
+	
+	public object SeverityNoneBrush { get; }
+	public object SeverityHighBrush { get; }
+	public object SeverityLowBrush { get; }
+	public object SeverityMedBrush { get; }
 	
 	object WarningBrush { get; }
 	public static object DefaultBrush { get; }

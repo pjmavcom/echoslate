@@ -7,6 +7,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Echoslate.Avalonia.Services;
+using Echoslate.Avalonia.Theming;
 using Echoslate.Avalonia.Windows;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
@@ -32,6 +33,8 @@ public partial class App : Application {
 
 			AppServices.Initialize(mainVM, new AvaloniaApplicationService(desktop), new AvaloniaDispatcherService(), new AvaloniaClipboardService(MainWindow), new AvaloniaDialogService(MainWindow));
 			AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
+			BrushServiceResourceExporter.ExportTo(this.Resources, AppServices.BrushService);
+			
 			AppServices.ApplicationService.Initialize(MainWindow);
 
 			MainWindow.Closing += mainVM.OnClosing;

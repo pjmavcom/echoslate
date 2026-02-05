@@ -69,6 +69,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public string? CurrentFilter {
 		get => _currentFilter;
 		set {
+			if (_currentFilter == value) {
+				return;
+			}
 			_currentFilter = value;
 			RefreshAll();
 			OnPropertyChanged();
@@ -235,6 +238,12 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		RefreshDisplayedItems(true);
 		GetCurrentHashTags();
 		RestoreSelection();
+		UpdateFilterButtonSelection();
+	}
+	private void UpdateFilterButtonSelection() {
+		foreach (FilterButton b in FilterButtons) {
+			b.IsSelected = string.Equals(b.Filter ?? "All", _currentFilter ?? "All", StringComparison.OrdinalIgnoreCase);
+		}
 	}
 	private void RestoreSelection() {
 		TodoItem foundItem = null;
@@ -739,7 +748,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 
 	public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
 	public void AddAndComplete() {
-		TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+		TodoItem item = new TodoItem() {
+			Todo = NewTodoText,
+			Severity = NewTodoSeverity
+		};
 		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
 		if (CurrentFilter != "All") {

@@ -5,6 +5,7 @@ namespace Echoslate.Core.Services;
 public class BrushService : IBrushService {
 	static Func<ColorRgba, object>? _brushFactory { get; set; }
 	
+	public object TransparentBrush => CreateBrush(ColorRgba.Transparent);
 	public object AppBackgroundBrush => CreateBrush(ColorRgba.AppBackground);
 	public object AppDarkBackgroundBrush => CreateBrush(ColorRgba.AppDarkBackground);
 	public object ControlBackgroundBrush => CreateBrush(ColorRgba.ControlBackground);
@@ -27,6 +28,11 @@ public class BrushService : IBrushService {
 	public object ButtonBackgroundBrush => CreateBrush(ColorRgba.ButtonBackground);
 	public object ButtonHoverBackgroundBrush => CreateBrush(ColorRgba.ButtonHoverBackground);
 	public object ButtonPressedBackgroundBrush => CreateBrush(ColorRgba.ButtonPressedBackground);
+	
+	public object SeverityNoneBrush => CreateBrush(ColorRgba.SeverityNone);
+	public object SeverityHighBrush => CreateBrush(ColorRgba.SeverityHigh);
+	public object SeverityLowBrush => CreateBrush(ColorRgba.SeverityLow);
+	public object SeverityMedBrush => CreateBrush(ColorRgba.SeverityMed);
 	
 	public object WarningBrush => CreateBrush(ColorRgba.DangerRed);
 	public static object DefaultBrush => CreateBrush(ColorRgba.ChoreGray);

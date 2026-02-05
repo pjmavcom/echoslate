@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace Echoslate.Core.Components;
 
@@ -17,12 +18,26 @@ public class FilterButton : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(DisplayTitle));
 		}
 	}
+	private bool _isSelected;
+	public bool IsSelected {
+		get => _isSelected;
+		set {
+			if (_isSelected == value) {
+				return;
+			}
+			_isSelected = value;
+			OnPropertyChanged();
+		}
+	}
+	
+	public ICommand? SelectCommand { get; set; }
 
 	public string DisplayTitle =>  Count > 0 ? $"{Filter} {Count}" : Filter;
 
-	public FilterButton(string filter, int count) {
+	public FilterButton(string filter, int count, ICommand? selectCommand = null) {
 		Filter = filter;
 		Count = count;
+		SelectCommand = selectCommand;
 	}
 
 	public event PropertyChangedEventHandler PropertyChanged;

@@ -14,4 +14,8 @@
       <Resource Include="Resources\Echoslate.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Converters\" />
+    </ItemGroup>
+
 </Project>

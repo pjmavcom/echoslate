@@ -29,7 +29,7 @@ public class KanbanViewModel : TodoDisplayViewModelBase {
 					count++;
 				}
 			}
-			FilterButtons.Add(new FilterButton(filter, count));
+			FilterButtons.Add(new FilterButton(filter, count, SelectTagCommand));
 			kanbanIndex++;
 		}
 		OnPropertyChanged(nameof(FilterButtons));

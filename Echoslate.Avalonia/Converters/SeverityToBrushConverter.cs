@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
-using System.Windows.Data;
+using Avalonia.Data.Converters;
 using Echoslate.Core.Services;
 
-namespace Echoslate.Wpf.Converters;
+namespace Echoslate.Avalonia.Converters;
 
 public class SeverityToBrushConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
