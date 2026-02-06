@@ -35,7 +35,7 @@ public class WpfDialogService : IDialogService {
 		WelcomeWindow view = new WelcomeWindow(vm);
 		return await ShowDialogAsync(view, "Welcome to Echoslate", null);
 	}
-	public async Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, List<string> selectedTags) {
+	public async Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, ObservableCollection<string> selectedTags) {
 		TagPickerViewModel vm = new TagPickerViewModel(todoItems, allTags, selectedTags);
 		TagPickerWindow view = new TagPickerWindow(vm);
 		return await ShowDialogAsync<TagPickerViewModel>(view, "Tag Picker");

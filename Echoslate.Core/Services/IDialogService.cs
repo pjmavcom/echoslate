@@ -32,7 +32,7 @@ public interface IDialogService {
 	Task<bool> ShowHelpAsync();
 	Task<OptionsViewModel?> ShowOptionsAsync(AppSettings appSettings, AppData appData);
 	Task<bool> ShowWelcomeWindowAsync();
-	Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, List<string> selectedTags);
+	Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, ObservableCollection<string> selectedTags);
 	Task<TodoItemEditorViewModel?> ShowTodoItemEditorAsync(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags);
 	Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter);
 	Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames);

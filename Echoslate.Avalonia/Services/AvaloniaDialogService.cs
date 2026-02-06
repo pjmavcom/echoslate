@@ -36,8 +36,10 @@ public class AvaloniaDialogService : IDialogService {
 	public Task<bool> ShowWelcomeWindowAsync() {
 		throw new System.NotSupportedException();
 	}
-	public Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, List<string> selectedTags) {
-		throw new System.NotImplementedException();
+	public async Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, ObservableCollection<string> selectedTags) {
+		TagPickerViewModel vm = new TagPickerViewModel(todoItems, allTags, selectedTags);
+		TagPickerWindow view = new TagPickerWindow(vm);
+		return await ShowDialogAsync<TagPickerViewModel>(view, "Tag Picker");
 	}
 	public Task<TodoItemEditorViewModel?> ShowTodoItemEditorAsync(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
 		throw new System.NotImplementedException();
@@ -154,7 +156,7 @@ public class AvaloniaDialogService : IDialogService {
 	}
 	public DialogResult Show(string message, string title, DialogButton buttons, DialogIcon icon) {
 		var vm = new MessageWindowViewModel(message, title, buttons, icon);
-		var view = new MessageWindow(vm); 
+		var view = new MessageWindow(vm);
 		var window = new Window {
 			Content = view,
 			Title = title,

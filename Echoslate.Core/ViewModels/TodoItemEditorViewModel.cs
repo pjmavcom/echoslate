@@ -226,7 +226,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	public async void AddTag() {
 		List<string> selectedTags = new(Tags);
 
-		Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync([_item], AllAvailableTags, new List<string>(selectedTags));
+		Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync([_item], AllAvailableTags, new ObservableCollection<string>(selectedTags));
 		TagPickerViewModel tpvm = await vmTask;
 
 		if (tpvm == null) {

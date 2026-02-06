@@ -21,8 +21,8 @@ public class TagPickerViewModel : INotifyPropertyChanged {
 			return items;
 		}
 	}
-	private List<string> _selectedTags;
-	public List<string> SelectedTags {
+	private ObservableCollection<string> _selectedTags;
+	public ObservableCollection<string> SelectedTags {
 		get => _selectedTags;
 		set {
 			_selectedTags = value;
@@ -49,13 +49,13 @@ public class TagPickerViewModel : INotifyPropertyChanged {
 	public bool Result;
 
 
-	public TagPickerViewModel(List<TodoItem> todoItems, ObservableCollection<string> allTags, List<string> selectedTags) {
+	public TagPickerViewModel(List<TodoItem> todoItems, ObservableCollection<string> allTags, ObservableCollection<string> selectedTags) {
 		SelectedTodoItems = todoItems;
 		AllAvailableTags = allTags;
 		SelectedTags = selectedTags;
 	}
 	public void NewTag() {
-		if (NewTagName == "") {
+		if (string.IsNullOrWhiteSpace(NewTagName)) {
 			return;
 		}
 
