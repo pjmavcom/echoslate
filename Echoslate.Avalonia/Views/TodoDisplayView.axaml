@@ -6,6 +6,7 @@
     xmlns:converters="clr-namespace:Echoslate.Avalonia.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+    xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
     d:DesignHeight="500"
     d:DesignWidth="1400"
     x:DataType="local:TodoDisplayViewModelBase">
@@ -64,13 +65,17 @@
                 </ItemsControl.ContextMenu>
             </ItemsControl>
         </Grid>
-
         <!--  Items NotesPanel  -->
-        <!--  <views:ItemNotesPanelView x:Name="itemNotesPanel"  -->
-        <!--  Grid.Row="0" Grid.RowSpan="4"  -->
-        <!--  Grid.Column="1"  -->
-        <!--  NotesPanelCompleteRequested="NotesPanelCompleteRequested" NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"  -->
-        <!--  SelectedTodoItem="{Binding DataContext.SelectedTodoItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}" />  -->
+        <views:ItemNotesPanelView
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="1"
+            NotesPanelCompleteRequested="NotesPanelCompleteRequested"
+            NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
+            SelectedItem="{Binding SelectedTodoItem}" />
+        <!--  SelectedTodoItem="{Binding SelectedTodoItem, Mode=OneWay}"  -->
+        <!--  DataContext="ItemNotesPanelView"  -->
+        <!--  x:Name="itemNotesPanel"  -->
 
         <!--  Sorting options row  -->
         <StackPanel
@@ -143,6 +148,7 @@
                     ItemsSource="{Binding DisplayedItems}"
                     KeyboardNavigation.TabIndex="0"
                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                    SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
                     SelectionMode="Multiple">
                     <ListBox.ContextMenu>
                         <ContextMenu>
