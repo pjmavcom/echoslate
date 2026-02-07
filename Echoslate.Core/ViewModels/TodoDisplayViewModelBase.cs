@@ -23,7 +23,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			return CurrentSortMethod(items);
 		}
 	}
-	private Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> _currentSortMethod = items => items.OrderByDescending(i => i.Rank);
+	private Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> _currentSortMethod = items => items.OrderByDescending(i => i.CurrentFilterRank);
 	public Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> CurrentSortMethod {
 		get => _currentSortMethod;
 		set {
@@ -398,6 +398,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				}
 			}
 			foreach (string tag in item.Rank.Keys) {
+				if (tag == "All") {
+					continue;
+				}
 				if (!MasterFilterTags.Contains(tag) && !item.HasTag(tag)) {
 					item.Rank.Remove(tag);
 				}
@@ -418,7 +421,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			Log.Warn("MasterList already contains Item.");
 			return;
 		}
-		CleanTodoHashRanks(item);
+		if (item.CurrentFilterRank < 0) {
+			CleanTodoHashRanks(item);
+		}
 		item.UpdateTags(Data.AllTags);
 		MasterList.Add(item);
 		LookForNewTags(item);
@@ -468,8 +473,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void ReRankWithSubsetMoved(TodoItem subset, int newRankForSubsetFirstItem) {
 		List<TodoItem> allItems = new();
-		foreach (TodoItem ih in DisplayedItems) {
-			allItems.Add(ih);
+		var list = DisplayedItems.OrderBy(i => i.CurrentFilterRank).ToList();
+		foreach (TodoItem item in list) {
+			allItems.Add(item);
 		}
 		var remainingItems = allItems
 		   .Where(item => item != subset)
@@ -486,8 +492,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void ReRankWithSubsetMoved(List<TodoItem> subset, int newRankForSubsetFirstItem) {
 		List<TodoItem> allItems = new();
-		foreach (TodoItem ih in DisplayedItems) {
-			allItems.Add(ih);
+		var  list = DisplayedItems.OrderBy(i => i.CurrentFilterRank).ToList();
+		foreach (TodoItem item in list) {
+			allItems.Add(item);
 		}
 		var remainingItems = allItems
 		   .Where(item => !subset.Contains(item))

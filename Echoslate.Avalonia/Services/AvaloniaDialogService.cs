@@ -41,8 +41,10 @@ public class AvaloniaDialogService : IDialogService {
 		TagPickerWindow view = new TagPickerWindow(vm);
 		return await ShowDialogAsync<TagPickerViewModel>(view, "Tag Picker");
 	}
-	public Task<TodoItemEditorViewModel?> ShowTodoItemEditorAsync(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
-		throw new System.NotImplementedException();
+	public async Task<TodoItemEditorViewModel?> ShowTodoItemEditorAsync(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
+		TodoItemEditorViewModel vm = new TodoItemEditorViewModel(td, currentListHash, allAvailableTags);
+		TodoItemEditorWindow view = new TodoItemEditorWindow(vm);
+		return await ShowDialogAsync<TodoItemEditorViewModel>(view, "Edit Todo Item");
 	}
 	public Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter) {
 		throw new System.NotImplementedException();
