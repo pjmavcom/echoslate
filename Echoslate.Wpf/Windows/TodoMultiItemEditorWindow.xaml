@@ -203,7 +203,7 @@
                                     Background="{StaticResource ButtonBackground}"
                                     BorderThickness="0,0,0,1"
                                     FontSize="16"
-                                    Text="{Binding Text}" />
+                                    Text="{Binding Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
