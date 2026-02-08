@@ -553,7 +553,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	private async void MultiEditItems(List<TodoItem> items) {
 		string tagFilter = GetCurrentTagFilterWithoutHash();
-		Task<TodoMultiItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoMultiItemEditorAsync(items, tagFilter);
+		Task<TodoMultiItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoMultiItemEditorAsync(items, tagFilter, AllTags);
 		TodoMultiItemEditorViewModel? vm = await vmTask;
 		if (vm == null) {
 			return;

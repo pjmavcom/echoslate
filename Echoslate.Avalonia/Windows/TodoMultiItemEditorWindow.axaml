@@ -2,8 +2,335 @@
     x:Class="Echoslate.Avalonia.Windows.TodoMultiItemEditorWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
-    <StackPanel Margin="20" Spacing="10" />
+    xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+    xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+    Width="600"
+    x:DataType="viewModels:TodoMultiItemEditorViewModel"
+    Background="{DynamicResource AppDarkBackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
+        </Grid.RowDefinitions>
+
+        <!--  Properties  -->
+        <Border
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="7">
+            <Grid RowDefinitions="Auto,*">
+                <Border
+                    Grid.Row="0"
+                    Margin="1"
+                    Padding="10,0"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ForegroundBrush}"
+                        Text="Properties" />
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Margin="1"
+                    Padding="10,0"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Grid Margin="10,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox
+                            VerticalAlignment="Center"
+                            Classes="toggle-switch"
+                            IsChecked="{Binding IsSeverityChangeable}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="120"
+                            Height="40"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Background="{Binding SeverityButtonBackground}"
+                            Classes="severity-button"
+                            Command="{Binding CycleSeverityCommand}"
+                            Content="Severity"
+                            FontSize="14"
+                            Foreground="White" />
+
+                        <CheckBox
+                            Grid.Column="2"
+                            Margin="30,0,0,0"
+                            VerticalAlignment="Center"
+                            Classes="toggle-switch"
+                            Content="Rank:"
+                            FontSize="16"
+                            Foreground="{DynamicResource SubtleForegroundBrush}"
+                            IsChecked="{Binding IsRankChangeable}" />
+                        <StackPanel
+                            Grid.Column="3"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Border
+                                Height="30"
+                                BorderBrush="#494949"
+                                BorderThickness="1">
+                                <TextBlock
+                                    Width="70"
+                                    Height="30"
+                                    behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                    behaviors:MouseWheelNumericBehavior.Minimum="0"
+                                    behaviors:MouseWheelNumericBehavior.TargetProperty="Rank"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    IsEnabled="{Binding IsRankEnabled}"
+                                    Text="{Binding Rank}"
+                                    TextAlignment="Center"
+                                    ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                            </Border>
+                            <Button
+                                Width="40"
+                                Margin="8,0,5,0"
+                                Command="{Binding RankToTopCommand}"
+                                Content="▲▲"
+                                IsEnabled="{Binding IsRankEnabled}"
+                                ToolTip.Tip="Move to top" />
+                            <Button
+                                Width="40"
+                                Command="{Binding RankToBottomCommand}"
+                                Content="▼▼"
+                                IsEnabled="{Binding IsRankEnabled}"
+                                ToolTip.Tip="Move to bottom" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!--  TODO Text  -->
+        <Border
+            Grid.Row="1"
+            Margin="7"
+            Background="{DynamicResource ControlBackgroundBrush}">
+            <Grid RowDefinitions="Auto,*">
+                <Border
+                    Grid.Row="0"
+                    Margin="1"
+                    Padding="10,0"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ForegroundBrush}"
+                        Text="Title" />
+                </Border>
+                <Border
+                    Grid.Row="1"
+                    Margin="1"
+                    Padding="10,0"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Classes="toggle-switch"
+                            FontSize="16"
+                            Foreground="{DynamicResource SubtleForegroundBrush}"
+                            IsChecked="{Binding IsTodoChangeable}" />
+                        <TextBox
+                            Grid.Column="1"
+                            Height="60"
+                            Margin="20,0,0,0"
+                            AcceptsReturn="True"
+                            FontSize="15"
+                            Text="{Binding Todo, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!--  Tags  -->
+        <Border
+            Grid.Row="2"
+            Margin="7"
+            Background="{DynamicResource ControlBackgroundBrush}">
+            <Grid RowDefinitions="Auto,*">
+                <Border
+                    Grid.Row="0"
+                    Margin="1"
+                    Padding="10,0"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ForegroundBrush}"
+                        Text="Tags" />
+                </Border>
+                <Border
+                    Grid.Row="1"
+                    Margin="1"
+                    Padding="10,0"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Grid Margin="10,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Top">
+                            <Button
+                                Width="90"
+                                Height="35"
+                                Command="{Binding AddTagCommand}"
+                                Content="Add Tag"
+                                FontSize="14" />
+                            <CheckBox
+                                Margin="0,10,0,8"
+                                HorizontalAlignment="Left"
+                                Classes="toggle-switch"
+                                FontSize="16"
+                                Foreground="{DynamicResource SubtleForegroundBrush}"
+                                IsChecked="{Binding IsTagChangeable}" />
+                        </StackPanel>
+
+                        <ListBox
+                            Grid.Column="1"
+                            Height="150"
+                            Margin="0"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            ItemsSource="{Binding Tags}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <Grid Height="36" Background="Transparent">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button
+                                            Width="30"
+                                            Height="24"
+                                            Background="#FF4444"
+                                            Command="{Binding $parent[UserControl].DataContext.DeleteTagCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="X"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Foreground="White" />
+                                        <TextBox
+                                            Grid.Column="1"
+                                            Height="24"
+                                            MinWidth="140"
+                                            Margin="8,0,0,0"
+                                            Background="{DynamicResource ButtonBackgroundBrush}"
+                                            BorderThickness="0,0,0,1"
+                                            FontSize="16"
+                                            Text="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!--  Bottom Buttons  -->
+        <StackPanel
+            Grid.Row="3"
+            Margin="0,10,0,10"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <CheckBox
+                Margin="0,0,3,0"
+                VerticalAlignment="Center"
+                Classes="toggle-switch"
+                FontSize="16"
+                Foreground="{DynamicResource SubtleForegroundBrush}"
+                IsChecked="{Binding IsCompleteChangeable}" />
+
+            <Button
+                Width="140"
+                Margin="0,0,15,0"
+                Click="Complete_OnClick"
+                Content="{Binding CompleteButtonContent}"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource ForegroundBrush}"
+                IsEnabled="{Binding IsCompleteChangeable}">
+                <Button.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Background" Value="#4CAF50" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                        Padding="12,8"
+                                        Background="{TemplateBinding Background}"
+                                        CornerRadius="7">
+                                        <ContentPresenter
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Content="{TemplateBinding Content}"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Foreground="{TemplateBinding Foreground}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style Selector="^:disabled">
+                            <Setter Property="Background" Value="#2E7D32" />
+                            <Setter Property="Opacity" Value="0.7" />
+                        </Style>
+                    </Style>
+                </Button.Styles>
+            </Button>
+            <Button
+                Width="140"
+                Margin="0,0,15,0"
+                Background="#FF0066CC"
+                BorderBrush="#FF0077EE"
+                Click="Ok_OnClick"
+                Content="OK"
+                FontSize="16"
+                Foreground="{DynamicResource ForegroundBrush}"
+                IsDefault="True" />
+            <Button
+                Width="140"
+                Margin="0,0,15,0"
+                Background="#F44336"
+                Click="Cancel_OnClick"
+                Content="Cancel"
+                FontSize="16"
+                Foreground="{DynamicResource ForegroundBrush}"
+                IsCancel="True" />
+        </StackPanel>
+    </Grid>
 </UserControl>

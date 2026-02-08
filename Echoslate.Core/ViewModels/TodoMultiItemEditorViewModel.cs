@@ -40,13 +40,14 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 	public bool IsTodoChangeable { get; set; }
 	public bool IsTagChangeable { get; set; }
 
+	private ObservableCollection<string> AllAvailableTags;
 	public ObservableCollection<string> _tags;
 	public ObservableCollection<string> Tags {
 		get => _tags;
 		set {
 			_tags = value;
 			IsTagChangeable = true;
-			OnPropertyChanged(nameof(IsRankChangeable));
+			OnPropertyChanged(nameof(IsTagChangeable));
 			OnPropertyChanged();
 		}
 	}
@@ -83,12 +84,17 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 	private List<TodoItem> items;
 	public readonly List<string> CommonTags;
 
-	public TodoMultiItemEditorViewModel(List<TodoItem> items, string currentFilter) {
+	public TodoMultiItemEditorViewModel(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags) {
 		if (items.Count != 0) {
 			IsRankEnabled = items[0].CurrentView != View.History;
 		}
 
+		AllAvailableTags = allAvailableTags;
 		CommonTags = GetCommonTags(items);
+		_tags = new ObservableCollection<string>();
+		foreach (string tag in CommonTags) {
+			Tags.Add(tag.TrimStart('#'));
+		}
 
 		_currentFilter = currentFilter;
 		_currentSeverity = items[0].Severity;
@@ -100,11 +106,6 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 
 		CurrentSeverity = _currentSeverity;
 		CompleteButtonContent = items[0].IsComplete ? "Reactivate" : "Complete";
-
-		_tags = new ObservableCollection<string>();
-		foreach (string tag in CommonTags) {
-			_tags.Add(tag);
-		}
 	}
 	private static List<string> GetCommonTags(List<TodoItem> items) {
 		return new(items.Select(x => x.Tags ?? Enumerable.Empty<string>()).Aggregate((a, b) => a.Intersect(b).ToList()));
@@ -113,7 +114,7 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 		if (IsTagChangeable) {
 			ResultTags = new List<string>();
 			foreach (string th in _tags) {
-				string tag = th.ToUpper();
+				string tag = NormalizeTag(th);
 				if (!ResultTags.Contains(tag))
 					ResultTags.Add(tag);
 			}
@@ -128,29 +129,39 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 			ResultTodo = Todo;
 		}
 	}
+	public static string NormalizeTag(string? tag) {
+		var s = (tag ?? "").Trim();
+		s = s.TrimStart('#');
+		if (s.Length == 0) {
+			return "#";
+		}
+		return "#" + s.ToUpperInvariant();
+	}
 	private void Delete(string th) {
 		_tags.Remove(th);
 		IsTagChangeable = true;
 		OnPropertyChanged(nameof(IsTagChangeable));
 	}
-	private void AddTag() {
-		string name = "#NEWTAG";
-		int tagNumber = 0;
-		bool nameExists = false;
-		do {
-			foreach (string t in _tags) {
-				if (t == name.ToUpper() + tagNumber ||
-					t == "#" + name.ToUpper() + tagNumber) {
-					tagNumber++;
-					nameExists = true;
-					break;
-				}
-				nameExists = false;
-			}
-		} while (nameExists);
+	private async void AddTag() {
+		List<string> selectedTags = new();
+		foreach (string tag in Tags) {
+			selectedTags.Add(NormalizeTag(tag));
+		}
 
-		string th = name + tagNumber;
-		_tags.Add(th);
+		Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync([null], AllAvailableTags, new ObservableCollection<string>(selectedTags));
+		TagPickerViewModel tpvm = await vmTask;
+
+		if (tpvm == null) {
+			return;
+		}
+		if (tpvm.Result) {
+			foreach (string tag in selectedTags) {
+				Tags.Remove(tag.TrimStart('#'));
+			}
+			foreach (string tag in tpvm.SelectedTags) {
+				Tags.Add(tag.TrimStart('#'));
+			}
+		}
 		IsTagChangeable = true;
 		OnPropertyChanged(nameof(IsTagChangeable));
 	}

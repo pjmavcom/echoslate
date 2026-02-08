@@ -46,8 +46,10 @@ public class AvaloniaDialogService : IDialogService {
 		TodoItemEditorWindow view = new TodoItemEditorWindow(vm);
 		return await ShowDialogAsync<TodoItemEditorViewModel>(view, "Edit Todo Item");
 	}
-	public Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter) {
-		throw new System.NotImplementedException();
+	public async Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags) {
+		TodoMultiItemEditorViewModel vm = new TodoMultiItemEditorViewModel(items, currentFilter, allAvailableTags);
+		TodoMultiItemEditorWindow view = new TodoMultiItemEditorWindow(vm);
+		return await ShowDialogAsync<TodoMultiItemEditorViewModel>(view, "Edit Multiple Todo Items");
 	}
 	public async Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames) {
 		EditTabsViewModel vm = new EditTabsViewModel(filterNames);

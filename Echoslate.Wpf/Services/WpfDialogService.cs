@@ -45,8 +45,8 @@ public class WpfDialogService : IDialogService {
 		TodoItemEditorWindow view = new TodoItemEditorWindow(vm);
 		return await ShowDialogAsync<TodoItemEditorViewModel>(view, "Edit Todo Item");
 	}
-	public async Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter) {
-		TodoMultiItemEditorViewModel vm = new TodoMultiItemEditorViewModel(items, currentFilter);
+	public async Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags) {
+		TodoMultiItemEditorViewModel vm = new TodoMultiItemEditorViewModel(items, currentFilter, allAvailableTags);
 		TodoMultiItemEditorWindow view = new TodoMultiItemEditorWindow(vm);
 		return await ShowDialogAsync<TodoMultiItemEditorViewModel>(view, "Edit Multiple Todo Items");
 	}
