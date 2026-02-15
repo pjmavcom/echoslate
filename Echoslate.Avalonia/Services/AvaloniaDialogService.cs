@@ -56,8 +56,10 @@ public class AvaloniaDialogService : IDialogService {
 		EditTabsWindow view = new EditTabsWindow(vm);
 		return await ShowDialogAsync<EditTabsViewModel>(view, "Edit Tabs");
 	}
-	public Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null) {
-		throw new System.NotImplementedException();
+	public async Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null) {
+		ChooseDraftViewModel vm = new ChooseDraftViewModel(drafts, defaultDraft);
+		ChooseDraftWindow view = new ChooseDraftWindow(vm);
+		return await ShowDialogAsync<ChooseDraftViewModel>(view, "Append to which draft?");
 	}
 	public Task<bool> ShowDialogAsync(object view, string title) {
 		return ShowDialogAsync(view, title, _owner);

@@ -40,6 +40,9 @@ public class DataGridSelectedItemsBehavior : AvaloniaObject {
 		}
 
 		void OnAttached(object? sender, VisualTreeAttachmentEventArgs args) {
+			if (dataGrid.ItemsSource == null) {
+				return;
+			}
 			dataGrid.AttachedToVisualTree -= OnAttached;
 			SyncToGrid(dataGrid, newItems);
 			dataGrid.SelectionChanged += DataGrid_SelectionChanged;
