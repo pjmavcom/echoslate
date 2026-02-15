@@ -13,9 +13,11 @@ public static class AppServices {
 	public static void Initialize(MainWindowViewModel mainVM, IApplicationService applicationService, IDispatcherService dispatcherService, IClipboardService clipboardService, IDialogService dialogService) {
 		MainWindowVM = mainVM;
 		ApplicationService = applicationService;
-		BrushService = new BrushService();
 		DispatcherService = dispatcherService;
 		ClipboardService = clipboardService;
 		DialogService = dialogService;
+	}
+	public static void InitializeBrushService() {
+		BrushService = new BrushService();
 	}
 }

@@ -39,7 +39,9 @@ public static class MouseWheelNumericBehavior {
 	public static void SetTargetProperty(Control control, string value) => control.SetValue(TargetPropertyProperty, value);
 
 	private static void OnEnabledChanged(AvaloniaPropertyChangedEventArgs<bool> e) {
-		if (e.Sender is not Control control) return;
+		if (e.Sender is not Control control) {
+			return;
+		}
 
 		if (e.NewValue.GetValueOrDefault()) {
 			control.PointerWheelChanged += Control_PointerWheelChanged;

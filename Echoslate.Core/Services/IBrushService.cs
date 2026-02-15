@@ -40,6 +40,8 @@ public interface IBrushService {
 	public object SeverityMedBrush { get; }
 	
 	object WarningBrush { get; }
+	object EditingBrush { get; }
+	
 	public static object DefaultBrush { get; }
 	private static readonly Dictionary<string, ColorRgba> CommitTypeColors;
 }

@@ -1,0 +1,785 @@
+<UserControl
+    x:Class="Echoslate.Avalonia.Views.HistoryView" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors" xmlns:converters="clr-namespace:Echoslate.Avalonia.Converters" xmlns:core="clr-namespace:Echoslate.Core.Models;assembly=Echoslate.Core" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sys="clr-namespace:System;assembly=System.Runtime" xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core" x:Name="HistoryViewRoot" d:DesignHeight="1200" d:DesignWidth="800" x:DataType="viewModels:HistoryViewModel" mc:Ignorable="d"
+    >
+    <UserControl.Resources>
+        <converters:WidthToBoolConverter
+            x:Key="WideConverter" Threshold="900"
+            />
+        <converters:MathConverter
+            x:Key="Math"
+            />
+        <converters:InvertBoolConverter
+            x:Key="InvertBoolConverter"
+            />
+        <converters:WidthToColumnWidthConverter
+            x:Key="ColumnHideConverter" DefaultWidth="100" Threshold="700"
+            />
+        <converters:BoolToFontWeightConverter
+            x:Key="BoolToFontWeight"
+            />
+        <converters:BoolToVisibilityConverter
+            x:Key="BoolToVisibility"
+            />
+        <converters:BoolToBrushConverter
+            x:Key="EditingBrushConverter"
+            FalseBrush="{StaticResource ForegroundBrush}"
+            TrueBrush="{StaticResource EditingBrush}"
+            />
+        <converters:CommitTypeToBrushConverter
+            x:Key="CommitTypeToBrushConverter"
+            />
+
+        <ContextMenu
+            x:Key="CommittedHistoryContextMenu" x:CompileBindings="False"
+            >
+            <MenuItem
+                Command="{Binding DataContext.UndoCommitCommand, ElementName=HistoryViewRoot}"
+                CommandParameter="{Binding}"
+                Header="Undo Commit"
+                />
+            <MenuItem
+                Command="{Binding DataContext.RecommitCommand, ElementName=HistoryViewRoot}"
+                Header="Commit"
+                />
+            <MenuItem
+                Command="{Binding DataContext.DeleteCommand, ElementName=HistoryViewRoot}"
+                CommandParameter="{Binding}"
+                Header="Delete"
+                />
+        </ContextMenu>
+
+    </UserControl.Resources>
+    <Grid
+        Background="{DynamicResource AppDarkBackgroundBrush}"
+        >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+                Width="5*"
+                />
+            <ColumnDefinition
+                Width="7*"
+                />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="250"
+                />
+            <RowDefinition
+                Height="*"
+                />
+        </Grid.RowDefinitions>
+
+        <!--  Top Left: Selected History Details  -->
+        <Grid
+            Grid.Row="0" Grid.Column="0"
+            Background="{DynamicResource AppDarkBackgroundBrush}"
+            >
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto"
+                    />
+                <RowDefinition
+                    Height="*"
+                    />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="50"
+                    />
+                <ColumnDefinition
+                    Width="*"
+                    />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Orientation="Horizontal"
+                >
+                <TextBlock
+                    Margin="0,0,10,0" VerticalAlignment="Center" FontWeight="SemiBold"
+                    Foreground="{DynamicResource SubtleForegroundBrush}"
+                    Text="Current version:"
+                    />
+                <Button
+                    Width="30" Classes="version-number-button"
+                    Command="{Binding BumpMajorCommand}"
+                    Content="{Binding CurrentHistoryItem.VersionMajor}"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    ToolTip.Tip="Bump major version — resets minor, patch, and build"
+                    />
+                <TextBlock
+                    Margin="5,0" VerticalAlignment="Center" FontSize="20" Text="."
+                    />
+                <Button
+                    Width="30" Classes="version-number-button"
+                    Command="{Binding BumpMinorCommand}"
+                    Content="{Binding CurrentHistoryItem.VersionMinor}"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    ToolTip.Tip="Bump minor version — resets build and revision"
+                    />
+                <TextBlock
+                    Margin="5,0" VerticalAlignment="Center" FontSize="20" Text="."
+                    />
+                <Button
+                    Width="30" Classes="version-number-button"
+                    Command="{Binding BumpBuildCommand}"
+                    Content="{Binding CurrentHistoryItem.VersionBuild}"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    ToolTip.Tip="Bump build version — resets revision"
+                    />
+                <TextBlock
+                    Margin="5,0" VerticalAlignment="Center" FontSize="20" Text="."
+                    />
+                <Button
+                    Width="30" Classes="version-number-button"
+                    Command="{Binding BumpRevisionCommand}"
+                    Content="{Binding CurrentHistoryItem.VersionRevision}"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    ToolTip.Tip="Bump revision number"
+                    />
+            </StackPanel>
+
+            <Button
+                Grid.Row="1" Grid.Column="0" Classes="vertical-commit-button"
+                Command="{Binding CommitCommand}"
+                Content="Commit"
+                IsEnabled="{Binding CanCommit}"
+                />
+
+            <Grid
+                Grid.Row="1" Grid.Column="1"
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition
+                        Height="45"
+                        />
+                    <RowDefinition
+                        Height="45"
+                        />
+                    <RowDefinition
+                        Height="*"
+                        />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Grid.Row="0" Margin="0,0,0,10" Orientation="Horizontal"
+                    >
+                    <ComboBox
+                        Width="100" Margin="0,0,10,0"
+                        ItemsSource="{Binding CommitTypes}"
+                        SelectedItem="{Binding CommitType}"
+                        />
+                    <ComboBox
+                        Width="200" Margin="0,0,10,0"
+                        ItemsSource="{Binding CommitScopes}"
+                        SelectedItem="{Binding CommitScope}"
+                        />
+                    <TextBlock
+                        Margin="5,0" VerticalAlignment="Center" Text=":"
+                        />
+                    <TextBox
+                        Width="300"
+                        Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                    <Button
+                        Command="{Binding DetectBranchCommand}"
+                        Content="Detect Branch"
+                        />
+                </StackPanel>
+                <Border
+                    Grid.Row="1" Margin="8,4" Background="#1E1E1E" CornerRadius="7"
+                    >
+                    <Grid>
+                        <Border
+                            BorderBrush="#999999" BorderThickness="7,7,0,0" CornerRadius="7"
+                            />
+                        <Border
+                            Margin="-1" BorderBrush="#494949" BorderThickness="0,0,7,7" CornerRadius="7" IsHitTestVisible="False"
+                            />
+                        <TextBox
+                            Grid.Row="0" Margin="1" behaviors:TextBoxScrollBehavior.AlwaysScroll="True"
+                            Background="{DynamicResource EditorBackgroundBrush}"
+                            BorderBrush="{DynamicResource AccentBrush}"
+                            DoubleTapped="TitleTextBox_DoubleTapped" FontSize="14" FontWeight="SemiBold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            IsReadOnly="{Binding IsCurrentSelected, Converter={StaticResource InvertBoolConverter}}"
+                            Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap"
+                            />
+                    </Grid>
+                </Border>
+                <Border
+                    Grid.Row="2" Margin="8,4" Background="#1E1E1E" CornerRadius="7"
+                    >
+                    <Grid>
+                        <Border
+                            BorderBrush="#999999" BorderThickness="7,7,0,0" CornerRadius="7"
+                            />
+                        <Border
+                            Margin="-1" BorderBrush="#494949" BorderThickness="0,0,7,7" CornerRadius="7" IsHitTestVisible="False"
+                            />
+                        <TextBox
+                            Grid.Row="1" Margin="1" AcceptsReturn="True"
+                            Background="{StaticResource EditorBackground}"
+                            BorderBrush="{StaticResource Accent}"
+                            Foreground="{StaticResource Foreground}"
+                            IsReadOnly="{Binding IsCurrentSelected, Converter={StaticResource InvertBoolConverter}}"
+                            Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap"
+                            />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!--  Top Right: Selected History Details  -->
+        <Grid
+            Grid.Row="0" Grid.Column="1"
+            Background="{StaticResource AppDarkBackground}"
+            >
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="49"
+                    />
+                <RowDefinition
+                    Height="*"
+                    />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="50"
+                    />
+                <ColumnDefinition
+                    Width="*"
+                    />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Orientation="Horizontal"
+                >
+                <Label
+                    Margin="0,5,0,15" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Commit Date:"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    IsVisible="{Binding IsCommitted, Converter={StaticResource BoolToVisibility}}"
+                    />
+                <TextBlock
+                    Margin="0,5,0,15" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                    Foreground="{DynamicResource LightAccentBrush}"
+                    IsVisible="{Binding IsCommitted, Converter={StaticResource BoolToVisibility}}"
+                    Text="{Binding CommitDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}"
+                    />
+            </StackPanel>
+            <Button
+                Grid.Row="1" Grid.Column="0" Padding="10,5" Classes="vertical"
+                Command="{Binding CopyCommitMessageCommand}"
+                Content="Copy"
+                Foreground="{DynamicResource ForegroundBrush}"
+                />
+            <TextBox
+                Grid.Row="1" Grid.Column="1" Height="200" behaviors:TextBoxScrollBehavior.AlwaysScroll="True" IsReadOnly="True"
+                Text="{Binding CommitMessage, Mode=OneWay}"
+                TextWrapping="Wrap"
+                />
+        </Grid>
+
+        <!--  Bottom Left: History List  -->
+        <Grid
+            Grid.Row="1" Grid.Column="0"
+            Background="{StaticResource AppDarkBackground}"
+            >
+            <Border
+                Margin="8,4" Background="#1E1E1E" CornerRadius="7"
+                >
+                <Grid
+                    x:Name="CommittedItemsHost"
+                    >
+                    <Border
+                        BorderBrush="#999999" BorderThickness="7,7,0,0" CornerRadius="7"
+                        />
+                    <Border
+                        Margin="-1" BorderBrush="#494949" BorderThickness="0,0,7,7" CornerRadius="7" IsHitTestVisible="False"
+                        />
+                    <Border
+                        Margin="0"
+                        Background="{DynamicResource ControlBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1" ClipToBounds="True" CornerRadius="7"
+                        >
+
+                        <DataGrid
+                            Margin="3"
+                            behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedHistoryItems}"
+                            AutoGenerateColumns="False" Background="Transparent" BorderThickness="0" CanUserSortColumns="False"
+                            Foreground="{DynamicResource SubtleForegroundBrush}"
+                            ItemsSource="{Binding CommittedHistoryItems}"
+                            SelectedItem="{Binding SelectedHistoryItem}"
+                            SelectionMode="Extended"
+                            >
+                            <DataGrid.Styles>
+                                <Style
+                                    Selector="DataGridRow"
+                                    >
+                                    <Setter Property="ContextMenu" Value="{StaticResource CommittedHistoryContextMenu}" />
+                                </Style>
+                                <Style
+                                    Selector="DataGridCell"
+                                    >
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    <Setter Property="ContextMenu" Value="{StaticResource CommittedHistoryContextMenu}" />
+                                    <Setter Property="Padding" Value="6,2" />
+                                </Style>
+                                <Style
+                                    x:DataType="core:HistoryItem" Selector="DataGridCell TextBlock"
+                                    >
+                                    <Setter Property="FontWeight" Value="{Binding IsEditing, Converter={StaticResource BoolToFontWeight}}" />
+                                    <Setter Property="Foreground" Value="{Binding IsEditing, Converter={StaticResource EditingBrushConverter}}" />
+                                </Style>
+                                <Style
+                                    Selector="DataGridColumnHeader"
+                                    >
+                                    <Setter Property="Padding" Value="8,4" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                    <Setter Property="Foreground" Value="{DynamicResource SubtleForegroundBrush}" />
+                                    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource AppDarkBackgroundBrush}" />
+                                    <Setter Property="BorderThickness" Value="0,0,1,1" />
+                                </Style>
+                            </DataGrid.Styles>
+
+                            <DataGrid.Columns>
+                                <!--  ~1~  Type Highlight  @1@  -->
+                                <DataGridTemplateColumn
+                                    Width="20"
+                                    >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Rectangle
+                                                Width="6" Height="20" Margin="1,2" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                                                Fill="{Binding Type, Converter={StaticResource CommitTypeToBrushConverter}}"
+                                                RadiusX="3" RadiusY="3"
+                                                />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!--  ~1~  Version  @1@  -->
+                                <DataGridTextColumn
+                                    Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|100}"
+                                    Binding="{Binding VersionString}"
+                                    Header="Version"
+                                    />
+
+                                <!--  ~1~  Date  @1@  -->
+                                <DataGridTextColumn
+                                    Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|160}"
+                                    Binding="{Binding CommitDate, StringFormat=yyyy-MM-dd:mm}"
+                                    Header="Date"
+                                    />
+
+                                <!--  ~1~  Type  @1@  -->
+                                <DataGridTextColumn
+                                    Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=700|80}"
+                                    Binding="{Binding Type}"
+                                    Header="Type"
+                                    />
+
+                                <!--  ~1~  Scope  @1@  -->
+                                <DataGridTextColumn
+                                    Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=800|200}"
+                                    Binding="{Binding Scope}"
+                                    Header="Scope"
+                                    />
+
+                                <!--  ~1~  Title  @1@  -->
+                                <DataGridTemplateColumn
+                                    Width="700" Header="Title"
+                                    >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel
+                                                Margin="4,2" Orientation="Horizontal"
+                                                >
+                                                <TextBlock
+                                                    Margin="0,0,6,0" VerticalAlignment="Center" FontSize="12"
+                                                    IsVisible="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}"
+                                                    Text="✏️ "
+                                                    />
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Title}"
+                                                    />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  Bottom Right: Selected History Completed Todos  -->
+        <Grid
+            Grid.Row="1" Grid.Column="1" Margin="7"
+            Background="{DynamicResource AppDarkBackgroundBrush}"
+            >
+            <Grid
+                x:Name="TodosHost" Margin="20"
+                >
+                <!--  Horizontal Layout  -->
+                <Grid
+                    IsVisible="{Binding Bounds, ElementName=TodosHost, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}"
+                    >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}"
+                            />
+                        <ColumnDefinition
+                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}"
+                            />
+                        <ColumnDefinition
+                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}"
+                            />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel
+                        Grid.Column="0" Margin="10,0,0,0"
+                        >
+                        <TextBlock
+                            Margin="0,0,0,8" FontWeight="Bold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}"
+                            />
+                        <Border
+                            Margin="7"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            >
+                            <ListBox
+                                HorizontalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent"
+                                ItemsSource="{Binding BugsCompleted}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                            Margin="4" Padding="8,6"
+                                            Background="{DynamicResource RaisedBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="4"
+                                            >
+                                            <Border.ContextMenu>
+                                                <ContextMenu
+                                                    x:CompileBindings="False"
+                                                    >
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Edit Todo"
+                                                        />
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Reactivate"
+                                                        />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+
+                                            <TextBlock
+                                                Margin="8,6" FontSize="14"
+                                                Foreground="{DynamicResource ForegroundBrush}"
+                                                Text="{Binding Todo}"
+                                                TextWrapping="Wrap"
+                                                />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Column="1" Margin="10,0,0,0"
+                        >
+                        <TextBlock
+                            Margin="0,0,0,8" FontWeight="Bold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}"
+                            />
+                        <Border
+                            Margin="7"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            >
+                            <ListBox
+                                HorizontalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent"
+                                ItemsSource="{Binding FeaturesCompleted}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                            Margin="4" Padding="8,6"
+                                            Background="{DynamicResource RaisedBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="4"
+                                            >
+                                            <Border.ContextMenu>
+                                                <ContextMenu
+                                                    x:CompileBindings="False"
+                                                    >
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Edit Todo"
+                                                        />
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Reactivate"
+                                                        />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+                                            <TextBlock
+                                                Margin="8,6" FontSize="14"
+                                                Foreground="{DynamicResource ForegroundBrush}"
+                                                Text="{Binding Todo}"
+                                                TextWrapping="Wrap"
+                                                />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Column="2"
+                        >
+                        <TextBlock
+                            Margin="0,0,0,8" FontWeight="Bold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}"
+                            />
+                        <Border
+                            Margin="7"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            >
+                            <ListBox
+                                HorizontalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent"
+                                ItemsSource="{Binding OtherCompleted}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                            Margin="4" Padding="8,6"
+                                            Background="{DynamicResource RaisedBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="4"
+                                            >
+                                            <Border.ContextMenu>
+                                                <ContextMenu
+                                                    x:CompileBindings="False"
+                                                    >
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Edit Todo"
+                                                        />
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Reactivate"
+                                                        />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+                                            <TextBlock
+                                                Margin="8,6"
+                                                Foreground="{DynamicResource ForegroundBrush}"
+                                                Text="{Binding Todo}"
+                                                TextWrapping="Wrap"
+                                                />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <!--  Vertical Layout  -->
+                <StackPanel
+                    IsVisible="{Binding Bounds, ElementName=TodosHost, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.FalseString}}"
+                    >
+                    <StackPanel
+                        Margin="10,0,0,0"
+                        >
+                        <TextBlock
+                            Margin="0,0,0,8" FontWeight="Bold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}"
+                            />
+                        <Border
+                            Margin="7"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            >
+                            <ListBox
+                                Margin="0,0,0,10" HorizontalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent"
+                                ItemsSource="{Binding BugsCompleted}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                            Margin="4,4,8,4" Padding="8,6"
+                                            Background="{DynamicResource RaisedBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="4"
+                                            >
+                                            <Border.ContextMenu>
+                                                <ContextMenu
+                                                    x:CompileBindings="False"
+                                                    >
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Edit Todo"
+                                                        />
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Reactivate"
+                                                        />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+                                            <TextBlock
+                                                Margin="8,6" FontSize="14"
+                                                Foreground="{DynamicResource ForegroundBrush}"
+                                                Text="{Binding Todo}"
+                                                TextWrapping="Wrap"
+                                                />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel
+                        Margin="10,0,0,0"
+                        >
+                        <TextBlock
+                            Margin="0,0,0,8" FontWeight="Bold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}"
+                            />
+                        <Border
+                            Margin="7"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            >
+                            <ListBox
+                                Margin="0,0,0,10" HorizontalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent"
+                                ItemsSource="{Binding FeaturesCompleted}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                            Margin="4,4,8,4" Padding="8,6"
+                                            Background="{DynamicResource RaisedBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="4"
+                                            >
+                                            <Border.ContextMenu>
+                                                <ContextMenu
+                                                    x:CompileBindings="False"
+                                                    >
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Edit Todo"
+                                                        />
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Reactivate"
+                                                        />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+                                            <TextBlock
+                                                Margin="8,6" FontSize="14"
+                                                Foreground="{DynamicResource ForegroundBrush}"
+                                                Text="{Binding Todo}"
+                                                TextWrapping="Wrap"
+                                                />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel
+                        Margin="10,0,0,0"
+                        >
+                        <TextBlock
+                            Margin="0,0,0,8" FontWeight="Bold"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}"
+                            />
+                        <Border
+                            Margin="7"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            >
+                            <ListBox
+                                Margin="0,0,0,10" HorizontalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent"
+                                ItemsSource="{Binding OtherCompleted}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                            Margin="4,4,8,4" Padding="8,6"
+                                            Background="{DynamicResource RaisedBackgroundBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="4"
+                                            >
+                                            <Border.ContextMenu>
+                                                <ContextMenu
+                                                    x:CompileBindings="False"
+                                                    >
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Edit Todo"
+                                                        />
+                                                    <MenuItem
+                                                        Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Header="Reactivate"
+                                                        />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+                                            <TextBlock
+                                                Margin="8,6" FontSize="14"
+                                                Foreground="{DynamicResource ForegroundBrush}"
+                                                Text="{Binding Todo}"
+                                                TextWrapping="Wrap"
+                                                />
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

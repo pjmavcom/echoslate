@@ -35,6 +35,7 @@ public class BrushService : IBrushService {
 	public object SeverityMedBrush => CreateBrush(ColorRgba.SeverityMed);
 	
 	public object WarningBrush => CreateBrush(ColorRgba.DangerRed);
+	public object EditingBrush => CreateBrush(ColorRgba.EditingOrange);
 	public static object DefaultBrush => CreateBrush(ColorRgba.ChoreGray);
 
 	private static readonly Dictionary<string, ColorRgba> CommitTypeColors = new(StringComparer.OrdinalIgnoreCase) {

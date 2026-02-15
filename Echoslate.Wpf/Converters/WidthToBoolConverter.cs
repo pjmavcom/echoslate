@@ -11,7 +11,10 @@ public class WidthToBoolConverter : IValueConverter {
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 		if (value is double width) {
 			bool isWide = width >= Threshold;
-			bool wantWide = parameter is string and "False" ? false : true;
+			bool wantWide = true;
+			if (parameter is string paramStr && paramStr.Equals("False", StringComparison.OrdinalIgnoreCase)) {
+				wantWide = false;
+			}
 			return isWide == wantWide ? Visibility.Visible : Visibility.Collapsed;
 		}
 		return Visibility.Collapsed;

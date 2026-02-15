@@ -1,18 +1,23 @@
 <Application
-    x:Class="Echoslate.Avalonia.App"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:services="clr-namespace:Echoslate.Core.Services;assembly=Echoslate.Core"
-    RequestedThemeVariant="Default">
+    x:Class="Echoslate.Avalonia.App" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:services="clr-namespace:Echoslate.Core.Services;assembly=Echoslate.Core" RequestedThemeVariant="Default"
+    >
     <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
 
     <Application.Resources>
-        <services:BrushService x:Key="BrushService" x:Shared="True" />
+        <services:BrushService
+            x:Key="BrushService" x:Shared="True"
+            />
     </Application.Resources>
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude
+            Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"
+            />
 
-        <Style Selector="Button">
+        <!--  Base Button  -->
+        <Style
+            Selector="Button"
+            >
             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource SubtleForegroundBrush}" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -22,37 +27,168 @@
             <Setter Property="Padding" Value="12,6" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
+                    <ControlTemplate
+                        TargetType="Button"
+                        >
                         <Border
                             x:Name="border"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="2"
-                            CornerRadius="7">
+                            BorderThickness="2" CornerRadius="7"
+                            >
                             <ContentPresenter
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style Selector="^:pointerover">
+            <Style
+                Selector="^:pointerover"
+                >
                 <Setter Property="Background" Value="{DynamicResource ButtonHoverBackgroundBrush}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                 <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
             </Style>
-            <Style Selector="^.Selected">
+            <Style
+                Selector="^.Selected"
+                >
                 <Setter Property="Background" Value="{DynamicResource ButtonPressedBackgroundBrush}" />
             </Style>
-            <Style Selector="^.IsEnabled">
+            <Style
+                Selector="^.IsEnabled"
+                >
                 <Setter Property="Background" Value="{DynamicResource AppBackgroundBrush}" />
                 <Setter Property="Foreground" Value="{DynamicResource ButtonDisabledBackgroundBrush}" />
             </Style>
         </Style>
+
+        <!--  Vertical Button  -->
+        <Style
+            Selector="Button.vertical"
+            >
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Name="border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        >
+                        <LayoutTransformControl
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            >
+                            <LayoutTransformControl.LayoutTransform>
+                                <RotateTransform Angle="-90" />
+                            </LayoutTransformControl.LayoutTransform>
+                            <ContentPresenter
+                                Name="PART_ContentPresenter" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                />
+                        </LayoutTransformControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <!--  Vertical Commit Button  -->
+        <Style
+            Selector="Button.vertical-commit-button"
+            >
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Name="PART_Border"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4"
+                        >
+                        <LayoutTransformControl
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            >
+                            <LayoutTransformControl.LayoutTransform>
+                                <RotateTransform Angle="-90" />
+                            </LayoutTransformControl.LayoutTransform>
+                            <ContentPresenter
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                />
+                        </LayoutTransformControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style
+                Selector="^:pointerover"
+                >
+                <Setter Property="Background" Value="{DynamicResource LightAccentBrush}" />
+            </Style>
+            <Style
+                Selector="^:pressed"
+                >
+                <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
+            </Style>
+            <Style
+                Selector="^:disabled"
+                >
+                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                <Setter Property="Opacity" Value="0.5" />
+            </Style>
+        </Style>
+
+        <!--  Version Buttons  -->
+        <Style
+            Selector="Button.version-number-button"
+            >
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate
+                        TargetType="Button"
+                        >
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="4"
+                            >
+                            <ContentPresenter
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style
+                Selector="^:pointerover"
+                >
+                <Setter Property="Background" Value="#20000000" />
+            </Style>
+        </Style>
+
         <!--  Base FilterButton style  -->
-        <Style Selector="Button.filter-button">
+        <Style
+            Selector="Button.filter-button"
+            >
             <Setter Property="Margin" Value="3" />
             <Setter Property="Padding" Value="16,8" />
             <Setter Property="BorderThickness" Value="2" />
@@ -68,28 +204,35 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        >
                         <ContentPresenter
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
                             Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            />
                     </Border>
                 </ControlTemplate>
             </Setter>
 
-            <Style Selector="^:pointerover">
+            <Style
+                Selector="^:pointerover"
+                >
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
             </Style>
 
-            <Style Selector="^.selected">
+            <Style
+                Selector="^.selected"
+                >
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                 <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
             </Style>
         </Style>
 
         <!--  SeverityButton  -->
-        <Style Selector="Button.severity-button">
+        <Style
+            Selector="Button.severity-button"
+            >
             <Setter Property="BorderThickness" Value="2" />
             <Setter Property="BorderBrush" Value="{DynamicResource TransparentBrush}" />
             <Setter Property="CornerRadius" Value="7" />
@@ -103,68 +246,65 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        >
                         <ContentPresenter
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
                             Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            />
                     </Border>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^:pointerover /template/ Border#PART_Border">
+            <Style
+                Selector="^:pointerover /template/ Border#PART_Border"
+                >
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
             </Style>
-            <Style Selector="^.selected /template/ Border#PART_Border">
+            <Style
+                Selector="^.selected /template/ Border#PART_Border"
+                >
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
             </Style>
         </Style>
 
         <!--  Toggle Switch Style for CheckBox  -->
-        <Style Selector="CheckBox.toggle-switch">
+        <Style
+            Selector="CheckBox.toggle-switch"
+            >
             <Setter Property="Template">
                 <ControlTemplate>
                     <Grid
-                        Width="50"
-                        Height="28"
-                        Background="Transparent">
+                        Width="50" Height="28" Background="Transparent"
+                        >
                         <Border
-                            Name="Track"
-                            Background="#2A2A2A"
-                            BorderBrush="#404040"
-                            BorderThickness="1"
-                            CornerRadius="14" />
+                            Name="Track" Background="#2A2A2A" BorderBrush="#404040" BorderThickness="1" CornerRadius="14"
+                            />
                         <Rectangle
-                            Name="Thumb"
-                            Width="24"
-                            Height="24"
-                            Margin="2"
-                            HorizontalAlignment="Left"
-                            Fill="#666666"
-                            RadiusX="12"
-                            RadiusY="12"
-                            Stroke="#555555"
-                            StrokeThickness="1" />
+                            Name="Thumb" Width="24" Height="24" Margin="2" HorizontalAlignment="Left" Fill="#666666" RadiusX="12" RadiusY="12" Stroke="#555555" StrokeThickness="1"
+                            />
                         <Border
-                            Name="Glow"
-                            Width="50"
-                            Height="28"
-                            Background="Transparent"
-                            CornerRadius="14"
-                            Opacity="0" />
+                            Name="Glow" Width="50" Height="28" Background="Transparent" CornerRadius="14" Opacity="0"
+                            />
                     </Grid>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^:checked /template/ Rectangle#Thumb">
+            <Style
+                Selector="^:checked /template/ Rectangle#Thumb"
+                >
                 <Setter Property="Fill" Value="#4CAF50" />
                 <Setter Property="Stroke" Value="#45A049" />
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="Margin" Value="2" />
             </Style>
-            <Style Selector="^:not(:checked)">
+            <Style
+                Selector="^:not(:checked)"
+                >
                 <Setter Property="Opacity" Value="0.4" />
             </Style>
-            <Style Selector="^:pointerover /template/ Border#Glow">
+            <Style
+                Selector="^:pointerover /template/ Border#Glow"
+                >
                 <Setter Property="Opacity" Value="0.2" />
                 <Setter Property="Background" Value="#FFFFFF" />
             </Style>

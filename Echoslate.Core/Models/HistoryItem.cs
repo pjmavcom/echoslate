@@ -249,33 +249,29 @@ public class HistoryItem : INotifyPropertyChanged {
 	public string ToClipboard() {
 		Scope = Scope.Replace(" ", "-");
 		string result = FullTitle + Environment.NewLine;
+		if (!string.IsNullOrWhiteSpace(Notes)) {
+			result += Notes + Environment.NewLine;
+		}
+		result += Environment.NewLine;
 
-		if (BugsCompleted.Count > 0) {
-			foreach (TodoItem td in BugsCompleted) {
-				if (td.Todo == Title) {
-					continue;
-				}
-				result += Environment.NewLine + "- " + td.ToClipboard();
-			}
-		}
-		if (FeaturesCompleted.Count > 0) {
-			foreach (TodoItem td in FeaturesCompleted) {
-				if (td.Todo == Title) {
-					continue;
-				}
-				result += Environment.NewLine + "- " + td.ToClipboard();
-			}
-		}
-		if (OtherCompleted.Count > 0) {
-			foreach (TodoItem td in OtherCompleted) {
-				if (td.Todo == Title) {
-					continue;
-				}
-				result += Environment.NewLine + "- " + td.ToClipboard();
-			}
-		}
+		result += GetTodosFrom(BugsCompleted);
+		result += GetTodosFrom(FeaturesCompleted);
+		result += GetTodosFrom(OtherCompleted);
+		
 		if (!Notes.Equals("")) {
 			result += BreakLines(Notes);
+		}
+		return result;
+	}
+	private string GetTodosFrom(List<TodoItem> todos) {
+		string result = string.Empty;
+		if (todos.Count > 0) {
+			foreach (TodoItem td in todos) {
+				if (td.Todo == Title) {
+					continue;
+				}
+				result += "- " + td.ToClipboard();
+			}
 		}
 		return result;
 	}

@@ -19,6 +19,9 @@ public partial class App : Application {
 	private MainWindow MainWindow;
 
 	public override void Initialize() {
+		AppServices.InitializeBrushService();
+		AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
+		BrushServiceResourceExporter.ExportTo(this.Resources, AppServices.BrushService);
 		AvaloniaXamlLoader.Load(this);
 	}
 	public async override void OnFrameworkInitializationCompleted() {
@@ -32,9 +35,6 @@ public partial class App : Application {
 			desktop.MainWindow = MainWindow;
 
 			AppServices.Initialize(mainVM, new AvaloniaApplicationService(desktop), new AvaloniaDispatcherService(), new AvaloniaClipboardService(MainWindow), new AvaloniaDialogService(MainWindow));
-			AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
-			BrushServiceResourceExporter.ExportTo(this.Resources, AppServices.BrushService);
-			
 			AppServices.ApplicationService.Initialize(MainWindow);
 
 			MainWindow.Closing += mainVM.OnClosing;

@@ -171,7 +171,7 @@
                 Name="tabHistory"
                 Header="History"
                 KeyboardNavigation.IsTabStop="False">
-                <!-- <views:HistoryView DataContext="{Binding HistoryVM}" /> -->
+                <views:HistoryView DataContext="{Binding HistoryVM}" />
             </TabItem>
 
             <TabItem

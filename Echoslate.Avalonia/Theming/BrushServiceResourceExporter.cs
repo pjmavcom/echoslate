@@ -37,5 +37,6 @@ public static class BrushServiceResourceExporter {
 		resources["SeverityHighBrush"] = (IBrush)brushService.SeverityHighBrush;
 
 		resources["WarningBrush"] = (IBrush)brushService.WarningBrush;
+		resources["EditingBrush"] = (IBrush)brushService.EditingBrush;
 	}
 }

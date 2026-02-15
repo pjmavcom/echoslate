@@ -28,6 +28,7 @@ public partial class App {
 		var mainVM = new MainWindowViewModel(AppSettings.Instance);
 		MainWindow = new MainWindow { DataContext = mainVM };
 		AppServices.Initialize(mainVM, new WpfApplicationService(), new WpfDispatcherService(), new WpfClipboardService(), new WpfDialogService(MainWindow));
+		AppServices.InitializeBrushService();
 		AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
 		AppServices.ApplicationService.Initialize(MainWindow);
 
