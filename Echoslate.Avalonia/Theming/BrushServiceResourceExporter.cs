@@ -35,8 +35,15 @@ public static class BrushServiceResourceExporter {
 		resources["SeverityLowBrush"] = (IBrush)brushService.SeverityLowBrush;
 		resources["SeverityMedBrush"] = (IBrush)brushService.SeverityMedBrush;
 		resources["SeverityHighBrush"] = (IBrush)brushService.SeverityHighBrush;
+		
+		resources["AccentBlueBrush"] = (IBrush)brushService.AccentBlueBrush;
+		resources["SuccessGreenBrush"] = (IBrush)brushService.SuccessGreenBrush;
+		resources["DangerRedBrush"] = (IBrush)brushService.DangerRedBrush;
+		resources["RefactorBlueBrush"] = (IBrush)brushService.RefactorBlueBrush;
+		resources["ChoreGrayBrush"] = (IBrush)brushService.ChoreGrayBrush;
+		resources["DocsYellowBrush"] = (IBrush)brushService.DocsYellowBrush;
+		resources["EditingOrangeBrush"] = (IBrush)brushService.EditingOrangeBrush;
 
 		resources["WarningBrush"] = (IBrush)brushService.WarningBrush;
-		resources["EditingBrush"] = (IBrush)brushService.EditingBrush;
 	}
 }

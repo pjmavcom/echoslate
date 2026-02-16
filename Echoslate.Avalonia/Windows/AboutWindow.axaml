@@ -2,7 +2,6 @@
     x:Class="Echoslate.Avalonia.Windows.AboutWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:services="clr-namespace:Echoslate.Core.Services;assembly=Echoslate.Core"
     Background="{Binding AppBackgroundBrush, Source={x:Static services:AppServices.BrushService}}"
     Foreground="{Binding ForegroundBrush, Source={x:Static services:AppServices.BrushService}}">
@@ -63,6 +62,12 @@
                     TextDecorations="Underline" />
             </StackPanel>
 
+            <TextBlock
+                Margin="0,40,0,0"
+                HorizontalAlignment="Center"
+                FontSize="11"
+                Foreground="{DynamicResource ForegroundBrush}"
+                Text="Avalonia Version" />
             <TextBlock
                 Margin="0,40,0,0"
                 HorizontalAlignment="Center"

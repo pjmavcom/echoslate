@@ -12,24 +12,35 @@
     d:DesignWidth="1200"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
-        <converters:WidthToBoolConverter x:Key="WideConverter" Threshold="900" />
-        <converters:MathConverter x:Key="Math" />
-        <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <converters:BoolToVisibilityConverter
+            x:Key="BoolToVis" />
+        <converters:WidthToBoolConverter
+            x:Key="WideConverter"
+            Threshold="900" />
+        <converters:MathConverter
+            x:Key="Math" />
+        <converters:InvertBoolConverter
+            x:Key="InvertBoolConverter" />
         <converters:WidthToColumnWidthConverter
             x:Key="ColumnHideConverter"
             DefaultWidth="100"
             Threshold="700" />
-        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeight" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
-        <SolidColorBrush x:Key="EditingBrush" Color="#FF6200" />
+        <converters:BoolToFontWeightConverter
+            x:Key="BoolToFontWeight" />
+        <converters:BoolToVisibilityConverter
+            x:Key="BoolToVisibility" />
+        <SolidColorBrush
+            x:Key="EditingBrush"
+            Color="#FF6200" />
         <converters:BoolToBrushConverter
             x:Key="EditingBrushConverter"
             FalseBrush="{StaticResource Foreground}"
             TrueBrush="{StaticResource EditingBrush}" />
-        <converters:CommitTypeToBrushConverter x:Key="CommitTypeToBrushConverter" />
+        <converters:CommitTypeToBrushConverter
+            x:Key="CommitTypeToBrushConverter" />
 
-        <ContextMenu x:Key="CompletedTodoContextMenu">
+        <ContextMenu
+            x:Key="CompletedTodoContextMenu">
             <MenuItem
                 Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.EditTodoCommand}"
                 CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -39,7 +50,8 @@
                 CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                 Header="Reactivate" />
         </ContextMenu>
-        <ContextMenu x:Key="CommittedHistoryContextMenu">
+        <ContextMenu
+            x:Key="CommittedHistoryContextMenu">
             <MenuItem
                 Command="{Binding Source={x:Reference HistoryViewRoot}, Path=DataContext.UndoCommitCommand}"
                 CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -55,14 +67,19 @@
         </ContextMenu>
 
     </UserControl.Resources>
-    <Grid Background="{StaticResource AppDarkBackground}">
+    <Grid
+        Background="{StaticResource AppDarkBackground}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="7*" />
+            <ColumnDefinition
+                Width="5*" />
+            <ColumnDefinition
+                Width="7*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="250" />
-            <RowDefinition Height="*" />
+            <RowDefinition
+                Height="250" />
+            <RowDefinition
+                Height="*" />
         </Grid.RowDefinitions>
 
         <!--  Top Left: Selected History Details  -->
@@ -71,12 +88,16 @@
             Grid.Column="0"
             Background="{StaticResource AppDarkBackground}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition
+                    Height="Auto" />
+                <RowDefinition
+                    Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition
+                    Width="50" />
+                <ColumnDefinition
+                    Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel
                 Grid.Row="0"
@@ -147,39 +168,66 @@
                 Margin="7,0,0,0"
                 Command="{Binding CommitCommand}"
                 Content="Commit"
-                IsEnabled="{Binding CanCommit}">
+                IsEnabled="{Binding IsCommitted, Converter={StaticResource InvertBoolConverter}}">
                 <Button.LayoutTransform>
-                    <RotateTransform Angle="-90" />
+                    <RotateTransform
+                        Angle="-90" />
                 </Button.LayoutTransform>
                 <Button.Style>
-                    <Style BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
-                        <Setter Property="FontWeight" Value="Bold" />
-                        <Setter Property="Foreground" Value="{StaticResource Foreground}" />
+                    <Style
+                        BasedOn="{StaticResource BaseButtonStyle}"
+                        TargetType="Button">
+                        <Setter
+                            Property="FontWeight"
+                            Value="Bold" />
+                        <Setter
+                            Property="Foreground"
+                            Value="{StaticResource Foreground}" />
                         <!--  Default (normal) state  -->
-                        <Setter Property="Background" Value="{StaticResource Accent}" />
-                        <Setter Property="Template">
+                        <Setter
+                            Property="Background"
+                            Value="{StaticResource Accent}" />
+                        <Setter
+                            Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="Button">
+                                <ControlTemplate
+                                    TargetType="Button">
                                     <Border
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         CornerRadius="4">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <ContentPresenter
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <!--  Hover state  -->
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource LightAccent}" />
+                                        <Trigger
+                                            Property="IsMouseOver"
+                                            Value="True">
+                                            <Setter
+                                                Property="Background"
+                                                Value="{StaticResource LightAccent}" />
                                         </Trigger>
                                         <!--  Pressed state  -->
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource DarkAccent}" />
+                                        <Trigger
+                                            Property="IsPressed"
+                                            Value="True">
+                                            <Setter
+                                                Property="Background"
+                                                Value="{StaticResource DarkAccent}" />
                                         </Trigger>
                                         <!--  Disabled state  -->
-                                        <Trigger Property="IsEnabled" Value="False">
-                                            <Setter Property="Background" Value="{StaticResource Accent}" />
-                                            <Setter Property="Opacity" Value="0.5" />
+                                        <Trigger
+                                            Property="IsEnabled"
+                                            Value="False">
+                                            <Setter
+                                                Property="Background"
+                                                Value="{StaticResource Accent}" />
+                                            <Setter
+                                                Property="Opacity"
+                                                Value="0.5" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -188,11 +236,16 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Grid Grid.Row="1" Grid.Column="1">
+            <Grid
+                Grid.Row="1"
+                Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="45" />
-                    <RowDefinition Height="45" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition
+                        Height="45" />
+                    <RowDefinition
+                        Height="45" />
+                    <RowDefinition
+                        Height="*" />
                 </Grid.RowDefinitions>
                 <StackPanel
                     Grid.Row="0"
@@ -208,13 +261,16 @@
                         Margin="0,0,10,0"
                         ItemsSource="{Binding CommitScopes}"
                         SelectedItem="{Binding CommitScope}" />
-                    <!--  allows free text  -->
                     <TextBlock
                         Margin="5,0"
                         VerticalAlignment="Center"
                         Text=":" />
-                    <TextBox Width="300" Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}" />
-                    <Button Command="{Binding DetectBranchCommand}" Content="Detect Branch" />
+                    <TextBox
+                        Width="300"
+                        Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        Command="{Binding DetectBranchCommand}"
+                        Content="Detect Branch" />
                 </StackPanel>
                 <Border
                     Grid.Row="1"
@@ -285,12 +341,16 @@
             Grid.Column="1"
             Background="{StaticResource AppDarkBackground}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="49" />
-                <RowDefinition Height="*" />
+                <RowDefinition
+                    Height="49" />
+                <RowDefinition
+                    Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition
+                    Width="50" />
+                <ColumnDefinition
+                    Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel
                 Grid.Row="0"
@@ -298,12 +358,14 @@
                 Grid.ColumnSpan="2"
                 VerticalAlignment="Bottom"
                 Orientation="Horizontal"
-                Visibility="{Binding SelectedHistoryItem.IsCommitted, Converter={StaticResource BoolToVis}}">
-                <Label Content="Commit Date:" />
+                Visibility="{Binding IsCommitted, Converter={StaticResource BoolToVis}}">
+                <Label
+                    Content="Commit Date:" />
                 <TextBlock
                     Margin="0,5,0,15"
-                    Foreground="{StaticResource Foreground}"
-                    Text="{Binding SelectedHistoryItem.CommitDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" />
+                    FontWeight="Bold"
+                    Foreground="{StaticResource LightAccent}"
+                    Text="{Binding CommitDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" />
             </StackPanel>
             <Button
                 Grid.Row="1"
@@ -312,7 +374,8 @@
                 Command="{Binding CopyCommitMessageCommand}"
                 Content="Copy">
                 <Button.LayoutTransform>
-                    <RotateTransform Angle="-90" />
+                    <RotateTransform
+                        Angle="-90" />
                 </Button.LayoutTransform>
             </Button>
             <TextBox
@@ -365,13 +428,22 @@
                             SelectedItem="{Binding SelectedHistoryItem}"
                             SelectionMode="Extended">
                             <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="ContextMenu" Value="{StaticResource CommittedHistoryContextMenu}" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                    <Setter Property="VerticalContentAlignment" Value="Center" />
-                                    <Setter Property="Template">
+                                <Style
+                                    TargetType="ListViewItem">
+                                    <Setter
+                                        Property="ContextMenu"
+                                        Value="{StaticResource CommittedHistoryContextMenu}" />
+                                    <Setter
+                                        Property="HorizontalContentAlignment"
+                                        Value="Stretch" />
+                                    <Setter
+                                        Property="VerticalContentAlignment"
+                                        Value="Center" />
+                                    <Setter
+                                        Property="Template">
                                         <Setter.Value>
-                                            <ControlTemplate TargetType="ListViewItem">
+                                            <ControlTemplate
+                                                TargetType="ListViewItem">
                                                 <Border
                                                     x:Name="SelectionBorder"
                                                     Padding="{TemplateBinding Padding}"
@@ -379,15 +451,30 @@
                                                     BorderBrush="Transparent"
                                                     BorderThickness="1"
                                                     SnapsToDevicePixels="True">
-                                                    <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Columns="{TemplateBinding GridView.ColumnCollection}" />
+                                                    <GridViewRowPresenter
+                                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                        Columns="{TemplateBinding GridView.ColumnCollection}" />
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsSelected" Value="True">
-                                                        <Setter TargetName="SelectionBorder" Property="BorderBrush" Value="{StaticResource Accent}" />
-                                                        <Setter TargetName="SelectionBorder" Property="Background" Value="Transparent" />
+                                                    <Trigger
+                                                        Property="IsSelected"
+                                                        Value="True">
+                                                        <Setter
+                                                            TargetName="SelectionBorder"
+                                                            Property="BorderBrush"
+                                                            Value="{StaticResource Accent}" />
+                                                        <Setter
+                                                            TargetName="SelectionBorder"
+                                                            Property="Background"
+                                                            Value="Transparent" />
                                                     </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="SelectionBorder" Property="Background" Value="#10FFFFFF" />
+                                                    <Trigger
+                                                        Property="IsMouseOver"
+                                                        Value="True">
+                                                        <Setter
+                                                            TargetName="SelectionBorder"
+                                                            Property="Background"
+                                                            Value="#10FFFFFF" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -398,17 +485,34 @@
                             <ListView.View>
                                 <GridView>
                                     <GridView.ColumnHeaderContainerStyle>
-                                        <Style TargetType="GridViewColumnHeader">
-                                            <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource AppDarkBackground}" />
-                                            <Setter Property="Foreground" Value="{StaticResource SubtleForeground}" />
-                                            <Setter Property="BorderThickness" Value="0,0,1,1" />
-                                            <Setter Property="FontWeight" Value="SemiBold" />
-                                            <Setter Property="Padding" Value="8,4" />
-                                            <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                            <Setter Property="Template">
+                                        <Style
+                                            TargetType="GridViewColumnHeader">
+                                            <Setter
+                                                Property="Background"
+                                                Value="{StaticResource ButtonBackground}" />
+                                            <Setter
+                                                Property="BorderBrush"
+                                                Value="{StaticResource AppDarkBackground}" />
+                                            <Setter
+                                                Property="Foreground"
+                                                Value="{StaticResource SubtleForeground}" />
+                                            <Setter
+                                                Property="BorderThickness"
+                                                Value="0,0,1,1" />
+                                            <Setter
+                                                Property="FontWeight"
+                                                Value="SemiBold" />
+                                            <Setter
+                                                Property="Padding"
+                                                Value="8,4" />
+                                            <Setter
+                                                Property="HorizontalContentAlignment"
+                                                Value="Left" />
+                                            <Setter
+                                                Property="Template">
                                                 <Setter.Value>
-                                                    <ControlTemplate TargetType="GridViewColumnHeader">
+                                                    <ControlTemplate
+                                                        TargetType="GridViewColumnHeader">
                                                         <Border
                                                             Background="{TemplateBinding Background}"
                                                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -425,7 +529,8 @@
                                     </GridView.ColumnHeaderContainerStyle>
 
                                     <!--  Type Highlight  -->
-                                    <GridViewColumn Width="20">
+                                    <GridViewColumn
+                                        Width="20">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Rectangle
@@ -442,7 +547,9 @@
                                     </GridViewColumn>
 
                                     <!--  Version  -->
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|100}" Header="Version">
+                                    <GridViewColumn
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|100}"
+                                        Header="Version">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock
@@ -454,7 +561,9 @@
                                     </GridViewColumn>
 
                                     <!--  Date  -->
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|160}" Header="Date">
+                                    <GridViewColumn
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|160}"
+                                        Header="Date">
                                         <GridViewColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock
@@ -475,7 +584,9 @@
                                     </GridViewColumn>
 
                                     <!--  Type  -->
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=700|70}" Header="Type">
+                                    <GridViewColumn
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=700|70}"
+                                        Header="Type">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock
@@ -487,7 +598,9 @@
                                     </GridViewColumn>
 
                                     <!--  Scope  -->
-                                    <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=800|200}" Header="Scope">
+                                    <GridViewColumn
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ColumnHideConverter}, ConverterParameter=800|200}"
+                                        Header="Scope">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock
@@ -498,10 +611,14 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
                                     <!--  Title  -->
-                                    <GridViewColumn Width="700" Header="Title">
+                                    <GridViewColumn
+                                        Width="700"
+                                        Header="Title">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <StackPanel Margin="4,2" Orientation="Horizontal">
+                                                <StackPanel
+                                                    Margin="4,2"
+                                                    Orientation="Horizontal">
                                                     <TextBlock
                                                         Margin="0,0,6,0"
                                                         VerticalAlignment="Center"
@@ -532,15 +649,22 @@
             Grid.Column="1"
             Margin="7"
             Background="{StaticResource AppDarkBackground}">
-            <Grid Margin="20">
+            <Grid
+                Margin="20">
                 <!--  Horizontal Layout  -->
-                <Grid Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}">
+                <Grid
+                    Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
-                        <ColumnDefinition Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
-                        <ColumnDefinition Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                        <ColumnDefinition
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                        <ColumnDefinition
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                        <ColumnDefinition
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Margin="10,0,0,0">
+                    <StackPanel
+                        Grid.Column="0"
+                        Margin="10,0,0,0">
                         <TextBlock
                             Margin="0,0,0,8"
                             FontWeight="Bold"
@@ -579,7 +703,9 @@
                             </ListView>
                         </Border>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="10,0,0,0">
                         <TextBlock
                             Margin="0,0,0,8"
                             FontWeight="Bold"
@@ -618,7 +744,8 @@
                             </ListView>
                         </Border>
                     </StackPanel>
-                    <StackPanel Grid.Column="2">
+                    <StackPanel
+                        Grid.Column="2">
                         <TextBlock
                             Margin="0,0,0,8"
                             FontWeight="Bold"
@@ -659,8 +786,10 @@
                 </Grid>
 
                 <!--  Vertical Layout  -->
-                <StackPanel Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.FalseString}}">
-                    <StackPanel Margin="10,0,0,0">
+                <StackPanel
+                    Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.FalseString}}">
+                    <StackPanel
+                        Margin="10,0,0,0">
 
                         <TextBlock
                             Margin="0,0,0,8"
@@ -701,7 +830,8 @@
                             </ListView>
                         </Border>
                     </StackPanel>
-                    <StackPanel Margin="10,0,0,0">
+                    <StackPanel
+                        Margin="10,0,0,0">
                         <TextBlock
                             Margin="0,0,0,8"
                             FontWeight="Bold"
@@ -741,7 +871,8 @@
                             </ListView>
                         </Border>
                     </StackPanel>
-                    <StackPanel Margin="10,0,0,0">
+                    <StackPanel
+                        Margin="10,0,0,0">
                         <TextBlock
                             Margin="0,0,0,8"
                             FontWeight="Bold"

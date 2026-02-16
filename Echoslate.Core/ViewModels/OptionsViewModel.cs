@@ -9,6 +9,18 @@ namespace Echoslate.Core.ViewModels;
 
 public class OptionsViewModel : INotifyPropertyChanged {
 	public IBrushService BrushService => AppServices.BrushService;
+
+	private object _gitStatusColor;
+	public object? GitStatusColor {
+		get => _gitStatusColor;
+		set {
+			if (_gitStatusColor == value) {
+				return;
+			}
+			_gitStatusColor = value;
+			OnPropertyChanged();
+		}
+	}
 	
 	private bool _autoSave;
 	public bool AutoSave {
@@ -78,6 +90,9 @@ public class OptionsViewModel : INotifyPropertyChanged {
 		BackupTime = appData.FileSettings.BackupTime;
 		WelcomeWindow = !appSettings.SkipWelcome;
 		GitRepoPath = appData.FileSettings.GitRepoPath;
+
+		GitStatusColor = IsGitPathValid(GitRepoPath) ? BrushService.SuccessGreenBrush : BrushService.DangerRedBrush;
+		UpdateGitFeaturesState();
 	}
 	public ICommand ChooseGitRepoPathCommand => new RelayCommand(ChooseGitRepoPath);
 	private void ChooseGitRepoPath() {
@@ -94,7 +109,7 @@ public class OptionsViewModel : INotifyPropertyChanged {
 				}
 				dir = dir.Parent;
 			}
-			if (Directory.Exists(Path.Combine(path, ".git"))) {
+			if (IsGitPathValid(path)) {
 				GitRepoPath = path;
 				AppServices.DialogService.Show("Git repository path set successfully!", "Success", DialogButton.Ok, DialogIcon.Information);
 			} else {
@@ -104,6 +119,9 @@ public class OptionsViewModel : INotifyPropertyChanged {
 		}
 
 		UpdateGitFeaturesState();
+	}
+	private bool IsGitPathValid(string path) {
+		return Directory.Exists(Path.Combine(path, ".git"));
 	}
 
 	private void UpdateGitFeaturesState() {

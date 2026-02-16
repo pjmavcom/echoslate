@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Echoslate.Core.ViewModels;
 
 namespace Echoslate.Wpf.Windows;
@@ -19,8 +20,12 @@ public partial class TagPickerWindow : UserControl, INotifyPropertyChanged {
 				lbTags.SelectedItems.Add(tag);
 			}
 		}
+		tbNewTag.Focus();
 	}
 	private void Ok_OnClick(object sender, RoutedEventArgs e) {
+		OkCommand();
+	}
+	private void OkCommand() {
 		if (DataContext is TagPickerViewModel vm && Parent is Window window) {
 			vm.Result = true;
 			window.DialogResult = true;
@@ -42,6 +47,12 @@ public partial class TagPickerWindow : UserControl, INotifyPropertyChanged {
 			foreach (string tag in list) {
 				lbTags.SelectedItems.Add(tag);
 			}
+		}
+	}
+	private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e) {
+		if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.Control) {
+			OkCommand();
+			e.Handled = true;
 		}
 	}
 

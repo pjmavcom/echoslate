@@ -34,13 +34,20 @@ public interface IBrushService {
 	object ButtonHoverBackgroundBrush { get; }
 	object ButtonPressedBackgroundBrush { get; }
 	
-	public object SeverityNoneBrush { get; }
-	public object SeverityHighBrush { get; }
-	public object SeverityLowBrush { get; }
-	public object SeverityMedBrush { get; }
+	object SeverityNoneBrush { get; }
+	object SeverityHighBrush { get; }
+	object SeverityLowBrush { get; }
+	object SeverityMedBrush { get; }
+	
+	object AccentBlueBrush { get; }
+	object SuccessGreenBrush { get; }
+	object DangerRedBrush { get; }
+	object RefactorBlueBrush { get; }
+	object ChoreGrayBrush { get; }
+	object DocsYellowBrush { get; }
+	object EditingOrangeBrush { get; }
 	
 	object WarningBrush { get; }
-	object EditingBrush { get; }
 	
 	public static object DefaultBrush { get; }
 	private static readonly Dictionary<string, ColorRgba> CommitTypeColors;

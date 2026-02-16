@@ -23,7 +23,7 @@
         <converters:BoolToBrushConverter
             x:Key="EditingBrushConverter"
             FalseBrush="{StaticResource ForegroundBrush}"
-            TrueBrush="{StaticResource EditingBrush}"
+            TrueBrush="{StaticResource EditingOrangeBrush}"
             />
         <converters:CommitTypeToBrushConverter
             x:Key="CommitTypeToBrushConverter"
@@ -141,7 +141,7 @@
                 Grid.Row="1" Grid.Column="0" Classes="vertical-commit-button"
                 Command="{Binding CommitCommand}"
                 Content="Commit"
-                IsEnabled="{Binding CanCommit}"
+                IsEnabled="{Binding IsCommitted, Converter={StaticResource InvertBoolConverter}}"
                 />
 
             <Grid
@@ -217,9 +217,9 @@
                             />
                         <TextBox
                             Grid.Row="1" Margin="1" AcceptsReturn="True"
-                            Background="{StaticResource EditorBackground}"
-                            BorderBrush="{StaticResource Accent}"
-                            Foreground="{StaticResource Foreground}"
+                            Background="{DynamicResource EditorBackgroundBrush}"
+                            BorderBrush="{DynamicResource AccentBrush}"
+                            Foreground="{DynamicResource ForegroundBrush}"
                             IsReadOnly="{Binding IsCurrentSelected, Converter={StaticResource InvertBoolConverter}}"
                             Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap"
@@ -281,7 +281,7 @@
         <!--  Bottom Left: History List  -->
         <Grid
             Grid.Row="1" Grid.Column="0"
-            Background="{StaticResource AppDarkBackground}"
+            Background="{DynamicResource AppDarkBackgroundBrush}"
             >
             <Border
                 Margin="8,4" Background="#1E1E1E" CornerRadius="7"

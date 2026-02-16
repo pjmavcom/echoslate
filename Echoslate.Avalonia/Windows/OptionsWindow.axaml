@@ -9,14 +9,19 @@
     x:DataType="local:OptionsViewModel"
     Background="{Binding BrushService.AppBackgroundBrush}">
 
-    <Grid Margin="20">
+    <Grid
+        Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="*" />
+            <RowDefinition
+                Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
+        <StackPanel
+            Grid.Row="0">
 
             <!--  General Settings  -->
             <Border
@@ -34,8 +39,10 @@
                         FontWeight="SemiBold"
                         Foreground="{Binding BrushService.ForegroundBrush}"
                         Text="General Settings" />
-                    <StackPanel Margin="10,15">
-                        <StackPanel Orientation="Horizontal">
+                    <StackPanel
+                        Margin="10,15">
+                        <StackPanel
+                            Orientation="Horizontal">
                             <CheckBox
                                 Margin="0,0,0,12"
                                 HorizontalAlignment="Left"
@@ -48,7 +55,8 @@
                                 FontSize="14"
                                 Foreground="{Binding BrushService.ForegroundBrush}" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel
+                            Orientation="Horizontal">
                             <CheckBox
                                 Margin="0,0,0,12"
                                 HorizontalAlignment="Left"
@@ -61,7 +69,8 @@
                                 FontSize="14"
                                 Foreground="{Binding BrushService.ForegroundBrush}" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel
+                            Orientation="Horizontal">
                             <CheckBox
                                 HorizontalAlignment="Left"
                                 Classes="toggle-switch"
@@ -102,13 +111,15 @@
                             VerticalAlignment="Center"
                             FontSize="14"
                             Text="Create backup every" />
-                        <Border BorderBrush="#494949" BorderThickness="1">
+                        <Border
+                            BorderBrush="#494949"
+                            BorderThickness="1">
                             <TextBlock
                                 Width="80"
                                 behaviors:MouseWheelNumericBehavior.Enabled="True"
                                 behaviors:MouseWheelNumericBehavior.Minimum="5"
                                 behaviors:MouseWheelNumericBehavior.TargetProperty="BackupTime"
-                                Background="Transparent"
+                                Background="{DynamicResource TransparentBrush}"
                                 FontSize="18"
                                 FontWeight="SemiBold"
                                 Text="{Binding BackupTime}"
@@ -142,10 +153,17 @@
                         Text="Git Integration" />
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition
+                                Width="Auto" />
+                            <ColumnDefinition
+                                Width="*" />
+                            <ColumnDefinition
+                                Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
                         <TextBlock
                             Margin="12,0,12,0"
                             VerticalAlignment="Center"
@@ -169,8 +187,13 @@
                             Command="{Binding ChooseGitRepoPathCommand}"
                             Content="Browse..."
                             FontSize="14" />
-                        <TextBlock Margin="0,10,0,0" Text="{Binding GitStatusMessage}" />
-                        <!--  Foreground="{Binding GitStatusColor}"  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            HorizontalAlignment="Center"
+                            Margin="0,10,0,0"
+                            Foreground="{Binding GitStatusColor}"
+                            Text="{Binding GitStatusMessage}" />
                     </Grid>
                 </StackPanel>
             </Border>

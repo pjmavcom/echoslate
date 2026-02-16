@@ -263,6 +263,9 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		SelectedHistoryItem.SortCompletedTodoItems();
 		SelectedHistoryItem.GenerateCommitMessage();
 		OnPropertyChanged(nameof(CommitMessage));
+		OnPropertyChanged(nameof(CommittedHistoryItems));
+		OnPropertyChanged(nameof(Title));
+		OnPropertyChanged(nameof(Notes));
 	}
 	private bool IsGitRepoValid() {
 		if (string.IsNullOrEmpty(GitRepoPath)) {
@@ -461,6 +464,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			}
 			hItem.IsCommitted = false;
 			Log.Print($"Undoing commit for: {item.Title}");
+			OnPropertyChanged(nameof(IsCommitted));
 		}
 	}
 	public ICommand RecommitCommand => new RelayCommand(Recommit);
@@ -475,6 +479,8 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			}
 			hItem.IsCommitted = true;
 			Log.Print($"Recommitted: {hItem.Title}");
+			OnPropertyChanged(nameof(SelectedHistoryItem.IsCommitted));
+			OnPropertyChanged(nameof(IsCommitted));
 		}
 	}
 	public ICommand DeleteCommand => new RelayCommand<HistoryItem>(Delete);

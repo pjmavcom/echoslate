@@ -9,11 +9,14 @@
     Background="{DynamicResource AppDarkBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  Properties  -->
@@ -21,7 +24,8 @@
             Grid.Row="0"
             Grid.Column="0"
             Margin="7">
-            <Grid RowDefinitions="Auto,*">
+            <Grid
+                RowDefinitions="Auto,*">
                 <Border
                     Grid.Row="0"
                     Margin="1"
@@ -45,12 +49,17 @@
                     BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="1"
                     CornerRadius="3">
-                    <Grid Margin="10,15">
+                    <Grid
+                        Margin="10,15">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition
+                                Width="Auto" />
+                            <ColumnDefinition
+                                Width="140" />
+                            <ColumnDefinition
+                                Width="100" />
+                            <ColumnDefinition
+                                Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <CheckBox
@@ -93,6 +102,7 @@
                                     behaviors:MouseWheelNumericBehavior.Enabled="True"
                                     behaviors:MouseWheelNumericBehavior.Minimum="0"
                                     behaviors:MouseWheelNumericBehavior.TargetProperty="Rank"
+                                    Background="{DynamicResource TransparentBrush}"
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     IsEnabled="{Binding IsRankEnabled}"
@@ -119,12 +129,13 @@
             </Grid>
         </Border>
 
-        <!--  TODO Text  -->
+        <!--  TO DO Text  -->
         <Border
             Grid.Row="1"
             Margin="7"
             Background="{DynamicResource ControlBackgroundBrush}">
-            <Grid RowDefinitions="Auto,*">
+            <Grid
+                RowDefinitions="Auto,*">
                 <Border
                     Grid.Row="0"
                     Margin="1"
@@ -149,8 +160,10 @@
                     CornerRadius="3">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition
+                                Width="Auto" />
+                            <ColumnDefinition
+                                Width="*" />
                         </Grid.ColumnDefinitions>
                         <CheckBox
                             Margin="10,0,0,0"
@@ -177,7 +190,8 @@
             Grid.Row="2"
             Margin="7"
             Background="{DynamicResource ControlBackgroundBrush}">
-            <Grid RowDefinitions="Auto,*">
+            <Grid
+                RowDefinitions="Auto,*">
                 <Border
                     Grid.Row="0"
                     Margin="1"
@@ -200,12 +214,16 @@
                     BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="1"
                     CornerRadius="3">
-                    <Grid Margin="10,15">
+                    <Grid
+                        Margin="10,15">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition
+                                Width="100" />
+                            <ColumnDefinition
+                                Width="*" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Top">
+                        <StackPanel
+                            VerticalAlignment="Top">
                             <Button
                                 Width="90"
                                 Height="35"
@@ -228,11 +246,16 @@
                             Background="{DynamicResource ControlBackgroundBrush}"
                             ItemsSource="{Binding Tags}">
                             <ListBox.ItemTemplate>
-                                <DataTemplate x:CompileBindings="False">
-                                    <Grid Height="36" Background="Transparent">
+                                <DataTemplate
+                                    x:CompileBindings="False">
+                                    <Grid
+                                        Height="36"
+                                        Background="Transparent">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40" />
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition
+                                                Width="40" />
+                                            <ColumnDefinition
+                                                Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <Button
                                             Width="30"
@@ -286,11 +309,16 @@
                 Foreground="{DynamicResource ForegroundBrush}"
                 IsEnabled="{Binding IsCompleteChangeable}">
                 <Button.Styles>
-                    <Style Selector="Button">
-                        <Setter Property="Background" Value="#4CAF50" />
-                        <Setter Property="Template">
+                    <Style
+                        Selector="Button">
+                        <Setter
+                            Property="Background"
+                            Value="#4CAF50" />
+                        <Setter
+                            Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="Button">
+                                <ControlTemplate
+                                    TargetType="Button">
                                     <Border
                                         Padding="12,8"
                                         Background="{TemplateBinding Background}"
@@ -305,9 +333,14 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Style Selector="^:disabled">
-                            <Setter Property="Background" Value="#2E7D32" />
-                            <Setter Property="Opacity" Value="0.7" />
+                        <Style
+                            Selector="^:disabled">
+                            <Setter
+                                Property="Background"
+                                Value="#2E7D32" />
+                            <Setter
+                                Property="Opacity"
+                                Value="0.7" />
                         </Style>
                     </Style>
                 </Button.Styles>

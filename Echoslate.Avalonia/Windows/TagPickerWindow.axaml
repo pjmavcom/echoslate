@@ -3,24 +3,30 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
     Width="340"
     Height="500"
+    x:Name="tagPickerInstance"
     x:DataType="viewModels:TagPickerViewModel"
     Background="{DynamicResource AppDarkBackgroundBrush}"
     Foreground="{DynamicResource ForegroundBrush}">
-    <!-- <UserControl.InputBindings> -->
-    <!--  <KeyBinding Key="Enter"  -->
-    <!--  Command="{Binding OkCommand}"  -->
-    <!--  Modifiers="Control" />  -->
-    <!-- </UserControl.InputBindings> -->
+    
+    <UserControl.KeyBindings>
+        <KeyBinding
+            x:CompileBindings="False"
+            Gesture="Ctrl+Enter"
+            Command="{Binding #tagPickerInstance.OkCommand}" />
+    </UserControl.KeyBindings>
 
-    <Grid Margin="3">
+    <Grid
+        Margin="3">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition
+                Height="*" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  Tag List  -->
@@ -45,27 +51,43 @@
                     Grid.Row="0"
                     Margin="0"
                     behaviors:ListBoxSelectedItemsBehavior.SelectedItems="{Binding SelectedTags, Mode=OneWay}"
-                    Background="{StaticResource ControlBackgroundBrush}"
+                    Background="{DynamicResource ControlBackgroundBrush}"
                     BorderBrush="#FF444444"
                     BorderThickness="1"
-                    Foreground="{StaticResource ForegroundBrush}"
+                    Foreground="{DynamicResource ForegroundBrush}"
                     ItemsSource="{Binding AllAvailableTagsView}"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     SelectionMode="Multiple, Toggle">
                     <ListBox.Styles>
-                        <Style Selector="ListBoxItem">
-                            <Setter Property="Padding" Value="4,2" />
-                            <Setter Property="Margin" Value="0,1" />
-                            <Setter Property="Background" Value="Transparent" />
+                        <Style
+                            Selector="ListBoxItem">
+                            <Setter
+                                Property="Padding"
+                                Value="4,2" />
+                            <Setter
+                                Property="Margin"
+                                Value="0,1" />
+                            <Setter
+                                Property="Background"
+                                Value="Transparent" />
                         </Style>
-                        <Style Selector="ListBoxItem:selected">
-                            <Setter Property="Background" Value="#FF0066CC" />
+                        <Style
+                            Selector="ListBoxItem:selected">
+                            <Setter
+                                Property="Background"
+                                Value="#FF0066CC" />
                         </Style>
-                        <Style Selector="ListBoxItem:pointerover">
-                            <Setter Property="Background" Value="#FF333333" />
+                        <Style
+                            Selector="ListBoxItem:pointerover">
+                            <Setter
+                                Property="Background"
+                                Value="#FF333333" />
                         </Style>
-                        <Style Selector="ListBoxItem:selected:pointerover">
-                            <Setter Property="Background" Value="#FF0078D4" />
+                        <Style
+                            Selector="ListBoxItem:selected:pointerover">
+                            <Setter
+                                Property="Background"
+                                Value="#FF0078D4" />
                         </Style>
                     </ListBox.Styles>
                     <ListBox.ItemTemplate>
@@ -81,10 +103,14 @@
         </Border>
 
         <!--  New Tag Row  -->
-        <Grid Grid.Row="1" Margin="0,0,0,9">
+        <Grid
+            Grid.Row="1"
+            Margin="0,0,0,9">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition
+                    Width="100" />
+                <ColumnDefinition
+                    Width="*" />
             </Grid.ColumnDefinitions>
             <Button
                 Grid.Column="0"
@@ -111,8 +137,10 @@
                         CornerRadius="7"
                         IsHitTestVisible="False" />
                     <TextBox
+                        x:Name="tbNewTag"
                         Margin="1"
                         Padding="8,6"
+                        Focusable="True"
                         VerticalContentAlignment="Center"
                         Background="{DynamicResource EditorBackgroundBrush}"
                         BorderBrush="{DynamicResource BorderBrush}"

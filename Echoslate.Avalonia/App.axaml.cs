@@ -12,6 +12,7 @@ using Echoslate.Avalonia.Windows;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
 using Echoslate.Core.ViewModels;
+using WindowState = Avalonia.Controls.WindowState;
 
 namespace Echoslate.Avalonia;
 
@@ -75,16 +76,17 @@ public partial class App : Application {
 		return tcs.Task;
 	}
 	public void SaveWindowProperties(object? sender, CancelEventArgs cancelEventArgs) {
-		// if (MainWindow != null) {
-		// 	AppSettings.Instance.WindowLeft = double.IsNaN(MainWindow.Left) ? 0 : MainWindow.Left;
-		// 	AppSettings.Instance.WindowTop = double.IsNaN(MainWindow.Top) ? 0 : MainWindow.Top;
-		// 	AppSettings.Instance.WindowWidth = MainWindow.Width;
-		// 	AppSettings.Instance.WindowHeight = MainWindow.Height;
-		// 	AppSettings.Instance.WindowState = MainWindow.WindowState switch {
-		// 		System.Windows.WindowState.Maximized => WindowState.Maximized,
-		// 		System.Windows.WindowState.Minimized => WindowState.Minimized,
-		// 		_ => WindowState.Normal
-		// 	};
-		// }
+		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;
+		if (mainWindow != null) {
+			AppSettings.Instance.WindowLeft = double.IsNaN(mainWindow.Position.X) ? 0 : mainWindow.Position.X;
+			AppSettings.Instance.WindowTop = double.IsNaN(mainWindow.Position.Y) ? 0 : mainWindow.Position.Y;
+			AppSettings.Instance.WindowWidth = mainWindow.Width;
+			AppSettings.Instance.WindowHeight = mainWindow.Height;
+			AppSettings.Instance.WindowState = mainWindow.WindowState switch {
+				WindowState.Maximized => Core.Services.WindowState.Maximized,
+				WindowState.Minimized => Core.Services.WindowState.Minimized,
+				_ => Core.Services.WindowState.Normal
+			};
+		}
 	}
 }

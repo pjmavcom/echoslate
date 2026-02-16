@@ -109,6 +109,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			_pomoWorkTime = value;
 			AppSettings.PomoWorkTimerLength = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(PomoWorkTimeMinutes));
 		}
 	}
 	public int PomoWorkTimeMinutes {
@@ -134,6 +135,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			_pomoBreakTime = value;
 			AppSettings.PomoBreakTimerLength = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(PomoBreakTimeMinutes));
 		}
 	}
 	public int PomoBreakTimeMinutes {
@@ -174,6 +176,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		SetWindowTitle();
 
 		SetPomoTimers();
+		UpdatePomoTimerUI();
 		_backupTimerMax = new TimeSpan(0, Data.FileSettings.BackupTime, 0);
 		_backupTimer = _backupTimerMax;
 		Log.Print($"{_backupTimer}");
@@ -384,13 +387,13 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Data.FileSettings.BackupIncrement++;
 		Data.FileSettings.BackupIncrement %= 10;
 	}
-	public void Load(string? filePath) {
+	public async void Load(string? filePath) {
 		Data = AppDataLoader.Load(filePath);
 		GitHelper.InitGitSettings(Data);
 
-
-		AppSettings.SortRecentFiles(filePath);
 		LoadCurrentData();
+		await Task.Yield();
+		AppSettings.SortRecentFiles(filePath);
 		AppSettings.AddRecentFile(Data.CurrentFilePath);
 		SetWindowTitle();
 		ClearChangedFlag();
@@ -485,7 +488,10 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		AppServices.DialogService.ShowHelpAsync();
 	}
 	public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(path => Load(path));
-	public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(path => AppSettings.RecentFiles.Remove(path));
+	public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(path => RemoveRecentFile(path));
+	public void RemoveRecentFile(string path) {
+		AppSettings.RecentFiles.Remove(path);
+	}
 	public ICommand PomoTimerToggleCommand => new RelayCommand(PomoTimerToggle);
 	public void PomoTimerToggle() {
 		_isPomoTimerOn = !_isPomoTimerOn;

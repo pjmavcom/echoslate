@@ -2,33 +2,40 @@
     x:Class="Echoslate.Avalonia.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+    xmlns:converters="clr-namespace:Echoslate.Wpf.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
     xmlns:vm="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
     Title="Echoslate"
+    x:Name="MainWindowInstance"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainWindowViewModel"
     mc:Ignorable="d">
 
     <Window.Resources>
-        <!-- <converters:ProgressToWidthConverter x:Key="ProgressToWidthConverter" /> -->
-        <!-- <converters:WorkBreakBrushConverter x:Key="WorkBreakBrushConverter" /> -->
+        <converters:ProgressToWidthConverter
+            x:Key="ProgressToWidthConverter" />
+        <converters:WorkBreakBrushConverter
+            x:Key="WorkBreakBrushConverter" />
     </Window.Resources>
-
-    <!-- <Window.InputBindings> -->
-    <!--  <KeyBinding Key="S"  -->
-    <!--  Command="{Binding SaveCommand}"  -->
-    <!--  Modifiers="Control" />  -->
-    <!--  <KeyBinding Key="L"  -->
-    <!--  Command="{Binding QuickLoadPreviousCommand}"  -->
-    <!--  Modifiers="Control" />  -->
-    <!--  <KeyBinding Key="P"  -->
-    <!--  Command="{Binding PomoTimerToggleCommand}"  -->
-    <!--  Modifiers="Control" />  -->
-    <!-- <KeyBinding Key="F1" Command="{Binding ShowAboutWindowCommand}" /> -->
-    <!-- </Window.InputBindings> -->
+    
+    <Window.KeyBindings>
+        <KeyBinding
+            Gesture="Ctrl+S"
+            Command="{Binding SaveCommand}" />
+        <KeyBinding
+            Gesture="Ctrl+L"
+            Command="{Binding QuickLoadPreviousCommand}" />
+        <KeyBinding
+            Gesture="Ctrl+P"
+            Command="{Binding PomoTimerToggleCommand}" />
+        <KeyBinding
+            Gesture="F1"
+            Command="{Binding ShowAboutWindowCommand}" />
+    </Window.KeyBindings>
 
     <Grid
         HorizontalAlignment="Stretch"
@@ -36,55 +43,95 @@
         TextElement.FontFamily="Source Code Pro"
         TextElement.FontSize="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
-            <RowDefinition Height="*" />
+            <RowDefinition
+                Height="40" />
+            <RowDefinition
+                Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid
+            Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="500" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition
+                    Width="500" />
+                <ColumnDefinition
+                    Width="*" />
             </Grid.ColumnDefinitions>
             <Menu
                 Name="mnuMain"
                 Grid.Column="0"
                 FontSize="16">
-                <MenuItem Header="_File">
-                    <MenuItem Command="{Binding MenuNewCommand}" Header="New" />
+                <MenuItem
+                    Header="_File">
+                    <MenuItem
+                        Command="{Binding MenuNewCommand}"
+                        Header="New" />
                     <Separator />
-                    <MenuItem Command="{Binding MenuLoadCommand}" Header="Load" />
+                    <MenuItem
+                        Command="{Binding MenuLoadCommand}"
+                        Header="Load" />
                     <Separator />
-                    <MenuItem Command="{Binding MenuSaveCommand}" Header="Save" />
-                    <MenuItem Command="{Binding MenuSaveAsCommand}" Header="SaveAs" />
+                    <MenuItem
+                        Command="{Binding MenuSaveCommand}"
+                        Header="Save" />
+                    <MenuItem
+                        Command="{Binding MenuSaveAsCommand}"
+                        Header="SaveAs" />
                     <Separator />
-                    <MenuItem Command="{Binding MenuOptionsCommand}" Header="Options" />
+                    <MenuItem
+                        Command="{Binding MenuOptionsCommand}"
+                        Header="Options" />
                     <Separator />
-                    <MenuItem Command="{Binding MenuQuitCommand}" Header="Quit" />
+                    <MenuItem
+                        Command="{Binding MenuQuitCommand}"
+                        Header="Quit" />
                 </MenuItem>
                 <MenuItem
+                    x:CompileBindings="False"
                     Header="Recent Loads"
-                    ItemsSource="{Binding AppSettings.RecentFiles}"
-                    Tag="{Binding}">
+                    ItemsSource="{Binding AppSettings.RecentFiles}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <MenuItem
-                                Command="{Binding MenuRecentFilesLoadCommand, RelativeSource={RelativeSource AncestorType=vm:MainWindowViewModel}}"
-                                CommandParameter="{Binding}"
-                                Header="{Binding}"
-                                Tag="{Binding}">
-                                <!-- <MenuItem.ContextMenu> -->
-                                <!-- <ContextMenu> -->
-                                <!--  <MenuItem Command="{Binding Source={x:Reference MainWindowInstance}, Path=DataContext.MenuRecentFilesRemoveCommand}"  -->
-                                <!--  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}}"  -->
-                                <!--  Header="Remove" />  -->
-                                <!-- </ContextMenu> -->
-                                <!-- </MenuItem.ContextMenu> -->
-                            </MenuItem>
+                            <TextBlock
+                                Text="{Binding}" />
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
+                    <MenuItem.ItemContainerTheme>
+                        <ControlTheme
+                            TargetType="MenuItem"
+                            BasedOn="{StaticResource {x:Type MenuItem}}">
+                            <Setter
+                                Property="Command"
+                                Value="{Binding #MainWindowInstance.DataContext.MenuRecentFilesLoadCommand}" />
+                            <Setter
+                                Property="CommandParameter"
+                                Value="{Binding}" />
+                            <Setter
+                                Property="Tag"
+                                Value="{Binding}" />
+                            <Setter
+                                Property="StaysOpenOnClick"
+                                Value="False" />
+                            <Setter
+                                Property="ContextMenu">
+                                <ContextMenu
+                                    DataContext="{Binding}">
+                                    <MenuItem
+                                        Header="Remove"
+                                        Command="{Binding #MainWindowInstance.DataContext.MenuRecentFilesRemoveCommand}"
+                                        CommandParameter="{Binding}" />
+                                </ContextMenu>
+                            </Setter>
+                        </ControlTheme>
+                    </MenuItem.ItemContainerTheme>
                 </MenuItem>
-                <MenuItem Header="Help">
-                    <MenuItem Command="{Binding ShowHotkeysWindowCommand}" Header="Hotkeys" />
-                    <MenuItem Command="{Binding ShowAboutWindowCommand}" Header="About" />
+                <MenuItem
+                    Header="Help">
+                    <MenuItem
+                        Command="{Binding ShowHotkeysWindowCommand}"
+                        Header="Hotkeys" />
+                    <MenuItem
+                        Command="{Binding ShowAboutWindowCommand}"
+                        Header="About" />
                 </MenuItem>
             </Menu>
             <StackPanel
@@ -92,71 +139,103 @@
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <Grid>
-                    <!--  <ProgressBar Height="30"  -->
-                    <!--  Margin="10,5"  -->
-                    <!--  Background="{StaticResource AppDarkBackground}"  -->
-                    <!--  BorderBrush="{StaticResource Border}"  -->
-                    <!--  BorderThickness="2"  -->
-                    <!--  Foreground="{Binding PomoState, Converter={StaticResource WorkBreakBrushConverter}}"  -->
-                    <!--  Maximum="100" Minimum="0"  -->
-                    <!--  Value="{Binding PomoProgressBarValue}">  -->
-                    <!--     <ProgressBar.Style> -->
-                    <!--         <Style TargetType="ProgressBar"> -->
-                    <!--             <Setter Property="Template"> -->
-                    <!--                 <Setter.Value> -->
-                    <!--                     <ControlTemplate TargetType="ProgressBar"> -->
-                    <!--  <Border Background="{TemplateBinding Background}"  -->
-                    <!--  BorderThickness="0" CornerRadius="8">  -->
-                    <!--                             <Grid> -->
-                    <!--  <Rectangle x:Name="PART_Indicator"  -->
-                    <!--  HorizontalAlignment="Right"  -->
-                    <!--  Fill="{TemplateBinding Foreground}"  -->
-                    <!--  RadiusX="8" RadiusY="8">  -->
-                    <!--                                     <Rectangle.Width> -->
-                    <!--                                         <MultiBinding Converter="{StaticResource ProgressToWidthConverter}"> -->
-                    <!--                                             <Binding Path="ActualWidth" RelativeSource="{RelativeSource TemplatedParent}" /> -->
-                    <!--                                             <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" /> -->
-                    <!--                                             <Binding Path="Maximum" RelativeSource="{RelativeSource TemplatedParent}" /> -->
-                    <!--                                             <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" /> -->
-                    <!--                                         </MultiBinding> -->
-                    <!--                                     </Rectangle.Width> -->
-                    <!--                                 </Rectangle> -->
-                    <!--                             </Grid> -->
-                    <!--                         </Border> -->
-                    <!--                     </ControlTemplate> -->
-                    <!--                 </Setter.Value> -->
-                    <!--             </Setter> -->
-                    <!--         </Style> -->
-                    <!--     </ProgressBar.Style> -->
-                    <!-- </ProgressBar> -->
-                    <!--  <Label Width="400"  -->
-                    <!--  HorizontalContentAlignment="Center"  -->
-                    <!--  Content="{Binding PomoLabelContent}"  -->
-                    <!--  FontSize="20" FontWeight="SemiBold"  -->
-                    <!--  Foreground="{StaticResource ControlBackground}">  -->
-                    <!--     <Label.InputBindings> -->
-                    <!--         <MouseBinding Command="{Binding PomoTimerToggleCommand}" Gesture="LeftClick" /> -->
-                    <!--         <MouseBinding Command="{Binding PomoTimerResetCommand}" Gesture="LeftDoubleClick" /> -->
-                    <!--     </Label.InputBindings> -->
-                    <!-- </Label> -->
+                    <ProgressBar
+                        Height="30"
+                        Margin="10,5"
+                        Background="{DynamicResource AppDarkBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="2"
+                        Foreground="{Binding PomoState, Converter={StaticResource WorkBreakBrushConverter}}"
+                        Maximum="100"
+                        Minimum="0"
+                        Value="{Binding PomoProgressBarValue}">
+                        <ProgressBar.Styles>
+                            <Style
+                                Selector="ProgressBar">
+                                <Setter
+                                    Property="Template">
+                                    <ControlTemplate
+                                        TargetType="ProgressBar">
+                                        <Border
+                                            Background="{TemplateBinding Background}"
+                                            BorderThickness="0"
+                                            CornerRadius="8">
+                                            <Grid>
+                                                <Border
+                                                    x:Name="PART_Indicator"
+                                                    HorizontalAlignment="Right"
+                                                    Background="{TemplateBinding Foreground}"
+                                                    CornerRadius="8">
+                                                    <Border.Width>
+                                                        <MultiBinding
+                                                            Converter="{StaticResource ProgressToWidthConverter}">
+                                                            <Binding
+                                                                Path="Bounds.Width"
+                                                                RelativeSource="{RelativeSource TemplatedParent}" />
+                                                            <Binding
+                                                                Path="Value"
+                                                                RelativeSource="{RelativeSource TemplatedParent}" />
+                                                            <Binding
+                                                                Path="Maximum"
+                                                                RelativeSource="{RelativeSource TemplatedParent}" />
+                                                            <Binding
+                                                                Path="Minimum"
+                                                                RelativeSource="{RelativeSource TemplatedParent}" />
+                                                        </MultiBinding>
+                                                    </Border.Width>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter>
+                            </Style>
+                        </ProgressBar.Styles>
+                    </ProgressBar>
+                    <Button
+                        Width="400"
+                        HorizontalContentAlignment="Center"
+                        Background="{DynamicResource TransparentBrush}"
+                        Command="{Binding PomoTimerToggleCommand}"
+                        Content="{Binding PomoLabelContent}"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ControlBackgroundBrush}" />
                 </Grid>
-                <Label Width="100" Content="Work: " />
-                <Border BorderBrush="#494949" BorderThickness="1">
-                    <!--  <TextBlock Width="80"  -->
-                    <!--  behaviors:MouseWheelNumericBehavior.Enabled="True" behaviors:MouseWheelNumericBehavior.Minimum="1"  -->
-                    <!--  behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes" FontSize="18"  -->
-                    <!--  FontWeight="SemiBold"  -->
-                    <!--  Text="{Binding PomoWorkTimeMinutes}"  -->
-                    <!--  TextAlignment="Center" ToolTip="Mouse wheel: ±1 | Shift+wheel: ±5" />  -->
+                <Label
+                    Width="100"
+                    Content="Work: " />
+                <Border
+                    BorderBrush="#494949"
+                    BorderThickness="1">
+                    <TextBlock
+                        Width="80"
+                        behaviors:MouseWheelNumericBehavior.Enabled="True"
+                        behaviors:MouseWheelNumericBehavior.Minimum="1"
+                        behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes"
+                        Background="{DynamicResource TransparentBrush}"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="{Binding PomoWorkTimeMinutes}"
+                        TextAlignment="Center"
+                        ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
                 </Border>
-                <Label Width="100" Content="Break: " />
-                <Border BorderBrush="#494949" BorderThickness="1">
-                    <!--  <TextBlock Width="80"  -->
-                    <!--  behaviors:MouseWheelNumericBehavior.Enabled="True" behaviors:MouseWheelNumericBehavior.Minimum="1"  -->
-                    <!--  behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes" FontSize="18"  -->
-                    <!--  FontWeight="SemiBold"  -->
-                    <!--  Text="{Binding PomoBreakTimeMinutes}"  -->
-                    <!--  TextAlignment="Center" ToolTip="Mouse wheel: ±1 | Shift+wheel: ±5" />  -->
+                <Label
+                    Width="100"
+                    Content="Break: " />
+                <Border
+                    BorderBrush="#494949"
+                    BorderThickness="1">
+                    <TextBlock
+                        Width="80"
+                        behaviors:MouseWheelNumericBehavior.Enabled="True"
+                        behaviors:MouseWheelNumericBehavior.Minimum="1"
+                        behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes"
+                        Background="{DynamicResource TransparentBrush}"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="{Binding PomoBreakTimeMinutes}"
+                        TextAlignment="Center"
+                        ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
                 </Border>
             </StackPanel>
         </Grid>
@@ -171,21 +250,24 @@
                 Name="tabHistory"
                 Header="History"
                 KeyboardNavigation.IsTabStop="False">
-                <views:HistoryView DataContext="{Binding HistoryVM}" />
+                <views:HistoryView
+                    DataContext="{Binding HistoryVM}" />
             </TabItem>
 
             <TabItem
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
                 Header="Todo List">
-                <views:TodoDisplayView DataContext="{Binding TodoListVM}" />
+                <views:TodoDisplayView
+                    DataContext="{Binding TodoListVM}" />
             </TabItem>
 
             <TabItem
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
                 Header="Kanban">
-                <views:TodoDisplayView DataContext="{Binding KanbanVM}" />
+                <views:TodoDisplayView
+                    DataContext="{Binding KanbanVM}" />
             </TabItem>
 
         </TabControl>

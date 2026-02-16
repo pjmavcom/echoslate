@@ -1,7 +1,10 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
+using WindowState = Avalonia.Controls.WindowState;
 
 namespace Echoslate.Avalonia;
 
@@ -37,17 +40,16 @@ public partial class MainWindow : Window {
 			e.Handled = true;
 		}
 #endif
-		// if (Keyboard.Modifiers == ModifierKeys.Alt) {
-			// Log.Debug(e.Key.ToString());
-			// Key actualKey = (e.Key == Key.System) ? e.SystemKey : e.Key;
-			// if (actualKey == Key.H) {
-				// SwitchTab(-1);
-				// e.Handled = true;
-			// } else if (actualKey == Key.L) {
-				// SwitchTab(1);
-				// e.Handled = true;
-			// }
-		// }
+		if (e.KeyModifiers == KeyModifiers.Alt) {
+			Log.Debug(e.Key.ToString());
+			if (e.Key == Key.H) {
+				SwitchTab(-1);
+				e.Handled = true;
+			} else if (e.Key == Key.L) {
+				SwitchTab(1);
+				e.Handled = true;
+			}
+		}
 	}
 	private void Window_OnClosed() {
 		AppSettings.Instance.LastActiveTabIndex = tabControl.SelectedIndex;
@@ -58,17 +60,16 @@ public partial class MainWindow : Window {
 		SetWindowPosition();
 	}
 	private void SetWindowPosition() {
-		// var mainWindow = Application.Current.MainWindow;
-		//
-		// mainWindow.Left = AppSettings.Instance.WindowLeft;
-		// mainWindow.Top = AppSettings.Instance.WindowTop;
-		// mainWindow.Width = AppSettings.Instance.WindowWidth;
-		// mainWindow.Height = AppSettings.Instance.WindowHeight;
-		// mainWindow.WindowState = AppSettings.Instance.WindowState switch {
-		// 	Core.Services.WindowState.Maximized => WindowState.Maximized,
-		// 	Core.Services.WindowState.Minimized => WindowState.Minimized,
-		// 	_ => WindowState.Normal
-		// };
+		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;
+		
+		mainWindow.Position = new PixelPoint((int)AppSettings.Instance.WindowLeft, (int)AppSettings.Instance.WindowTop);
+		mainWindow.Width = AppSettings.Instance.WindowWidth;
+		mainWindow.Height = AppSettings.Instance.WindowHeight;
+		mainWindow.WindowState = AppSettings.Instance.WindowState switch {
+			Core.Services.WindowState.Maximized => WindowState.Maximized,
+			Core.Services.WindowState.Minimized => WindowState.Minimized,
+			_ => WindowState.Normal
+		};
 	}
 	private void SwitchTab(int direction) {
 		if (tabControl.Items.Count == 0) {

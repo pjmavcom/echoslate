@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -14,6 +13,10 @@ public partial class TagPickerWindow : UserControl, INotifyPropertyChanged {
 		InitializeComponent();
 		DataContext = vm;
 		Loaded += OnLoaded;
+		AttachedToVisualTree += (s, e) => {
+			var tb = this.FindControl<TextBox>("tbNewTag");
+			tb?.Focus();
+		};
 	}
 	private void InitializeComponent() {
 		AvaloniaXamlLoader.Load(this);
@@ -25,8 +28,13 @@ public partial class TagPickerWindow : UserControl, INotifyPropertyChanged {
 				lbTags.SelectedItems.Add(tag);
 			}
 		}
+		var tb = this.FindControl<TextBox>("tbNewTag");
+		tb?.Focus();
 	}
 	private void Ok_OnClick(object sender, RoutedEventArgs e) {
+		OkCommand();
+	}
+	public void OkCommand() {
 		if (DataContext is TagPickerViewModel vm && Parent is Window window) {
 			vm.Result = true;
 			window.Close(vm);

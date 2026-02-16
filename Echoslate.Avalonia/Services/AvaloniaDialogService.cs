@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Platform.Storage;
 using Echoslate.Avalonia.Windows;
 using Echoslate.Core.Models;
@@ -73,7 +75,15 @@ public class AvaloniaDialogService : IDialogService {
 			ShowInTaskbar = false,
 			CanResize = false
 		};
+		window.Opened += async (s, e) => {
+			await Task.Delay(1); // tiny yield to let layout settle
+			var firstFocusable = window.GetLogicalDescendants()
+			   .OfType<InputElement>()
+			   .FirstOrDefault(el => el.Focusable && el.IsVisible && el.IsEnabled);
 
+			firstFocusable?.Focus();
+		};
+		
 		bool? dialogResult = await window.ShowDialog<bool?>(owner);
 		return dialogResult == true;
 	}

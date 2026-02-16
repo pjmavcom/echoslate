@@ -34,8 +34,15 @@ public class BrushService : IBrushService {
 	public object SeverityLowBrush => CreateBrush(ColorRgba.SeverityLow);
 	public object SeverityMedBrush => CreateBrush(ColorRgba.SeverityMed);
 	
+	public object AccentBlueBrush => CreateBrush(ColorRgba.AccentBlue);
+	public object SuccessGreenBrush => CreateBrush(ColorRgba.SuccessGreen);
+	public object DangerRedBrush => CreateBrush(ColorRgba.DangerRed);
+	public object RefactorBlueBrush => CreateBrush(ColorRgba.RefactorBlue);
+	public object ChoreGrayBrush => CreateBrush(ColorRgba.ChoreGray);
+	public object DocsYellowBrush => CreateBrush(ColorRgba.DocsYellow);
+	public object EditingOrangeBrush => CreateBrush(ColorRgba.EditingOrange);
+	
 	public object WarningBrush => CreateBrush(ColorRgba.DangerRed);
-	public object EditingBrush => CreateBrush(ColorRgba.EditingOrange);
 	public static object DefaultBrush => CreateBrush(ColorRgba.ChoreGray);
 
 	private static readonly Dictionary<string, ColorRgba> CommitTypeColors = new(StringComparer.OrdinalIgnoreCase) {

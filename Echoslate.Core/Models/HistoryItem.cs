@@ -83,6 +83,9 @@ public class HistoryItem : INotifyPropertyChanged {
 		set {
 			_completedTodoItems = value;
 			OnPropertyChanged();
+			if (_completedTodoItems.Count != 0) {
+				GenerateCommitMessage();
+			}
 		}
 	}
 
@@ -258,9 +261,6 @@ public class HistoryItem : INotifyPropertyChanged {
 		result += GetTodosFrom(FeaturesCompleted);
 		result += GetTodosFrom(OtherCompleted);
 		
-		if (!Notes.Equals("")) {
-			result += BreakLines(Notes);
-		}
 		return result;
 	}
 	private string GetTodosFrom(List<TodoItem> todos) {
@@ -268,6 +268,7 @@ public class HistoryItem : INotifyPropertyChanged {
 		if (todos.Count > 0) {
 			foreach (TodoItem td in todos) {
 				if (td.Todo == Title) {
+					Notes = td.GetHistoryItemNotes();
 					continue;
 				}
 				result += "- " + td.ToClipboard();

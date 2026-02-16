@@ -16,4 +16,5 @@ public class WpfApplicationService : IApplicationService {
 	public void Show() { 
 		_mainWindow.Show();
 	}
+	public object? GetWindow() => _mainWindow;
 }

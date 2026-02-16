@@ -537,6 +537,20 @@ public class TodoItem : INotifyPropertyChanged {
 
 		return result;
 	}
+	public string GetHistoryItemNotes() {
+		string result = "";
+		if (_notes != "") {
+			result += BreakLinesAddTabs(_notes) + Environment.NewLine;
+		}
+		if (_problem != "") {
+			result += "Problem: " + BreakLinesAddTabs(_problem) + Environment.NewLine;
+		}
+		if (_solution != "") {
+			result += "Solution: " + BreakLinesAddTabs(_solution) + Environment.NewLine;
+		}
+		return result;
+		
+	}
 	public string GetNotesProblemSolution() {
 		string result = "";
 		if (_notes != "") {

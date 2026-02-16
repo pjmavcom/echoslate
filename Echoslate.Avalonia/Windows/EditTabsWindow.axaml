@@ -3,7 +3,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
     Width="360"
     Height="540"
@@ -40,13 +39,12 @@
                     Grid.Row="0"
                     Margin="0"
                     behaviors:ListBoxSelectedItemsBehavior.SelectedItems="{Binding SelectedItems, Mode=OneWay}"
-                    Background="{StaticResource ControlBackground}"
+                    Background="{DynamicResource ControlBackgroundBrush}"
                     BorderBrush="#FF444444"
                     BorderThickness="1"
-                    Foreground="{StaticResource Foreground}"
+                    Foreground="{DynamicResource ForegroundBrush}"
                     ItemsSource="{Binding FilterNames}"
                     SelectionMode="Multiple">
-                    <!--  FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"  -->
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="4,2" />
@@ -85,10 +83,10 @@
             <Button
                 Grid.Column="0"
                 Margin="8,4,0,4"
-                BorderBrush="{StaticResource BorderMid}"
+                BorderBrush="{DynamicResource BorderMidBrush}"
                 Command="{Binding NewTabCommand}"
                 Content="New Filter"
-                Foreground="{StaticResource SubtleForeground}"
+                Foreground="{DynamicResource SubtleForegroundBrush}"
                 IsDefault="True" />
 
             <Border
@@ -112,9 +110,9 @@
                         Padding="8,6"
                         VerticalContentAlignment="Center"
                         behaviors:TextBoxBehavior.RemoveSpaces="True"
-                        Background="{StaticResource EditorBackground}"
-                        BorderBrush="{StaticResource Border}"
-                        Foreground="{StaticResource Foreground}"
+                        Background="{DynamicResource EditorBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        Foreground="{DynamicResource ForegroundBrush}"
                         Text="{Binding NewTabName, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
             </Border>
@@ -165,7 +163,7 @@
                 Click="OK_OnClick"
                 Content="OK"
                 FontWeight="SemiBold"
-                Foreground="{StaticResource Foreground}" />
+                Foreground="{DynamicResource ForegroundBrush}" />
             <Button
                 Width="120"
                 Padding="12,10"

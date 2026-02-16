@@ -23,4 +23,5 @@ public class AvaloniaApplicationService : IApplicationService {
 	public void Show() {
 		_mainWindow?.Show();
 	}
+	public object GetWindow() => _mainWindow;
 }

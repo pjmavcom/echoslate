@@ -9,31 +9,42 @@
     x:DataType="viewModels:TodoItemEditorViewModel"
     Background="{DynamicResource AppDarkBackgroundBrush}">
     <UserControl.Resources>
-        <converters:KanbanIndexToIDConverter x:Key="KanbanIndexToIdConverter" />
+        <converters:KanbanIndexToIDConverter
+            x:Key="KanbanIndexToIdConverter" />
     </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="486" />
-            <ColumnDefinition Width="486" />
+            <ColumnDefinition
+                Width="486" />
+            <ColumnDefinition
+                Width="486" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Margin="7" Column="0">
+        <Grid
+            Margin="7"
+            Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="180" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition
+                    Height="180" />
+                <RowDefinition
+                    Height="Auto" />
+                <RowDefinition
+                    Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--  TODO Text  -->
+            <!--  TO DO Text  -->
             <Border
                 Grid.Row="0"
                 Grid.Column="0"
                 Margin="7">
-                <Grid RowDefinitions="Auto,*">
+                <Grid
+                    RowDefinitions="Auto,*">
                     <Border
                         Grid.Row="0"
                         Margin="1"
@@ -113,11 +124,14 @@
                         BorderThickness="1"
                         CornerRadius="3">
 
-                        <Grid Margin="10,15">
+                        <Grid
+                            Margin="10,15">
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition
+                                    Width="100" />
+                                <ColumnDefinition
+                                    Width="*" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 Width="90"
@@ -134,11 +148,16 @@
                                 ItemsSource="{Binding Tags}"
                                 SelectedItem="{Binding SelectedTag}">
                                 <ListBox.ItemTemplate>
-                                    <DataTemplate x:CompileBindings="False">
-                                        <Grid Height="36" Background="Transparent">
+                                    <DataTemplate
+                                        x:CompileBindings="False">
+                                        <Grid
+                                            Height="36"
+                                            Background="Transparent">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40" />
-                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition
+                                                    Width="40" />
+                                                <ColumnDefinition
+                                                    Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <Button
                                                 Width="30"
@@ -170,15 +189,24 @@
         </Grid>
 
         <!--  Properties  -->
-        <Grid Margin="7" Column="1">
+        <Grid
+            Margin="7"
+            Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="180" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition
+                    Height="180" />
+                <RowDefinition
+                    Height="Auto" />
+                <RowDefinition
+                    Height="Auto" />
+                <RowDefinition
+                    Height="Auto" />
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" Margin="7">
-                <Grid RowDefinitions="Auto,*">
+            <Border
+                Grid.Row="0"
+                Margin="7">
+                <Grid
+                    RowDefinitions="Auto,*">
 
                     <Border
                         Padding="10,0"
@@ -200,14 +228,20 @@
                         BorderBrush="{DynamicResource BorderSilverBrush}"
                         BorderThickness="1"
                         CornerRadius="3">
-                        <Grid Margin="10,15" VerticalAlignment="Center">
+                        <Grid
+                            Margin="10,15"
+                            VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition
+                                    Width="Auto" />
+                                <ColumnDefinition
+                                    Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--  Severity Button  -->
@@ -216,11 +250,16 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="200" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Button
                                     Grid.Row="0"
@@ -256,6 +295,7 @@
                                         behaviors:MouseWheelNumericBehavior.Enabled="True"
                                         behaviors:MouseWheelNumericBehavior.Minimum="0"
                                         behaviors:MouseWheelNumericBehavior.TargetProperty="Rank"
+                                        Background="{DynamicResource TransparentBrush}"
                                         FontSize="14"
                                         FontWeight="SemiBold"
                                         IsEnabled="{Binding IsRankEnabled}"
@@ -286,10 +326,14 @@
                             </Grid>
 
                             <!--  Kanban  -->
-                            <Grid Grid.Row="1" Grid.Column="0">
+                            <Grid
+                                Grid.Row="1"
+                                Grid.Column="0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
@@ -315,8 +359,10 @@
                                 Grid.Column="1"
                                 Width="200">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="120" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition
+                                        Width="120" />
+                                    <ColumnDefinition
+                                        Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Row="0"
@@ -337,6 +383,7 @@
                                         behaviors:MouseWheelNumericBehavior.Enabled="True"
                                         behaviors:MouseWheelNumericBehavior.Minimum="0"
                                         behaviors:MouseWheelNumericBehavior.TargetProperty="TimeInMinutes"
+                                        Background="{DynamicResource TransparentBrush}"
                                         FontSize="14"
                                         FontWeight="SemiBold"
                                         LineHeight="30"
@@ -351,7 +398,9 @@
             </Border>
 
             <!--  Problem  -->
-            <Border Grid.Row="1" Margin="7">
+            <Border
+                Grid.Row="1"
+                Margin="7">
                 <StackPanel>
                     <Border
                         Margin="1"
@@ -377,7 +426,9 @@
             </Border>
 
             <!--  Solution  -->
-            <Border Grid.Row="2" Margin="7">
+            <Border
+                Grid.Row="2"
+                Margin="7">
                 <StackPanel>
                     <Border
                         Margin="1"
