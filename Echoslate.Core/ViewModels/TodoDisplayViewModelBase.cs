@@ -392,6 +392,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void CleanAllTodoHashRanks() {
 		foreach (TodoItem item in MasterList) {
+			item.NormalizeRankKeys();
 			foreach (string tag in MasterFilterTags) {
 				if (!item.Rank.ContainsKey(tag) && item.HasTag(tag)) {
 					item.Rank.Add(tag, -1);

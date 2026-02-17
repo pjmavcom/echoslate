@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Echoslate.Core.Resources;
 
 namespace Echoslate.Core.Models;
 
@@ -291,7 +292,7 @@ public class TodoItem : INotifyPropertyChanged {
 		_currentView = View.TodoList;
 	}
 	public static TodoItem Copy(TodoItem item, bool createNewGuid = false) {
-		return new TodoItem() {
+		TodoItem newItem = new TodoItem() {
 			Id = createNewGuid ? Guid.NewGuid() : item.Id,
 			Todo = item.Todo,
 			Notes = item.Notes,
@@ -309,6 +310,19 @@ public class TodoItem : INotifyPropertyChanged {
 			Rank = item.Rank,
 			CurrentView = item.CurrentView,
 		};
+		newItem.NormalizeRankKeys();
+		return newItem;
+	}
+	public void NormalizeRankKeys() {
+		Dictionary<string, int> newRank = new Dictionary<string, int>();
+		foreach (KeyValuePair<string, int> kvp in Rank) {
+			string key = kvp.Key.TrimStart('#').ToLower().CapitalizeFirstLetter();
+			int value = kvp.Value;
+			if (!newRank.ContainsKey(key)) {
+				newRank.Add(key, value);
+			}
+		}
+		Rank = newRank;
 	}
 	public TodoItem? SearchById(Guid id) {
 		if (Id == id) {
@@ -549,7 +563,6 @@ public class TodoItem : INotifyPropertyChanged {
 			result += "Solution: " + BreakLinesAddTabs(_solution) + Environment.NewLine;
 		}
 		return result;
-		
 	}
 	public string GetNotesProblemSolution() {
 		string result = "";

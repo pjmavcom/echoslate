@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using Echoslate.Core.Components;
 using Echoslate.Core.Models;
-using Echoslate.Core.Services;
 
 namespace Echoslate.Core.ViewModels;
 
