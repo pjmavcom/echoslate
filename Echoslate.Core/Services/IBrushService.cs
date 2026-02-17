@@ -22,6 +22,8 @@ public interface IBrushService {
 	
 	object LightAccentBrush { get; }
 	object AccentBrush { get; }
+	object AccentBrushHover { get; }
+	object AccentBrushPressed { get; }
 	object DarkAccentBrush { get; }
 	
 	object BorderBrush { get; }

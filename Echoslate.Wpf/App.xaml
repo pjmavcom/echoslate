@@ -27,7 +27,7 @@
             <SolidColorBrush x:Key="ButtonBackground" Color="#272727" />
             <SolidColorBrush x:Key="ButtonHoverBackground" Color="#373737" />
             <SolidColorBrush x:Key="ButtonPressedBackground" Color="#212121" />
-
+ 
             <!--  GLOBAL  -->
             <Style TargetType="Window">
                 <Setter Property="Background" Value="{StaticResource AppBackground}" />

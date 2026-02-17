@@ -17,6 +17,8 @@ public class BrushService : IBrushService {
 	
 	public object LightAccentBrush => CreateBrush(ColorRgba.LightAccent);
 	public object AccentBrush => CreateBrush(ColorRgba.Accent);
+	public object AccentBrushHover => CreateBrush(ColorRgba.AccentHover);
+	public object AccentBrushPressed => CreateBrush(ColorRgba.AccentPressed);
 	public object DarkAccentBrush => CreateBrush(ColorRgba.DarkAccent);
 	
 	public object BorderBrush => CreateBrush(ColorRgba.Border);
