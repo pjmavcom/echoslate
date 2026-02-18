@@ -20,33 +20,48 @@ public partial class App : Application {
 	private MainWindow MainWindow;
 
 	public override void Initialize() {
+		Log.Initialize();
+
+		Log.Print("Initializing BrushService...");
 		AppServices.InitializeBrushService();
 		AppServices.BrushService.SetBrushFactory((color) => new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B)));
 		BrushServiceResourceExporter.ExportTo(this.Resources, AppServices.BrushService);
+
+		Log.Print("Loading AvaloniaXAML...");
 		AvaloniaXamlLoader.Load(this);
 	}
 	public async override void OnFrameworkInitializationCompleted() {
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+			Log.Print("Loading AppSettings...");
 			AppSettings.Load();
 
+			Log.Print("Creating MainWindowViewModel mainVM...");
 			MainWindowViewModel mainVM = new(AppSettings.Instance);
+			Log.Print("Setting MainWindow DataContext to mainVM...");
 			MainWindow = new() {
 				DataContext = mainVM
 			};
+			Log.Print("Setting MainWindow...");
 			desktop.MainWindow = MainWindow;
 
+			Log.Print("Initializing AppServices...");
 			AppServices.Initialize(mainVM, new AvaloniaApplicationService(desktop), new AvaloniaDispatcherService(), new AvaloniaClipboardService(MainWindow), new AvaloniaDialogService(MainWindow));
 			AppServices.ApplicationService.Initialize(MainWindow);
 
+			Log.Print("Setting MainWindow events...");
 			MainWindow.Closing += mainVM.OnClosing;
 			MainWindow.Closing += SaveWindowProperties;
 
-			if (AppSettings.Instance.SkipWelcome && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
+			if (!AppSettings.Instance.ShowWelcomeWindow && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
+				Log.Print($"Loading last used file: {AppSettings.Instance.LastFilePath}");
 				mainVM.Load(AppSettings.Instance.LastFilePath);
+
+				Log.Print($"Showing MainWindow...");
 				AppServices.ApplicationService.Show();
 				return;
 			}
 
+			Log.Print("Showing WelcomeWindow...");
 			WelcomeViewModel vm = new WelcomeViewModel();
 			WelcomeWindow view = new WelcomeWindow(vm);
 			var window = new Window {
@@ -59,11 +74,14 @@ public partial class App : Application {
 			};
 			desktop.MainWindow = window;
 			window.Show();
+			Log.Print("Waiting for WelcomeWindow Result...");
 			await WaitForCloseAsync(window);
 			if (view.Result) {
 				desktop.MainWindow = MainWindow;
+				Log.Print("Opening MainWindow...");
 				AppServices.ApplicationService.Show();
 			} else {
+				Log.Print("Shutting down...");
 				AppServices.ApplicationService.Shutdown();
 			}
 		}
@@ -76,17 +94,25 @@ public partial class App : Application {
 		return tcs.Task;
 	}
 	public void SaveWindowProperties(object? sender, CancelEventArgs cancelEventArgs) {
+		Log.Print("Saving WindowProperties...");
 		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;
 		if (mainWindow != null) {
 			AppSettings.Instance.WindowLeft = double.IsNaN(mainWindow.Position.X) ? 0 : mainWindow.Position.X;
 			AppSettings.Instance.WindowTop = double.IsNaN(mainWindow.Position.Y) ? 0 : mainWindow.Position.Y;
+			Log.Print($"Saving WindowPosition: {AppSettings.Instance.WindowLeft}, {AppSettings.Instance.WindowTop}");
+			
 			AppSettings.Instance.WindowWidth = mainWindow.Width;
 			AppSettings.Instance.WindowHeight = mainWindow.Height;
+			Log.Print($"Saving WindowSize: {AppSettings.Instance.WindowWidth}, {AppSettings.Instance.WindowHeight}");
+			
 			AppSettings.Instance.WindowState = mainWindow.WindowState switch {
 				WindowState.Maximized => Core.Services.WindowState.Maximized,
 				WindowState.Minimized => Core.Services.WindowState.Minimized,
 				_ => Core.Services.WindowState.Normal
 			};
+			Log.Print($"Saving WindowState: {AppSettings.Instance.WindowState}");
+		} else {
+			Log.Error("MainWindow == null. Cannot save WindowProperties.");
 		}
 	}
 }

@@ -179,7 +179,6 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		UpdatePomoTimerUI();
 		_backupTimerMax = new TimeSpan(0, Data.FileSettings.BackupTime, 0);
 		_backupTimer = _backupTimerMax;
-		Log.Print($"{_backupTimer}");
 
 		StartTimer();
 	}
@@ -213,9 +212,13 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		AttemptAutoSave();
 	}
 	private void AttemptAutoSave() {
+		if (!Data.FileSettings.AutoSave) {
+			Log.Warn("AutoSave is not enabled");
+			return;
+		}
 		if (IsPendingSave && (DateTime.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
 			_ = AutoSaveAsync();
-			Log.Test("Autosaving");
+			Log.Print("Autosaving");
 			IsPendingSave = false;
 		}
 	}
@@ -388,15 +391,36 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Data.FileSettings.BackupIncrement %= 10;
 	}
 	public async void Load(string? filePath) {
-		Data = AppDataLoader.Load(filePath);
+		Log.Print("Loading AppData...");
+		Data = AppDataLoader.Load(filePath, Data);
+
+		Log.Print("Disabling AutoSave while loading...");
+		bool autoSave = Data.FileSettings.AutoSave;
+		bool autoBackup = Data.FileSettings.AutoBackup;
+		Data.FileSettings.AutoSave = false;
+		Data.FileSettings.AutoBackup = false;
+
+		Log.Print("Initializing Git settings...");
 		GitHelper.InitGitSettings(Data);
 
+		Log.Print("Loading project data...");
 		LoadCurrentData();
 		await Task.Yield();
-		AppSettings.SortRecentFiles(filePath);
+		Log.Success("Project data loaded.");
+
+		Log.Print($"Adding {filePath} to RecentFiles...");
 		AppSettings.AddRecentFile(Data.CurrentFilePath);
+
+		Log.Print("Setting window title...");
 		SetWindowTitle();
+
+		Log.Print("Resetting file changed flag...");
 		ClearChangedFlag();
+
+		Log.Print("Restoring AutoSave and AutoBackup settings.");
+		Data.FileSettings.AutoSave = autoSave;
+		Data.FileSettings.AutoBackup = autoBackup;
+		Log.Success("Application ready for use.");
 	}
 	public void CreateNewFile() {
 		Data = new AppData();
@@ -461,7 +485,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 				Data.FileSettings.AutoBackup = vm.AutoBackup;
 #endif
 			// AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
-			AppSettings.SkipWelcome = !vm.WelcomeWindow;
+			AppSettings.ShowWelcomeWindow = vm.ShowWelcomeWindow;
 			AppSettings.BackupTime = new TimeSpan(0, vm.BackupTime, 0);
 			Data.FileSettings.CanDetectBranch = vm.CanDetectBranch;
 			Data.FileSettings.GitRepoPath = vm.GitRepoPath;

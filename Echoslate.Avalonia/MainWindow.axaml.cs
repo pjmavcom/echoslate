@@ -18,19 +18,18 @@ public partial class MainWindow : Window {
 
 
 	public MainWindow() {
-		Log.Initialize();
 		InitializeComponent();
 
 #if DEBUG
 		mnuMain.Background = Brushes.Red;
 #endif
-		Log.Print("Window Initialized");
 
 		LastActiveTabIndex = AppSettings.Instance.LastActiveTabIndex;
 		AppSettings.Instance.WindowTitle = WindowTitle;
 		KeyDown += OnKeyDown;
 		Closed += (s, e) => Window_OnClosed();
 		Loaded += (s, e) => Window_OnLoaded();
+		Log.Success("Window Initialized");
 	}
 	private void OnKeyDown(object? sender, KeyEventArgs e) {
 #if DEBUG

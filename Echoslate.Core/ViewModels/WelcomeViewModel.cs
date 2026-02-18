@@ -18,11 +18,12 @@ public class WelcomeViewModel : INotifyPropertyChanged {
 	}
 
 	public WelcomeViewModel() {
-		DontShowAgain = AppSettings.Instance.SkipWelcome;
+		DontShowAgain = !AppSettings.Instance.ShowWelcomeWindow;
 	}
 
 	public void SavePreferences() {
-		AppSettings.Instance.SkipWelcome = DontShowAgain;
+		AppSettings.Instance.ShowWelcomeWindow = !DontShowAgain;
+		Log.Print($"ShowWelcomeWindow: {AppSettings.Instance.ShowWelcomeWindow}");
 		AppSettings.Save();
 	}
 

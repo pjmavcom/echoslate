@@ -30,8 +30,6 @@ public partial class MainWindow : INotifyPropertyChanged {
 
 	// CONSTRUCTORS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// CONSTRUCTORS //
 	public MainWindow() {
-		Log.Initialize();
-
 		InitializeComponent();
 		Log.Print("Window Initialized");
 

@@ -21,7 +21,7 @@ public class OptionsViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	
+
 	private bool _autoSave;
 	public bool AutoSave {
 		get => _autoSave;
@@ -38,11 +38,11 @@ public class OptionsViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private bool _welcomeWindow;
-	public bool WelcomeWindow {
-		get => _welcomeWindow;
+	private bool _showWelcomeWindow;
+	public bool ShowWelcomeWindow {
+		get => _showWelcomeWindow;
 		set {
-			_welcomeWindow = value;
+			_showWelcomeWindow = value;
 			OnPropertyChanged();
 		}
 	}
@@ -88,7 +88,7 @@ public class OptionsViewModel : INotifyPropertyChanged {
 		GlobalHotkeys = appSettings.GlobalHotkeysEnabled;
 		AutoBackup = appData.FileSettings.AutoBackup;
 		BackupTime = appData.FileSettings.BackupTime;
-		WelcomeWindow = !appSettings.SkipWelcome;
+		ShowWelcomeWindow = appSettings.ShowWelcomeWindow;
 		GitRepoPath = appData.FileSettings.GitRepoPath;
 
 		GitStatusColor = IsGitPathValid(GitRepoPath) ? BrushService.SuccessGreenBrush : BrushService.DangerRedBrush;
@@ -121,7 +121,16 @@ public class OptionsViewModel : INotifyPropertyChanged {
 		UpdateGitFeaturesState();
 	}
 	private bool IsGitPathValid(string path) {
-		return Directory.Exists(Path.Combine(path, ".git"));
+		if (string.IsNullOrWhiteSpace(path)) {
+			Log.Warn($"Invalid git repo path: {path}");
+			return false;
+		}
+		if (Directory.Exists(Path.Combine(path, ".git"))) {
+			Log.Print($"Git repo found at: {path}");
+			return true;
+		}
+		Log.Warn($"Invalid git repo path: {path}");
+		return false;
 	}
 
 	private void UpdateGitFeaturesState() {

@@ -76,7 +76,7 @@
                                 Classes="toggle-switch"
                                 FontSize="15"
                                 Foreground="{Binding BrushService.ForegroundBrush}"
-                                IsChecked="{Binding WelcomeWindow}" />
+                                IsChecked="{Binding ShowWelcomeWindow}" />
                             <Label
                                 Content="Enable Welcome Window"
                                 FontSize="14"

@@ -17,21 +17,25 @@ public static class Log {
 	public static void Initialize() {
 		lock (_lock) {
 			try {
-				string exeDir = AppDomain.CurrentDomain.BaseDirectory;
-				string baseName = "Echoslate_Log";
-				string extension = ".txt";
-
-				string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
 				string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-				string filePath = Path.Combine(localAppData, "Echoslate", "Logs");
-				AppPaths.EnsureFolder(filePath);
-				string newLogPath = Path.Combine(filePath, $"{baseName}_{timestamp}{extension}");
+				string appFolder = Path.Combine(localAppData, "Echoslate");
+				string logsFolder = Path.Combine(appFolder, "Logs");
+				string currentLog = Path.Combine(appFolder, "CurrentLog.txt");
 
-				_streamWriter = new StreamWriter(newLogPath, append: false) { AutoFlush = true };
+				AppPaths.EnsureFolder(appFolder);
+				AppPaths.EnsureFolder(logsFolder);
 
-				var logFiles = Directory.GetFiles(exeDir, $"{baseName}_*{extension}")
+				if (File.Exists(currentLog)) {
+					string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+					string archiveName = $"Echoslate_Log_{timestamp}.txt";
+					string archivePath = Path.Combine(logsFolder, archiveName);
+
+					File.Move(currentLog, archivePath);
+				}
+
+				var logFiles = Directory.GetFiles(logsFolder, "Echoslate_Log_*.txt")
 				   .Select(f => new FileInfo(f))
-				   .OrderByDescending(f => f.CreationTime)
+				   .OrderByDescending(f => f.CreationTimeUtc)
 				   .ToList();
 
 				foreach (var oldFile in logFiles.Skip(10)) {
@@ -41,10 +45,15 @@ public static class Log {
 					}
 				}
 
+				_streamWriter?.Dispose();
+				_streamWriter = new StreamWriter(currentLog, append: false) {
+					AutoFlush = true
+				};
+
 				Print("=== Todo App started ===");
-				Print($"Log file: {newLogPath}");
-				Print($"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
-				Print($"Keeping max 10 log files — old ones auto-deleted");
+				Print($"Log file: {currentLog}");
+				Print($"Version: {System.Reflection.Assembly.GetExecutingAssembly()}");
+				Print($"Keeping max 10 archived log files in {logsFolder}");
 			} catch (Exception ex) {
 				Console.WriteLine("Failed to initialize logging: " + ex);
 			}

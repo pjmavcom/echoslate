@@ -23,6 +23,7 @@ public partial class App {
 		PresentationTraceSources.Refresh();
 	}
 	private async void Application_Startup(object sender, StartupEventArgs e) {
+		Log.Initialize();
 		AppSettings.Load();
 
 		var mainVM = new MainWindowViewModel(AppSettings.Instance);
@@ -35,7 +36,7 @@ public partial class App {
 		MainWindow.Closing += mainVM.OnClosing;
 		MainWindow.Closing += SaveWindowProperties;
 
-		if (AppSettings.Instance.SkipWelcome && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
+		if (!AppSettings.Instance.ShowWelcomeWindow && !string.IsNullOrEmpty(AppSettings.Instance.LastFilePath) && File.Exists(AppSettings.Instance.LastFilePath)) {
 			mainVM.Load(AppSettings.Instance.LastFilePath);
 			AppServices.ApplicationService.Show();
 			return;

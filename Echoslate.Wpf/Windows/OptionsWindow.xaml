@@ -68,7 +68,7 @@
                             HorizontalAlignment="Left"
                             FontSize="15"
                             Foreground="{StaticResource Foreground}"
-                            IsChecked="{Binding WelcomeWindow}"
+                            IsChecked="{Binding ShowWelcomeWindow}"
                             Style="{StaticResource ToggleSwitchStyle}" />
                         <Label
                             Content="Enable Welcome Window"
