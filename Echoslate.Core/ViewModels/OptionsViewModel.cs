@@ -38,6 +38,17 @@ public class OptionsViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	private bool _autoIncrement;
+	public bool AutoIncrement {
+		get => _autoIncrement;
+		set {
+			if (_autoIncrement == value) {
+				return;
+			}
+			_autoIncrement = value;
+			OnPropertyChanged();
+		}
+	}
 	private bool _showWelcomeWindow;
 	public bool ShowWelcomeWindow {
 		get => _showWelcomeWindow;
@@ -86,6 +97,7 @@ public class OptionsViewModel : INotifyPropertyChanged {
 	public OptionsViewModel(AppSettings appSettings, AppData appData) {
 		AutoSave = appData.FileSettings.AutoSave;
 		GlobalHotkeys = appSettings.GlobalHotkeysEnabled;
+		AutoIncrement = appData.FileSettings.AutoIncrement;
 		AutoBackup = appData.FileSettings.AutoBackup;
 		BackupTime = appData.FileSettings.BackupTime;
 		ShowWelcomeWindow = appSettings.ShowWelcomeWindow;

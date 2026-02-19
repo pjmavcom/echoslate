@@ -513,10 +513,13 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			Data.FileSettings.AutoBackup = vm.AutoBackup;
 #endif
 			// AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
+			Data.FileSettings.AutoIncrement = vm.AutoIncrement;
 			AppSettings.ShowWelcomeWindow = vm.ShowWelcomeWindow;
 			AppSettings.BackupTime = new TimeSpan(0, vm.BackupTime, 0);
 			Data.FileSettings.CanDetectBranch = vm.CanDetectBranch;
 			Data.FileSettings.GitRepoPath = vm.GitRepoPath;
+			
+			Save();
 		}
 	}
 	public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);

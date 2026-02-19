@@ -55,6 +55,18 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 	}
 	public string GitRepoPath { get; set; }
 
+	private bool _autoIncrement;
+	public bool AutoIncrement {
+		get => _autoIncrement;
+		set {
+			if (_autoIncrement == value) {
+				return;
+			}
+			_autoIncrement = value;
+			IncrementMode = _autoIncrement ? IncrementMode.Revision : IncrementMode.None;
+			OnPropertyChanged();
+		}
+	}
 	private IncrementMode _incrementMode;
 	public IncrementMode IncrementMode {
 		get => _incrementMode;
