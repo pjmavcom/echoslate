@@ -392,9 +392,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void CleanAllTodoHashRanks() {
 		foreach (TodoItem item in MasterList) {
-			item.NormalizeRankKeys();
 			foreach (string tag in MasterFilterTags) {
 				if (!item.Rank.ContainsKey(tag) && item.HasTag(tag)) {
+					if (tag == tag.ToUpper()) {
+						Log.Warn("Problem here!");
+					}
 					item.Rank.Add(tag, -1);
 				}
 			}
@@ -414,6 +416,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			td.Rank.Remove(hash);
 		}
 		foreach (string name in MasterFilterTags.Where(name => !td.Rank.ContainsKey(name))) {
+			if (name == name.ToUpper()) {
+				Log.Warn("Problem here!");
+			}
 			td.Rank.Add(name, -1);
 		}
 	}
@@ -493,7 +498,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void ReRankWithSubsetMoved(List<TodoItem> subset, int newRankForSubsetFirstItem) {
 		List<TodoItem> allItems = new();
-		var  list = DisplayedItems.OrderBy(i => i.CurrentFilterRank).ToList();
+		var list = DisplayedItems.OrderBy(i => i.CurrentFilterRank).ToList();
 		foreach (TodoItem item in list) {
 			allItems.Add(item);
 		}
@@ -740,10 +745,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		if (vm.Result) {
 			Log.Print("Filters successfully edited");
 			MasterFilterTags.Clear();
-			MasterFilterTags.Add("All");
-			MasterFilterTags.Add("Other");
-			MasterFilterTags.Add("Bug");
-			MasterFilterTags.Add("Feature");
+			// MasterFilterTags.Add("All");
+			// MasterFilterTags.Add("Other");
+			// MasterFilterTags.Add("Bug");
+			// MasterFilterTags.Add("Feature");
 			foreach (string filter in vm.ResultList) {
 				MasterFilterTags.Add(filter);
 			}

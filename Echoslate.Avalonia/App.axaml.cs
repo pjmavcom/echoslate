@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,8 +19,11 @@ namespace Echoslate.Avalonia;
 
 public partial class App : Application {
 	private MainWindow MainWindow;
+	private DateTime _startupTime;
+	private TimeSpan _finishTime;
 
 	public override void Initialize() {
+		_startupTime = DateTime.Now;
 		Log.Initialize();
 
 		Log.Print("Initializing BrushService...");
@@ -58,6 +62,8 @@ public partial class App : Application {
 
 				Log.Print($"Showing MainWindow...");
 				AppServices.ApplicationService.Show();
+				_finishTime = DateTime.Now - _startupTime;
+				Log.Success($"Application ready for use. Startup Time: {_finishTime}");
 				return;
 			}
 
@@ -80,6 +86,7 @@ public partial class App : Application {
 				desktop.MainWindow = MainWindow;
 				Log.Print("Opening MainWindow...");
 				AppServices.ApplicationService.Show();
+				Log.Success("Application ready for use.");
 			} else {
 				Log.Print("Shutting down...");
 				AppServices.ApplicationService.Shutdown();

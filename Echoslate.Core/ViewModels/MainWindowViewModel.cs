@@ -17,10 +17,21 @@ public enum PomoActiveState {
 
 public class MainWindowViewModel : INotifyPropertyChanged {
 	private PeriodicTimer? _timer;
-	private Task? _timerTask;
 
 	public AppData Data;
 	public AppSettings AppSettings { get; set; }
+
+	private bool _isDebugMenuVisible;
+	public bool IsDebugMenuVisible {
+		get => _isDebugMenuVisible;
+		set {
+			if (_isDebugMenuVisible == value) {
+				return;
+			}
+			_isDebugMenuVisible = value;
+			OnPropertyChanged();
+		}
+	}
 
 	private string _currentWindowTitle;
 	public string CurrentWindowTitle {
@@ -163,6 +174,10 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 
 	public MainWindowViewModel(AppSettings appSettings) {
+#if DEBUG
+		IsDebugMenuVisible = true;
+#endif
+
 		AppSettings = appSettings;
 		TodoListVM = new TodoListViewModel();
 		KanbanVM = new KanbanViewModel();
@@ -352,7 +367,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 #if DEBUG
 		string filePath = $"C:\\MyBinaries\\TestData\\{Data.FileName}{Data.FileExtension}";
 #else
-			string filePath = AppSettings.RecentFiles[0];
+		string filePath = AppSettings.RecentFiles[0];
 #endif
 		AppDataSaver saver = new AppDataSaver();
 		saver.Save(filePath, Data);
@@ -381,7 +396,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 #if DEBUG
 		string path = "C:\\MyBinaries\\TestData\\" + Data.FileName + ".bak" + Data.FileSettings.BackupIncrement;
 #else
-			string path = AppSettings.RecentFiles[0] + ".bak" + Data.FileSettings.BackupIncrement;
+		string path = AppSettings.RecentFiles[0] + ".bak" + Data.FileSettings.BackupIncrement;
 #endif
 		Log.Print($"Backing up to: {path}");
 		AppDataSaver saver = new AppDataSaver();
@@ -394,7 +409,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Log.Print("Loading AppData...");
 		Data = AppDataLoader.Load(filePath, Data);
 
-		Log.Print("Disabling AutoSave while loading...");
+		Log.Print("Disabling AutoSave while loading.");
 		bool autoSave = Data.FileSettings.AutoSave;
 		bool autoBackup = Data.FileSettings.AutoBackup;
 		Data.FileSettings.AutoSave = false;
@@ -408,7 +423,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		await Task.Yield();
 		Log.Success("Project data loaded.");
 
-		Log.Print($"Adding {filePath} to RecentFiles...");
+		Log.Print($"Adding {filePath} to RecentFiles.");
 		AppSettings.AddRecentFile(Data.CurrentFilePath);
 
 		Log.Print("Setting window title...");
@@ -420,7 +435,20 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Log.Print("Restoring AutoSave and AutoBackup settings.");
 		Data.FileSettings.AutoSave = autoSave;
 		Data.FileSettings.AutoBackup = autoBackup;
-		Log.Success("Application ready for use.");
+
+		Log.Print("Normalizing project data...");
+		CleanAndNormalizeData();
+	}
+	public void CleanAndNormalizeData() {
+		foreach (TodoItem item in Data.TodoList) {
+			item.NormalizeData();
+		}
+
+		foreach (HistoryItem hItem in Data.HistoryList) {
+			foreach (TodoItem item in hItem.CompletedTodoItems) {
+				item.NormalizeData();
+			}
+		}
 	}
 	public void CreateNewFile() {
 		Data = new AppData();
@@ -481,8 +509,8 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			Data.FileSettings.AutoSave = false;
 			Data.FileSettings.AutoBackup = false;
 #else
-				Data.FileSettings.AutoSave = vm.AutoSave;
-				Data.FileSettings.AutoBackup = vm.AutoBackup;
+			Data.FileSettings.AutoSave = vm.AutoSave;
+			Data.FileSettings.AutoBackup = vm.AutoBackup;
 #endif
 			// AppDataSettings.GlobalHotkeysEnabled = options.GlobalHotkeys;
 			AppSettings.ShowWelcomeWindow = vm.ShowWelcomeWindow;
@@ -545,6 +573,11 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		if (AppSettings.RecentFiles.Count > 1) {
 			Load(AppSettings.RecentFiles[1]);
 		}
+	}
+
+	public ICommand DebugStepIntoCommand => new RelayCommand(DebugStepInto);
+	public void DebugStepInto() {
+		var data = Data;
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {

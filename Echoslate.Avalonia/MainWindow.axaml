@@ -133,6 +133,10 @@
                         Command="{Binding ShowAboutWindowCommand}"
                         Header="About" />
                 </MenuItem>
+                <MenuItem Header="Debug" IsVisible="{Binding IsDebugMenuVisible}">
+                    <MenuItem Command="{Binding DebugStepIntoCommand}"
+                              Header="Step Into" />
+                </MenuItem>
             </Menu>
             <StackPanel
                 Grid.Column="1"
