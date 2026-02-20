@@ -86,6 +86,7 @@ public class AppDataFileSettings : INotifyPropertyChanged {
 		BackupTime = 5;
 		CurrentProjectVersion = new Version(0, 0, 0, 0);
 		IncrementMode = IncrementMode.None;
+		Log.Print("AppDataFileSettings initialized");
 	}
 
 
