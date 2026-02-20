@@ -41,8 +41,8 @@ public interface IDialogService {
 	Task<bool> ShowDialogAsync(object view, string title);
 	Task<T?> ShowDialogAsync<T>(object view, string title);
 
-	Task<string?> OpenFile(string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate");
-	Task<string?> SaveFile(string defaultName = "New Project.echoslate", string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate");
+	string? OpenFile(string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate");
+	string? SaveFile(string defaultName = "New Project.echoslate", string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate");
 	string? ChooseFolder(string initialDirectory = "", string description = "Select Folder");
 	
 	DialogResult Show(string message, string title, DialogButton dialogButton, DialogIcon dialogIcon);

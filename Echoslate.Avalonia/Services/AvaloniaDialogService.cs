@@ -83,7 +83,7 @@ public class AvaloniaDialogService : IDialogService {
 
 			firstFocusable?.Focus();
 		};
-
+		
 		bool? dialogResult = await window.ShowDialog<bool?>(owner);
 		return dialogResult == true;
 	}
@@ -100,16 +100,9 @@ public class AvaloniaDialogService : IDialogService {
 		T? dialogResult = await window.ShowDialog<T?>(_owner);
 		return dialogResult;
 	}
-	public async Task<string?> OpenFile(string initialDirectory, string filter) {
-		Log.Print($"Opening directory: {(string.IsNullOrEmpty(initialDirectory) ? "<null or empty>" : initialDirectory)}");
-		IStorageFolder? suggestedFolder = await GetSuggestedStartLocation(initialDirectory);
+	public string OpenFile(string initialDirectory, string filter) {
+		IStorageFolder? suggestedFolder = GetSuggestedStartLocation(initialDirectory).Result;
 
-		if (suggestedFolder == null) {
-			Log.Error("Could not get a valid folder...");
-			return null;
-		}
-		
-		Log.Print($"Found directory at: {suggestedFolder.Path}");
 		FilePickerOpenOptions options = new FilePickerOpenOptions {
 			Title = "Open Echoslate Project",
 			SuggestedStartLocation = suggestedFolder,
@@ -132,54 +125,24 @@ public class AvaloniaDialogService : IDialogService {
 				}
 			}
 		};
-		Log.Print("Opening file picker...");
-		var filesTask = _topLevel.StorageProvider.OpenFilePickerAsync(options);
-		IReadOnlyList<IStorageFile> files = await filesTask;
-		// IReadOnlyList<IStorageFile> files = _topLevel.StorageProvider.OpenFilePickerAsync(options).Result;
+		IReadOnlyList<IStorageFile> files = _topLevel.StorageProvider.OpenFilePickerAsync(options).Result;
 
 		if (files.FirstOrDefault() is { } file) {
-			Log.Print($"Found file at: {file.Path?.LocalPath}");
 			return file.Path?.LocalPath;
 		}
-		Log.Print("No file found.");
 		return null;
 	}
 
 	public async Task<IStorageFolder> GetSuggestedStartLocation(string initialDirectory = "") {
 		if (!string.IsNullOrEmpty(initialDirectory)) {
-			Log.Print($"Getting path at: {initialDirectory}");
 			return await _topLevel.StorageProvider.TryGetFolderFromPathAsync(initialDirectory);
 		} else {
-			var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			Log.Warn($"initialDirectory is empty. Getting default directory at: {folder.ToString()}");
-			if (_topLevel == null) {
-				Log.Error("_topLevel is null!");
-				return null;
-			}
-			if (_topLevel.StorageProvider == null) {
-				Log.Error("StorageProvider is null!");
-				return null;
-			}
-			var resultTask = _topLevel.StorageProvider.TryGetFolderFromPathAsync(folder);
-			var folderResult = await resultTask;
-			if (folderResult == null) {
-				Log.Error("TryGetFolderFromPathAsync returned null!");
-			} else {
-				Log.Print($"Suggested folder path: {folderResult.Path?.LocalPath ?? "null"}");
-			}
-			return folderResult;
+			return await _topLevel.StorageProvider.TryGetFolderFromPathAsync(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 		}
 	}
-	public async Task<string?> SaveFile(string defaultName = "New Project.echoslate", string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate") {
-		Log.Print($"Opening directory: {(string.IsNullOrEmpty(initialDirectory) ? "<null or empty>" : initialDirectory)}");
-		IStorageFolder? suggestedFolder = await GetSuggestedStartLocation(initialDirectory);
+	public string? SaveFile(string defaultName = "New Project.echoslate", string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate") {
+		IStorageFolder? suggestedFolder = GetSuggestedStartLocation(initialDirectory).Result;
 
-		if (suggestedFolder == null) {
-			Log.Error("Could not get a valid folder...");
-			return null;
-		}
-		
-		Log.Print($"Found directory at: {suggestedFolder.Path}");
 		FilePickerSaveOptions options = new FilePickerSaveOptions {
 			Title = "Save Echoslate Project",
 			SuggestedStartLocation = suggestedFolder,
@@ -193,10 +156,7 @@ public class AvaloniaDialogService : IDialogService {
 				}
 			}
 		};
-		Log.Print("Opening file picker...");
-		IStorageFile? file = await _topLevel.StorageProvider.SaveFilePickerAsync(options);
-
-		Log.Print($"Save file name: {file.Path?.LocalPath}");
+		IStorageFile? file = _topLevel.StorageProvider.SaveFilePickerAsync(options).Result;
 		return file.Path?.LocalPath;
 	}
 
