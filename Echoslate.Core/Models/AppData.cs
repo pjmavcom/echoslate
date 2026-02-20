@@ -32,6 +32,8 @@ public class AppData {
 
 	public AppData() {
 		CurrentFilePath = string.Empty;
+
+		Log.Print("Creating new AppDataFileSettings");
 		FileSettings = new AppDataFileSettings();
 
 		AllTags = [];
@@ -40,6 +42,7 @@ public class AppData {
 		FiltersList = ["All", "Other", "Bug", "Feature"];
 		CommitScopes = [];
 		_currentHistoryItem = null;
+		Log.Print("AppData initialized");
 	}
 	public void DebugFiltersList() {
 		FiltersList.CollectionChanged += (s, e) => {

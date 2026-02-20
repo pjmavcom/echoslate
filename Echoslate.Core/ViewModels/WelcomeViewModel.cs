@@ -6,8 +6,10 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public class WelcomeViewModel : INotifyPropertyChanged {
+	public event Action<bool>? RequestClose;
+
 	public IBrushService BrushService => AppServices.BrushService;
-	
+
 	private bool _dontShowAgain;
 	public bool DontShowAgain {
 		get => _dontShowAgain;
@@ -25,6 +27,9 @@ public class WelcomeViewModel : INotifyPropertyChanged {
 		AppSettings.Instance.ShowWelcomeWindow = !DontShowAgain;
 		Log.Print($"ShowWelcomeWindow: {AppSettings.Instance.ShowWelcomeWindow}");
 		AppSettings.Save();
+	}
+	public void Close(bool result) {
+		RequestClose?.Invoke(result);
 	}
 
 	public event PropertyChangedEventHandler PropertyChanged;

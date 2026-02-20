@@ -285,12 +285,20 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		CurrentWindowTitle = AppSettings.WindowTitle + " - " + Data?.FileName;
 	}
 	public void LoadCurrentData() {
+		Log.Print("Disabling AutoSave and AutoBackup");
+		bool autoSave = Data.FileSettings.AutoSave;
+		bool autoBackup = Data.FileSettings.AutoBackup;
+		Data.FileSettings.AutoSave = false;
+		Data.FileSettings.AutoBackup = false;
+		
+		Log.Print("Assigning primary lists");
 		MasterTodoItemsList = Data.TodoList;
 		MasterFilterTags = Data.FiltersList;
 		MasterHistoryItemsList = Data.HistoryList;
 		if (MasterHistoryItemsList.Count == 0) {
 			MasterHistoryItemsList.Add(new HistoryItem());
 		}
+		Log.Print("Getting all TodoItemTags");
 		foreach (TodoItem item in MasterTodoItemsList) {
 			foreach (string tag in item.Tags) {
 				if (!Data.AllTags.Contains(tag)) {
@@ -300,17 +308,30 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 		CurrentHistoryItem = MasterHistoryItemsList[0];
 
+		Log.Print("Assigning CollectionChanged events...");
 		MasterTodoItemsList.CollectionChanged += OnCollectionChanged;
 		MasterHistoryItemsList.CollectionChanged += OnCollectionChanged;
 		MasterFilterTags.CollectionChanged += OnCollectionChanged;
+
+		Log.Print("Subscribing to PropertyChanged events for all items");
 		SubscribeToExistingItems();
 
+		Log.Print("Initializing ViewModels...");
 		TodoListVM.Initialize(this);
 		KanbanVM.Initialize(this);
 		HistoryVM.Initialize(this);
+
+		Log.Print("Setting window title...");
 		SetWindowTitle();
 
+		Log.Print("Setting up application state...");
 		SetupApplicationState();
+
+		Log.Print("Restoring AutoSave and AutoBackup settings");
+		Data.FileSettings.AutoSave = autoSave;
+		Data.FileSettings.AutoBackup = autoBackup;
+
+		Log.Success("LoadCurrentData complete.");
 	}
 	private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 		if (e.NewItems != null) {
@@ -327,11 +348,16 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		MarkAsChanged();
 	}
 	private void SubscribeToExistingItems() {
+		Log.Print("Subscribing to MasterTodoItems...");
 		foreach (var item in MasterTodoItemsList) {
 			SubscribeToItem(item);
 		}
+		Log.Print("Subscribing to HistoryList CompletedTodoItems..");
 		foreach (var item in MasterHistoryItemsList) {
 			SubscribeToItem(item);
+			foreach (TodoItem todo in item.CompletedTodoItems) {
+				SubscribeToItem(todo);
+			}
 		}
 	}
 	private void SubscribeToItem(object item) {
@@ -374,6 +400,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	}
 	private void Save(string filePath) {
 #if DEBUG
+		Log.Debug("In DEBUG MODE. Saving to temp directory...");
 		filePath = $"C:\\MyBinaries\\TestData\\{Data.FileName}{Data.FileExtension}";
 #endif
 		AppDataSaver saver = new AppDataSaver();
@@ -450,26 +477,36 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			}
 		}
 	}
-	public void CreateNewFile() {
+	public async void CreateNewFile() {
+		Log.Print("Creating new Data");
 		Data = new AppData();
 
+		Log.Print("Loading current data...");
 		LoadCurrentData();
+
+		Log.Print("Clearing item changed flags...");
 		ClearChangedFlag();
 
-		string saveFile = AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
+		Log.Print("Choosing file to save as...");
+		string saveFile = await AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
+
 		if (saveFile == null) {
 			Log.Warn("File not saved. Shutting down...");
 			AppServices.ApplicationService.Shutdown();
 			return;
 		}
+		
+		Log.Print("Setting current file path");
 		Data.CurrentFilePath = saveFile;
+
+		Log.Print($"Saving file: {saveFile}");
 		Save(saveFile);
 		SetupApplicationState();
 	}
-	public bool OpenFile() {
+	public async Task<bool> OpenFile() {
 		string basePath = Data == null ? "" : Data.BasePath;
 
-		string loadFile = AppServices.DialogService.OpenFile(basePath);
+		string loadFile = await AppServices.DialogService.OpenFile(basePath);
 		if (loadFile == null) {
 			return false;
 		}
@@ -479,6 +516,26 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Load(loadFile);
 		return true;
 	}
+	public async Task<bool> OpenFileAsync() {
+		try {
+			string? path = await AppServices.DialogService.OpenFile();
+			if (string.IsNullOrEmpty(path)) {
+				Log.Warn("No file selected.");
+				return false;
+			}
+			Log.Print($"Selected path: {path}");
+			if (_isChanged) {
+				Log.Print("Saving existing file...");
+				Save();
+			}
+			Log.Print("Loading file...");
+			Load(path);
+			return true;
+		} catch (Exception ex) {
+			Log.Error($"OpenFileAsync failed: {ex}");
+			return false;
+		}
+	}
 
 
 	public ICommand MenuNewCommand => new RelayCommand(CreateNewFile);
@@ -486,10 +543,10 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	public ICommand SaveCommand => new RelayCommand(Save);
 	public ICommand MenuSaveCommand => new RelayCommand(Save);
 	public ICommand MenuSaveAsCommand => new RelayCommand(SaveAs);
-	public void SaveAs() {
+	public async void SaveAs() {
 		Log.Print("Saving file as...");
 
-		string saveFile = AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
+		string saveFile = await AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
 		if (saveFile == null) {
 			Log.Warn("File not saved. Continuing...");
 			return;
