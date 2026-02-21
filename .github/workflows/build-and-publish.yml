@@ -50,12 +50,18 @@ jobs:
 
       - name: Publish ${{ matrix.runtime }}
         run: |
+          extraProps=""
+          if [[ "${{ runner.os }}" != "Windows" ]]; then
+            extraProps="-p:EnableWindowsTargeting=true"
+          fi
+
           dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
             -c Release \
             -r ${{ matrix.runtime }} \
             --self-contained true \
             -p:PublishSingleFile=true \
             -p:IncludeNativeLibrariesForSelfExtract=true \
+            $extraProps \
             -o ./publish-${{ matrix.runtime }}
 
       - name: Zip artifact (non-Windows)
