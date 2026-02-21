@@ -7,6 +7,18 @@
   "fileVersion": {
     "precision": "build"
   },
-  "versionHeightOffset": 3,
-  "versionHeightOffsetAppliesTo": "4.1.1"
+  "versionHeightOffset": 2,
+  "versionHeightOffsetAppliesTo": "4.1.1",
+  "pathFilters": [
+    "src/",
+    "Echoslate.Avalonia/",
+    "Echoslate.Wpf/",
+    "Echoslate.Core/",
+    "!version.json",  
+    "!README.md",
+    "!.gitignore",
+    "!docs/",
+    "!*.md",
+    "!*.txt"
+  ]
 }

@@ -223,7 +223,6 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		}
 		OnPropertyChanged(nameof(CurrentVisibleTags));
 		if (!string.IsNullOrWhiteSpace(currentSortTag)) {
-			Log.Test();
 			PrioritySortTag = currentSortTag;
 		}
 	}

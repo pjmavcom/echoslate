@@ -91,14 +91,39 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 				_isChanged = value;
 				if (value) {
 					IsPendingSave = true;
-					AttemptAutoSave();
-					LastBackupAttempt = DateTime.Now;
+					IsPendingBackup = true;
 				}
 				OnPropertyChanged();
 			}
 		}
 	}
-	public bool IsPendingSave { get; set; }
+	private bool _isPendingBackup;
+	public bool IsPendingBackup {
+		get => _isPendingBackup;
+		set {
+			if (!Data.FileSettings.AutoBackup) {
+				return;}
+			if (_isPendingBackup == value) {
+				return;
+			}
+			_isPendingBackup = value;
+			OnPropertyChanged();
+		}
+	}
+	private bool _isPendingSave;
+	public bool IsPendingSave {
+		get => _isPendingSave;
+		set {
+			if (!Data.FileSettings.AutoSave) {
+				return;
+			}
+			if (_isPendingSave == value) {
+				return;
+			}
+			_isPendingSave = value;
+			OnPropertyChanged();
+		}
+	}
 	public DateTime LastBackupAttempt { get; set; }
 	private const double DebounceSeconds = 1.5;
 
@@ -226,14 +251,13 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		if (!Data.FileSettings.AutoSave) {
 			return;
 		}
+		if (!IsPendingSave) {
+			return;
+		}
 		AttemptAutoSave();
 	}
 	private void AttemptAutoSave() {
-		if (!Data.FileSettings.AutoSave) {
-			Log.Warn("AutoSave is not enabled");
-			return;
-		}
-		if (IsPendingSave && (DateTime.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
+		if ((DateTime.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
 			_ = AutoSaveAsync();
 			Log.Print("Autosaving");
 			IsPendingSave = false;
@@ -243,7 +267,12 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		_backupTimer = _backupTimer.Subtract(new TimeSpan(0, 0, 1));
 		if (_backupTimer <= TimeSpan.Zero) {
 			_backupTimer = _backupTimerMax;
+			if (!IsPendingBackup) {
+				Log.Print("No data has changed. Backup canceled.");
+				return;
+			}
 			BackupSave();
+			IsPendingBackup = false;
 		}
 	}
 	public void UpdateTodoTimers() {
@@ -304,7 +333,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		bool autoBackup = Data.FileSettings.AutoBackup;
 		Data.FileSettings.AutoSave = false;
 		Data.FileSettings.AutoBackup = false;
-		
+
 		Log.Print("Assigning primary lists");
 		MasterTodoItemsList = Data.TodoList;
 		MasterFilterTags = Data.FiltersList;
@@ -399,6 +428,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		try {
 			await SaveToMainFileAsync();
 			ClearChangedFlag();
+			LastBackupAttempt = DateTime.Now;
 		} catch (Exception ex) {
 			Log.Error($"Auto save failed: {ex.Message}");
 		}
@@ -428,6 +458,12 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			return;
 		}
 		Save(Data.CurrentFilePath);
+	}
+	private void InitialBackup() {
+		string path = AppSettings.RecentFiles[0] + ".initialbak";
+		Log.Print($"Backing up to: {path}");
+		AppDataSaver saver = new AppDataSaver();
+		saver.Save(path, Data);
 	}
 	private void BackupSave() {
 		if (!Data.FileSettings.AutoBackup) {
@@ -470,15 +506,18 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Log.Print("Setting window title...");
 		SetWindowTitle();
 
+		Log.Print("Normalizing project data...");
+		CleanAndNormalizeData();
+		
 		Log.Print("Resetting file changed flag...");
 		ClearChangedFlag();
-
+		
 		Log.Print("Restoring AutoSave and AutoBackup settings.");
 		Data.FileSettings.AutoSave = autoSave;
 		Data.FileSettings.AutoBackup = autoBackup;
-
-		Log.Print("Normalizing project data...");
-		CleanAndNormalizeData();
+		
+		Log.Print("Performing initial backup...");
+		InitialBackup();
 	}
 	public void CleanAndNormalizeData() {
 		foreach (TodoItem item in Data.TodoList) {
@@ -509,7 +548,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			AppServices.ApplicationService.Shutdown();
 			return;
 		}
-		
+
 		Log.Print("Setting current file path");
 		Data.CurrentFilePath = saveFile;
 
@@ -589,7 +628,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			AppSettings.BackupTime = new TimeSpan(0, vm.BackupTime, 0);
 			Data.FileSettings.CanDetectBranch = vm.CanDetectBranch;
 			Data.FileSettings.GitRepoPath = vm.GitRepoPath;
-			
+
 			Save();
 		}
 	}
