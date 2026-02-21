@@ -287,16 +287,16 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		CurrentWindowTitle = "Echoslate v" + GetAppFileVersion() + " - " + Data?.FileName;
 	}
 	public static string GetAppFileVersion() {
-		string exePath = Assembly.GetEntryAssembly()?.Location
-						 ?? Assembly.GetExecutingAssembly().Location;
-
-		if (string.IsNullOrEmpty(exePath)) {
-			return "Unknown";
+		var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+		var fileVersionAttribute = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+		if (fileVersionAttribute != null && !string.IsNullOrWhiteSpace(fileVersionAttribute.Version)) {
+			Log.Print($"FileVersion: {fileVersionAttribute.Version}");
+			return fileVersionAttribute.Version;
 		}
-		FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(exePath);
 
-		Log.Print($"FileVersion: {fvi.FileVersion}");
-		return fvi.FileVersion ?? "Unknown";
+		// Fallback to AssemblyVersion if FileVersion attribute missing
+		Log.Print($"FileVersion: {assembly.GetName().Version}");
+		return assembly.GetName().Version?.ToString() ?? "Unknown";
 	}
 	public void LoadCurrentData() {
 		Log.Print("Disabling AutoSave and AutoBackup");
