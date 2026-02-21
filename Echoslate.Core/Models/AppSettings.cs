@@ -30,8 +30,6 @@ public class AppSettings {
 
 	public int LastActiveTabIndex { get; set; }
 
-	public string WindowTitle { get; set; }
-
 	private static AppSettings _instance;
 	public static AppSettings Instance => _instance ??= new AppSettings();
 
@@ -124,9 +122,6 @@ public class AppSettings {
 
 					Instance.LastActiveTabIndex = loaded.LastActiveTabIndex;
 					Log.Print($"LastActiveTabIndex: {Instance.LastActiveTabIndex}");
-
-					Instance.WindowTitle = loaded.WindowTitle;
-					Log.Print($"WindowTitle: {Instance.WindowTitle}");
 				}
 			} catch (Exception ex) {
 				Log.Error("Settings could not be loaded. Loading default settings");

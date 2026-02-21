@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -9,11 +11,9 @@ using WindowState = Avalonia.Controls.WindowState;
 namespace Echoslate.Avalonia;
 
 public partial class MainWindow : Window {
-	private const string PROGRAM_VERSION = "4.1.1.3";
-	public const string DATE_STRING_FORMAT = "yyyyMMdd";
-	public const string TIME_STRING_FORMAT = "HHmmss";
+	// public const string DATE_STRING_FORMAT = "yyyyMMdd";
+	// public const string TIME_STRING_FORMAT = "HHmmss";
 
-	private string WindowTitle => "Echoslate v" + PROGRAM_VERSION;
 	public int LastActiveTabIndex { get; set; }
 
 
@@ -25,7 +25,7 @@ public partial class MainWindow : Window {
 #endif
 
 		LastActiveTabIndex = AppSettings.Instance.LastActiveTabIndex;
-		AppSettings.Instance.WindowTitle = WindowTitle;
+		// AppSettings.Instance.WindowTitle = WindowTitle;
 		KeyDown += OnKeyDown;
 		Closed += (s, e) => Window_OnClosed();
 		Loaded += (s, e) => Window_OnLoaded();
@@ -60,7 +60,7 @@ public partial class MainWindow : Window {
 	}
 	private void SetWindowPosition() {
 		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;
-		
+
 		mainWindow.Position = new PixelPoint((int)AppSettings.Instance.WindowLeft, (int)AppSettings.Instance.WindowTop);
 		mainWindow.Width = AppSettings.Instance.WindowWidth;
 		mainWindow.Height = AppSettings.Instance.WindowHeight;

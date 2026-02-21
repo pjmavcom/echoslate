@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -282,7 +284,19 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(PomoIsWorkMode));
 	}
 	public void SetWindowTitle() {
-		CurrentWindowTitle = AppSettings.WindowTitle + " - " + Data?.FileName;
+		CurrentWindowTitle = "Echoslate v" + GetAppFileVersion() + " - " + Data?.FileName;
+	}
+	public static string GetAppFileVersion() {
+		string exePath = Assembly.GetEntryAssembly()?.Location
+						 ?? Assembly.GetExecutingAssembly().Location;
+
+		if (string.IsNullOrEmpty(exePath)) {
+			return "Unknown";
+		}
+		FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(exePath);
+
+		Log.Print($"FileVersion: {fvi.FileVersion}");
+		return fvi.FileVersion ?? "Unknown";
 	}
 	public void LoadCurrentData() {
 		Log.Print("Disabling AutoSave and AutoBackup");
