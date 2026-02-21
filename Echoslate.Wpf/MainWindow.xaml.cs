@@ -16,7 +16,7 @@ namespace Echoslate.Wpf;
 
 public partial class MainWindow : INotifyPropertyChanged {
 	// FIELDS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIELDS //
-	private const string PROGRAM_VERSION = "4.1.1.0";
+	private const string PROGRAM_VERSION = "4.1.1.3";
 	public const string DATE_STRING_FORMAT = "yyyyMMdd";
 	public const string TIME_STRING_FORMAT = "HHmmss";
 	private const string GIT_EXE_PATH = "C:\\Program Files\\Git\\cmd\\";

@@ -18,9 +18,10 @@ public partial class WelcomeWindow : UserControl {
 			window.Close();
 		}
 	}
-	private void OpenExisting_OnClick(object sender, RoutedEventArgs e) {
+	private async void OpenExisting_OnClick(object sender, RoutedEventArgs e) {
 		if (DataContext is WelcomeViewModel vm && Parent is Window window) {
-			if (AppServices.MainWindowVM.OpenFile()) {
+			var result = await AppServices.MainWindowVM.OpenFile();
+			if (result) {
 				vm.SavePreferences();
 				window.DialogResult = true;
 				window.Close();
