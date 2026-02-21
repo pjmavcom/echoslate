@@ -11,6 +11,7 @@
         <services:BrushService x:Key="BrushService"
                                x:Shared="True" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets, sans-serif</FontFamily>
     </Application.Resources>
     <Application.Styles>
         <FluentTheme />

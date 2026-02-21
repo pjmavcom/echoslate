@@ -206,6 +206,7 @@
                         Foreground="{DynamicResource ControlBackgroundBrush}" />
                 </Grid>
                 <Label
+                    Foreground="{DynamicResource ForegroundBrush}"
                     Width="100"
                     Content="Work: " />
                 <Border
@@ -213,11 +214,13 @@
                     BorderThickness="1">
                     <TextBlock
                         Width="80"
+                        Foreground="{DynamicResource ForegroundBrush}"
                         behaviors:MouseWheelNumericBehavior.Enabled="True"
+                        VerticalAlignment="Center"
                         behaviors:MouseWheelNumericBehavior.Minimum="1"
                         behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes"
                         Background="{DynamicResource TransparentBrush}"
-                        FontSize="18"
+                        FontSize="20"
                         FontWeight="SemiBold"
                         Text="{Binding PomoWorkTimeMinutes}"
                         TextAlignment="Center"
@@ -225,17 +228,20 @@
                 </Border>
                 <Label
                     Width="100"
+                    Foreground="{DynamicResource ForegroundBrush}"
                     Content="Break: " />
                 <Border
                     BorderBrush="#494949"
                     BorderThickness="1">
                     <TextBlock
                         Width="80"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource ForegroundBrush}"
                         behaviors:MouseWheelNumericBehavior.Enabled="True"
                         behaviors:MouseWheelNumericBehavior.Minimum="1"
                         behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes"
                         Background="{DynamicResource TransparentBrush}"
-                        FontSize="18"
+                        FontSize="20"
                         FontWeight="SemiBold"
                         Text="{Binding PomoBreakTimeMinutes}"
                         TextAlignment="Center"
