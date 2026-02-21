@@ -9,7 +9,7 @@ using WindowState = Avalonia.Controls.WindowState;
 namespace Echoslate.Avalonia;
 
 public partial class MainWindow : Window {
-	private const string PROGRAM_VERSION = "4.1.1.2";
+	private const string PROGRAM_VERSION = "4.1.1.3";
 	public const string DATE_STRING_FORMAT = "yyyyMMdd";
 	public const string TIME_STRING_FORMAT = "HHmmss";
 
