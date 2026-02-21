@@ -1,0 +1,74 @@
+name: Build Echoslate (Win / macOS / Linux)
+
+on:
+  #push:
+  #  branches: [ main, develop ]          # or whatever branches you use
+  #pull_request:
+  workflow_dispatch:                     # allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    name: Build for ${{ matrix.runtime }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            suffix: .exe
+
+          - os: windows-latest
+            runtime: win-arm64
+            suffix: .exe
+
+          - os: macos-latest
+            runtime: osx-x64
+            suffix: ''
+
+          - os: macos-latest
+            runtime: osx-arm64
+            suffix: ''
+
+          - os: ubuntu-latest
+            runtime: linux-x64
+            suffix: ''
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'          # or '8.0.x' — match your project
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish ${{ matrix.runtime }}
+        run: |
+          dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o ./publish-${{ matrix.runtime }}
+
+      - name: Zip artifact (non-Windows)
+        if: runner.os != 'Windows'
+        run: |
+          cd publish-${{ matrix.runtime }}
+          zip -r ../Echoslate-${{ matrix.runtime }}.zip .
+
+      - name: Zip artifact (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ./publish-${{ matrix.runtime }}/* -DestinationPath Echoslate-${{ matrix.runtime }}.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Echoslate-${{ matrix.runtime }}
+          path: Echoslate-${{ matrix.runtime }}.zip
+          if-no-files-found: error

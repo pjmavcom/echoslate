@@ -4,6 +4,12 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Release -DB</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release -DB' ">
+      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
