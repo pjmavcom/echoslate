@@ -50,6 +50,7 @@ jobs:
         run: dotnet restore Echoslate.Avalonia/Echoslate.Avalonia.csproj
 
       - name: Publish ${{ matrix.runtime }}
+        shell: bash
         run: |
           dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
           -c Release \
