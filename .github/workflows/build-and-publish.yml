@@ -1,10 +1,7 @@
 name: Build Echoslate (Win / macOS / Linux)
 
 on:
-  #push:
-  #  branches: [ main, develop ]          # or whatever branches you use
-  #pull_request:
-  workflow_dispatch:                     # allows manual trigger from GitHub UI
+  workflow_dispatch:
   pull_request:
   push:
 
@@ -43,25 +40,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'          # or '8.0.x' — match your project
+          dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Restore dependencies (Avalonia project only)
+        run: dotnet restore Echoslate.Avalonia/Echoslate.Avalonia.csproj
 
       - name: Publish ${{ matrix.runtime }}
         run: |
-          extraProps=""
-          if [[ "${{ runner.os }}" != "Windows" ]]; then
-            extraProps="-p:EnableWindowsTargeting=true"
-          fi
-
           dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
             -c Release \
             -r ${{ matrix.runtime }} \
             --self-contained true \
             -p:PublishSingleFile=true \
             -p:IncludeNativeLibrariesForSelfExtract=true \
-            $extraProps \
             -o ./publish-${{ matrix.runtime }}
 
       - name: Zip artifact (non-Windows)
