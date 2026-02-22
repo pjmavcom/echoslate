@@ -176,7 +176,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	public HistoryViewModel() {
 		CurrentHistoryItem = new HistoryItem {
 			Title = "Work in progress",
-			Version = new Version(0, 0, 0, 0)
+			Version = new Version(0, 0, 0, 1)
 		};
 
 		_todoList = [];
@@ -222,7 +222,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
 							 new HistoryItem {
 								 Title = "Work in progress",
-								 Version = new Version(3, 40, 40, 1)
+								 Version = new Version(0, 0, 0, 1)
 							 };
 		if (!ReferenceEquals(CurrentHistoryItem, _allHistoryItems.FirstOrDefault())) {
 			_allHistoryItems.Insert(0, CurrentHistoryItem);

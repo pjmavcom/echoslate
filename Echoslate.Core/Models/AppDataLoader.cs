@@ -52,7 +52,7 @@ public class AppDataLoader {
 		if (data.CurrentHistoryItem == null) {
 			Log.Print("No CurrentHistoryItem available. Creating new HistoryItem");
 
-			Version version = new Version("0.1.2.3");
+			Version version = new Version("0.0.0.1");
 			if (data.HistoryList.FirstOrDefault() != null) {
 				version = data.HistoryList.FirstOrDefault().Version;
 			}

@@ -192,7 +192,7 @@ public class HistoryItem : INotifyPropertyChanged {
 
 
 	public HistoryItem() {
-		Version = new Version();
+		Version = new Version(0, 0, 0, 1);
 		_title = string.Empty;
 		_dateAdded = string.Empty;
 		_timeAdded = string.Empty;
