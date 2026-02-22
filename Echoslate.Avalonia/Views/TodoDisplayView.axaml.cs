@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -19,8 +21,7 @@ public partial class TodoDisplayView : UserControl {
 	public TodoDisplayView() {
 		InitializeComponent();
 	}
-	protected override void OnDataContextChanged(EventArgs e)
-	{
+	protected override void OnDataContextChanged(EventArgs e) {
 		base.OnDataContextChanged(e);
 
 		if (IsVisible && DataContext is TodoDisplayViewModelBase vm)

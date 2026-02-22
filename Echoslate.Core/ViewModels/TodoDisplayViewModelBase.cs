@@ -210,7 +210,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				CurrentVisibleTags.Add(tag);
 			}
 		}
-		OnPropertyChanged(nameof(CurrentVisibleTagsView));
+		CurrentVisibleTags.Add("-None-");
 
 		AllTags.Clear();
 		foreach (TodoItem item in MasterList) {
@@ -309,6 +309,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		return MatchFilter(FilterList, ih);
 	}
 	private void ApplyPriorityTagSorting() {
+		if (PrioritySortTag == "-None-") {
+			foreach (TodoItem ih in DisplayedItems) {
+				ih.IsPrioritySorted = false;
+			}
+		}
 		foreach (TodoItem ih in DisplayedItems) {
 			if (ih.HasTag(PrioritySortTag)) {
 				ih.IsPrioritySorted = true;

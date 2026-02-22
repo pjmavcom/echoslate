@@ -87,9 +87,10 @@
             <ComboBox
                 Width="306"
                 ItemsSource="{Binding CurrentVisibleTagsView}"
-                KeyboardNavigation.IsTabStop="False"
                 MaxDropDownHeight="360"
                 SelectedItem="{Binding PrioritySortTag, UpdateSourceTrigger=PropertyChanged}" />
+                <!-- KeyboardNavigation.IsTabStop="False" -->
+                <!-- SelectionChanged="TagSortComboBox_OnSelectionChanged" -->
             <Button
                 Width="170"
                 Command="{Binding SelectSortCommand}"
