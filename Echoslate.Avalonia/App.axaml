@@ -453,12 +453,16 @@
                     Value="{DynamicResource AppBackgroundBrush}" />
             <Setter Property="Foreground"
                     Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="FontSize"
+                    Value="16" />
             <Setter Property="BorderBrush"
                     Value="Transparent" />
             <Setter Property="BorderThickness"
                     Value="1" />
             <Setter Property="Padding"
                     Value="4,2" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Left" />
             <Setter Property="FontWeight"
                     Value="SemiBold" />
         </Style>
@@ -471,6 +475,64 @@
                     Value="{DynamicResource ForegroundBrush}" />
             <Setter Property="Padding"
                     Value="12,4" />
+
+            <Setter Property="Template" >
+                <ControlTemplate TargetType="MenuItem" >
+                    <Grid>
+                        <Border Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                Padding="{TemplateBinding Padding}" >
+
+                            <!-- 3 columns: Icon | Header | Arrow -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" >
+                                <!-- Icon gutter (collapses to 0 width if no icon) -->
+                                <ContentPresenter Name="PART_IconPresenter"
+                                                  Grid.Column="0"
+                                                  Content="{TemplateBinding Icon}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,8,0"
+                                                  IsVisible="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+
+                                <ContentPresenter Name="PART_HeaderPresenter"
+                                                  Grid.Column="1"
+                                                  Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center" />
+
+                                <Path Name="arrow"
+                                      Grid.Column="2"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="8,0,4,0"
+                                      Data="M 0 0 L 4 4 L 8 0 Z"
+                                      Fill="{DynamicResource SubtleForegroundBrush}"
+                                      IsVisible="False" />
+                            </Grid>
+                        </Border>
+
+                        <Popup Name="PART_Popup"
+                               IsOpen="{TemplateBinding IsSubMenuOpen}"
+                               Placement="BottomEdgeAlignedLeft"
+                               PlacementTarget="{Binding $parent[MenuItem]}"
+                               MinWidth="{Binding $parent[MenuItem].Bounds.Width}"
+                               Focusable="False" >
+                            <Border Background="{DynamicResource AppBackgroundBrush}"
+                                    BorderBrush="{DynamicResource ControlBackgroundBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="2" >
+                                <ScrollViewer>
+                                    <ItemsPresenter Name="PART_ItemsPresenter" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="MenuItem.with-icon" >
             <Setter Property="Template" >
                 <ControlTemplate TargetType="MenuItem" >
                     <Grid>

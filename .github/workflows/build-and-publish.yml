@@ -61,9 +61,71 @@ jobs:
           -p:IncludeNativeLibrariesForSelfExtract=true \
           -o ./publish-${{ matrix.runtime }}
 
+      - name: Create macOS .app bundle
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Zip artifact (non-Windows)
-        if: runner.os != 'Windows'
+          APP_NAME="Echoslate"
+          PUBLISH_DIR="publish-${{ matrix.runtime }}"
+          APP_DIR="${APP_NAME}.app"
+          CONTENTS_DIR="${APP_DIR}/Contents"
+          MACOS_DIR="${CONTENTS_DIR}/MacOS"
+          RES_DIR="${CONTENTS_DIR}/Resources"
+
+          rm -rf "${APP_DIR}"
+          mkdir -p "${MACOS_DIR}" "${RES_DIR}"
+
+          # Find the published executable (single-file) in the publish directory
+          EXE_PATH="$(find "${PUBLISH_DIR}" -maxdepth 1 -type f -perm -111 ! -name '*.dylib' ! -name '*.pdb' ! -name '*.json' | head -n 1)"
+          if [[ -z "${EXE_PATH}" ]]; then
+            echo "Could not find an executable in ${PUBLISH_DIR}"
+            ls -la "${PUBLISH_DIR}"
+            exit 1
+          fi
+
+          # Copy/rename it to the standard bundle location
+          cp "${EXE_PATH}" "${MACOS_DIR}/${APP_NAME}"
+          chmod +x "${MACOS_DIR}/${APP_NAME}"
+
+          # Minimal Info.plist so Finder/Spotlight treat it as an app
+          cat > "${CONTENTS_DIR}/Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+            <dict>
+              <key>CFBundleName</key>
+              <string>Echoslate</string>
+              <key>CFBundleDisplayName</key>
+              <string>Echoslate</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.example.echoslate</string>
+              <key>CFBundleVersion</key>
+              <string>1</string>
+              <key>CFBundleShortVersionString</key>
+              <string>1.0.0</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>CFBundleExecutable</key>
+              <string>Echoslate</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>11.0</string>
+              <key>NSHighResolutionCapable</key>
+              <true/>
+            </dict>
+          </plist>
+          PLIST
+
+      - name: Zip artifact (macOS .app)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          zip -r "Echoslate-${{ matrix.runtime }}.zip" "Echoslate.app"
+
+      - name: Zip artifact (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
         run: |
           cd publish-${{ matrix.runtime }}
           zip -r ../Echoslate-${{ matrix.runtime }}.zip .
