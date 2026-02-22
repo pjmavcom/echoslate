@@ -28,7 +28,7 @@ public enum DialogIcon {
 }
 
 public interface IDialogService {
-	Task<bool> ShowAboutAsync();
+	Task<bool> ShowAboutAsync(string version);
 	Task<bool> ShowHelpAsync();
 	Task<OptionsViewModel?> ShowOptionsAsync(AppSettings appSettings, AppData appData);
 	Task<bool> ShowWelcomeWindowAsync();

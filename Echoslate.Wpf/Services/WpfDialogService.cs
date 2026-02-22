@@ -21,8 +21,8 @@ public class WpfDialogService : IDialogService {
 	public WpfDialogService(Window owner) {
 		_owner = owner;
 	}
-	public async Task<bool> ShowAboutAsync() {
-		return await ShowDialogAsync(new AboutWindow(), "About Echoslate");
+	public async Task<bool> ShowAboutAsync(string version) {
+		return await ShowDialogAsync(new AboutWindow(version), "About Echoslate");
 	}
 	public async Task<bool> ShowHelpAsync() {
 		return await ShowDialogAsync(new HelpWindow(), "Hotkey Help");

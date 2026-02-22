@@ -27,7 +27,7 @@
                 HorizontalAlignment="Center"
                 FontSize="28"
                 FontWeight="Bold"
-                Text="Echoslate v4.0.0" />
+                Text="{Binding Version}" />
 
             <TextBlock
                 FontSize="14"

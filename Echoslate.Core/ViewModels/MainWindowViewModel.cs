@@ -679,7 +679,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		PomoTimer = TimeSpan.Zero;
 		PomoTimeLeft = TimeSpan.Zero;
 	});
-	public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync(); });
+	public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync("Echoslate v" + GetAppFileVersion()); });
 	public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowHelpAsync(); });
 	public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
 	public void QuickLoad() {
