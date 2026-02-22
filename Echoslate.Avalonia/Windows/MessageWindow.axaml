@@ -15,22 +15,30 @@
             <Button
                 Margin="0,0,10,0"
                 Click="Ok_OnClick"
+                    FontSize="16"
+                    Background="{DynamicResource AccentBrush}"
+                    BorderBrush="{DynamicResource LightAccentBrush}"
                 Content="OK"
                 IsDefault="True"
                 IsVisible="{Binding ShowOk}" />
             <Button
                 Margin="0,0,10,0"
                 Click="Yes_OnClick"
+                FontSize="16"
                 Content="Yes"
                 IsDefault="True"
                 IsVisible="{Binding ShowYes}" />
             <Button
                 Margin="0,0,10,0"
+                FontSize="16"
                 Click="No_OnClick"
                 IsVisible="{Binding ShowNo}" />
             <Button
                 Click="Cancel_OnClick"
                 Content="Cancel"
+                FontSize="16"
+                Background="{DynamicResource DangerRedBrush}"
+                BorderBrush="{DynamicResource DangerRedBrush}"
                 IsCancel="True"
                 IsVisible="{Binding ShowCancel}" />
         </StackPanel>

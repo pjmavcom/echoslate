@@ -6,7 +6,8 @@
              Width="700"
              MinWidth="380"
              x:DataType="local:OptionsViewModel"
-             Background="{Binding BrushService.AppBackgroundBrush}" >
+             Background="{DynamicResource AppBackgroundBrush}"
+             >
 
     <Grid Margin="20" >
         <Grid.RowDefinitions>
@@ -20,16 +21,16 @@
             <!--  General Settings  -->
             <Border Margin="0"
                     Padding="10"
-                    Background="{Binding BrushService.ControlBackgroundBrush}"
-                    BorderBrush="{Binding BrushService.BorderSilverBrush}"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="1"
                     ClipToBounds="False"
                     CornerRadius="7" >
                 <StackPanel>
-                    <TextBlock Background="{Binding BrushService.ControlBackgroundBrush}"
-                               FontSize="20"
+                    <TextBlock Background="{DynamicResource ControlBackgroundBrush}"
                                FontWeight="SemiBold"
-                               Foreground="{Binding BrushService.ForegroundBrush}"
+                               FontSize="20"
+                               Foreground="{DynamicResource ForegroundBrush}"
                                Text="General Settings" />
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -42,23 +43,23 @@
                                 <CheckBox Margin="0,0,0,12"
                                           HorizontalAlignment="Left"
                                           Classes="toggle-switch"
-                                          FontSize="15"
-                                          Foreground="{Binding BrushService.ForegroundBrush}"
+                                          FontSize="16"
+                                          Foreground="{DynamicResource ForegroundBrush}"
                                           IsChecked="{Binding AutoSave}" />
                                 <Label Content="AutoSave"
-                                       FontSize="14"
-                                       Foreground="{Binding BrushService.ForegroundBrush}" />
+                                       FontSize="16"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" >
                                 <CheckBox Margin="0,0,0,12"
                                           HorizontalAlignment="Left"
                                           Classes="toggle-switch"
-                                          FontSize="15"
-                                          Foreground="{Binding BrushService.ForegroundBrush}"
+                                          FontSize="16"
+                                          Foreground="{DynamicResource ForegroundBrush}"
                                           IsChecked="{Binding AutoBackup}" />
                                 <Label Content="AutoBackup"
-                                       FontSize="14"
-                                       Foreground="{Binding BrushService.ForegroundBrush}" />
+                                       FontSize="16"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="1"
@@ -67,22 +68,22 @@
                                 <CheckBox Margin="0,0,0,12"
                                           HorizontalAlignment="Left"
                                           Classes="toggle-switch"
-                                          FontSize="15"
-                                          Foreground="{Binding BrushService.ForegroundBrush}"
+                                          FontSize="16"
+                                          Foreground="{DynamicResource ForegroundBrush}"
                                           IsChecked="{Binding AutoIncrement}" />
                                 <Label Content="Auto-Increment Revision"
-                                       FontSize="14"
-                                       Foreground="{Binding BrushService.ForegroundBrush}" />
+                                       FontSize="16"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" >
                                 <CheckBox HorizontalAlignment="Left"
                                           Classes="toggle-switch"
-                                          FontSize="15"
-                                          Foreground="{Binding BrushService.ForegroundBrush}"
+                                          FontSize="16"
+                                          Foreground="{DynamicResource ForegroundBrush}"
                                           IsChecked="{Binding ShowWelcomeWindow}" />
                                 <Label Content="Enable Welcome Window"
-                                       FontSize="14"
-                                       Foreground="{Binding BrushService.ForegroundBrush}" />
+                                       FontSize="16"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -92,23 +93,23 @@
             <!--  Backup Interval  -->
             <Border Margin="0"
                     Padding="10"
-                    Background="{Binding BrushService.ControlBackgroundBrush}"
-                    BorderBrush="{Binding BrushService.BorderSilverBrush}"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="1"
                     ClipToBounds="False"
                     CornerRadius="7" >
                 <StackPanel>
-                    <TextBlock Background="{Binding BrushService.ControlBackgroundBrush}"
+                    <TextBlock Background="{DynamicResource ControlBackgroundBrush}"
                                FontSize="20"
                                FontWeight="SemiBold"
-                               Foreground="{Binding BrushService.ForegroundBrush}"
+                               Foreground="{DynamicResource ForegroundBrush}"
                                Text="Backup Interval" />
                     <StackPanel Margin="10,15"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal" >
                         <TextBlock Margin="0,0,12,0"
                                    VerticalAlignment="Center"
-                                   FontSize="14"
+                                   FontSize="16"
                                    Text="Create backup every" />
                         <Border BorderBrush="#494949"
                                 BorderThickness="1" >
@@ -125,7 +126,7 @@
                         </Border>
                         <TextBlock Margin="12,0,0,0"
                                    VerticalAlignment="Center"
-                                   FontSize="14"
+                                   FontSize="16"
                                    Text="minutes" />
                     </StackPanel>
                 </StackPanel>
@@ -134,16 +135,16 @@
             <!--  Git Settings  -->
             <Border Margin="0"
                     Padding="10"
-                    Background="{Binding BrushService.ControlBackgroundBrush}"
-                    BorderBrush="{Binding BrushService.BorderSilverBrush}"
+                    Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="1"
                     ClipToBounds="False"
                     CornerRadius="7" >
                 <StackPanel>
-                    <TextBlock Background="{Binding BrushService.ControlBackgroundBrush}"
+                    <TextBlock Background="{DynamicResource ControlBackgroundBrush}"
                                FontSize="20"
                                FontWeight="SemiBold"
-                               Foreground="{Binding BrushService.ForegroundBrush}"
+                               Foreground="{DynamicResource ForegroundBrush}"
                                Text="Git Integration" />
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -157,14 +158,14 @@
                         </Grid.RowDefinitions>
                         <TextBlock Margin="12,0,12,0"
                                    VerticalAlignment="Center"
-                                   FontSize="14"
+                                   FontSize="16"
                                    Text="Root Path:" />
                         <TextBox Grid.Column="1"
                                  Height="35"
                                  Margin="20,0,0,0"
                                  AcceptsReturn="True"
-                                 FontSize="15"
-                                 Foreground="{Binding BrushService.ForegroundBrush}"
+                                 FontSize="16"
+                                 Foreground="{DynamicResource ForegroundBrush}"
                                  IsReadOnly="True"
                                  Text="{Binding GitRepoPath}" />
                         <Button Grid.Column="2"
@@ -172,12 +173,14 @@
                                 Height="35"
                                 Margin="0,3,12,3"
                                 VerticalAlignment="Top"
+                                Foreground="{DynamicResource ForegroundBrush}"
                                 Command="{Binding ChooseGitRepoPathCommand}"
                                 Content="Browse..."
-                                FontSize="14" />
+                                FontSize="16" />
                         <TextBlock Grid.Row="1"
                                    Grid.ColumnSpan="3"
                                    HorizontalAlignment="Center"
+                                   FontSize="16"
                                    Margin="0,10,0,0"
                                    Foreground="{Binding GitStatusColor}"
                                    Text="{Binding GitStatusMessage}" />
@@ -194,19 +197,19 @@
                     Orientation="Horizontal" >
             <Button Width="140"
                     Margin="0,0,15,0"
-                    Background="#FF0066CC"
-                    BorderBrush="#FF0077EE"
+                    FontSize="16"
+                    Background="{DynamicResource AccentBrush}"
+                    BorderBrush="{DynamicResource LightAccentBrush}"
                     Click="Ok_OnClick"
                     Content="OK"
-                    FontSize="16"
-                    Foreground="{Binding BrushService.ForegroundBrush}"
                     IsDefault="True" />
             <Button Width="140"
-                    Background="#F44336"
+                    FontSize="16"
+                    Background="{DynamicResource DangerRedBrush}"
+                    BorderBrush="{DynamicResource DangerRedBrush}"
+                    Margin="0,0,15,0"
                     Click="Cancel_OnClick"
                     Content="Cancel"
-                    FontSize="16"
-                    Foreground="White"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

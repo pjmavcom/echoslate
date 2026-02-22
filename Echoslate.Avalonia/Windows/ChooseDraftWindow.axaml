@@ -50,11 +50,15 @@
                     Margin="0,0,10,0"
                     Click="Ok_Click"
                     FontSize="16"
+                    Background="{DynamicResource AccentBrush}"
+                    BorderBrush="{DynamicResource LightAccentBrush}"
                     Content="OK"
                     IsDefault="True" />
             <Button Width="90"
                     Click="Cancel_Click"
                     FontSize="16"
+                    Background="{DynamicResource DangerRedBrush}"
+                    BorderBrush="{DynamicResource DangerRedBrush}"
                     Content="Cancel"
                     IsCancel="True" />
         </StackPanel>

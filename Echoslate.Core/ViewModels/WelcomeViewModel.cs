@@ -10,21 +10,53 @@ public class WelcomeViewModel : INotifyPropertyChanged {
 
 	public IBrushService BrushService => AppServices.BrushService;
 
-	private bool _dontShowAgain;
-	public bool DontShowAgain {
-		get => _dontShowAgain;
+	private bool _showAgain;
+	public bool ShowAgain {
+		get => _showAgain;
 		set {
-			_dontShowAgain = value;
+			_showAgain = value;
+			if (_showAgain) {
+				ShowWindowString1 = "Show this window next time";
+				ShowWindowString2 = "";
+			} else {
+				ShowWindowString1 = "Do not show this window again";
+				ShowWindowString2 = "(Always load last file)";
+			}
+			
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(ShowWindowString1));
+			OnPropertyChanged(nameof(ShowWindowString2));
+		}
+	}
+	private string _showWindowString1;
+	public string ShowWindowString1 {
+		get => _showWindowString1;
+		set {
+			if (_showWindowString1 == value) {
+				return;
+			}
+			_showWindowString1 = value;
+			OnPropertyChanged();
+		}
+	}
+	private string _showWindowString2;
+	public string ShowWindowString2 {
+		get => _showWindowString2;
+		set {
+			if (_showWindowString2 == value) {
+				return;
+			}
+			_showWindowString2 = value;
 			OnPropertyChanged();
 		}
 	}
 
 	public WelcomeViewModel() {
-		DontShowAgain = !AppSettings.Instance.ShowWelcomeWindow;
+		ShowAgain = AppSettings.Instance.ShowWelcomeWindow;
 	}
 
 	public void SavePreferences() {
-		AppSettings.Instance.ShowWelcomeWindow = !DontShowAgain;
+		AppSettings.Instance.ShowWelcomeWindow = ShowAgain;
 		Log.Print($"ShowWelcomeWindow: {AppSettings.Instance.ShowWelcomeWindow}");
 		AppSettings.Save();
 	}
