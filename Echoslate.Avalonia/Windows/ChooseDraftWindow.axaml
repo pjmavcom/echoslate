@@ -1,67 +1,62 @@
-<UserControl
-    x:Class="Echoslate.Avalonia.Windows.ChooseDraftWindow"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
-    Width="460"
-    Height="340"
-    x:DataType="viewModels:ChooseDraftViewModel">
-    <Grid
-        Margin="20">
+<UserControl x:Class="Echoslate.Avalonia.Windows.ChooseDraftWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+             Width="460"
+             Height="340"
+             x:DataType="viewModels:ChooseDraftViewModel"
+             Background="{DynamicResource AppBackgroundBrush}"
+             Foreground="{DynamicResource ForegroundBrush}" >
+    <Grid Margin="20" >
         <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
-            <RowDefinition
-                Height="*" />
-            <RowDefinition
-                Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Grid.Row="0"
-            Margin="0,0,0,20"
-            FontSize="14"
-            Text="You have multiple in-progress drafts.&#x0a;Where should this completion be added?"
-            TextWrapping="Wrap" />
+        <TextBlock Grid.Row="0"
+                   Margin="0,0,0,20"
+                   FontSize="16"
+                   Foreground="{DynamicResource ForegroundBrush}"
+                   Text="You have multiple in-progress drafts.&#x0a;Where should this completion be added?"
+                   TextWrapping="Wrap" />
 
-        <ListBox
-            Grid.Row="1"
-            Margin="0,0,0,20"
-            ItemsSource="{Binding Drafts}"
-            SelectedItem="{Binding SelectedHistoryItem}">
+        <ListBox Grid.Row="1"
+                 Margin="0,0,0,20"
+                 ItemsSource="{Binding Drafts}"
+                 SelectedItem="{Binding SelectedHistoryItem}" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel
-                        Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontSize="16"
-                            Text="✏️" />
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontWeight="Bold"
-                            Text="{Binding Title}" />
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Margin="0,0,8,0"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   FontSize="16"
+                                   Text="✏️" />
+                        <TextBlock VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Text="{Binding Title}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel
-            Grid.Row="2"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
-            <Button
-                Width="90"
-                Margin="0,0,10,0"
-                Click="Ok_Click"
-                Content="OK"
-                IsDefault="True" />
-            <Button
-                Width="90"
-                Click="Cancel_Click"
-                Content="Cancel"
-                IsCancel="True" />
+        <StackPanel Grid.Row="2"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal" >
+            <Button Width="90"
+                    Margin="0,0,10,0"
+                    Click="Ok_Click"
+                    FontSize="16"
+                    Content="OK"
+                    IsDefault="True" />
+            <Button Width="90"
+                    Click="Cancel_Click"
+                    FontSize="16"
+                    Content="Cancel"
+                    IsCancel="True" />
         </StackPanel>
     </Grid>
 </UserControl>

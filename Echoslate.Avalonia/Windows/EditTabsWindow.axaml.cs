@@ -29,7 +29,7 @@ public partial class EditTabsWindow : UserControl {
 		}
 	}
 	private void Cancel_OnClick(object sender, RoutedEventArgs e) {
-		if (DataContext is OptionsViewModel vm && Parent is Window window) {
+		if (DataContext is EditTabsViewModel vm && Parent is Window window) {
 			vm.Result = false;
 			window.Close(null);
 		}

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Echoslate.Core.Models;
 
@@ -26,6 +27,11 @@ public partial class HelpWindow : UserControl {
 	}
 	private void InitializeComponent() {
 		AvaloniaXamlLoader.Load(this);
+	}
+	private void Cancel_OnClick(object? sender, RoutedEventArgs e) {
+		if (Parent is Window window) {
+			window.Close();
+		}
 	}
 
 }

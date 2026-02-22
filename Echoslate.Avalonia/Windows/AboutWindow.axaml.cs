@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Echoslate.Core.Models;
 
@@ -56,6 +57,7 @@ public partial class AboutWindow : UserControl, INotifyPropertyChanged {
 			Console.WriteLine($"Failed to open GitHub: {ex.Message}");
 		}
 	}
+	
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
@@ -70,4 +72,9 @@ public partial class AboutWindow : UserControl, INotifyPropertyChanged {
 		return true;
 	}
 
+	private void Cancel_OnClick(object? sender, RoutedEventArgs e) {
+		if (Parent is Window window) {
+			window.Close();
+		}
+	}
 }

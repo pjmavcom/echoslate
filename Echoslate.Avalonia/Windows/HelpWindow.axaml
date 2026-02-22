@@ -1,52 +1,47 @@
-<UserControl
-    x:Class="Echoslate.Avalonia.Windows.HelpWindow"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Echoslate.Avalonia.Windows"
-    xmlns:services="clr-namespace:Echoslate.Core.Services;assembly=Echoslate.Core"
-    x:DataType="local:HelpWindow"
-    Background="{Binding AppBackgroundBrush, Source={x:Static services:AppServices.BrushService}}">
-    <Grid Margin="20" RowDefinitions="Auto,*,Auto">
-        <Grid
-            Grid.Row="0"
-            Background="#222222"
-            ColumnDefinitions="180,*">
-            <TextBlock
-                Grid.Column="0"
-                Margin="8,6"
-                FontWeight="SemiBold"
-                Foreground="#FFCCCCCC"
-                Text="Hotkey" />
-            <TextBlock
-                Grid.Column="1"
-                Margin="8,6"
-                FontWeight="SemiBold"
-                Foreground="#FFCCCCCC"
-                Text="Action" />
+<UserControl x:Class="Echoslate.Avalonia.Windows.HelpWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Echoslate.Avalonia.Windows"
+             x:DataType="local:HelpWindow"
+             Background="{DynamicResource AppDarkBackgroundBrush}" >
+    <Grid Margin="20"
+          RowDefinitions="Auto,*,Auto" >
+        <Grid Grid.Row="0"
+              Background="{DynamicResource BorderDarkBrush}"
+              ColumnDefinitions="180,*" >
+            <TextBlock Grid.Column="0"
+                       Margin="8,6"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource ForegroundBrush}"
+                       Text="Hotkey" />
+            <TextBlock Grid.Column="1"
+                       Margin="8,6"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource ForegroundBrush}"
+                       Text="Action" />
         </Grid>
 
-        <ScrollViewer
-            Grid.Row="1"
-            HorizontalScrollBarVisibility="Disabled"
-            VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding HotkeyItems}">
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto" >
+            <ItemsControl ItemsSource="{Binding HotkeyItems}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#333333" BorderThickness="0,0,0,1">
-                            <Grid Margin="0,2" ColumnDefinitions="180,*">
-                                <TextBlock
-                                    Grid.Column="0"
-                                    Margin="8,6"
-                                    FontFamily="Consolas"
-                                    FontWeight="SemiBold"
-                                    Foreground="#FF88CCFF"
-                                    Text="{Binding Hotkey}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Margin="8,6"
-                                    Foreground="#FFE0E0E0"
-                                    Text="{Binding Description}"
-                                    TextWrapping="Wrap" />
+                        <Border BorderBrush="{DynamicResource BorderMidBrush}"
+                                BorderThickness="0,0,0,1" >
+                            <Grid Margin="0,2"
+                                  ColumnDefinitions="180,*" >
+                                <TextBlock Grid.Column="0"
+                                           Margin="8,6"
+                                           FontFamily="Consolas"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource LightAccentBrush}"
+                                           Text="{Binding Hotkey}" />
+                                <TextBlock Grid.Column="1"
+                                           Margin="8,6"
+                                           Foreground="{DynamicResource ForegroundBrush}"
+                                           Text="{Binding Description}"
+                                           TextWrapping="Wrap" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -54,13 +49,13 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <Button
-            Grid.Row="2"
-            Width="0"
-            Height="0"
-            Content=""
-            IsCancel="True"
-            IsDefault="True"
-            Opacity="0" />
+        <Button Grid.Row="2"
+                Width="0"
+                Height="0"
+                Content=""
+                Click="Cancel_OnClick"
+                IsCancel="True"
+                IsDefault="True"
+                Opacity="0" />
     </Grid>
 </UserControl>

@@ -25,13 +25,14 @@
                        FontWeight="Bold"
                        Text="{Binding Version}" />
 
-            <TextBlock FontSize="14"
+            <TextBlock FontSize="16"
                        Foreground="{DynamicResource ForegroundBrush}"
                        Text="A fast, native todo &amp; Kanban tracker for programmers"
                        TextAlignment="Center"
                        TextWrapping="Wrap" />
 
             <TextBlock Margin="0,20,0,0"
+                       FontSize="16"
                        HorizontalAlignment="Center"
                        Foreground="{DynamicResource ForegroundBrush}"
                        Text="Made with ❤️ by Peter Mavrelis" />
@@ -40,10 +41,12 @@
             <StackPanel HorizontalAlignment="Center"
                         Orientation="Horizontal" >
                 <TextBlock Text="Support development on "
+                           FontSize="16"
                            Foreground="{DynamicResource ForegroundBrush}" />
 
                 <TextBlock Cursor="Hand"
                            Foreground="Blue"
+                           FontSize="16"
                            PointerPressed="KoFiLink_PointerPressed"
                            Text="Ko-fi"
                            TextDecorations="Underline" />
@@ -54,22 +57,24 @@
             <StackPanel HorizontalAlignment="Center"
                         Orientation="Horizontal" >
                 <TextBlock Text="Feedback &amp; issues on"
+                           FontSize="16"
                            Foreground="{DynamicResource ForegroundBrush}" />
                 <TextBlock Cursor="Hand"
                            Foreground="Blue"
                            PointerPressed="GitHubLink_PointerPressed"
+                           FontSize="16"
                            Text="GitHub"
                            TextDecorations="Underline" />
             </StackPanel>
 
             <TextBlock Margin="0,40,0,0"
                        HorizontalAlignment="Center"
-                       FontSize="11"
+                       FontSize="14"
                        Foreground="{DynamicResource ForegroundBrush}"
                        Text="Avalonia Version" />
             <TextBlock Margin="0,40,0,0"
                        HorizontalAlignment="Center"
-                       FontSize="11"
+                       FontSize="14"
                        Foreground="{DynamicResource SubtleForegroundBrush}"
                        Text="Open source • MIT License" />
         </StackPanel>
@@ -77,6 +82,7 @@
                 Width="0"
                 Height="0"
                 Content=""
+                Click="Cancel_OnClick"
                 IsCancel="True"
                 IsDefault="True"
                 Opacity="0" />
