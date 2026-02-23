@@ -135,6 +135,10 @@ public class AppSettings {
 		}
 	}
 	public void AddRecentFile(string recent) {
+		if (recent.Contains("bak")) {
+			Log.Error("Bak file added to recent loads menu!");
+			AppServices.DialogService.Show("A bak file was added somehow!", "bak file added", DialogButton.Ok, DialogIcon.Error);
+		}
 		if (!RecentFiles.Contains(recent)) {
 			Log.Print($"Adding recent file: {recent}");
 			RecentFiles.Add(recent);

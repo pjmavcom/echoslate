@@ -467,7 +467,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		string path = AppSettings.RecentFiles[0] + ".initialbak";
 		Log.Print($"Backing up to: {path}");
 		AppDataSaver saver = new AppDataSaver();
-		saver.Save(path, Data);
+		saver.BackupSave(path, Data);
 	}
 	private void BackupSave() {
 		if (!Data.FileSettings.AutoBackup) {
@@ -481,7 +481,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 #endif
 		Log.Print($"Backing up to: {path}");
 		AppDataSaver saver = new AppDataSaver();
-		saver.Save(path, Data);
+		saver.BackupSave(path, Data);
 
 		Data.FileSettings.BackupIncrement++;
 		Data.FileSettings.BackupIncrement %= 10;

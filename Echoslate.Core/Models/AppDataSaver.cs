@@ -10,6 +10,15 @@ public class AppDataSaver {
 		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 	};
 
+	public void BackupSave(string path, AppData data) {
+		bool autoSave = data.FileSettings.AutoSave;
+		bool autoBackup = data.FileSettings.AutoBackup;
+		data.FileSettings.AutoSave = false;
+		data.FileSettings.AutoBackup = false;
+		Save(path, data);
+		data.FileSettings.AutoSave = autoSave;
+		data.FileSettings.AutoBackup = autoBackup;
+	}
 	public void Save(string path, AppData data) {
 		if (!data.FileSettings.AutoSave) {
 			Log.Warn("Attempting to save, but Auto save is not enabled");
