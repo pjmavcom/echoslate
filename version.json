@@ -1,14 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "publicReleaseRefSpec": [
     "^refs/heads/main$"
   ],
   "fileVersion": {
     "precision": "build"
   },
-  "versionHeightOffset": -1,
-  "versionHeightOffsetAppliesTo": "4.1.1",
+  "versionHeightOffset": 0,
+  "versionHeightOffsetAppliesTo": "4.2.0",
   "pathFilters": [
     "src/",
     "Echoslate.Avalonia/",
