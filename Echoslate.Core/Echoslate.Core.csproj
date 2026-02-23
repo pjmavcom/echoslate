@@ -28,9 +28,6 @@
       <Content Include="..\.github\workflows\build-and-publish.yml">
         <Link>build-and-publish.yml</Link>
       </Content>
-      <Content Include="..\Info.plist">
-        <Link>Info.plist</Link>
-      </Content>
       <Content Include="..\version.json">
         <Link>version.json</Link>
       </Content>
