@@ -64,7 +64,15 @@ jobs:
         run: |
           APP_NAME="Echoslate.app"
           EXEC_NAME="Echoslate"                          # no .exe
-          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
+          # Try the no-extension name first (macOS/Linux style)
+          if [ -f "$PUBLISH_DIR/Echoslate" ]; then
+            cp "$PUBLISH_DIR/Echoslate" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+          elif [ -f "$PUBLISH_DIR/Echoslate.exe" ]; then
+            cp "$PUBLISH_DIR/Echoslate.exe" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+          else
+            echo "Error: Executable not found in $PUBLISH_DIR" >&2
+            exit 1
+          fi
 
           # Clean up if exists
           rm -rf "$APP_NAME"
