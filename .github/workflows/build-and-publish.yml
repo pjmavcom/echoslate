@@ -97,7 +97,23 @@ jobs:
 
           # Make executable
           chmod +x "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+          
+      - name: Debug - List publish folder contents (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
+          echo "Listing contents of $PUBLISH_DIR:"
+          ls -la "$PUBLISH_DIR" || echo "Folder does NOT exist!"
+          echo ""
+          echo "Looking for executables:"
+          find "$PUBLISH_DIR" -type f -name "*Echoslate*" -o -name "*echoslate*" 2>/dev/null || echo "No matching files found"
 
+      - name: Debug - Full publish command output (if needed)
+        if: runner.os == 'macOS' && failure()  # only on failure
+        run: |
+          echo "Last 20 lines of publish log:"
+          tail -n 20 publish-osx-x64/*.log 2>/dev/null || echo "No log files found"
+          
       # ────────────────────────────────────────────────
       # macOS-specific: Zip the .app bundle properly
       # ────────────────────────────────────────────────
