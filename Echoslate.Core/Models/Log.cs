@@ -20,57 +20,83 @@ public static class Log {
 				string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 				string appFolder = Path.Combine(localAppData, "Echoslate");
 				string logsFolder = Path.Combine(appFolder, "Logs");
-				string currentLog = Path.Combine(appFolder, "CurrentLog.txt");
+
+				bool isDebug = false;
 #if DEBUG
-				currentLog = Path.Combine(appFolder, "DebugLog.txt");
+				isDebug = true;
 #endif
+				string fixedCurrent = Path.Combine(appFolder, isDebug ? "DebugLog.txt" : "CurrentLog.txt");
+				string activeLogPath = fixedCurrent;
 
 				AppPaths.EnsureFolder(appFolder);
 				AppPaths.EnsureFolder(logsFolder);
 
-				ArchivePrevious(currentLog, logsFolder);
+				if (File.Exists(fixedCurrent)) {
+					string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+					string archiveName = isDebug
+						? $"Echoslate_DebugLog_{timestamp}.txt"
+						: $"Echoslate_Log_{timestamp}.txt";
+					string archivePath = Path.Combine(logsFolder, archiveName);
+
+					const int MaxRetries = 3;
+					bool archived = false;
+
+					for (int i = 0; i < MaxRetries; i++) {
+						try {
+							File.Move(fixedCurrent, archivePath, overwrite: true);
+							archived = true;
+							break;
+						} catch (IOException ex) when (IsFileLocked(ex)) {
+							if (i == MaxRetries - 1) break;
+							Thread.Sleep(200);
+						}
+					}
+
+					if (!archived) {
+						string fallbackName = isDebug
+							? $"Echoslate_DebugLog_{timestamp}_fallback.txt"
+							: $"Echoslate_Log_{timestamp}_fallback.txt";
+
+						activeLogPath = Path.Combine(logsFolder, fallbackName);
+
+						Print("WARNING: Previous log file is still locked by another process.");
+						Print($"         Using fallback log for this session: {activeLogPath}");
+					}
+				}
 
 				_streamWriter?.Dispose();
-				var fs = new FileStream(currentLog, FileMode.Create, FileAccess.Write, FileShare.Read);
+
+				var fs = new FileStream(activeLogPath, FileMode.Create, FileAccess.Write, FileShare.Read);
 				_streamWriter = new StreamWriter(fs) {
 					AutoFlush = true
 				};
 
-				Print("=== Todo App started ===");
-				Print($"Log file: {currentLog}");
-				Print($"Version: {System.Reflection.Assembly.GetExecutingAssembly()}");
+				Print("=== Echoslate started ===");
+				Print($"Log file: {activeLogPath}");
+				Print($"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
 				Print($"Keeping max 10 archived log files in {logsFolder}");
+
+				string archivePattern = isDebug ? "Echoslate_DebugLog_*.txt" : "Echoslate_Log_*.txt";
+				var logFiles = Directory.GetFiles(logsFolder, archivePattern)
+				   .Select(f => new FileInfo(f))
+				   .OrderByDescending(f => f.CreationTimeUtc)
+				   .ToList();
+
+				foreach (var oldFile in logFiles.Skip(10)) {
+					try {
+						oldFile.Delete();
+					} catch {
+					}
+				}
 			} catch (Exception ex) {
 				Console.WriteLine("Failed to initialize logging: " + ex);
 			}
 		}
 	}
-	private static void ArchivePrevious(string currentLog, string logsFolder) {
-		if (File.Exists(currentLog)) {
-			string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-			string archiveName = $"Echoslate_Log_{timestamp}.txt";
-#if DEBUG
-			archiveName = $"Echoslate_DebugLog_{timestamp}.txt";
-#endif
-			string archivePath = Path.Combine(logsFolder, archiveName);
-			File.Move(currentLog, archivePath);
-		}
 
-		string archiveFileName = "Echoslate_Log_*.txt";
-#if DEBUG
-		archiveFileName = "Echoslate_DebugLog_*.txt";
-#endif
-		var logFiles = Directory.GetFiles(logsFolder, archiveFileName)
-		   .Select(f => new FileInfo(f))
-		   .OrderByDescending(f => f.CreationTimeUtc)
-		   .ToList();
-
-		foreach (var oldFile in logFiles.Skip(10)) {
-			try {
-				oldFile.Delete();
-			} catch {
-			}
-		}
+	private static bool IsFileLocked(IOException ex) {
+		int errorCode = ex.HResult & 0xFFFF;
+		return errorCode == 32 || errorCode == 33;
 	}
 
 	private static void Write(string msg) {
