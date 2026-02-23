@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
+using Echoslate.Core.ViewModels;
 using WindowState = Avalonia.Controls.WindowState;
 
 namespace Echoslate.Avalonia;
@@ -53,10 +54,13 @@ public partial class MainWindow : Window {
 	private void Window_OnClosed() {
 		AppSettings.Instance.LastActiveTabIndex = tabControl.SelectedIndex;
 		AppSettings.Save();
+		Log.Shutdown();
 	}
 	private void Window_OnLoaded() {
 		tabControl.SelectedIndex = LastActiveTabIndex;
-		SetWindowPosition();
+		if (DataContext is MainWindowViewModel mainWindowVM) {
+			mainWindowVM.SetWindowPosition();
+		}
 	}
 	private void SetWindowPosition() {
 		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;

@@ -21,32 +21,18 @@ public static class Log {
 				string appFolder = Path.Combine(localAppData, "Echoslate");
 				string logsFolder = Path.Combine(appFolder, "Logs");
 				string currentLog = Path.Combine(appFolder, "CurrentLog.txt");
+#if DEBUG
+				currentLog = Path.Combine(appFolder, "DebugLog.txt");
+#endif
 
 				AppPaths.EnsureFolder(appFolder);
 				AppPaths.EnsureFolder(logsFolder);
 
-				if (File.Exists(currentLog)) {
-					string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-					string archiveName = $"Echoslate_Log_{timestamp}.txt";
-					string archivePath = Path.Combine(logsFolder, archiveName);
-
-					File.Move(currentLog, archivePath);
-				}
-
-				var logFiles = Directory.GetFiles(logsFolder, "Echoslate_Log_*.txt")
-				   .Select(f => new FileInfo(f))
-				   .OrderByDescending(f => f.CreationTimeUtc)
-				   .ToList();
-
-				foreach (var oldFile in logFiles.Skip(10)) {
-					try {
-						oldFile.Delete();
-					} catch {
-					}
-				}
+				ArchivePrevious(currentLog, logsFolder);
 
 				_streamWriter?.Dispose();
-				_streamWriter = new StreamWriter(currentLog, append: false) {
+				var fs = new FileStream(currentLog, FileMode.Create, FileAccess.Write, FileShare.Read);
+				_streamWriter = new StreamWriter(fs) {
 					AutoFlush = true
 				};
 
@@ -56,6 +42,33 @@ public static class Log {
 				Print($"Keeping max 10 archived log files in {logsFolder}");
 			} catch (Exception ex) {
 				Console.WriteLine("Failed to initialize logging: " + ex);
+			}
+		}
+	}
+	private static void ArchivePrevious(string currentLog, string logsFolder) {
+		if (File.Exists(currentLog)) {
+			string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+			string archiveName = $"Echoslate_Log_{timestamp}.txt";
+#if DEBUG
+			archiveName = $"Echoslate_DebugLog_{timestamp}.txt";
+#endif
+			string archivePath = Path.Combine(logsFolder, archiveName);
+			File.Move(currentLog, archivePath);
+		}
+
+		string archiveFileName = "Echoslate_Log_*.txt";
+#if DEBUG
+		archiveFileName = "Echoslate_DebugLog_*.txt";
+#endif
+		var logFiles = Directory.GetFiles(logsFolder, archiveFileName)
+		   .Select(f => new FileInfo(f))
+		   .OrderByDescending(f => f.CreationTimeUtc)
+		   .ToList();
+
+		foreach (var oldFile in logFiles.Skip(10)) {
+			try {
+				oldFile.Delete();
+			} catch {
 			}
 		}
 	}
@@ -129,7 +142,7 @@ public static class Log {
 	}
 	public static void Shutdown() {
 		lock (_lock) {
-			Print("=== Echoslate shutting down ===");
+			Print("=== Echoslate Log shutting down ===");
 			_streamWriter?.Close();
 			_streamWriter?.Dispose();
 			_streamWriter = null;

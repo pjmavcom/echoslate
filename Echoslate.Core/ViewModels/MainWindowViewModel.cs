@@ -5,9 +5,12 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
+using WindowState = Echoslate.Core.Services.WindowState;
 
 namespace Echoslate.Core.ViewModels;
 
@@ -102,7 +105,8 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		get => _isPendingBackup;
 		set {
 			if (!Data.FileSettings.AutoBackup) {
-				return;}
+				return;
+			}
 			if (_isPendingBackup == value) {
 				return;
 			}
@@ -508,14 +512,14 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 		Log.Print("Normalizing project data...");
 		CleanAndNormalizeData();
-		
+
 		Log.Print("Resetting file changed flag...");
 		ClearChangedFlag();
-		
+
 		Log.Print("Restoring AutoSave and AutoBackup settings.");
 		Data.FileSettings.AutoSave = autoSave;
 		Data.FileSettings.AutoBackup = autoBackup;
-		
+
 		Log.Print("Performing initial backup...");
 		InitialBackup();
 	}
@@ -589,6 +593,28 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			return false;
 		}
 	}
+	public void SetWindowPosition(double width = 0, double height = 0) {
+		double windowWidth = width;
+		double windowHeight = height;
+		PixelPoint pos = new(0, 0);
+		if (width == 0 || height == 0) {
+			windowWidth = AppSettings.Instance.WindowWidth;
+			windowHeight = AppSettings.Instance.WindowHeight;
+			pos = new PixelPoint((int)AppSettings.Instance.WindowLeft, (int)AppSettings.Instance.WindowTop);
+		}
+		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;
+
+		mainWindow.Position = pos;
+		mainWindow.Width = windowWidth;
+		mainWindow.Height = windowHeight;
+		mainWindow.WindowState = AppSettings.Instance.WindowState switch {
+			WindowState.Maximized => Avalonia.Controls.WindowState.Maximized,
+			WindowState.Minimized => Avalonia.Controls.WindowState.Minimized,
+			_ => Avalonia.Controls.WindowState.Normal
+		};
+		Log.Print($"Window position: {mainWindow.Position}");
+		Log.Print($"Window size: {mainWindow.Width}x{mainWindow.Height}");
+	}
 
 
 	public ICommand MenuNewCommand => new RelayCommand(CreateNewFile);
@@ -639,13 +665,9 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 		if (_isChanged) {
 			Save(Data.CurrentFilePath);
-
-			Log.Print("Shutting down...");
-			Log.Shutdown();
-		} else {
-			Log.Print("Shutting down...");
-			Log.Shutdown();
 		}
+		Log.Print("Shutting down...");
+		Log.Shutdown();
 		AppServices.ApplicationService.Shutdown();
 	}
 	public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
@@ -691,6 +713,55 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	public ICommand DebugStepIntoCommand => new RelayCommand(DebugStepInto);
 	public void DebugStepInto() {
 		var data = Data;
+	}
+	public ICommand DebugSetResolutionCommand => new RelayCommand<string>(width => DebugSetResolution(width));
+	public void DebugSetResolution(string width) {
+		double windowWidth = 0;
+		double windowHeight = 0;
+		switch (width) {
+			case "1920":
+				windowWidth = 1920;
+				windowHeight = 1080;
+				break;
+			case "1366":
+				windowWidth = 1366;
+				windowHeight = 768;
+				break;
+			case "2560":
+				windowWidth = 2560;
+				windowHeight = 1440;
+				break;
+			case "3840":
+				windowWidth = 3840;
+				windowHeight = 2160;
+				break;
+			case "1024":
+				windowWidth = 1024;
+				windowHeight = 768;
+				break;
+			case "1600":
+				windowWidth = 1600;
+				windowHeight = 900;
+				break;
+			case "1280":
+				windowWidth = 1280;
+				windowHeight = 720;
+				break;
+			case "1536":
+				windowWidth = 1536;
+				windowHeight = 864;
+				break;
+			case "1440":
+				windowWidth = 1440;
+				windowHeight = 900;
+				break;
+
+			default:
+				windowWidth = 0;
+				windowHeight = 0;
+				break;
+		}
+		SetWindowPosition(windowWidth, windowHeight);
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {

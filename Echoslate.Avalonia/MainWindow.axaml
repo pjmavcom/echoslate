@@ -46,41 +46,6 @@
             <Menu Name="mnuMain"
                   Grid.Column="0"
                   Height="40" >
-                <Menu.Styles>
-                    <!-- Keep submenu aligned to the parent -->
-                    <Style Selector="MenuItem /template/ Popup#PART_Popup" >
-                        <Setter Property="Placement"
-                                Value="BottomEdgeAlignedLeft" />
-                        <Setter Property="HorizontalOffset"
-                                Value="0" />
-                    </Style>
-
-                    <!-- Reduce the big left padding on dropdown items -->
-                    <Style Selector="MenuItem:not(.top-level)" >
-                        <Setter Property="Padding"
-                                Value="12,4,8,4" />
-                    </Style>
-
-                    <!-- Collapse Fluent's reserved icon/checkmark gutter -->
-                    <Style Selector="MenuItem:not(.top-level) /template/ ContentPresenter#PART_IconPresenter" >
-                        <Setter Property="IsVisible"
-                                Value="False" />
-                        <Setter Property="Width"
-                                Value="0" />
-                        <Setter Property="Margin"
-                                Value="0" />
-                    </Style>
-
-                    <!-- (Optional) If there is also a checkmark presenter in your Fluent version, collapse it too -->
-                    <Style Selector="MenuItem:not(.top-level) /template/ ContentPresenter#PART_CheckPresenter" >
-                        <Setter Property="IsVisible"
-                                Value="False" />
-                        <Setter Property="Width"
-                                Value="0" />
-                        <Setter Property="Margin"
-                                Value="0" />
-                    </Style>
-                </Menu.Styles>
                 <MenuItem Header="_File" >
                     <MenuItem Command="{Binding MenuNewCommand}"
                               Header="New" />
@@ -138,6 +103,39 @@
                           IsVisible="{Binding IsDebugMenuVisible}" >
                     <MenuItem Command="{Binding DebugStepIntoCommand}"
                               Header="Step Into" />
+                    <MenuItem Header="Set Resolution" >
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1920"
+                                  Header="1920x1080" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1366"
+                                  Header="1366x768" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="2560"
+                                  Header="2560x1440" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="3840"
+                                  Header="3840x2160" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1024"
+                                  Header="1024x768" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1600"
+                                  Header="1600x900" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1280"
+                                  Header="1280x720" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1536"
+                                  Header="1536x864" />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="1440"
+                                  Header="1440x900" />
+                        <Separator />
+                        <MenuItem Command="{Binding DebugSetResolutionCommand}"
+                                  CommandParameter="0"
+                                  Header="Reset" />
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <StackPanel Grid.Column="1"

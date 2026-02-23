@@ -25,6 +25,13 @@ public partial class App : Application {
 	public override void Initialize() {
 		_startupTime = DateTime.Now;
 		Log.Initialize();
+		
+		AppDomain.CurrentDomain.ProcessExit += (_, _) => Log.Shutdown();
+		AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+		{
+			Log.Error("UNHANDLED EXCEPTION → " + e.ExceptionObject);
+			Log.Shutdown();
+		};
 
 		Log.Print("Initializing BrushService...");
 		AppServices.InitializeBrushService();
