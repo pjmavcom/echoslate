@@ -28,7 +28,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		foreach (string filter in FilterList) {
 			int count = 0;
 			if (filter == "All") {
-				FilterButtons.Add(new FilterButton(filter, MasterList.Count));
+				FilterButtons.Add(new FilterButton(filter, MasterList.Count, SelectTagCommand));
 				continue;
 			}
 			foreach (TodoItem item in MasterList) {
@@ -39,7 +39,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 					}
 				}
 			}
-			FilterButtons.Add(new FilterButton(filter, count));
+			FilterButtons.Add(new FilterButton(filter, count, SelectTagCommand));
 		}
 		FilterButtons[1].Count = otherList.Count;
 		OnPropertyChanged(nameof(FilterButtons));
@@ -62,7 +62,10 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		}
 	}
 	public override void NewTodoAdd() {
-		TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+		TodoItem item = new TodoItem() {
+			Todo = NewTodoText,
+			Severity = NewTodoSeverity
+		};
 		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
 		if (CurrentFilter != "All" && CurrentFilter != "Other") {
@@ -78,10 +81,11 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		if (DisplayedItems == null) {
 			return;
 		}
-		CurrentSortMethod = items => items.OrderBy(i => i.CurrentFilterRank);
-		int index = 1;
-		foreach (TodoItem ih in DisplayedItems) {
-			ih.CurrentFilterRank = index++;
+		var orderedForRanking = DisplayedItems
+		   .OrderBy(i => i.CurrentFilterRank)
+		   .ToList();
+		for (int i = 0; i < orderedForRanking.Count; i++) {
+			orderedForRanking[i].CurrentFilterRank = i + 1;
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Echoslate.Core.Resources;
 
 namespace Echoslate.Core.Models;
 
@@ -232,17 +233,6 @@ public class TodoItem : INotifyPropertyChanged {
 		Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
 
 	[JsonIgnore]
-	public string Ranks {
-		get {
-			string result = "";
-			foreach (KeyValuePair<string, int> kvp in Rank) {
-				result += kvp.Key + " # " + kvp.Value + ",";
-			}
-			return result;
-		}
-	}
-
-	[JsonIgnore]
 	private string TagsList {
 		get {
 			string result = "";
@@ -289,9 +279,10 @@ public class TodoItem : INotifyPropertyChanged {
 		_tags = [];
 		_rank = [];
 		_currentView = View.TodoList;
+		NormalizeData();
 	}
 	public static TodoItem Copy(TodoItem item, bool createNewGuid = false) {
-		return new TodoItem() {
+		TodoItem newItem = new TodoItem() {
 			Id = createNewGuid ? Guid.NewGuid() : item.Id,
 			Todo = item.Todo,
 			Notes = item.Notes,
@@ -309,6 +300,37 @@ public class TodoItem : INotifyPropertyChanged {
 			Rank = item.Rank,
 			CurrentView = item.CurrentView,
 		};
+		newItem.NormalizeData();
+		return newItem;
+	}
+	public void NormalizeData() {
+		NormalizeRankKeys();
+		NormalizeTags();
+	}
+	private void NormalizeRankKeys() {
+		Dictionary<string, int> newRank = new Dictionary<string, int>();
+		foreach (KeyValuePair<string, int> kvp in Rank) {
+			string key = kvp.Key.TrimStart('#').ToLower().CapitalizeFirstLetter();
+			if (kvp.Key != key) {
+				Log.Warn($"Changing {kvp.Key} on TodoItem: {Id}");
+			} 
+			int value = kvp.Value;
+			if (!newRank.ContainsKey(key)) {
+				newRank.Add(key, value);
+			}
+		}
+		Rank = newRank;
+	}
+	private void NormalizeTags() {
+		ObservableCollection<string> newTags = new();
+		foreach (string tag in Tags) {
+			string newTag = "#" + tag.TrimStart('#').ToUpper();
+			if (tag != newTag) {
+				Log.Warn($"Changing {tag} on TodoItem: {Id}");
+			}
+			newTags.Add(newTag);
+		}
+		Tags = newTags;
 	}
 	public TodoItem? SearchById(Guid id) {
 		if (Id == id) {
@@ -533,16 +555,47 @@ public class TodoItem : INotifyPropertyChanged {
 		string solution = AddNewLines(_solution);
 
 		string result = BreakLines(_todo);
+		result += GetNotesProblemSolution();
+
+		return result;
+	}
+	public string GetHistoryItemNotes() {
+		string result = "";
 		if (_notes != "") {
-			result += "\t" + BreakLinesAddTabs(notes) + Environment.NewLine;
+			result += BreakLinesAddTabs(_notes) + Environment.NewLine;
 		}
 		if (_problem != "") {
-			result += "\tProblem: " + BreakLinesAddTabs(problem) + Environment.NewLine;
+			result += "Problem: " + BreakLinesAddTabs(_problem) + Environment.NewLine;
 		}
 		if (_solution != "") {
-			result += "\tSolution: " + BreakLinesAddTabs(solution) + Environment.NewLine;
+			result += "Solution: " + BreakLinesAddTabs(_solution) + Environment.NewLine;
 		}
-
+		return result;
+	}
+	public string GetNotesProblemSolution() {
+		string result = "";
+		if (_notes != "") {
+			result += "\tNotes: " + BreakLinesAddTabs(_notes) + Environment.NewLine;
+		}
+		if (_problem != "") {
+			result += "\tProblem: " + BreakLinesAddTabs(_problem) + Environment.NewLine;
+		}
+		if (_solution != "") {
+			result += "\tSolution: " + BreakLinesAddTabs(_solution) + Environment.NewLine;
+		}
+		return result;
+	}
+	public string GetNotesProblemSolutionWithoutTabs() {
+		string result = "";
+		if (_notes != "") {
+			result += BreakLines(_notes);
+		}
+		if (_problem != "") {
+			result += "Problem: " + BreakLines(_problem);
+		}
+		if (_solution != "") {
+			result += "Solution: " + BreakLines(_solution);
+		}
 		return result;
 	}
 	private string BreakLines(string s) {

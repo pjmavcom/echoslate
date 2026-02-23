@@ -4,14 +4,40 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Release -DB</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release -DB' ">
+      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Avalonia" Version="11.3.12" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Resource Include="Resources\Echoslate.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Converters\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.github\workflows\build-and-publish.yml">
+        <Link>build-and-publish.yml</Link>
+      </Content>
+      <Content Include="..\version.json">
+        <Link>version.json</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Avalonia.Controls">
+        <HintPath>..\Echoslate.Avalonia\bin\Debug\net8.0\Avalonia.Controls.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

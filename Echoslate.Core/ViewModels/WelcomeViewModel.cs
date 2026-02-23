@@ -1,26 +1,67 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 
 namespace Echoslate.Core.ViewModels;
 
 public class WelcomeViewModel : INotifyPropertyChanged {
-	private bool _dontShowAgain;
-	public bool DontShowAgain {
-		get => _dontShowAgain;
+	public event Action<bool>? RequestClose;
+
+	public IBrushService BrushService => AppServices.BrushService;
+
+	private bool _showAgain;
+	public bool ShowAgain {
+		get => _showAgain;
 		set {
-			_dontShowAgain = value;
+			_showAgain = value;
+			if (_showAgain) {
+				ShowWindowString1 = "Show this window next time";
+				ShowWindowString2 = "";
+			} else {
+				ShowWindowString1 = "Do not show this window again";
+				ShowWindowString2 = "(Always load last file)";
+			}
+			
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(ShowWindowString1));
+			OnPropertyChanged(nameof(ShowWindowString2));
+		}
+	}
+	private string _showWindowString1;
+	public string ShowWindowString1 {
+		get => _showWindowString1;
+		set {
+			if (_showWindowString1 == value) {
+				return;
+			}
+			_showWindowString1 = value;
+			OnPropertyChanged();
+		}
+	}
+	private string _showWindowString2;
+	public string ShowWindowString2 {
+		get => _showWindowString2;
+		set {
+			if (_showWindowString2 == value) {
+				return;
+			}
+			_showWindowString2 = value;
 			OnPropertyChanged();
 		}
 	}
 
 	public WelcomeViewModel() {
-		DontShowAgain = AppSettings.Instance.SkipWelcome;
+		ShowAgain = AppSettings.Instance.ShowWelcomeWindow;
 	}
 
 	public void SavePreferences() {
-		AppSettings.Instance.SkipWelcome = DontShowAgain;
+		AppSettings.Instance.ShowWelcomeWindow = ShowAgain;
+		Log.Print($"ShowWelcomeWindow: {AppSettings.Instance.ShowWelcomeWindow}");
 		AppSettings.Save();
+	}
+	public void Close(bool result) {
+		RequestClose?.Invoke(result);
 	}
 
 	public event PropertyChangedEventHandler PropertyChanged;

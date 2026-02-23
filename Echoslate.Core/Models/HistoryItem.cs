@@ -83,6 +83,9 @@ public class HistoryItem : INotifyPropertyChanged {
 		set {
 			_completedTodoItems = value;
 			OnPropertyChanged();
+			if (_completedTodoItems.Count != 0) {
+				GenerateCommitMessage();
+			}
 		}
 	}
 
@@ -189,7 +192,7 @@ public class HistoryItem : INotifyPropertyChanged {
 
 
 	public HistoryItem() {
-		Version = new Version();
+		Version = new Version(0, 0, 0, 1);
 		_title = string.Empty;
 		_dateAdded = string.Empty;
 		_timeAdded = string.Empty;
@@ -206,6 +209,7 @@ public class HistoryItem : INotifyPropertyChanged {
 	public void AddCompletedTodo(TodoItem td) {
 		if (CompletedTodoItems.Count == 0 && (Title == "Work in progress" || string.IsNullOrEmpty(Title))) {
 			Title = td.Todo;
+			Notes = td.GetNotesProblemSolutionWithoutTabs();
 		}
 		CompletedTodoItems.Add(td);
 		SortCompletedTodoItems();
@@ -248,33 +252,27 @@ public class HistoryItem : INotifyPropertyChanged {
 	public string ToClipboard() {
 		Scope = Scope.Replace(" ", "-");
 		string result = FullTitle + Environment.NewLine;
+		if (!string.IsNullOrWhiteSpace(Notes)) {
+			result += Notes + Environment.NewLine;
+		}
+		result += Environment.NewLine;
 
-		if (BugsCompleted.Count > 0) {
-			foreach (TodoItem td in BugsCompleted) {
+		result += GetTodosFrom(BugsCompleted);
+		result += GetTodosFrom(FeaturesCompleted);
+		result += GetTodosFrom(OtherCompleted);
+		
+		return result;
+	}
+	private string GetTodosFrom(List<TodoItem> todos) {
+		string result = string.Empty;
+		if (todos.Count > 0) {
+			foreach (TodoItem td in todos) {
 				if (td.Todo == Title) {
+					Notes = td.GetHistoryItemNotes();
 					continue;
 				}
-				result += Environment.NewLine + "- " + td.ToClipboard();
+				result += "- " + td.ToClipboard();
 			}
-		}
-		if (FeaturesCompleted.Count > 0) {
-			foreach (TodoItem td in FeaturesCompleted) {
-				if (td.Todo == Title) {
-					continue;
-				}
-				result += Environment.NewLine + "- " + td.ToClipboard();
-			}
-		}
-		if (OtherCompleted.Count > 0) {
-			foreach (TodoItem td in OtherCompleted) {
-				if (td.Todo == Title) {
-					continue;
-				}
-				result += Environment.NewLine + "- " + td.ToClipboard();
-			}
-		}
-		if (!Notes.Equals("")) {
-			result += BreakLines(Notes);
 		}
 		return result;
 	}

@@ -5,17 +5,16 @@ using Echoslate.Core.ViewModels;
 namespace Echoslate.Wpf.Services;
 
 public class WpfApplicationService : IApplicationService {
+	private Window _mainWindow;
+	
+	public void Initialize(object mainWindow) {
+		_mainWindow = mainWindow as Window;
+	}
 	public void Shutdown() {
 		Application.Current.Shutdown();
 	}
-	public object? GetMainWindow() => Application.Current.MainWindow;
-	public MainWindowViewModel? GetMainWindowViewModel() {
-		if (Application.Current.MainWindow.DataContext is MainWindowViewModel vm) {
-			return vm;
-		}
-		return null;
+	public void Show() { 
+		_mainWindow.Show();
 	}
-	public void Show() {
-		Application.Current.MainWindow.Show();
-	}
+	public object? GetWindow() => _mainWindow;
 }

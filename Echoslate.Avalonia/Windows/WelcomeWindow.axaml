@@ -1,0 +1,69 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.WelcomeWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+             Width="490"
+             Height="370"
+             x:DataType="local:WelcomeViewModel"
+             Background="{DynamicResource AppDarkBackgroundBrush}"
+             BorderBrush="{DynamicResource BorderBrush}" >
+    <Grid Margin="30" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Title  -->
+        <TextBlock Grid.Row="0"
+                   Margin="0,0,0,30"
+                   HorizontalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource ForegroundBrush}"
+                   Text="Welcome to Echoslate!" />
+
+        <!--  Buttons  -->
+        <StackPanel Grid.Row="1"
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" >
+            <Button Width="400"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    Click="CreateNew_OnClick"
+                    Content="🗎 Create a new file"
+                    FontSize="16" />
+
+            <Button Width="400"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    Click="OpenExisting_OnClick"
+                    Content="📂 Open an existing file"
+                    FontSize="16" />
+        </StackPanel>
+
+        <!--  Checkbox  -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal" >
+            <CheckBox Classes="toggle-switch"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"
+                      IsChecked="{Binding ShowAgain}" />
+            <StackPanel>
+                <Label Content="{Binding ShowWindowString1}"
+                       FontSize="16"
+                       Foreground="{DynamicResource ForegroundBrush}" />
+                <Label Content="{Binding ShowWindowString2}"
+                       FontSize="14"
+                       Foreground="{DynamicResource SubtleForegroundBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

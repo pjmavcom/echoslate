@@ -1,9 +1,12 @@
 <UserControl x:Class="Echoslate.Wpf.Windows.WelcomeWindow"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Width="490" Height="370"
-             Background="#FF252525" BorderBrush="#FF707070">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="490"
+             Height="370"
+             Background="#FF252525"
+             BorderBrush="#FF707070" >
 
-    <Grid Margin="30">
+    <Grid Margin="30" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -12,26 +15,44 @@
 
         <!--  Title  -->
         <TextBlock Grid.Row="0"
-                   Margin="0,0,0,30" HorizontalAlignment="Center"
-                   FontSize="24" FontWeight="SemiBold"
-                   Foreground="White" Text="Welcome to Echoslate!" />
+                   Margin="0,0,0,30"
+                   HorizontalAlignment="Center"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Foreground="White"
+                   Text="Welcome to Echoslate!" />
 
         <!--  Buttons  -->
         <StackPanel Grid.Row="1"
-                    Margin="15" VerticalAlignment="Center">
+                    Margin="15"
+                    VerticalAlignment="Center" >
             <Button Height="50"
-                    Click="CreateNew_OnClick" Content="🗎 Create a new file"
+                    Click="CreateNew_OnClick"
+                    Content="🗎 Create a new file"
                     FontSize="16" />
 
             <Button Height="50"
-                    Click="OpenExisting_OnClick" Content="📂 Open an existing file"
+                    Click="OpenExisting_OnClick"
+                    Content="📂 Open an existing file"
                     FontSize="16" />
         </StackPanel>
 
         <!--  Checkbox  -->
-        <CheckBox Grid.Row="2"
-                  Margin="0,30,0,0" HorizontalAlignment="Center"
-                  Content="Don't show this again (always open last used file)" Foreground="#FFAAAAAA"
-                  IsChecked="{Binding DontShowAgain}" />
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal" >
+
+            <CheckBox HorizontalAlignment="Center"
+                      Foreground="#FFAAAAAA"
+                      IsChecked="{Binding ShowAgain}"
+                      Style="{StaticResource ToggleSwitchStyle}" />
+            <StackPanel>
+                <Label Content="{Binding ShowWindowString1}"
+                       FontSize="16"
+                       Foreground="{DynamicResource Foreground}" />
+                <Label Content="{Binding ShowWindowString2}"
+                       FontSize="14"
+                       Foreground="{DynamicResource SubtleForeground}" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -1,0 +1,46 @@
+<UserControl
+    x:Class="Echoslate.Avalonia.Windows.MessageWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+    x:DataType="local:MessageWindowViewModel">
+
+    <StackPanel Margin="20">
+        <TextBlock
+            Margin="0,0,0,20"
+            Text="{Binding Message}"
+            TextWrapping="Wrap" />
+
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
+                Margin="0,0,10,0"
+                Click="Ok_OnClick"
+                    FontSize="16"
+                    Background="{DynamicResource AccentBrush}"
+                    BorderBrush="{DynamicResource LightAccentBrush}"
+                Content="OK"
+                IsDefault="True"
+                IsVisible="{Binding ShowOk}" />
+            <Button
+                Margin="0,0,10,0"
+                Click="Yes_OnClick"
+                FontSize="16"
+                Content="Yes"
+                IsDefault="True"
+                IsVisible="{Binding ShowYes}" />
+            <Button
+                Margin="0,0,10,0"
+                FontSize="16"
+                Click="No_OnClick"
+                IsVisible="{Binding ShowNo}" />
+            <Button
+                Click="Cancel_OnClick"
+                Content="Cancel"
+                FontSize="16"
+                Background="{DynamicResource DangerRedBrush}"
+                BorderBrush="{DynamicResource DangerRedBrush}"
+                IsCancel="True"
+                IsVisible="{Binding ShowCancel}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

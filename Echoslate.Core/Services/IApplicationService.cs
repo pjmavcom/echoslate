@@ -3,8 +3,8 @@ using Echoslate.Core.ViewModels;
 namespace Echoslate.Core.Services;
 
 public interface IApplicationService {
+	void Initialize(object mainWindow);
 	void Shutdown();
-	object? GetMainWindow();
-	MainWindowViewModel? GetMainWindowViewModel();
 	void Show();
+	object? GetWindow();
 }

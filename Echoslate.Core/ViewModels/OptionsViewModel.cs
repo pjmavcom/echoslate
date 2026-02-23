@@ -8,6 +8,20 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public class OptionsViewModel : INotifyPropertyChanged {
+	public IBrushService BrushService => AppServices.BrushService;
+
+	private object _gitStatusColor;
+	public object? GitStatusColor {
+		get => _gitStatusColor;
+		set {
+			if (_gitStatusColor == value) {
+				return;
+			}
+			_gitStatusColor = value;
+			OnPropertyChanged();
+		}
+	}
+
 	private bool _autoSave;
 	public bool AutoSave {
 		get => _autoSave;
@@ -24,11 +38,22 @@ public class OptionsViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private bool _welcomeWindow;
-	public bool WelcomeWindow {
-		get => _welcomeWindow;
+	private bool _autoIncrement;
+	public bool AutoIncrement {
+		get => _autoIncrement;
 		set {
-			_welcomeWindow = value;
+			if (_autoIncrement == value) {
+				return;
+			}
+			_autoIncrement = value;
+			OnPropertyChanged();
+		}
+	}
+	private bool _showWelcomeWindow;
+	public bool ShowWelcomeWindow {
+		get => _showWelcomeWindow;
+		set {
+			_showWelcomeWindow = value;
 			OnPropertyChanged();
 		}
 	}
@@ -72,10 +97,14 @@ public class OptionsViewModel : INotifyPropertyChanged {
 	public OptionsViewModel(AppSettings appSettings, AppData appData) {
 		AutoSave = appData.FileSettings.AutoSave;
 		GlobalHotkeys = appSettings.GlobalHotkeysEnabled;
+		AutoIncrement = appData.FileSettings.AutoIncrement;
 		AutoBackup = appData.FileSettings.AutoBackup;
 		BackupTime = appData.FileSettings.BackupTime;
-		WelcomeWindow = !appSettings.SkipWelcome;
+		ShowWelcomeWindow = appSettings.ShowWelcomeWindow;
 		GitRepoPath = appData.FileSettings.GitRepoPath;
+
+		GitStatusColor = IsGitPathValid(GitRepoPath) ? BrushService.SuccessGreenBrush : BrushService.DangerRedBrush;
+		UpdateGitFeaturesState();
 	}
 	public ICommand ChooseGitRepoPathCommand => new RelayCommand(ChooseGitRepoPath);
 	private void ChooseGitRepoPath() {
@@ -92,7 +121,7 @@ public class OptionsViewModel : INotifyPropertyChanged {
 				}
 				dir = dir.Parent;
 			}
-			if (Directory.Exists(Path.Combine(path, ".git"))) {
+			if (IsGitPathValid(path)) {
 				GitRepoPath = path;
 				AppServices.DialogService.Show("Git repository path set successfully!", "Success", DialogButton.Ok, DialogIcon.Information);
 			} else {
@@ -102,6 +131,18 @@ public class OptionsViewModel : INotifyPropertyChanged {
 		}
 
 		UpdateGitFeaturesState();
+	}
+	private bool IsGitPathValid(string path) {
+		if (string.IsNullOrWhiteSpace(path)) {
+			Log.Warn($"Invalid git repo path: {path}");
+			return false;
+		}
+		if (Directory.Exists(Path.Combine(path, ".git"))) {
+			Log.Print($"Git repo found at: {path}");
+			return true;
+		}
+		Log.Warn($"Invalid git repo path: {path}");
+		return false;
 	}
 
 	private void UpdateGitFeaturesState() {

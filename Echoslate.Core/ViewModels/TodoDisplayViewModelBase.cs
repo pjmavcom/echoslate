@@ -23,7 +23,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			return CurrentSortMethod(items);
 		}
 	}
-	private Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> _currentSortMethod = items => items.OrderByDescending(i => i.Rank);
+	private Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> _currentSortMethod = items => items.OrderByDescending(i => i.CurrentFilterRank);
 	public Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> CurrentSortMethod {
 		get => _currentSortMethod;
 		set {
@@ -69,6 +69,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public string? CurrentFilter {
 		get => _currentFilter;
 		set {
+			if (_currentFilter == value) {
+				return;
+			}
 			_currentFilter = value;
 			RefreshAll();
 			OnPropertyChanged();
@@ -207,7 +210,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				CurrentVisibleTags.Add(tag);
 			}
 		}
-		OnPropertyChanged(nameof(CurrentVisibleTagsView));
+		CurrentVisibleTags.Add("-None-");
 
 		AllTags.Clear();
 		foreach (TodoItem item in MasterList) {
@@ -220,7 +223,6 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		}
 		OnPropertyChanged(nameof(CurrentVisibleTags));
 		if (!string.IsNullOrWhiteSpace(currentSortTag)) {
-			Log.Test();
 			PrioritySortTag = currentSortTag;
 		}
 	}
@@ -235,6 +237,12 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		RefreshDisplayedItems(true);
 		GetCurrentHashTags();
 		RestoreSelection();
+		UpdateFilterButtonSelection();
+	}
+	private void UpdateFilterButtonSelection() {
+		foreach (FilterButton b in FilterButtons) {
+			b.IsSelected = string.Equals(b.Filter ?? "All", _currentFilter ?? "All", StringComparison.OrdinalIgnoreCase);
+		}
 	}
 	private void RestoreSelection() {
 		TodoItem foundItem = null;
@@ -301,6 +309,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		return MatchFilter(FilterList, ih);
 	}
 	private void ApplyPriorityTagSorting() {
+		if (PrioritySortTag == "-None-") {
+			foreach (TodoItem ih in DisplayedItems) {
+				ih.IsPrioritySorted = false;
+			}
+		}
 		foreach (TodoItem ih in DisplayedItems) {
 			if (ih.HasTag(PrioritySortTag)) {
 				ih.IsPrioritySorted = true;
@@ -385,10 +398,16 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		foreach (TodoItem item in MasterList) {
 			foreach (string tag in MasterFilterTags) {
 				if (!item.Rank.ContainsKey(tag) && item.HasTag(tag)) {
+					if (tag == tag.ToUpper()) {
+						Log.Warn("Problem here!");
+					}
 					item.Rank.Add(tag, -1);
 				}
 			}
 			foreach (string tag in item.Rank.Keys) {
+				if (tag == "All") {
+					continue;
+				}
 				if (!MasterFilterTags.Contains(tag) && !item.HasTag(tag)) {
 					item.Rank.Remove(tag);
 				}
@@ -401,6 +420,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			td.Rank.Remove(hash);
 		}
 		foreach (string name in MasterFilterTags.Where(name => !td.Rank.ContainsKey(name))) {
+			if (name == name.ToUpper()) {
+				Log.Warn("Problem here!");
+			}
 			td.Rank.Add(name, -1);
 		}
 	}
@@ -409,7 +431,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			Log.Warn("MasterList already contains Item.");
 			return;
 		}
-		CleanTodoHashRanks(item);
+		if (item.CurrentFilterRank < 0) {
+			CleanTodoHashRanks(item);
+		}
 		item.UpdateTags(Data.AllTags);
 		MasterList.Add(item);
 		LookForNewTags(item);
@@ -459,8 +483,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void ReRankWithSubsetMoved(TodoItem subset, int newRankForSubsetFirstItem) {
 		List<TodoItem> allItems = new();
-		foreach (TodoItem ih in DisplayedItems) {
-			allItems.Add(ih);
+		var list = DisplayedItems.OrderBy(i => i.CurrentFilterRank).ToList();
+		foreach (TodoItem item in list) {
+			allItems.Add(item);
 		}
 		var remainingItems = allItems
 		   .Where(item => item != subset)
@@ -477,8 +502,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void ReRankWithSubsetMoved(List<TodoItem> subset, int newRankForSubsetFirstItem) {
 		List<TodoItem> allItems = new();
-		foreach (TodoItem ih in DisplayedItems) {
-			allItems.Add(ih);
+		var list = DisplayedItems.OrderBy(i => i.CurrentFilterRank).ToList();
+		foreach (TodoItem item in list) {
+			allItems.Add(item);
 		}
 		var remainingItems = allItems
 		   .Where(item => !subset.Contains(item))
@@ -537,7 +563,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	private async void MultiEditItems(List<TodoItem> items) {
 		string tagFilter = GetCurrentTagFilterWithoutHash();
-		Task<TodoMultiItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoMultiItemEditorAsync(items, tagFilter);
+		Task<TodoMultiItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoMultiItemEditorAsync(items, tagFilter, AllTags);
 		TodoMultiItemEditorViewModel? vm = await vmTask;
 		if (vm == null) {
 			return;
@@ -723,10 +749,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		if (vm.Result) {
 			Log.Print("Filters successfully edited");
 			MasterFilterTags.Clear();
-			MasterFilterTags.Add("All");
-			MasterFilterTags.Add("Other");
-			MasterFilterTags.Add("Bug");
-			MasterFilterTags.Add("Feature");
+			// MasterFilterTags.Add("All");
+			// MasterFilterTags.Add("Other");
+			// MasterFilterTags.Add("Bug");
+			// MasterFilterTags.Add("Feature");
 			foreach (string filter in vm.ResultList) {
 				MasterFilterTags.Add(filter);
 			}
@@ -739,7 +765,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 
 	public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
 	public void AddAndComplete() {
-		TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
+		TodoItem item = new TodoItem() {
+			Todo = NewTodoText,
+			Severity = NewTodoSeverity
+		};
 		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
 		if (CurrentFilter != "All") {

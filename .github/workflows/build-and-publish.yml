@@ -1,0 +1,195 @@
+name: Build Echoslate (Win / macOS / Linux)
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.runtime }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            suffix: .exe
+          - os: windows-latest
+            runtime: win-arm64
+            suffix: .exe
+          - os: macos-latest
+            runtime: osx-x64
+            suffix: ''
+          - os: macos-latest
+            runtime: osx-arm64
+            suffix: ''
+          - os: ubuntu-latest
+            runtime: linux-x64
+            suffix: ''
+
+    steps:
+#      - name: Show .NET SDK info
+#        run: |
+#          dotnet --info
+#          dotnet --version
+          
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies (Avalonia project only)
+        run: dotnet restore Echoslate.Avalonia/Echoslate.Avalonia.csproj
+
+      - name: Publish ${{ matrix.runtime }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PROJECT="Echoslate.Avalonia/Echoslate.Avalonia.csproj"
+          RID="${{ matrix.runtime }}"
+          OUT_DIR="./publish-${{ matrix.runtime }}"
+
+          echo "== .NET =="
+          dotnet --info
+          dotnet --version
+
+          echo "== Clean output =="
+          rm -rf "$OUT_DIR"
+          mkdir -p "$OUT_DIR"
+
+          echo "== Restore (RID-specific) =="
+          dotnet restore "$PROJECT" \
+            -r "$RID" \
+            -v minimal
+
+          echo "== Publish =="
+          dotnet publish "$PROJECT" \
+            -c Release \
+            -r "$RID" \
+            --self-contained true \
+            --no-restore \
+            -v normal \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o "$OUT_DIR"
+
+          echo "== Output listing =="
+          ls -la "$OUT_DIR"
+
+          echo "== Candidate executables (top level) =="
+          find "$OUT_DIR" -maxdepth 1 -type f -perm +111 -print || true
+
+      - name: Debug - List publish folder contents (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
+          echo "Listing contents of $PUBLISH_DIR:"
+          ls -la "$PUBLISH_DIR" || echo "Folder does NOT exist!"
+          echo ""
+          echo "Looking for executables:"
+          find "$PUBLISH_DIR" -type f -name "*Echoslate*" -o -name "*echoslate*" 2>/dev/null || echo "No matching files found"
+          
+      # ────────────────────────────────────────────────
+      # macOS-specific: Create .app bundle
+      # ────────────────────────────────────────────────
+      - name: Create macOS .app Bundle
+        if: runner.os == 'macOS'
+        run: |
+          APP_NAME="Echoslate.app"
+          EXEC_NAME="Echoslate"                          # no .exe
+          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
+
+          # Clean up if exists
+          rm -rf "$APP_NAME"
+
+          # Create bundle structure
+          mkdir -p "$APP_NAME/Contents/MacOS"
+          mkdir -p "$APP_NAME/Contents/Resources"
+
+          # Copy Info.plist and icon
+          cp "Echoslate.Avalonia/Info.plist"      "$APP_NAME/Contents/Info.plist"
+          cp "Echoslate.Avalonia/AppIcon.icns"    "$APP_NAME/Contents/Resources/AppIcon.icns"
+
+          # Copy the published executable (macOS uses no-extension name)
+          EXEC_PATH="$PUBLISH_DIR/Echoslate.Avalonia"
+
+          if [ ! -f "$EXEC_PATH" ]; then
+            echo "Error: Expected executable $EXEC_PATH not found" >&2
+            ls -la "$PUBLISH_DIR" >&2
+            exit 1
+          fi
+
+          echo "Copying executable: $EXEC_PATH → $APP_NAME/Contents/MacOS/$EXEC_NAME"
+          cp "$EXEC_PATH" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+
+          # Make sure it's executable
+          chmod +x "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+
+          # Make executable
+          chmod +x "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+          
+      - name: Debug - List publish folder contents (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
+          echo "Listing contents of $PUBLISH_DIR:"
+          ls -la "$PUBLISH_DIR" || echo "Folder does NOT exist!"
+          echo ""
+          echo "Looking for executables:"
+          find "$PUBLISH_DIR" -type f -name "*Echoslate*" -o -name "*echoslate*" 2>/dev/null || echo "No matching files found"
+
+      - name: Debug - Full publish command output (if needed)
+        if: runner.os == 'macOS' && failure()  # only on failure
+        run: |
+          echo "Last 20 lines of publish log:"
+          tail -n 20 publish-osx-x64/*.log 2>/dev/null || echo "No log files found"
+          
+      # ────────────────────────────────────────────────
+      # macOS-specific: Zip the .app bundle properly
+      # ────────────────────────────────────────────────
+      - name: Zip macOS .app
+        if: runner.os == 'macOS'
+        run: |
+          APP_NAME="Echoslate.app"
+          ZIP_NAME="Echoslate-${{ matrix.runtime }}.zip"
+
+          # ditto preserves bundle structure/attributes better than plain zip
+          ditto -c -k --sequesterRsrc --keepParent "$APP_NAME" "$ZIP_NAME"
+
+      # ────────────────────────────────────────────────
+      # Linux zip
+      # ────────────────────────────────────────────────
+      - name: Zip artifact (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cd publish-${{ matrix.runtime }}
+          zip -r ../Echoslate-${{ matrix.runtime }}.zip .
+
+      # ────────────────────────────────────────────────
+      # Windows zip
+      # ────────────────────────────────────────────────
+      - name: Zip artifact (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ./publish-${{ matrix.runtime }}/* -DestinationPath Echoslate-${{ matrix.runtime }}.zip
+
+      # ────────────────────────────────────────────────
+      # Upload whatever we produced
+      # ────────────────────────────────────────────────
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Echoslate-${{ matrix.runtime }}
+          path: Echoslate-${{ matrix.runtime }}.zip
+          if-no-files-found: error

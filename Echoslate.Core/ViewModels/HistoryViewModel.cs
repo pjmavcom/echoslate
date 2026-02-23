@@ -53,6 +53,9 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	public HistoryItem SelectedHistoryItem {
 		get => _selectedHistoryItem;
 		set {
+			if (value == null) {
+				return;
+			}
 			if (_selectedHistoryItem != value) {
 				_selectedHistoryItem = value;
 				UpdateCategorizedLists();
@@ -61,6 +64,8 @@ public class HistoryViewModel : INotifyPropertyChanged {
 				}
 				OnPropertyChanged(nameof(Title));
 				OnPropertyChanged(nameof(Notes));
+				OnPropertyChanged(nameof(IsCommitted));
+				OnPropertyChanged(nameof(CommitDate));
 				_selectedHistoryItem.GenerateCommitMessage();
 				OnPropertyChanged(nameof(CommitMessage));
 			}
@@ -96,6 +101,8 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			}
 		}
 	}
+	public bool IsCommitted => SelectedHistoryItem.IsCommitted;
+	public DateTime CommitDate => SelectedHistoryItem.CommitDate;
 	public string CommitMessage => SelectedHistoryItem.FullCommitMessage;
 
 	private string _commitType;
@@ -135,7 +142,13 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	}
 
 
-	public List<string> CommitTypes { get; } = new() { "feat", "fix", "refactor", "chore", "docs" };
+	public List<string> CommitTypes { get; } = new() {
+		"feat",
+		"fix",
+		"refactor",
+		"chore",
+		"docs"
+	};
 	public ObservableCollection<string> CommitScopes { get; set; }
 
 	public IEnumerable<HistoryItem> CommittedHistoryItems {
@@ -161,7 +174,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 
 
 	public HistoryViewModel() {
-		CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = new Version(0, 0, 0, 0) };
+		CurrentHistoryItem = new HistoryItem {
+			Title = "Work in progress",
+			Version = new Version(0, 0, 0, 1)
+		};
 
 		_todoList = [];
 		_allHistoryItems = [];
@@ -204,7 +220,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			historyItem.SortCompletedTodoItems();
 		}
 		CurrentHistoryItem = _allHistoryItems.FirstOrDefault(h => !h.IsCommitted) ??
-							 new HistoryItem { Title = "Work in progress", Version = new Version(3, 40, 40, 1) };
+							 new HistoryItem {
+								 Title = "Work in progress",
+								 Version = new Version(0, 0, 0, 1)
+							 };
 		if (!ReferenceEquals(CurrentHistoryItem, _allHistoryItems.FirstOrDefault())) {
 			_allHistoryItems.Insert(0, CurrentHistoryItem);
 		}
@@ -243,8 +262,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(OtherCompleted));
 		SelectedHistoryItem.SortCompletedTodoItems();
 		SelectedHistoryItem.GenerateCommitMessage();
-		OnPropertyChanged(nameof(Title));
 		OnPropertyChanged(nameof(CommitMessage));
+		OnPropertyChanged(nameof(CommittedHistoryItems));
+		OnPropertyChanged(nameof(Title));
+		OnPropertyChanged(nameof(Notes));
 	}
 	private bool IsGitRepoValid() {
 		if (string.IsNullOrEmpty(GitRepoPath)) {
@@ -374,7 +395,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		CurrentHistoryItem.GenerateCommitMessage();
 		CopyCommitMessage();
 
-		CurrentHistoryItem = new HistoryItem { Title = "Work in progress", Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode) };
+		CurrentHistoryItem = new HistoryItem {
+			Title = "Work in progress",
+			Version = IncrementVersion(CurrentHistoryItem.Version, SelectedIncrementMode)
+		};
 		CurrentHistoryItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 		CurrentHistoryItem.Type = CommitType;
 		CurrentHistoryItem.Scope = CommitScope;
@@ -390,6 +414,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	}
 	public ICommand ReactivateTodoCommand => new RelayCommand<TodoItem>(ReactivateTodo);
 	public void ReactivateTodo(TodoItem ih) {
+		if (ih == null) {
+			Log.Error("TodoItem is null!");
+			return;
+		}
 		TodoItem item = ih;
 		if (!SelectedHistoryItem.IsCommitted && SelectedHistoryItem.RemoveCompletedTodo(item.Id)) {
 			item.IsComplete = false;
@@ -402,9 +430,13 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		}
 		_todoList.Add(item);
 	}
-	public ICommand EditTodoCommand => new RelayCommand<TodoItem>(EditTodo);
-	public async void EditTodo(TodoItem ih) {
-		TodoItem item = ih;
+	public ICommand EditTodoCommand => new RelayCommand<Object>(EditTodo);
+	public async void EditTodo(Object ih) {
+		if (ih == null) {
+			Log.Error("TodoItem is null!");
+			return;
+		}
+		TodoItem item = (TodoItem)ih;
 		Task<TodoItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoItemEditorAsync(item, null, new ObservableCollection<string>(Data.AllTags));
 		TodoItemEditorViewModel? vm = await vmTask;
 		if (vm != null) {
@@ -422,11 +454,18 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	});
 	public ICommand UndoCommitCommand => new RelayCommand<HistoryItem>(UndoCommit);
 	public void UndoCommit(HistoryItem item) {
-		if (item == null) {
+		if (SelectedHistoryItems == null || SelectedHistoryItems.Count <= 0) {
 			return;
 		}
-		item.IsCommitted = false;
-		Log.Print($"Undoing commit for: {item.Title}");
+
+		foreach (HistoryItem hItem in SelectedHistoryItems) {
+			if (hItem == CurrentHistoryItem) {
+				continue;
+			}
+			hItem.IsCommitted = false;
+			Log.Print($"Undoing commit for: {item.Title}");
+			OnPropertyChanged(nameof(IsCommitted));
+		}
 	}
 	public ICommand RecommitCommand => new RelayCommand(Recommit);
 	public void Recommit() {
@@ -440,11 +479,18 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			}
 			hItem.IsCommitted = true;
 			Log.Print($"Recommitted: {hItem.Title}");
+			OnPropertyChanged(nameof(SelectedHistoryItem.IsCommitted));
+			OnPropertyChanged(nameof(IsCommitted));
 		}
 	}
 	public ICommand DeleteCommand => new RelayCommand<HistoryItem>(Delete);
 	public void Delete(HistoryItem item) {
-		if (item == null || item.CompletedTodoItems.Count > 0) {
+		if (item == null) {
+			Log.Error("Item is null!");
+			return;
+		}
+		if (item.CompletedTodoItems.Count > 0) {
+			Log.Error("HistoryItem had completed Todos. Remove before deleting.");
 			return;
 		}
 		if (_allHistoryItems.Contains(item)) {

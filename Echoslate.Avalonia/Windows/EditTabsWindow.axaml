@@ -1,0 +1,170 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.EditTabsWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+             xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+             Width="360"
+             Height="540"
+             x:DataType="viewModels:EditTabsViewModel"
+             Background="{DynamicResource AppDarkBackgroundBrush}"
+             Foreground="{DynamicResource ForegroundBrush}" >
+    <Grid Margin="3" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Tab List  -->
+        <Border Grid.Column="1"
+                Margin="8,4"
+                Background="{DynamicResource BorderDarkBrush}"
+                CornerRadius="7" >
+            <Grid>
+                <Border BorderBrush="{DynamicResource BorderSilverBrush}"
+                        BorderThickness="7,7,0,0"
+                        CornerRadius="7" />
+                <Border Margin="-1"
+                        BorderBrush="{DynamicResource BorderDarkBrush}"
+                        BorderThickness="0,0,7,7"
+                        CornerRadius="7"
+                        IsHitTestVisible="False" />
+                <ListBox x:Name="lbTabs"
+                         Grid.Row="0"
+                         Margin="0"
+                         behaviors:ListBoxSelectedItemsBehavior.SelectedItems="{Binding SelectedItems, Mode=OneWay}"
+                         Background="{DynamicResource ControlBackgroundBrush}"
+                         BorderBrush="#FF444444"
+                         BorderThickness="1"
+                         Foreground="{DynamicResource ForegroundBrush}"
+                         ItemsSource="{Binding FilterNames}"
+                         SelectionMode="Multiple" >
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem" >
+                            <Setter Property="Padding"
+                                    Value="4,2" />
+                            <Setter Property="Margin"
+                                    Value="0,1" />
+                            <Setter Property="Background"
+                                    Value="{DynamicResource TransparentBrush}" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected" >
+                            <Setter Property="Background"
+                                    Value="{DynamicResource AccentBrush}" />
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover" >
+                            <Setter Property="Background"
+                                    Value="{DynamicResource BorderBrush}" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected:pointerover" >
+                            <Setter Property="Background"
+                                    Value="{DynamicResource LightAccentBrush}" />
+                        </Style>
+                    </ListBox.Styles>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="{DynamicResource ForegroundBrush}"
+                                       FontFamily="Consolas"
+                                       FontSize="16"
+                                       Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!--  New Tab Row  -->
+        <Grid Grid.Row="1"
+              Margin="0,0,0,20" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Margin="8,4,0,4"
+                    BorderBrush="{DynamicResource BorderMidBrush}"
+                    Command="{Binding NewTabCommand}"
+                    Content="New Filter"
+                    FontSize="16"
+                    Foreground="{DynamicResource SubtleForegroundBrush}"
+                    IsDefault="True" />
+
+            <Border Grid.Column="1"
+                    Margin="8,4"
+                    Background="{DynamicResource BorderDarkBrush}"
+                    CornerRadius="7" >
+                <Grid>
+                    <Border BorderBrush="#999999"
+                            BorderThickness="7,7,0,0"
+                            CornerRadius="7" />
+                    <Border Margin="-1"
+                            BorderBrush="#494949"
+                            BorderThickness="0,0,7,7"
+                            CornerRadius="7"
+                            IsHitTestVisible="False" />
+                    <TextBox Margin="1"
+                             Padding="8,6"
+                             FontSize="16"
+                             VerticalContentAlignment="Center"
+                             behaviors:TextBoxBehavior.RemoveSpaces="True"
+                             Background="{DynamicResource EditorBackgroundBrush}"
+                             BorderBrush="{DynamicResource BorderBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
+                             Text="{Binding NewTabName, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  Delete / Move Buttons  -->
+        <StackPanel Grid.Row="2"
+                    Margin="0,0,0,24"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal" >
+            <Button Width="100"
+                    Padding="10,8"
+                    BorderBrush="#FF666666"
+                    FontSize="16"
+                    Command="{Binding DeleteCommand}"
+                    Content="Delete"
+                    Foreground="{DynamicResource ForegroundBrush}" />
+            <Button Width="60"
+                    BorderBrush="#FF555555"
+                    Click="MoveUp_OnClick"
+                    Content="▲"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource ForegroundBrush}" />
+            <Button Width="60"
+                    BorderBrush="#FF555555"
+                    Click="MoveDown_OnClick"
+                    Content="▼"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource ForegroundBrush}" />
+        </StackPanel>
+
+        <!--  OK / Cancel  -->
+        <StackPanel Grid.Row="3"
+                    Margin="0,10,0,10"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal" >
+            <Button Width="120"
+                    Padding="12,10"
+                    FontSize="16"
+                    Background="{DynamicResource AccentBrush}"
+                    BorderBrush="{DynamicResource LightAccentBrush}"
+                    Click="OK_OnClick"
+                    Content="OK" />
+            <Button Width="120"
+                    Padding="12,10"
+                    FontSize="16"
+                    Background="{DynamicResource DangerRedBrush}"
+                    BorderBrush="{DynamicResource DangerRedBrush}"
+                    Click="Cancel_OnClick"
+                    Content="Cancel"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</UserControl>

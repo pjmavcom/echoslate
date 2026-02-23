@@ -4,19 +4,32 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echoslate.Wpf", "Echoslate.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echoslate.Core", "Echoslate.Core\Echoslate.Core.csproj", "{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echoslate.Avalonia", "Echoslate.Avalonia\Echoslate.Avalonia.csproj", "{FB6F12A7-444C-461D-BA6F-026932ADEE74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Release -DB|Any CPU = Release -DB|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}.Release -DB|Any CPU.ActiveCfg = Release -DB|Any CPU
+		{064E0AB5-B1FC-426C-BE1A-215FD95B25E0}.Release -DB|Any CPU.Build.0 = Release -DB|Any CPU
 		{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}.Release -DB|Any CPU.ActiveCfg = Release -DB|Any CPU
+		{04E8F43A-9C9B-4A2A-A84E-447D64A01A9E}.Release -DB|Any CPU.Build.0 = Release -DB|Any CPU
+		{FB6F12A7-444C-461D-BA6F-026932ADEE74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB6F12A7-444C-461D-BA6F-026932ADEE74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB6F12A7-444C-461D-BA6F-026932ADEE74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB6F12A7-444C-461D-BA6F-026932ADEE74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB6F12A7-444C-461D-BA6F-026932ADEE74}.Release -DB|Any CPU.ActiveCfg = Release -DB|Any CPU
+		{FB6F12A7-444C-461D-BA6F-026932ADEE74}.Release -DB|Any CPU.Build.0 = Release -DB|Any CPU
 	EndGlobalSection
 EndGlobal

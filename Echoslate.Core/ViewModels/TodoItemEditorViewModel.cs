@@ -9,7 +9,12 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public class TodoItemEditorViewModel : INotifyPropertyChanged {
-	public ObservableCollection<string> SeverityOptions { get; } = new() { "None", "Low", "Med", "High" };
+	public ObservableCollection<string> SeverityOptions { get; } = new() {
+		"None",
+		"Low",
+		"Med",
+		"High"
+	};
 	private Guid _guid;
 	public Guid Guid {
 		get => _guid;
@@ -143,7 +148,10 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		Notes = _item.Notes;
 		Problem = _item.Problem;
 		Solution = _item.Solution;
-		Tags = new ObservableCollection<string>(_item.Tags);
+		Tags = new ObservableCollection<string>();
+		foreach (string tag in td.Tags) {
+			Tags.Add(tag.TrimStart('#'));
+		}
 		Notes = _item.Notes;
 		if (Notes.Contains("/n")) {
 			Notes = Notes.Replace("/n", Environment.NewLine);
@@ -166,9 +174,12 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		string tempTodo = ExpandHashTagsInString(TodoText);
 		string tempTags = "";
 		ResultTags = new List<string>();
-		foreach (string th in Tags)
-			if (!ResultTags.Contains(th))
-				ResultTags.Add(th);
+		foreach (string t in Tags) {
+			string tag = NormalizeTag(t);
+			if (!ResultTags.Contains(tag)) {
+				ResultTags.Add(tag);
+			}
+		}
 		foreach (string tag in ResultTags)
 			tempTags += tag + " ";
 		tempTags = ExpandHashTagsInString(tempTags);
@@ -177,6 +188,14 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		ResultTodoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		ResultTodoItem.Problem = Problem;
 		ResultTodoItem.Solution = Solution;
+	}
+	public static string NormalizeTag(string? tag) {
+		var s = (tag ?? "").Trim();
+		s = s.TrimStart('#');
+		if (s.Length == 0) {
+			return "#";
+		}
+		return "#" + s.ToUpperInvariant();
 	}
 	public static string ExpandHashTagsInString(string todo) {
 		string[] pieces = todo.Split(' ');
@@ -224,9 +243,12 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	}
 	public ICommand AddTagCommand => new RelayCommand(AddTag);
 	public async void AddTag() {
-		List<string> selectedTags = new(Tags);
+		List<string> selectedTags = new();
+		foreach (string tag in Tags) {
+			selectedTags.Add(NormalizeTag(tag));
+		}
 
-		Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync([_item], AllAvailableTags, new List<string>(selectedTags));
+		Task<TagPickerViewModel?> vmTask = AppServices.DialogService.ShowTagPickerAsync([_item], AllAvailableTags, new ObservableCollection<string>(selectedTags));
 		TagPickerViewModel tpvm = await vmTask;
 
 		if (tpvm == null) {
@@ -234,10 +256,10 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		}
 		if (tpvm.Result) {
 			foreach (string tag in selectedTags) {
-				Tags.Remove(tag);
+				Tags.Remove(tag.TrimStart('#'));
 			}
 			foreach (string tag in tpvm.SelectedTags) {
-				Tags.Add(tag);
+				Tags.Add(tag.TrimStart('#'));
 			}
 		}
 	}

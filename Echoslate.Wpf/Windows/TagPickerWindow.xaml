@@ -99,10 +99,12 @@
                             BorderBrush="#494949" BorderThickness="0,0,7,7"
                             CornerRadius="7" IsHitTestVisible="False" />
                     <TextBox Margin="1" Padding="8,6"
+                             x:Name="tbNewTag"
                              VerticalContentAlignment="Center"
                              Background="{StaticResource EditorBackground}"
                              BorderBrush="{StaticResource Border}"
                              Foreground="{StaticResource Foreground}"
+                             PreviewKeyDown="TextBox_PreviewKeyDown"
                              Text="{Binding NewTagName, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
             </Border>

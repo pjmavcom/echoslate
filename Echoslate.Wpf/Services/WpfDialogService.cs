@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +21,8 @@ public class WpfDialogService : IDialogService {
 	public WpfDialogService(Window owner) {
 		_owner = owner;
 	}
-	public async Task<bool> ShowAboutAsync() {
-		return await ShowDialogAsync(new AboutWindow(), "About Echoslate");
+	public async Task<bool> ShowAboutAsync(string version) {
+		return await ShowDialogAsync(new AboutWindow(version), "About Echoslate");
 	}
 	public async Task<bool> ShowHelpAsync() {
 		return await ShowDialogAsync(new HelpWindow(), "Hotkey Help");
@@ -35,7 +37,7 @@ public class WpfDialogService : IDialogService {
 		WelcomeWindow view = new WelcomeWindow(vm);
 		return await ShowDialogAsync(view, "Welcome to Echoslate", null);
 	}
-	public async Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, List<string> selectedTags) {
+	public async Task<TagPickerViewModel?> ShowTagPickerAsync(List<TodoItem> todoItems, ObservableCollection<string> allTags, ObservableCollection<string> selectedTags) {
 		TagPickerViewModel vm = new TagPickerViewModel(todoItems, allTags, selectedTags);
 		TagPickerWindow view = new TagPickerWindow(vm);
 		return await ShowDialogAsync<TagPickerViewModel>(view, "Tag Picker");
@@ -45,8 +47,8 @@ public class WpfDialogService : IDialogService {
 		TodoItemEditorWindow view = new TodoItemEditorWindow(vm);
 		return await ShowDialogAsync<TodoItemEditorViewModel>(view, "Edit Todo Item");
 	}
-	public async Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter) {
-		TodoMultiItemEditorViewModel vm = new TodoMultiItemEditorViewModel(items, currentFilter);
+	public async Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags) {
+		TodoMultiItemEditorViewModel vm = new TodoMultiItemEditorViewModel(items, currentFilter, allAvailableTags);
 		TodoMultiItemEditorWindow view = new TodoMultiItemEditorWindow(vm);
 		return await ShowDialogAsync<TodoMultiItemEditorViewModel>(view, "Edit Multiple Todo Items");
 	}
@@ -103,16 +105,42 @@ public class WpfDialogService : IDialogService {
 
 		return Task.FromResult(default(T));
 	}
-	public string? OpenFile(string initialDirectory, string filter) {
+	public async Task<string?> OpenFile(string initialDirectory, string filter) {
+		Log.Print($"Opening directory: {(string.IsNullOrEmpty(initialDirectory) ? "<null or empty>" : initialDirectory)}");
+		string suggestedFolder = GetSuggestedStartLocation(initialDirectory);
+
+		if (string.IsNullOrEmpty(suggestedFolder)) {
+			Log.Error("Could not get a valid folder...");
+			return null;
+		}
+
+		Log.Print($"Found directory at: {suggestedFolder}");
+		
 		var dialog = new OpenFileDialog {
 			Filter = filter,
-			InitialDirectory = initialDirectory
+			InitialDirectory = suggestedFolder
 		};
 
+		Log.Print("Opening file picker...");
 		return dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK ? dialog.FileName : null;
 	}
+	public string GetSuggestedStartLocation(string initialDirectory = "") {
+		if (!string.IsNullOrEmpty(initialDirectory) && Directory.Exists(initialDirectory)) {
+			Log.Print($"Getting path at: {initialDirectory}");
+			return initialDirectory;
+		}
+		var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		Log.Warn($"initialDirectory is empty. Getting default directory at: {folder.ToString()}");
 
-	public string? SaveFile(string defaultName, string initialDirectory, string filter) {
+		if (string.IsNullOrEmpty(folder)) {
+			Log.Error("Could not find default directory!");
+		} else {
+			Log.Print($"Suggested folder path: {folder}");
+		}
+		return folder;
+	}
+
+	public async Task<string?> SaveFile(string defaultName, string initialDirectory, string filter) {
 		var dialog = new SaveFileDialog {
 			Filter = filter,
 			FileName = defaultName,
@@ -136,6 +164,7 @@ public class WpfDialogService : IDialogService {
 
 		return null;
 	}
+
 	public DialogResult Show(string message, string title, DialogButton buttons, DialogIcon icon) {
 		MessageBoxButton wpfButtons = buttons switch {
 			DialogButton.Ok => MessageBoxButton.OK,
@@ -163,4 +192,5 @@ public class WpfDialogService : IDialogService {
 			_ => DialogResult.None
 		};
 	}
+
 }

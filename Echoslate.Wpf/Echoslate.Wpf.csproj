@@ -13,11 +13,21 @@
         <UseWindowsForms>true</UseWindowsForms>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <Version>4.0.0.0</Version>
+        <Configurations>Debug;Release;Release -DB</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release -DB' ">
+      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -84,6 +94,9 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Echoslate.Core\Echoslate.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\Echoslate.png" />
     </ItemGroup>
     
 

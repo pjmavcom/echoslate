@@ -17,36 +17,58 @@ public static class Log {
 	public static void Initialize() {
 		lock (_lock) {
 			try {
-				string exeDir = AppDomain.CurrentDomain.BaseDirectory;
-				string baseName = "Echoslate_Log";
-				string extension = ".txt";
-
-				string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
 				string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-				string filePath = Path.Combine(localAppData, "Echoslate", "Logs");
-				AppPaths.EnsureFolder(filePath);
-				string newLogPath = Path.Combine(filePath, $"{baseName}_{timestamp}{extension}");
+				string appFolder = Path.Combine(localAppData, "Echoslate");
+				string logsFolder = Path.Combine(appFolder, "Logs");
+				string currentLog = Path.Combine(appFolder, "CurrentLog.txt");
+#if DEBUG
+				currentLog = Path.Combine(appFolder, "DebugLog.txt");
+#endif
 
-				_streamWriter = new StreamWriter(newLogPath, append: false) { AutoFlush = true };
+				AppPaths.EnsureFolder(appFolder);
+				AppPaths.EnsureFolder(logsFolder);
 
-				var logFiles = Directory.GetFiles(exeDir, $"{baseName}_*{extension}")
-				   .Select(f => new FileInfo(f))
-				   .OrderByDescending(f => f.CreationTime)
-				   .ToList();
+				ArchivePrevious(currentLog, logsFolder);
 
-				foreach (var oldFile in logFiles.Skip(10)) {
-					try {
-						oldFile.Delete();
-					} catch {
-					}
-				}
+				_streamWriter?.Dispose();
+				var fs = new FileStream(currentLog, FileMode.Create, FileAccess.Write, FileShare.Read);
+				_streamWriter = new StreamWriter(fs) {
+					AutoFlush = true
+				};
 
 				Print("=== Todo App started ===");
-				Print($"Log file: {newLogPath}");
-				Print($"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
-				Print($"Keeping max 10 log files — old ones auto-deleted");
+				Print($"Log file: {currentLog}");
+				Print($"Version: {System.Reflection.Assembly.GetExecutingAssembly()}");
+				Print($"Keeping max 10 archived log files in {logsFolder}");
 			} catch (Exception ex) {
 				Console.WriteLine("Failed to initialize logging: " + ex);
+			}
+		}
+	}
+	private static void ArchivePrevious(string currentLog, string logsFolder) {
+		if (File.Exists(currentLog)) {
+			string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+			string archiveName = $"Echoslate_Log_{timestamp}.txt";
+#if DEBUG
+			archiveName = $"Echoslate_DebugLog_{timestamp}.txt";
+#endif
+			string archivePath = Path.Combine(logsFolder, archiveName);
+			File.Move(currentLog, archivePath);
+		}
+
+		string archiveFileName = "Echoslate_Log_*.txt";
+#if DEBUG
+		archiveFileName = "Echoslate_DebugLog_*.txt";
+#endif
+		var logFiles = Directory.GetFiles(logsFolder, archiveFileName)
+		   .Select(f => new FileInfo(f))
+		   .OrderByDescending(f => f.CreationTimeUtc)
+		   .ToList();
+
+		foreach (var oldFile in logFiles.Skip(10)) {
+			try {
+				oldFile.Delete();
+			} catch {
 			}
 		}
 	}
@@ -120,7 +142,7 @@ public static class Log {
 	}
 	public static void Shutdown() {
 		lock (_lock) {
-			Print("=== Echoslate shutting down ===");
+			Print("=== Echoslate Log shutting down ===");
 			_streamWriter?.Close();
 			_streamWriter?.Dispose();
 			_streamWriter = null;

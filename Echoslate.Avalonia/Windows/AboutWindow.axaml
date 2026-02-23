@@ -1,0 +1,90 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.AboutWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:windows="clr-namespace:Echoslate.Avalonia.Windows"
+             x:DataType="windows:AboutWindow"
+             Background="{DynamicResource AppBackgroundBrush}"
+             Foreground="{DynamicResource ForegroundBrush}" >
+    <Grid Margin="30" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="256" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Image Grid.Row="0"
+               Width="128"
+               Height="128"
+               Source="/Resources/Echoslate.png"
+               Stretch="Uniform" />
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" >
+            <TextBlock Foreground="{DynamicResource ForegroundBrush}"
+                       HorizontalAlignment="Center"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Text="{Binding Version}" />
+
+            <TextBlock FontSize="16"
+                       Foreground="{DynamicResource ForegroundBrush}"
+                       Text="A fast, native todo &amp; Kanban tracker for programmers"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap" />
+
+            <TextBlock Margin="0,20,0,0"
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource ForegroundBrush}"
+                       Text="Made with ❤️ by Peter Mavrelis" />
+
+            <!--  Ko-fi Link  -->
+            <StackPanel HorizontalAlignment="Center"
+                        Orientation="Horizontal" >
+                <TextBlock Text="Support development on "
+                           FontSize="16"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+
+                <TextBlock Cursor="Hand"
+                           Foreground="Blue"
+                           FontSize="16"
+                           PointerPressed="KoFiLink_PointerPressed"
+                           Text="Ko-fi"
+                           TextDecorations="Underline" />
+                <TextBlock Text=" (buy me a coffee ☕)" />
+            </StackPanel>
+
+            <!--  GitHub Sponsors Link  -->
+            <StackPanel HorizontalAlignment="Center"
+                        Orientation="Horizontal" >
+                <TextBlock Text="Feedback &amp; issues on"
+                           FontSize="16"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+                <TextBlock Cursor="Hand"
+                           Foreground="Blue"
+                           PointerPressed="GitHubLink_PointerPressed"
+                           FontSize="16"
+                           Text="GitHub"
+                           TextDecorations="Underline" />
+            </StackPanel>
+
+            <TextBlock Margin="0,40,0,0"
+                       HorizontalAlignment="Center"
+                       FontSize="14"
+                       Foreground="{DynamicResource ForegroundBrush}"
+                       Text="Avalonia Version" />
+            <TextBlock Margin="0,40,0,0"
+                       HorizontalAlignment="Center"
+                       FontSize="14"
+                       Foreground="{DynamicResource SubtleForegroundBrush}"
+                       Text="Open source • MIT License" />
+        </StackPanel>
+        <Button Grid.Row="0"
+                Width="0"
+                Height="0"
+                Content=""
+                Click="Cancel_OnClick"
+                IsCancel="True"
+                IsDefault="True"
+                Opacity="0" />
+    </Grid>
+</UserControl>
