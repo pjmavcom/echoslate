@@ -30,6 +30,11 @@ jobs:
             suffix: ''
 
     steps:
+#      - name: Show .NET SDK info
+#        run: |
+#          dotnet --info
+#          dotnet --version
+          
       - name: Checkout code
         uses: actions/checkout@v4
         with:
