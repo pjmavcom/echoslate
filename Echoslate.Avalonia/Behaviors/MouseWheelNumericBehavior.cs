@@ -4,12 +4,16 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using System;
 using Avalonia.Reactive;
+using Echoslate.Core.Models;
 
 namespace Echoslate.Avalonia.Behaviors;
 
 public static class MouseWheelNumericBehavior {
 	public static readonly AttachedProperty<bool> EnabledProperty =
 		AvaloniaProperty.RegisterAttached<Interactive, bool>("Enabled", typeof(MouseWheelNumericBehavior));
+	
+	public static readonly AttachedProperty<bool> OnlyOnControlProperty =
+		AvaloniaProperty.RegisterAttached<Interactive, bool>("OnlyOnControl", typeof(MouseWheelNumericBehavior), false);
 
 	public static readonly AttachedProperty<int> MinimumProperty =
 		AvaloniaProperty.RegisterAttached<Interactive, int>("Minimum", typeof(MouseWheelNumericBehavior), 0);
@@ -28,6 +32,9 @@ public static class MouseWheelNumericBehavior {
 
 	public static bool GetEnabled(Control control) => control.GetValue(EnabledProperty);
 	public static void SetEnabled(Control control, bool value) => control.SetValue(EnabledProperty, value);
+	
+	public static bool GetOnlyOnControl(Control control) => control.GetValue(OnlyOnControlProperty);
+	public static void SetOnlyOnControl(Control control, bool value) => control.SetValue(OnlyOnControlProperty, value);
 
 	public static int GetMinimum(Control control) => control.GetValue(MinimumProperty);
 	public static void SetMinimum(Control control, int value) => control.SetValue(MinimumProperty, value);
@@ -51,16 +58,19 @@ public static class MouseWheelNumericBehavior {
 	}
 
 	private static void Control_PointerWheelChanged(object? sender, PointerWheelEventArgs e) {
-		if (sender is not TextBlock textBlock) {
+		if (sender is not Control control) {
+			return;
+		}
+		if (GetOnlyOnControl(control) && !e.KeyModifiers.HasFlag(KeyModifiers.Control)) {
 			return;
 		}
 
-		var vm = textBlock.DataContext;
+		var vm = control.DataContext;
 		if (vm == null) {
 			return;
 		}
 
-		string targetPropName = GetTargetProperty(textBlock);
+		string targetPropName = GetTargetProperty(control);
 		if (string.IsNullOrEmpty(targetPropName)) {
 			return;
 		}
@@ -73,18 +83,21 @@ public static class MouseWheelNumericBehavior {
 		int current = (int)prop.GetValue(vm)!;
 
 		int delta = e.Delta.Y > 0 ? 1 : -1;
-		if (e.KeyModifiers.HasFlag(KeyModifiers.Shift)) {
+		if (e.KeyModifiers.HasFlag(KeyModifiers.Shift) && !GetOnlyOnControl(control)) {
 			delta *= 5;
 		}
 
 		int newValue = current + delta;
 
-		int min = GetMinimum(textBlock);
-		int max = GetMaximum(textBlock);
+		int min = GetMinimum(control);
+		int max = GetMaximum(control);
 		newValue = Math.Max(min, Math.Min(max, newValue));
 
 		prop.SetValue(vm, newValue);
-		textBlock.Text = newValue.ToString();
+
+		if (control is TextBlock textBlock) {
+			textBlock.Text = newValue.ToString();
+		}
 
 		e.Handled = true;
 	}

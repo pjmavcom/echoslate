@@ -46,6 +46,24 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			UpdateCategorizedLists();
 		}
 	}
+	
+	public int VersionMajor {
+		get => CurrentHistoryItem.VersionMajor;
+		set => CurrentHistoryItem.VersionMajor = value;
+	}
+	public int VersionMinor {
+		get => CurrentHistoryItem.VersionMinor;
+		set => CurrentHistoryItem.VersionMinor = value;
+	}
+	public int VersionRevision {
+		get => CurrentHistoryItem.VersionRevision;
+		set => CurrentHistoryItem.VersionRevision = value;
+	}
+	public int VersionBuild {
+		get => CurrentHistoryItem.VersionBuild;
+		set => CurrentHistoryItem.VersionBuild = value;
+	}
+
 	public bool IsCurrentSelected => SelectedHistoryItem == CurrentHistoryItem;
 	public bool CanCommit => IsCurrentSelected && CurrentHistoryItem.CompletedTodoItems.Any() && CurrentHistoryItem.Title != "";
 
@@ -467,8 +485,8 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(IsCommitted));
 		}
 	}
-	public ICommand RecommitCommand => new RelayCommand(Recommit);
-	public void Recommit() {
+	public ICommand RecommitCommand => new RelayCommand<HistoryItem?>(Recommit);
+	public void Recommit(HistoryItem? item) {
 		if (SelectedHistoryItems == null || SelectedHistoryItems.Count <= 0) {
 			return;
 		}

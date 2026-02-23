@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -12,9 +10,6 @@ using WindowState = Avalonia.Controls.WindowState;
 namespace Echoslate.Avalonia;
 
 public partial class MainWindow : Window {
-	// public const string DATE_STRING_FORMAT = "yyyyMMdd";
-	// public const string TIME_STRING_FORMAT = "HHmmss";
-
 	public int LastActiveTabIndex { get; set; }
 
 
@@ -26,7 +21,6 @@ public partial class MainWindow : Window {
 #endif
 
 		LastActiveTabIndex = AppSettings.Instance.LastActiveTabIndex;
-		// AppSettings.Instance.WindowTitle = WindowTitle;
 		KeyDown += OnKeyDown;
 		Closed += (s, e) => Window_OnClosed();
 		Loaded += (s, e) => Window_OnLoaded();
@@ -36,6 +30,7 @@ public partial class MainWindow : Window {
 #if DEBUG
 		if (e.Key == Key.Escape) {
 			Log.Print("ESC pressed closing app (debug shortcut)");
+			Log.Shutdown();
 			Close();
 			e.Handled = true;
 		}
