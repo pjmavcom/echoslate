@@ -44,10 +44,4 @@
     <ItemGroup>
         <AvaloniaResource Include="Resources\Echoslate.png"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="..\Info.plist">
-        <Link>Info.plist</Link>
-      </Content>
-    </ItemGroup>
 </Project>
