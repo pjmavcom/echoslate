@@ -9,7 +9,6 @@ jobs:
   build:
     name: Build for ${{ matrix.runtime }}
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -17,19 +16,15 @@ jobs:
           - os: windows-latest
             runtime: win-x64
             suffix: .exe
-
           - os: windows-latest
             runtime: win-arm64
             suffix: .exe
-
           - os: macos-latest
             runtime: osx-x64
             suffix: ''
-
           - os: macos-latest
             runtime: osx-arm64
             suffix: ''
-
           - os: ubuntu-latest
             runtime: linux-x64
             suffix: ''
@@ -53,69 +48,77 @@ jobs:
         shell: bash
         run: |
           dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
-          -c Release \
-          -r ${{ matrix.runtime }} \
-          --self-contained true \
-          -v normal \
-          -p:PublishSingleFile=true \
-          -p:IncludeNativeLibrariesForSelfExtract=true \
-          -o ./publish-${{ matrix.runtime }}
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            --self-contained true \
+            -v normal \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o ./publish-${{ matrix.runtime }}
 
-      - name: Create macOS .app Bundle (macOS only)
+      # ────────────────────────────────────────────────
+      # macOS-specific: Create .app bundle
+      # ────────────────────────────────────────────────
+      - name: Create macOS .app Bundle
         if: runner.os == 'macOS'
         run: |
-            APP_NAME="Echoslate.app"
-            EXEC_NAME="Echoslate"                          # no .exe
-            PUBLISH_DIR="./publish-${{ matrix.runtime }}"
-            
-            # Clean up if exists
-            rm -rf "$APP_NAME"
-            
-            # Create bundle structure
-            mkdir -p "$APP_NAME/Contents/MacOS"
-            mkdir -p "$APP_NAME/Contents/Resources"
-            
-            # Copy Info.plist and icon
-            cp "Echoslate.Avalonia/Info.plist" "$APP_NAME/Contents/Info.plist"
-            cp "Echoslate.Avalonia/AppIcon.icns" "$APP_NAME/Contents/Resources/AppIcon.icns"
-            
-            # Copy published single-file exe (rename without .exe if needed)
-            cp "$PUBLISH_DIR/Echoslate" "$APP_NAME/Contents/MacOS/$EXEC_NAME" || cp "$PUBLISH_DIR/Echoslate.exe" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
-            
-            # Make executable
-            chmod +x "$APP_NAME/Contents/MacOS/$EXEC_NAME"
+          APP_NAME="Echoslate.app"
+          EXEC_NAME="Echoslate"                          # no .exe
+          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
 
-          - name: Zip macOS .app (macOS only)
-            if: runner.os == 'macOS'
-            run: |
-              APP_NAME="Echoslate.app"
-              ZIP_NAME="Echoslate-${{ matrix.runtime }}.zip"
+          # Clean up if exists
+          rm -rf "$APP_NAME"
 
-              # Use ditto for proper bundle zipping (preserves symlinks/attributes)
-              ditto -c -k --sequesterRsrc --keepParent "$APP_NAME" "$ZIP_NAME"
+          # Create bundle structure
+          mkdir -p "$APP_NAME/Contents/MacOS"
+          mkdir -p "$APP_NAME/Contents/Resources"
 
-          - name: Upload artifact
-            uses: actions/upload-artifact@v4
-            with:
-              name: Echoslate-${{ matrix.runtime }}
-              path: |
-                Echoslate-${{ matrix.runtime }}.zip
-              if-no-files-found: error
+          # Copy Info.plist and icon (adjust paths if different)
+          cp "Echoslate.Avalonia/Info.plist"      "$APP_NAME/Contents/Info.plist"
+          cp "Echoslate.Avalonia/AppIcon.icns"    "$APP_NAME/Contents/Resources/AppIcon.icns"
 
-          - name: Zip artifact (Linux)
-            if: runner.os == 'Linux'
-            shell: bash
-            run: |
-              cd publish-${{ matrix.runtime }}
-              zip -r ../Echoslate-${{ matrix.runtime }}.zip .
+          # Copy the published executable (try both names)
+          cp "$PUBLISH_DIR/Echoslate"     "$APP_NAME/Contents/MacOS/$EXEC_NAME" 2>/dev/null ||
+          cp "$PUBLISH_DIR/Echoslate.exe" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
 
-          - name: Zip artifact (Windows)
-            if: runner.os == 'Windows'
-            run: Compress-Archive -Path ./publish-${{ matrix.runtime }}/* -DestinationPath Echoslate-${{ matrix.runtime }}.zip
+          # Make sure it's executable
+          chmod +x "$APP_NAME/Contents/MacOS/$EXEC_NAME"
 
-          - name: Upload artifact
-            uses: actions/upload-artifact@v4
-            with:
-              name: Echoslate-${{ matrix.runtime }}
-              path: Echoslate-${{ matrix.runtime }}.zip
-              if-no-files-found: error
+      # ────────────────────────────────────────────────
+      # macOS-specific: Zip the .app bundle properly
+      # ────────────────────────────────────────────────
+      - name: Zip macOS .app
+        if: runner.os == 'macOS'
+        run: |
+          APP_NAME="Echoslate.app"
+          ZIP_NAME="Echoslate-${{ matrix.runtime }}.zip"
+
+          # ditto preserves bundle structure/attributes better than plain zip
+          ditto -c -k --sequesterRsrc --keepParent "$APP_NAME" "$ZIP_NAME"
+
+      # ────────────────────────────────────────────────
+      # Linux zip
+      # ────────────────────────────────────────────────
+      - name: Zip artifact (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cd publish-${{ matrix.runtime }}
+          zip -r ../Echoslate-${{ matrix.runtime }}.zip .
+
+      # ────────────────────────────────────────────────
+      # Windows zip
+      # ────────────────────────────────────────────────
+      - name: Zip artifact (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ./publish-${{ matrix.runtime }}/* -DestinationPath Echoslate-${{ matrix.runtime }}.zip
+
+      # ────────────────────────────────────────────────
+      # Upload whatever we produced
+      # ────────────────────────────────────────────────
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Echoslate-${{ matrix.runtime }}
+          path: Echoslate-${{ matrix.runtime }}.zip
+          if-no-files-found: error
