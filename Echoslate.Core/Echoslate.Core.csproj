@@ -29,6 +29,9 @@
       <Content Include="..\.github\workflows\build-and-publish.yml">
         <Link>build-and-publish.yml</Link>
       </Content>
+      <Content Include="..\.github\workflows\build.yml">
+        <Link>build.yml</Link>
+      </Content>
       <Content Include="..\version.json">
         <Link>version.json</Link>
       </Content>
