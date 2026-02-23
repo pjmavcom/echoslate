@@ -52,15 +52,40 @@ jobs:
       - name: Publish ${{ matrix.runtime }}
         shell: bash
         run: |
-          dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
+          set -euo pipefail
+
+          PROJECT="Echoslate.Avalonia/Echoslate.Avalonia.csproj"
+          OUT_DIR="./publish-${{ matrix.runtime }}"
+
+          echo "== .NET =="
+          dotnet --info
+          dotnet --version
+
+          echo "== Clean output =="
+          rm -rf "$OUT_DIR"
+          mkdir -p "$OUT_DIR"
+
+          echo "== Restore (project) =="
+          dotnet restore "$PROJECT" -v minimal
+
+          echo "== Publish =="
+          dotnet publish "$PROJECT" \
             -c Release \
-            -r ${{ matrix.runtime }} \
+            -r "${{ matrix.runtime }}" \
             --self-contained true \
+            --no-restore \
             -v normal \
             -p:PublishSingleFile=true \
             -p:IncludeNativeLibrariesForSelfExtract=true \
-            -p:AssemblyName=Echoslate \
-            -o ./publish-${{ matrix.runtime }}
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o "$OUT_DIR"
+
+          echo "== Output listing =="
+          ls -la "$OUT_DIR"
+
+          echo "== Candidate executables =="
+          find "$OUT_DIR" -maxdepth 1 -type f -perm +111 -print || true
 
       - name: Debug - List publish folder contents (macOS only)
         if: runner.os == 'macOS'
