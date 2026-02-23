@@ -56,6 +56,16 @@ jobs:
             -p:IncludeNativeLibrariesForSelfExtract=true \
             -o ./publish-${{ matrix.runtime }}
 
+      - name: Debug - List publish folder contents (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          PUBLISH_DIR="./publish-${{ matrix.runtime }}"
+          echo "Listing contents of $PUBLISH_DIR:"
+          ls -la "$PUBLISH_DIR" || echo "Folder does NOT exist!"
+          echo ""
+          echo "Looking for executables:"
+          find "$PUBLISH_DIR" -type f -name "*Echoslate*" -o -name "*echoslate*" 2>/dev/null || echo "No matching files found"
+          
       # ────────────────────────────────────────────────
       # macOS-specific: Create .app bundle
       # ────────────────────────────────────────────────
@@ -86,14 +96,18 @@ jobs:
           cp "Echoslate.Avalonia/AppIcon.icns"    "$APP_NAME/Contents/Resources/AppIcon.icns"
 
           # Copy the published executable (macOS uses no-extension name)
-          if [ -f "$PUBLISH_DIR/Echoslate" ]; then
-            cp "$PUBLISH_DIR/Echoslate" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
-          elif [ -f "$PUBLISH_DIR/Echoslate.exe" ]; then
-            cp "$PUBLISH_DIR/Echoslate.exe" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
-          else
-            echo "Error: Executable not found in $PUBLISH_DIR" >&2
+          EXEC_PATH=$(find "$PUBLISH_DIR" -maxdepth 1 -type f \
+            ! -name "*.dll" ! -name "*.pdb" ! -name "*.dylib" \
+            -executable -print 2>/dev/null | sort -r | head -n 1)
+
+          if [ -z "$EXEC_PATH" ]; then
+            echo "Error: No executable found in $PUBLISH_DIR" >&2
+            ls -la "$PUBLISH_DIR" >&2
             exit 1
           fi
+
+          echo "Found executable: $EXEC_PATH"
+          cp "$EXEC_PATH" "$APP_NAME/Contents/MacOS/$EXEC_NAME"
 
           # Make executable
           chmod +x "$APP_NAME/Contents/MacOS/$EXEC_NAME"
