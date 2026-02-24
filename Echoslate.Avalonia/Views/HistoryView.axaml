@@ -320,7 +320,7 @@
                         <DataGrid Margin="3"
                                   behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedHistoryItems}"
                                   AutoGenerateColumns="False"
-                                  Background="Transparent"
+                                  Background="{DynamicResource TransparentBrush}"
                                   BorderThickness="0"
                                   CanUserSortColumns="False"
                                   Foreground="{DynamicResource SubtleForegroundBrush}"
@@ -454,8 +454,8 @@
                                 Background="{DynamicResource ControlBackgroundBrush}"
                                 CornerRadius="7" >
                             <ListBox HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
+                                     Background="{DynamicResource TransparentBrush}"
+                                     BorderBrush="{DynamicResource TransparentBrush}"
                                      ItemsSource="{Binding BugsCompleted}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                 <ListBox.ItemTemplate>
@@ -499,8 +499,8 @@
                                 Background="{DynamicResource ControlBackgroundBrush}"
                                 CornerRadius="7" >
                             <ListBox HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
+                                     Background="{DynamicResource TransparentBrush}"
+                                     BorderBrush="{DynamicResource TransparentBrush}"
                                      ItemsSource="{Binding FeaturesCompleted}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                 <ListBox.ItemTemplate>
@@ -542,8 +542,8 @@
                                 Background="{DynamicResource ControlBackgroundBrush}"
                                 CornerRadius="7" >
                             <ListBox HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
+                                     Background="{DynamicResource TransparentBrush}"
+                                     BorderBrush="{DynamicResource TransparentBrush}"
                                      ItemsSource="{Binding OtherCompleted}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                 <ListBox.ItemTemplate>
@@ -589,8 +589,8 @@
                                 CornerRadius="7" >
                             <ListBox Margin="0,0,0,10"
                                      HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
+                                     Background="{DynamicResource TransparentBrush}"
+                                     BorderBrush="{DynamicResource TransparentBrush}"
                                      ItemsSource="{Binding BugsCompleted}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                 <ListBox.ItemTemplate>
@@ -633,8 +633,8 @@
                                 CornerRadius="7" >
                             <ListBox Margin="0,0,0,10"
                                      HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
+                                     Background="{DynamicResource TransparentBrush}"
+                                     BorderBrush="{DynamicResource TransparentBrush}"
                                      ItemsSource="{Binding FeaturesCompleted}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                 <ListBox.ItemTemplate>
@@ -677,8 +677,8 @@
                                 CornerRadius="7" >
                             <ListBox Margin="0,0,0,10"
                                      HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
+                                     Background="{DynamicResource TransparentBrush}"
+                                     BorderBrush="{DynamicResource TransparentBrush}"
                                      ItemsSource="{Binding OtherCompleted}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                 <ListBox.ItemTemplate>

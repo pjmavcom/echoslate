@@ -23,6 +23,18 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			return CurrentSortMethod(items);
 		}
 	}
+
+	private bool _showTodoItemEditorOnAdd;
+	public bool ShowTodoItemEditorOnAdd {
+		get => _showTodoItemEditorOnAdd;
+		set {
+			if (_showTodoItemEditorOnAdd == value) {
+				return;
+			}
+			_showTodoItemEditorOnAdd = value;
+			OnPropertyChanged();
+		}
+	}
 	private Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> _currentSortMethod = items => items.OrderByDescending(i => i.CurrentFilterRank);
 	public Func<IEnumerable<TodoItem>, IOrderedEnumerable<TodoItem>> CurrentSortMethod {
 		get => _currentSortMethod;
@@ -142,7 +154,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	public IList SelectedTodoItems { get; } = new ObservableCollection<object>();
+	public ObservableCollection<TodoItem> SelectedTodoItems { get; } = [];
 
 
 	protected Guid SelectedTodoItemId;
@@ -646,29 +658,16 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		}
 		RefreshAll();
 	});
-	public ICommand ContextMenuKanban3Command => new RelayCommand(() => {
-		foreach (TodoItem ih in GetSelectedListBoxHolders()) {
-			ih.Kanban = 3;
-		}
-		RefreshAll();
+	public ICommand ContextMenuSetSeverityCommand => new RelayCommand<string>(i => {
+			foreach (TodoItem item in GetSelectedListBoxItems()) {
+				item.Severity = int.Parse(i);
+			}
 	});
-	public ICommand ContextMenuKanban2Command => new RelayCommand(() => {
-		foreach (TodoItem ih in GetSelectedListBoxHolders()) {
-			ih.Kanban = 2;
-		}
-		RefreshAll();
-	});
-	public ICommand ContextMenuKanban1Command => new RelayCommand(() => {
-		foreach (TodoItem ih in GetSelectedListBoxHolders()) {
-			ih.Kanban = 1;
-		}
-		RefreshAll();
-	});
-	public ICommand ContextMenuKanban0Command => new RelayCommand(() => {
-		foreach (TodoItem ih in GetSelectedListBoxHolders()) {
-			ih.Kanban = 0;
-		}
-		RefreshAll();
+	public ICommand ContextMenuKanbanCommand => new RelayCommand<string>(i => {
+			foreach (TodoItem ih in GetSelectedListBoxHolders()) {
+				ih.Kanban = int.Parse(i);
+			}
+			RefreshAll();
 	});
 	public ICommand ContextMenuMoveToTopCommand => new RelayCommand(() => {
 		ReRankWithSubsetMoved(GetSelectedListBoxItems(), 0);
@@ -749,10 +748,6 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		if (vm.Result) {
 			Log.Print("Filters successfully edited");
 			MasterFilterTags.Clear();
-			// MasterFilterTags.Add("All");
-			// MasterFilterTags.Add("Other");
-			// MasterFilterTags.Add("Bug");
-			// MasterFilterTags.Add("Feature");
 			foreach (string filter in vm.ResultList) {
 				MasterFilterTags.Add(filter);
 			}

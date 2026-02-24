@@ -12,18 +12,22 @@
                                x:Shared="True" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
         <FontFamily x:Key="IconFont" >Segoe Fluent Icons, Segoe MDL2 Assets, sans-serif</FontFamily>
-        
+
         <!-- MenuItem hover / pressed colors without templating -->
         <StaticResource x:Key="MenuFlyoutItemBackgroundPointerOver"
-                         ResourceKey="AccentBrush" />
+                        ResourceKey="AccentBrush" />
         <StaticResource x:Key="MenuFlyoutItemBackgroundPressed"
-                         ResourceKey="LightAccentBrush" />
+                        ResourceKey="LightAccentBrush" />
         <StaticResource x:Key="MenuFlyoutSubItemBackgroundSubMenuOpened"
-                         ResourceKey="LightAccentBrush" />
+                        ResourceKey="LightAccentBrush" />
     </Application.Resources>
     <Application.Styles>
-        <FluentTheme />
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+        <!-- <FluentTheme DensityStyle="Compact"/> -->
+        <!-- <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" /> -->
+        <SimpleTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Simple.xaml" />
+
+
         <!-- Global -->
         <Style Selector="Window" >
             <Setter Property="Background"
@@ -35,7 +39,7 @@
         </Style>
         <Style Selector="Grid" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
 
 
@@ -56,11 +60,11 @@
         </Style>
         <Style Selector="TextBlock" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
         <Style Selector="Label" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="Foreground"
                     Value="{DynamicResource SubtleForegroundBrush}" />
         </Style>
@@ -105,7 +109,7 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource ForegroundBrush}" />
             </Style>
-            <Style Selector="^.Selected" >
+            <Style Selector="^:pressed" >
                 <Setter Property="Background"
                         Value="{DynamicResource ButtonPressedBackgroundBrush}" />
             </Style>
@@ -196,10 +200,11 @@
             </Style>
         </Style>
 
+
         <!--  Version Buttons  -->
         <Style Selector="Button.version-number-button" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="BorderThickness"
                     Value="0" />
             <Setter Property="FontSize"
@@ -311,6 +316,122 @@
             </Style>
         </Style>
 
+        <!-- Header Buttons -->
+        <Style Selector="Button.header-button" >
+            <Setter Property="Background"
+                    Value="{DynamicResource ButtonBackgroundBrush}" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="Template" >
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button" >
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="7" >
+                            <ContentPresenter HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              Margin="21,0"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style Selector="^:pointerover" >
+                <Setter Property="Background"
+                        Value="{DynamicResource ButtonHoverBackgroundBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource BorderBrush}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource ForegroundBrush}" />
+            </Style>
+            <Style Selector="^:pressed" >
+                <Setter Property="Background"
+                        Value="{DynamicResource ButtonPressedBackgroundBrush}" />
+            </Style>
+        </Style>
+
+        <!-- DataGrid -->
+        <Style Selector="DataGridColumnHeader" >
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="CornerRadius"
+                    Value="7" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource SubtleForegroundBrush}" />
+            <Setter Property="Background"
+                    Value="{DynamicResource ButtonBackgroundBrush}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource AppDarkBackgroundBrush}" />
+            <Setter Property="BorderThickness"
+                    Value="0,0,1,1" />
+            <Setter Property="Padding"
+                    Value="0" />
+        </Style>
+        
+        <Style Selector="DataGridRow">
+                <Setter Property="Background" Value="{DynamicResource TransparentBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:pointerover">
+                <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:selected">
+                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:selected:focus">
+                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:selected /template/ Border">
+                <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        
+        <Style Selector="DataGridCell" >
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Background"
+                    Value="{DynamicResource ControlBackgroundBrush}" />
+            <Setter Property="Padding"
+                    Value="6,2" />
+        </Style>
+        <Style Selector="DataGridCell:pointerover">
+                <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        
+        <Style Selector="DataGridColumnHeader > ContentPresenter" >
+            <Setter Property="Margin"
+                    Value="0" />
+        </Style>
+        <Style Selector="DataGridColumnHeader /template/ ContentPresenter#HeaderContent" >
+            <Setter Property="Margin"
+                    Value="0" />
+        </Style>
+        
+        <Style Selector="DataGridCell.severity-cell" >
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="Padding"
+                    Value="0" />
+        </Style>
+
         <!-- Combobox -->
         <Style Selector="ComboBox" >
             <Setter Property="Background"
@@ -386,7 +507,7 @@
             <Setter Property="Foreground"
                     Value="{DynamicResource SubtleForegroundBrush}" />
             <Setter Property="BorderBrush"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="CornerRadius"
                     Value="7" />
         </Style>
@@ -396,15 +517,15 @@
             <Setter Property="Foreground"
                     Value="{DynamicResource SubtleForegroundBrush}" />
             <Setter Property="BorderBrush"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
 
         <!--  TabControl / TabItem  -->
         <Style Selector="TabControl" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="BorderBrush"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
         <Style Selector="TabItem" >
             <Setter Property="Padding"
@@ -552,7 +673,7 @@
                 <ControlTemplate>
                     <Grid Width="50"
                           Height="28"
-                          Background="Transparent" >
+                          Background="{DynamicResource TransparentBrush}" >
                         <Border Name="Track"
                                 Background="#2A2A2A"
                                 BorderBrush="#404040"
@@ -571,7 +692,7 @@
                         <Border Name="Glow"
                                 Width="50"
                                 Height="28"
-                                Background="Transparent"
+                                Background="{DynamicResource TransparentBrush}"
                                 CornerRadius="14"
                                 Opacity="0" />
                     </Grid>

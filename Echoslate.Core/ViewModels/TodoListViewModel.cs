@@ -62,6 +62,9 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		}
 	}
 	public override void NewTodoAdd() {
+		if (string.IsNullOrWhiteSpace(NewTodoText)) {
+			return;
+		}
 		TodoItem item = new TodoItem() {
 			Todo = NewTodoText,
 			Severity = NewTodoSeverity
@@ -75,6 +78,10 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		SelectedTodoItemId = item.Id;
 		CleanAllTodoHashRanks();
 		RefreshAll();
+
+		if (ShowTodoItemEditorOnAdd) {
+			EditItem(item);
+		} 
 		NewTodoText = "";
 	}
 	public override void FixRanks() {

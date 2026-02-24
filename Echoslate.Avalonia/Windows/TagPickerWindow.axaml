@@ -55,7 +55,7 @@
                             <Setter Property="Margin"
                                     Value="0,1" />
                             <Setter Property="Background"
-                                    Value="Transparent" />
+                                    Value="{DynamicResource TransparentBrush}" />
                         </Style>
                         <Style Selector="ListBoxItem:selected" >
                             <Setter Property="Background"

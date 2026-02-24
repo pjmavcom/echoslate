@@ -52,6 +52,9 @@ public class KanbanViewModel : TodoDisplayViewModelBase {
 		_ => 0
 	};
 	public override void NewTodoAdd() {
+		if (string.IsNullOrWhiteSpace(NewTodoText)) {
+			return;
+		}
 		TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
 		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
@@ -68,6 +71,10 @@ public class KanbanViewModel : TodoDisplayViewModelBase {
 		CleanAllTodoHashRanks();
 		RefreshAll();
 		NewTodoText = "";
+		
+		if (ShowTodoItemEditorOnAdd) {
+			EditItem(item);
+		} 
 	}
 	public override void FixRanks() {
 		if (DisplayedItems == null) {
