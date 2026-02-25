@@ -39,7 +39,7 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	}
 	private void InitializeComponent() {
 		AvaloniaXamlLoader.Load(this);
-		var todoListDataGrid = this.FindControl<DataGrid>("TodoListDataGrid");
+		DataGrid? todoListDataGrid = this.FindControl<DataGrid>("TodoListDataGrid");
 		ColTags = todoListDataGrid.Columns[0];
 		ColDate = todoListDataGrid.Columns[1];
 		ColSev = todoListDataGrid.Columns[2];

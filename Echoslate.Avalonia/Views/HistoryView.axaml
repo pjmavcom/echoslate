@@ -18,9 +18,6 @@
                                          Threshold="900" />
         <converters:MathConverter x:Key="Math" />
         <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
-        <converters:WidthToColumnWidthConverter x:Key="ColumnHideConverter"
-                                                DefaultWidth="100"
-                                                Threshold="700" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeight" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
         <converters:BoolToBrushConverter x:Key="EditingBrushConverter"
@@ -42,10 +39,11 @@
         </ContextMenu>
 
     </UserControl.Resources>
-    <Grid Background="{DynamicResource AppDarkBackgroundBrush}" >
+    <Grid x:Name="MainGrid"
+          Background="{DynamicResource AppDarkBackgroundBrush}" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="7*" />
+            <ColumnDefinition Width="1000" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="250" />
@@ -64,6 +62,8 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+
+            <!-- Version -->
             <StackPanel Grid.Row="0"
                         Grid.Column="0"
                         Grid.ColumnSpan="2"
@@ -160,6 +160,7 @@
                 </Button>
             </StackPanel>
 
+            <!-- Commit Button -->
             <Button Grid.Row="1"
                     Grid.Column="0"
                     Classes="vertical-commit-button"
@@ -167,15 +168,19 @@
                     Content="Commit"
                     IsEnabled="{Binding IsCommitted, Converter={StaticResource InvertBoolConverter}}" />
 
+            <!-- Editables -->
             <Grid Grid.Row="1"
                   Grid.Column="1" >
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="45" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="45" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+
+                <!-- Type and Scope -->
                 <StackPanel Grid.Row="0"
-                            Margin="0,0,0,10"
+                            IsVisible="{Binding !IsTypeScope2Layer}"
+                            Margin="8,4"
                             Orientation="Horizontal" >
                     <ComboBox Width="100"
                               Margin="0,0,10,0"
@@ -193,16 +198,43 @@
                     <Button Command="{Binding DetectBranchCommand}"
                             Content="Detect Branch" />
                 </StackPanel>
+                <StackPanel Grid.Row="0"
+                            IsVisible="{Binding IsTypeScope2Layer}"
+                            Margin="8,4"
+                            Orientation="Vertical" >
+                    <StackPanel Orientation="Horizontal" >
+
+                        <ComboBox Width="100"
+                                  Margin="0,0,10,0"
+                                  ItemsSource="{Binding CommitTypes}"
+                                  SelectedItem="{Binding CommitType}" />
+                        <ComboBox Width="200"
+                                  Margin="0,0,10,0"
+                                  ItemsSource="{Binding CommitScopes}"
+                                  SelectedItem="{Binding CommitScope}" />
+                        <TextBlock Margin="5,0"
+                                   VerticalAlignment="Center"
+                                   Text=":" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBox Width="300"
+                                 Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Command="{Binding DetectBranchCommand}"
+                                Content="Detect Branch" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Title -->
                 <Border Grid.Row="1"
                         Margin="8,4"
-                        Background="#1E1E1E"
+                        Background="{DynamicResource BorderDarkBrush}"
                         CornerRadius="7" >
                     <Grid>
-                        <Border BorderBrush="#999999"
+                        <Border BorderBrush="{DynamicResource BorderSilverBrush}"
                                 BorderThickness="7,7,0,0"
                                 CornerRadius="7" />
                         <Border Margin="-1"
-                                BorderBrush="#494949"
+                                BorderBrush="{DynamicResource BorderMidBrush}"
                                 BorderThickness="0,0,7,7"
                                 CornerRadius="7"
                                 IsHitTestVisible="False" />
@@ -220,16 +252,18 @@
                                  TextWrapping="Wrap" />
                     </Grid>
                 </Border>
+
+                <!-- Notes -->
                 <Border Grid.Row="2"
                         Margin="8,4"
-                        Background="#1E1E1E"
+                        Background="{DynamicResource BorderDarkBrush}"
                         CornerRadius="7" >
                     <Grid>
-                        <Border BorderBrush="#999999"
+                        <Border BorderBrush="{DynamicResource BorderSilverBrush}"
                                 BorderThickness="7,7,0,0"
                                 CornerRadius="7" />
                         <Border Margin="-1"
-                                BorderBrush="#494949"
+                                BorderBrush="{DynamicResource BorderMidBrush}"
                                 BorderThickness="0,0,7,7"
                                 CornerRadius="7"
                                 IsHitTestVisible="False" />
@@ -250,6 +284,7 @@
         <!--  Top Right: Selected History Details  -->
         <Grid Grid.Row="0"
               Grid.Column="1"
+              Margin="0,0,10,0"
               Background="{StaticResource AppDarkBackground}" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="49" />
@@ -299,14 +334,14 @@
               Grid.Column="0"
               Background="{DynamicResource AppDarkBackgroundBrush}" >
             <Border Margin="8,4"
-                    Background="#1E1E1E"
+                    Background="{DynamicResource BorderDarkBrush}"
                     CornerRadius="7" >
                 <Grid x:Name="CommittedItemsHost" >
-                    <Border BorderBrush="#999999"
+                    <Border BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="7,7,0,0"
                             CornerRadius="7" />
                     <Border Margin="-1"
-                            BorderBrush="#494949"
+                            BorderBrush="{DynamicResource BorderMidBrush}"
                             BorderThickness="0,0,7,7"
                             CornerRadius="7"
                             IsHitTestVisible="False" />
@@ -317,7 +352,8 @@
                             ClipToBounds="True"
                             CornerRadius="7" >
 
-                        <DataGrid Margin="3"
+                        <DataGrid x:Name="HistoryViewDataGrid"
+                                  Margin="3"
                                   behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedHistoryItems}"
                                   AutoGenerateColumns="False"
                                   Background="{DynamicResource TransparentBrush}"
@@ -385,22 +421,22 @@
                                 </DataGridTemplateColumn>
 
                                 <!--  ~1~  Version  @1@  -->
-                                <DataGridTextColumn Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=500|100}"
+                                <DataGridTextColumn Width="100"
                                                     Binding="{Binding VersionString}"
                                                     Header="Version" />
 
                                 <!--  ~1~  Date  @1@  -->
-                                <DataGridTextColumn Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=600|160}"
+                                <DataGridTextColumn Width="160"
                                                     Binding="{Binding CommitDate, StringFormat=yyyy-MM-dd:mm}"
                                                     Header="Date" />
 
                                 <!--  ~1~  Type  @1@  -->
-                                <DataGridTextColumn Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=700|80}"
+                                <DataGridTextColumn Width="80"
                                                     Binding="{Binding Type}"
                                                     Header="Type" />
 
                                 <!--  ~1~  Scope  @1@  -->
-                                <DataGridTextColumn Width="{Binding Bounds, ElementName=CommittedItemsHost, Converter={StaticResource ColumnHideConverter}, ConverterParameter=800|200}"
+                                <DataGridTextColumn Width="200"
                                                     Binding="{Binding Scope}"
                                                     Header="Scope" />
 
