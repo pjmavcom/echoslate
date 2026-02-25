@@ -174,13 +174,16 @@
                                         <ComboBox ItemsSource="{Binding DataContext.CurrentVisibleTagsView, ElementName=Root}"
                                                   SelectedItem="{Binding DataContext.PrioritySortTag, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
                                                   MaxDropDownHeight="360"
+                                                  FontFamily="{StaticResource MonoFont}"
                                                   VerticalAlignment="Center" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Label Content="{Binding TagsSorted}" />
+                                    <Label Content="{Binding TagsSorted}" 
+                                           FontFamily="{StaticResource MonoFont}"
+                                           />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -197,7 +200,9 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Label Content="{Binding DateTimeStarted}" />
+                                    <Label Content="{Binding DateTimeStarted, StringFormat=yyyy-MM-dd}" 
+                                           FontFamily="{StaticResource MonoFont}"
+                                           />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -246,6 +251,7 @@
                                             <ColumnDefinition Width="25" />
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0"
+                                               FontFamily="{StaticResource MonoFont}"
                                                VerticalAlignment="Center"
                                                FontSize="18"
                                                Foreground="{DynamicResource ForegroundBrush}"
@@ -281,6 +287,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:CompileBindings="False" >
                                     <Button Width="110"
+                                            FontFamily="{StaticResource MonoFont}"
                                             Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
                                             BorderThickness="0"
                                             Command="{Binding $parent[DataGrid].DataContext.ToggleTimerCommand}"

@@ -232,7 +232,7 @@
                                 <Border Grid.Row="0"
                                         Grid.Column="2"
                                         Height="30"
-                                        BorderBrush="#494949"
+                                        BorderBrush="{DynamicResource BorderMidBrush}"
                                         BorderThickness="1" >
                                     <TextBlock Width="70"
                                                behaviors:MouseWheelNumericBehavior.Enabled="True"
@@ -315,7 +315,7 @@
                                 <Border Grid.Row="0"
                                         Grid.Column="1"
                                         Height="30"
-                                        BorderBrush="#494949"
+                                        BorderBrush="{DynamicResource BorderMidBrush}"
                                         BorderThickness="1" >
                                     <TextBlock Width="70"
                                                behaviors:MouseWheelNumericBehavior.Enabled="True"
@@ -394,14 +394,6 @@
                     Margin="0,10,0,10"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal" >
-            <!-- <Button Width="140" -->
-            <!--         Margin="0,0,15,0" -->
-            <!--         Background="#4CAF50" -->
-            <!--         Click="Complete_OnClick" -->
-            <!--         Content="Complete" -->
-            <!--         FontSize="16" -->
-            <!--         Foreground="{DynamicResource ForegroundBrush}" -->
-            <!--         FontWeight="SemiBold" /> -->
             <Button Width="140"
                     Margin="0,0,15,0"
                     Background="{DynamicResource AccentBrush}"

@@ -22,16 +22,16 @@
         <Border
             Grid.Row="1"
             Margin="8,4"
-            Background="#1E1E1E"
+            Background="{DynamicResource BorderDarkBrush}"
             CornerRadius="7">
             <Grid>
                 <Border
-                    BorderBrush="#999999"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="7,7,0,0"
                     CornerRadius="7" />
                 <Border
                     Margin="-1"
-                    BorderBrush="#494949"
+                    BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="0,0,7,7"
                     CornerRadius="7"
                     IsHitTestVisible="False" />
@@ -58,16 +58,16 @@
         <Border
             Grid.Row="3"
             Margin="8,4"
-            Background="#1E1E1E"
+            Background="{DynamicResource BorderDarkBrush}"
             CornerRadius="7">
             <Grid>
                 <Border
-                    BorderBrush="#999999"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="7,7,0,0"
                     CornerRadius="7" />
                 <Border
                     Margin="-1"
-                    BorderBrush="#494949"
+                    BorderBrush="{DynamicResource BorderMidBrush}"
                     BorderThickness="0,0,7,7"
                     CornerRadius="7"
                     IsHitTestVisible="False" />
@@ -90,16 +90,16 @@
             Grid.Row="5"
             Grid.Column="0"
             Margin="8,4"
-            Background="#1E1E1E"
+            Background="{DynamicResource BorderDarkBrush}"
             CornerRadius="7">
             <Grid>
                 <Border
-                    BorderBrush="#999999"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="7,7,0,0"
                     CornerRadius="7" />
                 <Border
                     Margin="-1"
-                    BorderBrush="#494949"
+                    BorderBrush="{DynamicResource BorderMidBrush}"
                     BorderThickness="0,0,7,7"
                     CornerRadius="7"
                     IsHitTestVisible="False" />
@@ -121,16 +121,16 @@
         <Border
             Grid.Row="7"
             Margin="8,4"
-            Background="#1E1E1E"
+            Background="{DynamicResource BorderDarkBrush}"
             CornerRadius="7">
             <Grid>
                 <Border
-                    BorderBrush="#999999"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     BorderThickness="7,7,0,0"
                     CornerRadius="7" />
                 <Border
                     Margin="-1"
-                    BorderBrush="#494949"
+                    BorderBrush="{DynamicResource BorderMidBrush}"
                     BorderThickness="0,0,7,7"
                     CornerRadius="7"
                     IsHitTestVisible="False" />

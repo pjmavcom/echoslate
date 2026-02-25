@@ -35,7 +35,7 @@
                          Margin="0"
                          behaviors:ListBoxSelectedItemsBehavior.SelectedItems="{Binding SelectedItems, Mode=OneWay}"
                          Background="{DynamicResource ControlBackgroundBrush}"
-                         BorderBrush="#FF444444"
+                         BorderBrush="{DynamicResource BorderMidBrush}"
                          BorderThickness="1"
                          Foreground="{DynamicResource ForegroundBrush}"
                          ItemsSource="{Binding FilterNames}"
@@ -96,11 +96,11 @@
                     Background="{DynamicResource BorderDarkBrush}"
                     CornerRadius="7" >
                 <Grid>
-                    <Border BorderBrush="#999999"
+                    <Border BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="7,7,0,0"
                             CornerRadius="7" />
                     <Border Margin="-1"
-                            BorderBrush="#494949"
+                            BorderBrush="{DynamicResource BorderMidBrush}"
                             BorderThickness="0,0,7,7"
                             CornerRadius="7"
                             IsHitTestVisible="False" />
@@ -124,20 +124,20 @@
                     Orientation="Horizontal" >
             <Button Width="100"
                     Padding="10,8"
-                    BorderBrush="#FF666666"
+                    BorderBrush="{DynamicResource BorderSilverBrush}"
                     FontSize="16"
                     Command="{Binding DeleteCommand}"
                     Content="Delete"
                     Foreground="{DynamicResource ForegroundBrush}" />
             <Button Width="60"
-                    BorderBrush="#FF555555"
+                    BorderBrush="{DynamicResource BorderMidBrush}"
                     Click="MoveUp_OnClick"
                     Content="▲"
                     FontSize="18"
                     FontWeight="Bold"
                     Foreground="{DynamicResource ForegroundBrush}" />
             <Button Width="60"
-                    BorderBrush="#FF555555"
+                    BorderBrush="{DynamicResource BorderMidBrush}"
                     Click="MoveDown_OnClick"
                     Content="▼"
                     FontSize="18"

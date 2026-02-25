@@ -111,7 +111,7 @@
                                    VerticalAlignment="Center"
                                    FontSize="16"
                                    Text="Create backup every" />
-                        <Border BorderBrush="#494949"
+                        <Border BorderBrush="{DynamicResource BorderMidBrush}"
                                 BorderThickness="1" >
                             <TextBlock Width="80"
                                        behaviors:MouseWheelNumericBehavior.Enabled="True"

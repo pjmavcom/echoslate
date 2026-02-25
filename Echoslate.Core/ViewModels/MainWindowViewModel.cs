@@ -202,7 +202,17 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 	public int PomoProgressBarValue { get; set; }
 	public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
-
+	private bool _arePomoControlsVisible;
+	public bool ArePomoControlsVisible {
+		get => _arePomoControlsVisible;
+		set {
+			if (_arePomoControlsVisible == value) {
+				return;
+			}
+			_arePomoControlsVisible = value;
+			OnPropertyChanged();
+		}
+	}
 
 	public MainWindowViewModel(AppSettings appSettings) {
 #if DEBUG

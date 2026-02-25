@@ -139,11 +139,15 @@
                 </MenuItem>
             </Menu>
             <StackPanel Grid.Column="1"
+                        x:Name="PomoPanel"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal" >
-                <Grid>
+                <Grid x:Name="PomoProgressBarGrid"
+                      HorizontalAlignment="Stretch" >
                     <ProgressBar Height="30"
+                                 x:Name="PomoProgressBar"
                                  Margin="10,5"
+                                 HorizontalAlignment="Stretch"
                                  Background="{DynamicResource AppDarkBackgroundBrush}"
                                  BorderBrush="{DynamicResource BorderBrush}"
                                  BorderThickness="2"
@@ -183,7 +187,8 @@
                             </Style>
                         </ProgressBar.Styles>
                     </ProgressBar>
-                    <Button Width="400"
+                    <Button HorizontalAlignment="Stretch"
+                            FontFamily="{StaticResource MonoFont}"
                             HorizontalContentAlignment="Center"
                             Background="{DynamicResource TransparentBrush}"
                             Command="{Binding PomoTimerToggleCommand}"
@@ -192,52 +197,67 @@
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource ControlBackgroundBrush}" />
                 </Grid>
-                <Label Foreground="{DynamicResource ForegroundBrush}"
-                       HorizontalContentAlignment="Right"
-                       VerticalAlignment="Center"
-                       FontSize="20"
-                       Width="100"
-                       Content="Work: " />
-                <Border BorderBrush="#494949"
-                        Background="{DynamicResource ControlBackgroundBrush}"
-                        CornerRadius="7"
-                        BorderThickness="1" >
-                    <TextBlock Width="80"
-                               Foreground="{DynamicResource ForegroundBrush}"
-                               behaviors:MouseWheelNumericBehavior.Enabled="True"
-                               VerticalAlignment="Center"
-                               behaviors:MouseWheelNumericBehavior.Minimum="1"
-                               behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes"
-                               Background="{DynamicResource TransparentBrush}"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Text="{Binding PomoWorkTimeMinutes}"
-                               TextAlignment="Center"
-                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
-                </Border>
-                <Label Width="100"
-                       Foreground="{DynamicResource ForegroundBrush}"
-                       HorizontalContentAlignment="Right"
-                       VerticalAlignment="Center"
-                       FontSize="20"
-                       Content="Break: " />
-                <Border BorderBrush="#494949"
-                        Background="{DynamicResource ControlBackgroundBrush}"
-                        CornerRadius="7"
-                        BorderThickness="1" >
-                    <TextBlock Width="80"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource ForegroundBrush}"
-                               behaviors:MouseWheelNumericBehavior.Enabled="True"
-                               behaviors:MouseWheelNumericBehavior.Minimum="1"
-                               behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes"
-                               Background="{DynamicResource TransparentBrush}"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Text="{Binding PomoBreakTimeMinutes}"
-                               TextAlignment="Center"
-                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
-                </Border>
+                <Grid x:Name="PomoControlsGrid"
+                      IsVisible="{Binding ArePomoControlsVisible}" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Foreground="{DynamicResource ForegroundBrush}"
+                           HorizontalContentAlignment="Right"
+                           Grid.Column="0"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           Width="100"
+                           Content="Work: " />
+                    <Border BorderBrush="{DynamicResource BorderMidBrush}"
+                            Grid.Column="1"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            BorderThickness="1" >
+                        <TextBlock Width="80"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                   VerticalAlignment="Center"
+                                   behaviors:MouseWheelNumericBehavior.Minimum="1"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes"
+                                   Background="{DynamicResource TransparentBrush}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Text="{Binding PomoWorkTimeMinutes}"
+                                   TextAlignment="Center"
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                    </Border>
+                    <Label Width="100"
+                           Grid.Column="2"
+                           Foreground="{DynamicResource ForegroundBrush}"
+                           HorizontalContentAlignment="Right"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           Content="Break: " />
+                    <Border BorderBrush="{DynamicResource BorderMidBrush}"
+                            Grid.Column="3"
+                            Background="{DynamicResource ControlBackgroundBrush}"
+                            CornerRadius="7"
+                            BorderThickness="1" >
+                        <TextBlock Width="80"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                   behaviors:MouseWheelNumericBehavior.Minimum="1"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes"
+                                   Background="{DynamicResource TransparentBrush}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Text="{Binding PomoBreakTimeMinutes}"
+                                   TextAlignment="Center"
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                    </Border>
+                </Grid>
             </StackPanel>
         </Grid>
         <TabControl Name="tabControl"

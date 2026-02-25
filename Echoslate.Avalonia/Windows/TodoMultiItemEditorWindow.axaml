@@ -74,7 +74,7 @@
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal" >
                             <Border Height="30"
-                                    BorderBrush="#494949"
+                                    BorderBrush="{DynamicResource BorderMidBrush}"
                                     BorderThickness="1" >
                                 <TextBlock Width="70"
                                            Height="30"
@@ -217,7 +217,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Button Width="30"
                                                 Height="24"
-                                                Background="#FF4444"
+                                                Background="{DynamicResource DangerRedBrush}"
                                                 Command="{Binding $parent[UserControl].DataContext.DeleteTagCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="X"
@@ -265,7 +265,7 @@
                 <Button.Styles>
                     <Style Selector="Button" >
                         <Setter Property="Background"
-                                Value="#4CAF50" />
+                                Value="{DynamicResource SuccessGreenBrush}"/>
                         <Setter Property="Template" >
                             <Setter.Value>
                                 <ControlTemplate TargetType="Button" >
@@ -283,7 +283,7 @@
                         </Setter>
                         <Style Selector="^:disabled" >
                             <Setter Property="Background"
-                                    Value="#2E7D32" />
+                                    Value="{DynamicResource SuccessGreenBrush}" />
                             <Setter Property="Opacity"
                                     Value="0.7" />
                         </Style>

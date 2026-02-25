@@ -75,6 +75,7 @@
                            Foreground="{DynamicResource SubtleForegroundBrush}"
                            Text="Current version:" />
                 <Button Width="30"
+                        FontFamily="{StaticResource MonoFont}"
                         Classes="version-number-button"
                         Command="{Binding BumpMajorCommand}"
                         Content="{Binding CurrentHistoryItem.VersionMajor}"
@@ -97,6 +98,7 @@
                            FontSize="20"
                            Text="." />
                 <Button Width="30"
+                        FontFamily="{StaticResource MonoFont}"
                         Classes="version-number-button"
                         Command="{Binding BumpMinorCommand}"
                         Content="{Binding CurrentHistoryItem.VersionMinor}"
@@ -119,6 +121,7 @@
                            FontSize="20"
                            Text="." />
                 <Button Width="30"
+                        FontFamily="{StaticResource MonoFont}"
                         Classes="version-number-button"
                         Command="{Binding BumpBuildCommand}"
                         Content="{Binding CurrentHistoryItem.VersionBuild}"
@@ -141,6 +144,7 @@
                            FontSize="20"
                            Text="." />
                 <Button Width="30"
+                        FontFamily="{StaticResource MonoFont}"
                         Classes="version-number-button"
                         Command="{Binding BumpRevisionCommand}"
                         Content="{Binding CurrentHistoryItem.VersionRevision}"
@@ -184,16 +188,19 @@
                             Orientation="Horizontal" >
                     <ComboBox Width="100"
                               Margin="0,0,10,0"
+                              FontFamily="{StaticResource MonoFont}"
                               ItemsSource="{Binding CommitTypes}"
                               SelectedItem="{Binding CommitType}" />
                     <ComboBox Width="200"
                               Margin="0,0,10,0"
+                              FontFamily="{StaticResource MonoFont}"
                               ItemsSource="{Binding CommitScopes}"
                               SelectedItem="{Binding CommitScope}" />
                     <TextBlock Margin="5,0"
                                VerticalAlignment="Center"
                                Text=":" />
                     <TextBox Width="300"
+                             FontFamily="{StaticResource MonoFont}"
                              Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}" />
                     <Button Command="{Binding DetectBranchCommand}"
                             Content="Detect Branch" />
@@ -206,10 +213,12 @@
 
                         <ComboBox Width="100"
                                   Margin="0,0,10,0"
+                                  FontFamily="{StaticResource MonoFont}"
                                   ItemsSource="{Binding CommitTypes}"
                                   SelectedItem="{Binding CommitType}" />
                         <ComboBox Width="200"
                                   Margin="0,0,10,0"
+                                  FontFamily="{StaticResource MonoFont}"
                                   ItemsSource="{Binding CommitScopes}"
                                   SelectedItem="{Binding CommitScope}" />
                         <TextBlock Margin="5,0"
@@ -218,6 +227,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" >
                         <TextBox Width="300"
+                                 FontFamily="{StaticResource MonoFont}"
                                  Text="{Binding CustomScope, UpdateSourceTrigger=PropertyChanged}" />
                         <Button Command="{Binding DetectBranchCommand}"
                                 Content="Detect Branch" />
@@ -306,6 +316,7 @@
                        Foreground="{DynamicResource ForegroundBrush}"
                        IsVisible="{Binding IsCommitted, Converter={StaticResource BoolToVisibility}}" />
                 <TextBlock Margin="0,5,0,15"
+                           FontFamily="{StaticResource MonoFont}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            FontWeight="Bold"
@@ -422,12 +433,14 @@
 
                                 <!--  ~1~  Version  @1@  -->
                                 <DataGridTextColumn Width="100"
+                                                    FontFamily="{StaticResource MonoFont}"
                                                     Binding="{Binding VersionString}"
                                                     Header="Version" />
 
                                 <!--  ~1~  Date  @1@  -->
-                                <DataGridTextColumn Width="160"
-                                                    Binding="{Binding CommitDate, StringFormat=yyyy-MM-dd:mm}"
+                                <DataGridTextColumn Width="200"
+                                                    FontFamily="{StaticResource MonoFont}"
+                                                    Binding="{Binding CommitDate, StringFormat=yyyy-MM-dd - HH:mm}"
                                                     Header="Date" />
 
                                 <!--  ~1~  Type  @1@  -->
