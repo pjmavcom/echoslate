@@ -202,7 +202,17 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 	public int PomoProgressBarValue { get; set; }
 	public bool PomoIsWorkMode => PomoState == PomoActiveState.Work;
-
+	private bool _arePomoControlsVisible;
+	public bool ArePomoControlsVisible {
+		get => _arePomoControlsVisible;
+		set {
+			if (_arePomoControlsVisible == value) {
+				return;
+			}
+			_arePomoControlsVisible = value;
+			OnPropertyChanged();
+		}
+	}
 
 	public MainWindowViewModel(AppSettings appSettings) {
 #if DEBUG
@@ -596,22 +606,24 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	public void SetWindowPosition(double width = 0, double height = 0) {
 		double windowWidth = width;
 		double windowHeight = height;
-		PixelPoint pos = new(0, 0);
+		PixelPoint pos = new(50, 50);
+		Avalonia.Controls.WindowState windowState = Avalonia.Controls.WindowState.Normal;
 		if (width == 0 || height == 0) {
 			windowWidth = AppSettings.Instance.WindowWidth;
 			windowHeight = AppSettings.Instance.WindowHeight;
 			pos = new PixelPoint((int)AppSettings.Instance.WindowLeft, (int)AppSettings.Instance.WindowTop);
+			windowState = AppSettings.Instance.WindowState switch {
+				WindowState.Maximized => Avalonia.Controls.WindowState.Maximized,
+				WindowState.Minimized => Avalonia.Controls.WindowState.Minimized,
+				_ => Avalonia.Controls.WindowState.Normal
+			};
 		}
 		Window mainWindow = AppServices.ApplicationService.GetWindow() as Window;
 
 		mainWindow.Position = pos;
 		mainWindow.Width = windowWidth;
 		mainWindow.Height = windowHeight;
-		mainWindow.WindowState = AppSettings.Instance.WindowState switch {
-			WindowState.Maximized => Avalonia.Controls.WindowState.Maximized,
-			WindowState.Minimized => Avalonia.Controls.WindowState.Minimized,
-			_ => Avalonia.Controls.WindowState.Normal
-		};
+		mainWindow.WindowState = windowState;
 		Log.Print($"Window position: {mainWindow.Position}");
 		Log.Print($"Window size: {mainWindow.Width}x{mainWindow.Height}");
 	}

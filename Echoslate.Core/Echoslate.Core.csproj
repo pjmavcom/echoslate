@@ -9,38 +9,42 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release -DB' ">
-      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+        <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia" Version="11.3.12" />
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="Avalonia" Version="11.3.12"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+    </ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\Fonts\**\*.ttf"/>
+        <AvaloniaResource Include="Assets\Fonts\**\*.otf"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Resource Include="Resources\Echoslate.png"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="Resources\Echoslate.png" />
+        <Folder Include="Assets\Fonts\"/>
+        <Folder Include="Converters\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Converters\" />
+        <Content Include="..\.github\workflows\build-and-publish.yml">
+            <Link>build-and-publish.yml</Link>
+        </Content>
+        <Content Include="..\.github\workflows\build.yml">
+            <Link>build.yml</Link>
+        </Content>
+        <Content Include="..\version.json">
+            <Link>version.json</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.github\workflows\build-and-publish.yml">
-        <Link>build-and-publish.yml</Link>
-      </Content>
-      <Content Include="..\.github\workflows\build.yml">
-        <Link>build.yml</Link>
-      </Content>
-      <Content Include="..\version.json">
-        <Link>version.json</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Avalonia.Controls">
-        <HintPath>..\Echoslate.Avalonia\bin\Debug\net8.0\Avalonia.Controls.dll</HintPath>
-      </Reference>
+        <Reference Include="Avalonia.Controls">
+            <HintPath>..\Echoslate.Avalonia\bin\Debug\net8.0\Avalonia.Controls.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

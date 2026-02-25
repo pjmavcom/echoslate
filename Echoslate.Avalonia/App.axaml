@@ -3,46 +3,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:services="clr-namespace:Echoslate.Core.Services;assembly=Echoslate.Core"
              xmlns:converters="clr-namespace:Echoslate.Avalonia.Converters"
-             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
              RequestedThemeVariant="Default" >
-    <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
 
     <Application.Resources>
         <services:BrushService x:Key="BrushService"
                                x:Shared="True" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
-        <FontFamily x:Key="IconFont" >Segoe Fluent Icons, Segoe MDL2 Assets, sans-serif</FontFamily>
-        
-        <!-- MenuItem hover / pressed colors without templating -->
+
+        <FontFamily x:Key="AppFont" >
+            avares://Echoslate.Core/Assets/Fonts/#Inter, sans-serif
+        </FontFamily>
+        <FontFamily x:Key="MonoFont" >
+                avares://Echoslate.Core/Assets/Fonts/#JetBrains Mono
+        </FontFamily>
+
         <StaticResource x:Key="MenuFlyoutItemBackgroundPointerOver"
-                         ResourceKey="AccentBrush" />
+                        ResourceKey="AccentBrush" />
         <StaticResource x:Key="MenuFlyoutItemBackgroundPressed"
-                         ResourceKey="LightAccentBrush" />
+                        ResourceKey="LightAccentBrush" />
         <StaticResource x:Key="MenuFlyoutSubItemBackgroundSubMenuOpened"
-                         ResourceKey="LightAccentBrush" />
+                        ResourceKey="LightAccentBrush" />
     </Application.Resources>
     <Application.Styles>
-        <FluentTheme />
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+        <SimpleTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Simple.xaml" />
+
+
         <!-- Global -->
         <Style Selector="Window" >
+                <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
             <Setter Property="Background"
-                    Value="{DynamicResource AppBackgroundBrush}" />
+                        Value="{DynamicResource AppBackgroundBrush}" />
         </Style>
         <Style Selector="UserControl" >
+                <Setter Property="FontFamily"
+                        Value="{StaticResource AppFont}" />
             <Setter Property="Background"
-                    Value="{DynamicResource ControlBackgroundBrush}" />
+                        Value="{DynamicResource ControlBackgroundBrush}" />
         </Style>
         <Style Selector="Grid" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
 
 
         <!--  TextBox / TextBlock / Label style  -->
         <Style Selector="TextBox" >
+                <Setter Property="FontFamily"
+                        Value="{StaticResource AppFont}" />
             <Setter Property="CornerRadius"
-                    Value="7" />
+                        Value="7" />
             <Setter Property="Background"
                     Value="{DynamicResource EditorBackgroundBrush}" />
             <Setter Property="Foreground"
@@ -55,12 +65,16 @@
                     Value="{DynamicResource AccentBrush}" />
         </Style>
         <Style Selector="TextBlock" >
+                <Setter Property="FontFamily"
+                        Value="{StaticResource AppFont}" />
             <Setter Property="Background"
-                    Value="Transparent" />
+                        Value="{DynamicResource TransparentBrush}" />
         </Style>
         <Style Selector="Label" >
+                <Setter Property="FontFamily"
+                        Value="{StaticResource AppFont}" />
             <Setter Property="Background"
-                    Value="Transparent" />
+                        Value="{DynamicResource TransparentBrush}" />
             <Setter Property="Foreground"
                     Value="{DynamicResource SubtleForegroundBrush}" />
         </Style>
@@ -105,7 +119,7 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource ForegroundBrush}" />
             </Style>
-            <Style Selector="^.Selected" >
+            <Style Selector="^:pressed" >
                 <Setter Property="Background"
                         Value="{DynamicResource ButtonPressedBackgroundBrush}" />
             </Style>
@@ -196,10 +210,11 @@
             </Style>
         </Style>
 
+
         <!--  Version Buttons  -->
         <Style Selector="Button.version-number-button" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="BorderThickness"
                     Value="0" />
             <Setter Property="FontSize"
@@ -311,6 +326,132 @@
             </Style>
         </Style>
 
+        <!-- Header Buttons -->
+        <Style Selector="Button.header-button" >
+            <Setter Property="Background"
+                    Value="{DynamicResource ButtonBackgroundBrush}" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="Template" >
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button" >
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="7" >
+                            <ContentPresenter HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              Margin="21,0"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style Selector="^:pointerover" >
+                <Setter Property="Background"
+                        Value="{DynamicResource ButtonHoverBackgroundBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource BorderBrush}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource ForegroundBrush}" />
+            </Style>
+            <Style Selector="^:pressed" >
+                <Setter Property="Background"
+                        Value="{DynamicResource ButtonPressedBackgroundBrush}" />
+            </Style>
+        </Style>
+
+        <!-- DataGrid -->
+        <Style Selector="DataGridColumnHeader" >
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="CornerRadius"
+                    Value="7" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource SubtleForegroundBrush}" />
+            <Setter Property="Background"
+                    Value="{DynamicResource ButtonBackgroundBrush}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource AppDarkBackgroundBrush}" />
+            <Setter Property="BorderThickness"
+                    Value="0,0,1,1" />
+            <Setter Property="Padding"
+                    Value="0" />
+        </Style>
+
+        <Style Selector="DataGridRow" >
+            <Setter Property="Background"
+                    Value="{DynamicResource TransparentBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:pointerover" >
+            <Setter Property="Background"
+                    Value="{DynamicResource DarkAccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:selected" >
+            <Setter Property="Background"
+                    Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:selected:focus" >
+            <Setter Property="Background"
+                    Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:selected /template/ Border" >
+            <Setter Property="Opacity"
+                    Value="0.85" />
+        </Style>
+
+        <Style Selector="DataGridCell" >
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Background"
+                    Value="{DynamicResource ControlBackgroundBrush}" />
+            <Setter Property="Padding"
+                    Value="6,2" />
+        </Style>
+        <Style Selector="DataGridCell:pointerover" >
+            <Setter Property="Background"
+                    Value="{DynamicResource DarkAccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource ForegroundBrush}" />
+        </Style>
+
+        <Style Selector="DataGridColumnHeader > ContentPresenter" >
+            <Setter Property="Margin"
+                    Value="0" />
+        </Style>
+        <Style Selector="DataGridColumnHeader /template/ ContentPresenter#HeaderContent" >
+            <Setter Property="Margin"
+                    Value="0" />
+        </Style>
+
+        <Style Selector="DataGridCell.severity-cell" >
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Stretch" />
+            <Setter Property="Padding"
+                    Value="0" />
+        </Style>
+
         <!-- Combobox -->
         <Style Selector="ComboBox" >
             <Setter Property="Background"
@@ -334,11 +475,11 @@
         </Style>
         <Style Selector="ComboBox:pointerover /template/ Border#ToggleBorder" >
             <Setter Property="BorderBrush"
-                    Value="#007ACC" />
+                    Value="{DynamicResource AccentBrush}" />
         </Style>
         <Style Selector="ComboBox:focus /template/ Border#ToggleBorder" >
             <Setter Property="BorderBrush"
-                    Value="#007ACC" />
+                    Value="{DynamicResource AccentBrush}" />
         </Style>
         <Style Selector="ComboBox /template/ Path#arrow:pointerover" >
             <Setter Property="Fill"
@@ -346,10 +487,12 @@
         </Style>
 
         <Style Selector="ComboBoxItem" >
+            <Setter Property="Width"
+                    Value="{Binding $parent[ComboBox].Bounds.Width}" />
             <Setter Property="Background"
                     Value="{DynamicResource AppBackgroundBrush}" />
-            <Setter Property="Foreground"
-                    Value="{DynamicResource SubtleForegroundBrush}" />
+            <!-- <Setter Property="Foreground" -->
+            <!-- Value="{DynamicResource SubtleForegroundBrush}" /> -->
             <Setter Property="Padding"
                     Value="8,4" />
             <Setter Property="Template" >
@@ -369,12 +512,32 @@
         <Style Selector="ComboBoxItem:pointerover" >
             <Setter Property="Background"
                     Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentDarkBrush}" />
         </Style>
         <Style Selector="ComboBoxItem:selected" >
             <Setter Property="Background"
                     Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentDarkBrush}" />
         </Style>
         <Style Selector="ComboBoxItem:selected:focus" >
+            <Setter Property="Background"
+                    Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentDarkBrush}" />
+        </Style>
+        <Style Selector="ComboBoxItem TextBlock" >
+            <Setter Property="Background"
+                    Value="{DynamicResource TransparentBrush}" />
+        </Style>
+
+        <Style Selector="ComboBoxItem:pointerover TextBlock" >
+            <Setter Property="Background"
+                    Value="{DynamicResource AccentBrush}" />
+        </Style>
+
+        <Style Selector="ComboBoxItem:selected TextBlock" >
             <Setter Property="Background"
                     Value="{DynamicResource AccentBrush}" />
         </Style>
@@ -386,7 +549,7 @@
             <Setter Property="Foreground"
                     Value="{DynamicResource SubtleForegroundBrush}" />
             <Setter Property="BorderBrush"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="CornerRadius"
                     Value="7" />
         </Style>
@@ -396,21 +559,21 @@
             <Setter Property="Foreground"
                     Value="{DynamicResource SubtleForegroundBrush}" />
             <Setter Property="BorderBrush"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
 
         <!--  TabControl / TabItem  -->
         <Style Selector="TabControl" >
             <Setter Property="Background"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
             <Setter Property="BorderBrush"
-                    Value="Transparent" />
+                    Value="{DynamicResource TransparentBrush}" />
         </Style>
         <Style Selector="TabItem" >
             <Setter Property="Padding"
                     Value="16,6" />
             <Setter Property="Foreground"
-                    Value="#AAAAAA" />
+                    Value="{DynamicResource ForegroundBrush}" />
             <Setter Property="FontWeight"
                     Value="SemiBold" />
             <Setter Property="Background"
@@ -552,10 +715,10 @@
                 <ControlTemplate>
                     <Grid Width="50"
                           Height="28"
-                          Background="Transparent" >
+                          Background="{DynamicResource TransparentBrush}" >
                         <Border Name="Track"
-                                Background="#2A2A2A"
-                                BorderBrush="#404040"
+                                Background="{DynamicResource BorderBrush}"
+                                BorderBrush="{DynamicResource BorderMidBrush}"
                                 BorderThickness="1"
                                 CornerRadius="14" />
                         <Rectangle Name="Thumb"
@@ -563,15 +726,15 @@
                                    Height="24"
                                    Margin="2"
                                    HorizontalAlignment="Left"
-                                   Fill="#666666"
+                                   Fill="{DynamicResource SubtleForegroundBrush}"
                                    RadiusX="12"
                                    RadiusY="12"
-                                   Stroke="#555555"
+                                   Stroke="{DynamicResource BorderMidBrush}"
                                    StrokeThickness="1" />
                         <Border Name="Glow"
                                 Width="50"
                                 Height="28"
-                                Background="Transparent"
+                                Background="{DynamicResource TransparentBrush}"
                                 CornerRadius="14"
                                 Opacity="0" />
                     </Grid>
@@ -579,9 +742,9 @@
             </Setter>
             <Style Selector="^:checked /template/ Rectangle#Thumb" >
                 <Setter Property="Fill"
-                        Value="#4CAF50" />
+                        Value="{DynamicResource SuccessGreenBrush}" />
                 <Setter Property="Stroke"
-                        Value="#45A049" />
+                        Value="{DynamicResource SuccessGreenBrush}" />
                 <Setter Property="HorizontalAlignment"
                         Value="Right" />
                 <Setter Property="Margin"
@@ -595,7 +758,7 @@
                 <Setter Property="Opacity"
                         Value="0.2" />
                 <Setter Property="Background"
-                        Value="#FFFFFF" />
+                        Value="{DynamicResource ForegroundBrush}" />
             </Style>
             <Setter Property="VerticalAlignment"
                     Value="Center" />

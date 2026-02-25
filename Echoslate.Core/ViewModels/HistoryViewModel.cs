@@ -189,6 +189,17 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	private bool _isTypeScope2Layer;
+	public bool IsTypeScope2Layer {
+		get => _isTypeScope2Layer;
+		set {
+			if (_isTypeScope2Layer == value) {
+				return;
+			}
+			_isTypeScope2Layer = value;
+			OnPropertyChanged();
+		}
+	}
 
 
 	public HistoryViewModel() {

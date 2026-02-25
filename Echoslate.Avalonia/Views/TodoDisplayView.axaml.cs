@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -17,7 +20,14 @@ using Echoslate.Core.ViewModels;
 
 namespace Echoslate.Avalonia.Views;
 
-public partial class TodoDisplayView : UserControl {
+public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
+	private DataGridColumn? ColTags;
+	private DataGridColumn? ColDate;
+	private DataGridColumn? ColSev;
+	private DataGridColumn? ColRank;
+	private DataGridColumn? ColTimer;
+
+
 	public TodoDisplayView() {
 		InitializeComponent();
 	}
@@ -29,6 +39,51 @@ public partial class TodoDisplayView : UserControl {
 	}
 	private void InitializeComponent() {
 		AvaloniaXamlLoader.Load(this);
+		DataGrid? todoListDataGrid = this.FindControl<DataGrid>("TodoListDataGrid");
+		ColTags = todoListDataGrid.Columns[0];
+		ColDate = todoListDataGrid.Columns[1];
+		ColSev = todoListDataGrid.Columns[2];
+		ColRank = todoListDataGrid.Columns[3];
+		ColTimer = todoListDataGrid.Columns[4];
+
+		SizeChanged += OnSizeChanged;
+
+		var addButton = this.FindControl<Button>("AddButton");
+		addButton.AddHandler(
+			InputElement.PointerPressedEvent,
+			Add_OnPointerPressed,
+			RoutingStrategies.Tunnel);
+	}
+	private void OnSizeChanged(object? sender, SizeChangedEventArgs e) {
+		if (e.NewSize.Width <= 0) {
+			return;
+		}
+		UpdateColumnVisibility(e.NewSize.Width);
+	}
+	private void UpdateColumnVisibility(double width) {
+		ColTags.IsVisible = width < 1600 ? false : true;
+		ColDate.IsVisible = width < 1400 ? false : true;
+		ColTimer.IsVisible = width < 1200 ? false : true;
+		ColRank.IsVisible = width < 1000 ? false : true;
+		ColSev.IsVisible = width < 800 ? false : true;
+	}
+	private void Add_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
+		if (DataContext is not TodoDisplayViewModelBase vm) {
+			return;
+		}
+		var point = e.GetCurrentPoint((Visual?)sender!);
+		
+		if (point.Properties.IsLeftButtonPressed && e.KeyModifiers.HasFlag(KeyModifiers.Control)) {
+			vm.ShowTodoItemEditorOnAdd = !vm.ShowTodoItemEditorOnAdd;
+			e.Handled = true;
+		}
+	}
+
+
+	private void Add_OnClick(object? sender, RoutedEventArgs e) {
+		if (DataContext is TodoDisplayViewModelBase vm) {
+			vm.NewTodoAddCommand.Execute(null);
+		}
 	}
 	private void Todos_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
 		foreach (TodoItem ih in e.RemovedItems.OfType<TodoItem>()) {
@@ -85,8 +140,8 @@ public partial class TodoDisplayView : UserControl {
 		TodoDisplayViewModelBase? vm = (TodoDisplayViewModelBase)DataContext;
 		vm.RefreshAll();
 	});
-	private void ListBox_DoubleTapped(object? sender, TappedEventArgs e) {
-		if (sender is ListBox lb && lb.SelectedItem is TodoItem todoItem) {
+	private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e) {
+		if (sender is DataGrid lb && lb.SelectedItem is TodoItem todoItem) {
 			if (DataContext is TodoDisplayViewModelBase vm) {
 				Log.Print($"Editing: {todoItem.Id}");
 				vm.EditItem(todoItem);
@@ -112,13 +167,17 @@ public partial class TodoDisplayView : UserControl {
 	}
 
 	private void Severity_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
-		if (DataContext is TodoDisplayViewModelBase vm && sender is TextBlock textBlock && textBlock.DataContext is TodoItem item) {
+		if (DataContext is TodoDisplayViewModelBase vm && sender is Border border && border.DataContext is TodoItem item) {
 			vm.ChangeSeverityCommand.Execute(item);
 		}
 	}
 	private void Severity_OnDoubleTapped(object? sender, TappedEventArgs e) {
-		if (DataContext is TodoDisplayViewModelBase vm && sender is TextBlock textBlock && textBlock.DataContext is TodoItem item) {
+		if (DataContext is TodoDisplayViewModelBase vm && sender is Border border && border.DataContext is TodoItem item) {
 			vm.ChangeSeverityCommand.Execute(item);
 		}
 	}
+
+	public event PropertyChangedEventHandler PropertyChanged;
+	protected void OnPropertyChanged([CallerMemberName] string name = null)
+		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
