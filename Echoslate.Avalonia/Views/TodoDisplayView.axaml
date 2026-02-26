@@ -182,6 +182,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Label Content="{Binding TagsSorted}" 
+                                           Foreground="{DynamicResource ForegroundBrush}"
                                            FontFamily="{StaticResource MonoFont}"
                                            />
                                 </DataTemplate>
@@ -201,6 +202,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Label Content="{Binding DateTimeStarted, StringFormat=yyyy-MM-dd}" 
+                                           Foreground="{DynamicResource ForegroundBrush}"
                                            FontFamily="{StaticResource MonoFont}"
                                            />
                                 </DataTemplate>
@@ -312,6 +314,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="10,0"
+                                               Foreground="{DynamicResource ForegroundBrush}"
                                                Text="{Binding Todo}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

@@ -7,7 +7,7 @@
   "fileVersion": {
     "precision": "build"
   },
-  "versionHeightOffset": -2,
+  "versionHeightOffset": -3,
   "versionHeightOffsetAppliesTo": "4.2.0",
   "pathFilters": [
     "src/",
