@@ -353,8 +353,28 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		}
 		Log.Warn("Selected item is null.");
 	}
-	public void MarkTodoAsComplete(TodoItem item) {
+	public async void MarkTodoAsComplete(TodoItem item) {
+		HistoryItem? result = await AddItemToHistory();
+		if (result == null) {
+			return;
+		}
 		item.IsComplete = true;
+		item.CurrentView = View.History;
+		result.AddCompletedTodo(item);
+
+		RefreshAllItems();
+		SortCompleteTodosToHistory();
+	}
+	public async void MarkMultiTodoAsComplete(List<TodoItem> items) {
+		HistoryItem? result = await AddItemToHistory();
+		if (result == null) {
+			return;
+		}
+		foreach (TodoItem item in items) {
+			item.IsComplete = true;
+			item.CurrentView = View.History;
+			result.AddCompletedTodo(item);
+		}
 		RefreshAllItems();
 		SortCompleteTodosToHistory();
 	}
@@ -363,30 +383,26 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		foreach (TodoItem item in completedItems) {
 			Log.Print($"{item} is complete.");
 			RemoveItemFromMasterList(item);
-			AddItemToHistory(item);
+			// AddItemToHistory(item);
 		}
 		RefreshAll();
 	}
-	public async void AddItemToHistory(TodoItem item) {
-		item.CurrentView = View.History;
+	public async Task<HistoryItem?> AddItemToHistory() {
 		CurrentHistoryItem = HistoryItems[0];
-
 		var uncommittedHistoryItems = HistoryItems.Where(h => !h.IsCommitted).ToList();
-
-		HistoryItem targetHistoryItem;
 
 		if (uncommittedHistoryItems.Count > 1) {
 			Task<ChooseDraftViewModel?> vmTask = AppServices.DialogService.ShowChooseDraftAsync(uncommittedHistoryItems, CurrentHistoryItem);
 			ChooseDraftViewModel vm = await vmTask;
 			if (vm == null) {
-				return;
+				return null;
 			}
+			return vm.ResultHistoryItem;
 
-			targetHistoryItem = vm.ResultHistoryItem;
-		} else {
-			targetHistoryItem = CurrentHistoryItem;
+			// item.CurrentView = View.History;
+			// vm.ResultHistoryItem.AddCompletedTodo(item);
 		}
-		targetHistoryItem.AddCompletedTodo(item);
+		return CurrentHistoryItem;
 	}
 	public async void EditItem(TodoItem item) {
 		Task<TodoItemEditorViewModel?> vmTask = AppServices.DialogService.ShowTodoItemEditorAsync(item, GetCurrentTagFilterWithoutHash(), AllTags);
@@ -602,11 +618,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 					item.AddTag(tag);
 				}
 			}
-			if (vm.IsCompleteChangeable) {
-				MarkTodoAsComplete(item);
-			}
 		}
-
+		if (vm.IsCompleteChangeable) {
+			MarkMultiTodoAsComplete(items);
+		}
 		CleanAllTodoHashRanks();
 		RefreshAll();
 	}
@@ -659,15 +674,15 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		RefreshAll();
 	});
 	public ICommand ContextMenuSetSeverityCommand => new RelayCommand<string>(i => {
-			foreach (TodoItem item in GetSelectedListBoxItems()) {
-				item.Severity = int.Parse(i);
-			}
+		foreach (TodoItem item in GetSelectedListBoxItems()) {
+			item.Severity = int.Parse(i);
+		}
 	});
 	public ICommand ContextMenuKanbanCommand => new RelayCommand<string>(i => {
-			foreach (TodoItem ih in GetSelectedListBoxHolders()) {
-				ih.Kanban = int.Parse(i);
-			}
-			RefreshAll();
+		foreach (TodoItem ih in GetSelectedListBoxHolders()) {
+			ih.Kanban = int.Parse(i);
+		}
+		RefreshAll();
 	});
 	public ICommand ContextMenuMoveToTopCommand => new RelayCommand(() => {
 		ReRankWithSubsetMoved(GetSelectedListBoxItems(), 0);
@@ -733,12 +748,12 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		if (ih != null) ih.IsTimerOn = !ih.IsTimerOn;
 		RefreshAll();
 	});
-
 	public ICommand SelectTagCommand => new RelayCommand<FilterButton>(button => { CurrentFilter = button.Filter is null or "All" ? "All" : button.Filter; });
 	public ICommand SelectSortCommand => new RelayCommand<string>(sort => { CurrentSort = sort; });
 	public ICommand CycleSeverityFilterCommand => new RelayCommand(() => { CurrentSeverityFilter++; });
 	public ICommand CycleNewTodoSeverityCommand => new RelayCommand(() => { NewTodoSeverity++; });
 	public ICommand EditFilterBarCommand => new RelayCommand(EditFilterBarRelayCommand);
+
 	public async void EditFilterBarRelayCommand() {
 		Task<EditTabsViewModel> vmTask = AppServices.DialogService.ShowEditTabsAsync(MasterFilterTags);
 		EditTabsViewModel? vm = await vmTask;
@@ -757,8 +772,8 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public ICommand NewTodoAddCommand => new RelayCommand(NewTodoAdd);
 	public abstract void NewTodoAdd();
-
 	public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
+
 	public void AddAndComplete() {
 		TodoItem item = new TodoItem() {
 			Todo = NewTodoText,
@@ -805,9 +820,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			Log.Debug($"{item}");
 		}
 	});
-
-
 	public event PropertyChangedEventHandler PropertyChanged;
+
 	protected void OnPropertyChanged([CallerMemberName] string name = null)
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
 }
