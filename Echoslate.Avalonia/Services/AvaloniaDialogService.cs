@@ -67,7 +67,7 @@ public class AvaloniaDialogService : IDialogService {
 		return ShowDialogAsync(view, title, _owner);
 	}
 	public async Task<bool> ShowDialogAsync(object view, string title, Window owner) {
-		var window = new Window {
+		Window window = new Window {
 			Content = view,
 			Title = title,
 			WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -77,7 +77,7 @@ public class AvaloniaDialogService : IDialogService {
 		};
 		window.Opened += async (s, e) => {
 			await Task.Delay(1); // tiny yield to let layout settle
-			var firstFocusable = window.GetLogicalDescendants()
+			InputElement? firstFocusable = window.GetLogicalDescendants()
 			   .OfType<InputElement>()
 			   .FirstOrDefault(el => el.Focusable && el.IsVisible && el.IsEnabled);
 
@@ -88,7 +88,7 @@ public class AvaloniaDialogService : IDialogService {
 		return dialogResult == true;
 	}
 	public async Task<T?> ShowDialogAsync<T>(object view, string title) {
-		var window = new Window {
+		Window window = new Window {
 			Content = view,
 			Title = title,
 			WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -108,7 +108,7 @@ public class AvaloniaDialogService : IDialogService {
 			Log.Error("Could not get a valid folder...");
 			return null;
 		}
-		
+
 		Log.Print($"Found directory at: {suggestedFolder.Path}");
 		FilePickerOpenOptions options = new FilePickerOpenOptions {
 			Title = "Open Echoslate Project",
@@ -133,7 +133,7 @@ public class AvaloniaDialogService : IDialogService {
 			}
 		};
 		Log.Print("Opening file picker...");
-		var filesTask = _topLevel.StorageProvider.OpenFilePickerAsync(options);
+		Task<IReadOnlyList<IStorageFile>> filesTask = _topLevel.StorageProvider.OpenFilePickerAsync(options);
 		IReadOnlyList<IStorageFile> files = await filesTask;
 		// IReadOnlyList<IStorageFile> files = _topLevel.StorageProvider.OpenFilePickerAsync(options).Result;
 
@@ -150,7 +150,7 @@ public class AvaloniaDialogService : IDialogService {
 			Log.Print($"Getting path at: {initialDirectory}");
 			return await _topLevel.StorageProvider.TryGetFolderFromPathAsync(initialDirectory);
 		} else {
-			var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			string folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			Log.Warn($"initialDirectory is empty. Getting default directory at: {folder.ToString()}");
 			if (_topLevel == null) {
 				Log.Error("_topLevel is null!");
@@ -160,8 +160,8 @@ public class AvaloniaDialogService : IDialogService {
 				Log.Error("StorageProvider is null!");
 				return null;
 			}
-			var resultTask = _topLevel.StorageProvider.TryGetFolderFromPathAsync(folder);
-			var folderResult = await resultTask;
+			Task<IStorageFolder?> resultTask = _topLevel.StorageProvider.TryGetFolderFromPathAsync(folder);
+			IStorageFolder? folderResult = await resultTask;
 			if (folderResult == null) {
 				Log.Error("TryGetFolderFromPathAsync returned null!");
 			} else {
@@ -178,7 +178,7 @@ public class AvaloniaDialogService : IDialogService {
 			Log.Error("Could not get a valid folder...");
 			return null;
 		}
-		
+
 		Log.Print($"Found directory at: {suggestedFolder.Path}");
 		FilePickerSaveOptions options = new FilePickerSaveOptions {
 			Title = "Save Echoslate Project",
@@ -196,12 +196,16 @@ public class AvaloniaDialogService : IDialogService {
 		Log.Print("Opening file picker...");
 		IStorageFile? file = await _topLevel.StorageProvider.SaveFilePickerAsync(options);
 
-		Log.Print($"Save file name: {file.Path?.LocalPath}");
-		return file.Path?.LocalPath;
+		if (file != null) {
+			Log.Print($"Save file name: {file.Path?.LocalPath}");
+			return file.Path?.LocalPath;
+		}
+		Log.Print("No file found.");
+		return null;
 	}
 
 	public string? ChooseFolder(string initialDirectory = "", string description = "Select Folder") {
-		var options = new FolderPickerOpenOptions {
+		FolderPickerOpenOptions options = new FolderPickerOpenOptions {
 			Title = "Select Folder"
 		};
 
@@ -213,9 +217,9 @@ public class AvaloniaDialogService : IDialogService {
 		return folder?.FirstOrDefault().Path?.LocalPath;
 	}
 	public DialogResult Show(string message, string title, DialogButton buttons, DialogIcon icon) {
-		var vm = new MessageWindowViewModel(message, title, buttons, icon);
-		var view = new MessageWindow(vm);
-		var window = new Window {
+		MessageWindowViewModel vm = new MessageWindowViewModel(message, title, buttons, icon);
+		MessageWindow view = new MessageWindow(vm);
+		Window window = new Window {
 			Content = view,
 			Title = title,
 			WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -227,6 +231,30 @@ public class AvaloniaDialogService : IDialogService {
 		};
 
 		window.Show();
+		return vm.Result;
+	}
+	public async Task<DialogResult?> ShowAsync(string message, string title, DialogButton buttons, DialogIcon icon, object? owner = null) {
+		Window? windowOwner = owner as Window;
+		MessageWindowViewModel vm = new MessageWindowViewModel(message, title, buttons, icon);
+		MessageWindow view = new MessageWindow(vm);
+		Window window = new Window {
+			Content = view,
+			Title = title,
+			WindowStartupLocation = WindowStartupLocation.CenterOwner,
+			SizeToContent = SizeToContent.WidthAndHeight,
+			ShowInTaskbar = false,
+			CanResize = false,
+			Focusable = true,
+			IsEnabled = true
+		};
+
+		if (windowOwner != null) {
+			Task task = window.ShowDialog(windowOwner);
+			await task;
+		} else {
+			window.Show();
+		}
+
 		return vm.Result;
 	}
 }

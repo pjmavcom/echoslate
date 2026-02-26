@@ -545,30 +545,43 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 	}
 	public async void CreateNewFile() {
-		Log.Print("Creating new Data");
-		Data = new AppData();
-
-		Log.Print("Loading current data...");
-		LoadCurrentData();
-
-		Log.Print("Clearing item changed flags...");
-		ClearChangedFlag();
-
+		bool isDataAlreadyLoaded = false;
+		if (Data != null) {
+			isDataAlreadyLoaded = true;
+		} else {
+			Data = new AppData();
+			LoadCurrentData();
+			ClearChangedFlag();
+		}
 		Log.Print("Choosing file to save as...");
 		string saveFile = await AppServices.DialogService.SaveFile(Data.FileName, Data.BasePath);
 
 		if (saveFile == null) {
-			Log.Warn("File not saved. Shutting down...");
-			AppServices.ApplicationService.Shutdown();
-			return;
+			if (isDataAlreadyLoaded == false) {
+				Log.Warn("File not saved. Shutting down...");
+				Window? owner = AppServices.ApplicationService.GetWindow() as Window;
+				await AppServices.DialogService.ShowAsync("No file created. Shutting down.", "Shutting down...", DialogButton.Ok, DialogIcon.Error, owner);
+				AppServices.ApplicationService.Shutdown();
+			} else {
+				Log.Warn("File save canceled. Resuming previous file...");
+			}
+		} else {
+			Log.Print("Creating new Data");
+			Data = new AppData();
+
+			Log.Print("Loading current data...");
+			LoadCurrentData();
+
+			Log.Print("Clearing item changed flags...");
+			ClearChangedFlag();
+
+			Log.Print("Setting current file path");
+			Data.CurrentFilePath = saveFile;
+
+			Log.Print($"Saving file: {saveFile}");
+			Save(saveFile);
+			SetupApplicationState();
 		}
-
-		Log.Print("Setting current file path");
-		Data.CurrentFilePath = saveFile;
-
-		Log.Print($"Saving file: {saveFile}");
-		Save(saveFile);
-		SetupApplicationState();
 	}
 	public async Task<bool> OpenFile() {
 		string basePath = Data == null ? "" : Data.BasePath;

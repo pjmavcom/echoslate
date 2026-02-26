@@ -37,15 +37,15 @@ public interface IDialogService {
 	Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags);
 	Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames);
 	Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null);
-	
+
 	Task<bool> ShowDialogAsync(object view, string title);
 	Task<T?> ShowDialogAsync<T>(object view, string title);
 
 	Task<string?> OpenFile(string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate");
 	Task<string?> SaveFile(string defaultName = "New Project.echoslate", string initialDirectory = "", string filter = "Echoslate files (*.echoslate)|*.echoslate");
 	string? ChooseFolder(string initialDirectory = "", string description = "Select Folder");
-	
+
 	DialogResult Show(string message, string title, DialogButton dialogButton, DialogIcon dialogIcon);
-	
-	
+	public Task<DialogResult?> ShowAsync(string message, string title, DialogButton dialogButton, DialogIcon dialogIcon, object? owner);
+
 }
