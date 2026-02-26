@@ -383,7 +383,6 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		foreach (TodoItem item in completedItems) {
 			Log.Print($"{item} is complete.");
 			RemoveItemFromMasterList(item);
-			// AddItemToHistory(item);
 		}
 		RefreshAll();
 	}
@@ -398,9 +397,6 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				return null;
 			}
 			return vm.ResultHistoryItem;
-
-			// item.CurrentView = View.History;
-			// vm.ResultHistoryItem.AddCompletedTodo(item);
 		}
 		return CurrentHistoryItem;
 	}

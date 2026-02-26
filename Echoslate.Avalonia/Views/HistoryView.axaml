@@ -170,7 +170,7 @@
                     Classes="vertical-commit-button"
                     Command="{Binding CommitCommand}"
                     Content="Commit"
-                    IsEnabled="{Binding IsCommitted, Converter={StaticResource InvertBoolConverter}}" />
+                    IsEnabled="{Binding CanBeCommitted}"/>
 
             <!-- Editables -->
             <Grid Grid.Row="1"
@@ -329,8 +329,7 @@
                     Padding="10,5"
                     Classes="vertical"
                     Command="{Binding CopyCommitMessageCommand}"
-                    Content="Copy"
-                    Foreground="{DynamicResource ForegroundBrush}" />
+                    Content="Copy" />
             <TextBox Grid.Row="1"
                      Grid.Column="1"
                      Height="200"

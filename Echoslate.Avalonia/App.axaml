@@ -14,7 +14,7 @@
             avares://Echoslate.Core/Assets/Fonts/#Inter, sans-serif
         </FontFamily>
         <FontFamily x:Key="MonoFont" >
-                avares://Echoslate.Core/Assets/Fonts/#JetBrains Mono
+            avares://Echoslate.Core/Assets/Fonts/#JetBrains Mono
         </FontFamily>
 
         <StaticResource x:Key="MenuFlyoutItemBackgroundPointerOver"
@@ -31,15 +31,16 @@
 
         <!-- Global -->
         <Style Selector="Window" >
-                <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+            <Setter Property="FontFamily"
+                    Value="{StaticResource AppFont}" />
             <Setter Property="Background"
-                        Value="{DynamicResource AppBackgroundBrush}" />
+                    Value="{DynamicResource AppBackgroundBrush}" />
         </Style>
         <Style Selector="UserControl" >
-                <Setter Property="FontFamily"
-                        Value="{StaticResource AppFont}" />
+            <Setter Property="FontFamily"
+                    Value="{StaticResource AppFont}" />
             <Setter Property="Background"
-                        Value="{DynamicResource ControlBackgroundBrush}" />
+                    Value="{DynamicResource ControlBackgroundBrush}" />
         </Style>
         <Style Selector="Grid" >
             <Setter Property="Background"
@@ -49,10 +50,10 @@
 
         <!--  TextBox / TextBlock / Label style  -->
         <Style Selector="TextBox" >
-                <Setter Property="FontFamily"
-                        Value="{StaticResource AppFont}" />
+            <Setter Property="FontFamily"
+                    Value="{StaticResource AppFont}" />
             <Setter Property="CornerRadius"
-                        Value="7" />
+                    Value="7" />
             <Setter Property="Background"
                     Value="{DynamicResource EditorBackgroundBrush}" />
             <Setter Property="Foreground"
@@ -154,15 +155,34 @@
                             <LayoutTransformControl.LayoutTransform>
                                 <RotateTransform Angle="-90" />
                             </LayoutTransformControl.LayoutTransform>
-                            <ContentPresenter Name="PART_ContentPresenter"
-                                              HorizontalAlignment="Center"
+                            <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              Background="{TemplateBinding Background}"
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </LayoutTransformControl>
                     </Border>
                 </ControlTemplate>
             </Setter>
+            <Style Selector="^:pointerover" >
+                <Setter Property="Background"
+                        Value="{DynamicResource ButtonHoverBackgroundBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource BorderBrush}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource ForegroundBrush}" />
+            </Style>
+            <Style Selector="^:pressed" >
+                <Setter Property="Background"
+                        Value="{DynamicResource ButtonPressedBackgroundBrush}" />
+            </Style>
+            <Style Selector="^.IsEnabled" >
+                <Setter Property="Background"
+                        Value="{DynamicResource AppBackgroundBrush}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource ButtonDisabledBackgroundBrush}" />
+            </Style>
         </Style>
 
         <!--  Vertical Commit Button  -->

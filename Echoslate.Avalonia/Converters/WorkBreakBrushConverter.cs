@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using Avalonia.Media;
 using Echoslate.Core.Services;
 using Echoslate.Core.Theming;
 using Echoslate.Core.ViewModels;

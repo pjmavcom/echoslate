@@ -10,7 +10,6 @@ public class BoolToVisibilityConverter : IValueConverter {
 			return false;
 		}
 
-		// Assuming the most common case is Visible when true
 		bool result = boolValue;
 
 		if (parameter is string s &&

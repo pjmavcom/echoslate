@@ -46,7 +46,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			UpdateCategorizedLists();
 		}
 	}
-	
+
 	public int VersionMajor {
 		get => CurrentHistoryItem.VersionMajor;
 		set => CurrentHistoryItem.VersionMajor = value;
@@ -83,6 +83,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 				OnPropertyChanged(nameof(Title));
 				OnPropertyChanged(nameof(Notes));
 				OnPropertyChanged(nameof(IsCommitted));
+				OnPropertyChanged(nameof(CanBeCommitted));
 				OnPropertyChanged(nameof(CommitDate));
 				_selectedHistoryItem.GenerateCommitMessage();
 				OnPropertyChanged(nameof(CommitMessage));
@@ -119,6 +120,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			}
 		}
 	}
+	public bool CanBeCommitted => (SelectedHistoryItem.CompletedTodoItems.Count > 0 && !SelectedHistoryItem.IsCommitted);
 	public bool IsCommitted => SelectedHistoryItem.IsCommitted;
 	public DateTime CommitDate => SelectedHistoryItem.CommitDate;
 	public string CommitMessage => SelectedHistoryItem.FullCommitMessage;
@@ -407,6 +409,16 @@ public class HistoryViewModel : INotifyPropertyChanged {
 
 	public ICommand CommitCommand => new RelayCommand(CommitCurrent);
 	public void CommitCurrent() {
+		if (SelectedHistoryItem != _allHistoryItems[0] && !SelectedHistoryItem.IsCommitted) {
+			SelectedHistoryItem.IsCommitted = true;
+			SelectedHistoryItem.CommitDate = DateTime.Now;
+			SelectedHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
+			SelectedHistoryItem.GenerateCommitMessage();
+			OnPropertyChanged(nameof(CanBeCommitted));
+			CopyCommitMessage();
+			return;
+		}
+			
 		if (!string.IsNullOrWhiteSpace(CustomScope)) {
 			var newScope = CustomScope.Replace(" ", "-");
 			if (!CommitScopes.Contains(newScope)) {
@@ -416,6 +428,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			CustomScope = string.Empty;
 			CommitScope = newScope;
 		}
+		CurrentHistoryItem = _allHistoryItems[0];
 		CurrentHistoryItem.Type = CommitType;
 		CurrentHistoryItem.IsCommitted = true;
 		CurrentHistoryItem.CommitDate = DateTime.Now;
@@ -492,8 +505,12 @@ public class HistoryViewModel : INotifyPropertyChanged {
 				continue;
 			}
 			hItem.IsCommitted = false;
+			hItem.CommitDate = DateTime.MinValue;
+			hItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
+			
 			Log.Print($"Undoing commit for: {item.Title}");
 			OnPropertyChanged(nameof(IsCommitted));
+			OnPropertyChanged(nameof(CanBeCommitted));
 		}
 	}
 	public ICommand RecommitCommand => new RelayCommand<HistoryItem?>(Recommit);
