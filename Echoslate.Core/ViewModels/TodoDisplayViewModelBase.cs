@@ -80,13 +80,12 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 
 	public ObservableCollection<string> AllTags { get; set; }
 	public ObservableCollection<string> CurrentVisibleTags { get; set; }
-	public IEnumerable<string> CurrentVisibleTagsView {
+	public ObservableCollection<string> CurrentVisibleTagsView {
 		get {
 			if (CurrentVisibleTags == null) {
 				return null;
 			}
-			var items = CurrentVisibleTags.OrderBy(t => t, StringComparer.OrdinalIgnoreCase);
-			return items;
+			return new ObservableCollection<string>(CurrentVisibleTags.OrderBy(t => t, StringComparer.OrdinalIgnoreCase));
 		}
 	}
 
@@ -239,6 +238,22 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 	public void GetCurrentHashTags() {
 		string currentSortTag = PrioritySortTag;
+
+		HashSet<string> currentTags = [];
+		foreach (TodoItem ih in DisplayedItems) {
+			foreach (string tag in ih.Tags) {
+				if (currentTags.Contains(tag)) {
+					continue;
+				}
+				currentTags.Add(tag);
+			}
+		}
+		currentTags.Add("-None-");
+		HashSet<string> currentVisibleTags = new HashSet<string>(CurrentVisibleTags);
+		if (currentTags.SetEquals(currentVisibleTags)) {
+			return;
+		}
+
 		CurrentVisibleTags.Clear();
 		if (DisplayedItems == null || MasterList == null) {
 			return;
@@ -272,7 +287,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public void RefreshDisplayedItems(bool forceRefresh = false) {
 		RefreshAllItems();
 		FixRanks();
-		ApplySort(forceRefresh);
+		if (PrioritySortTag == null || PrioritySortTag == "-None-") {
+			ApplySort(forceRefresh);
+		} else {
+			ApplyPriorityTagSorting();
+		}
 	}
 	public void RefreshAll() {
 		RefreshFilter();
