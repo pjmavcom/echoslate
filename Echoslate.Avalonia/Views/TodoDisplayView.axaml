@@ -158,6 +158,7 @@
                           behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedTodoItems}"
                           DoubleTapped="DataGrid_DoubleTapped"
                           ItemsSource="{Binding DisplayedItems}"
+                          Background="{DynamicResource ControlBackgroundBrush}"
                           KeyboardNavigation.TabIndex="0"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                           SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}" >
