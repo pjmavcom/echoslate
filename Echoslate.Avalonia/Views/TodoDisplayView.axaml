@@ -320,6 +320,7 @@
                                 <DataTemplate>
                                     <TextBlock Margin="10,0"
                                                Foreground="{DynamicResource ForegroundBrush}"
+                                               ToolTip.Tip="{Binding NotesProblemsSolutions}"
                                                Text="{Binding Todo}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

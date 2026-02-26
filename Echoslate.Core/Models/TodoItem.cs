@@ -229,9 +229,12 @@ public class TodoItem : INotifyPropertyChanged {
 	}
 	[JsonIgnore]
 	public string NotesAndTags =>
+		NotesProblemsSolutions + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
+	[JsonIgnore]
+	public string NotesProblemsSolutions =>
 		"Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
-		Environment.NewLine + AddNewLines(Solution) + Environment.NewLine + "Tags:" + Environment.NewLine + TagsList;
-
+		Environment.NewLine + AddNewLines(Solution);
+	
 	[JsonIgnore]
 	private string TagsList {
 		get {
