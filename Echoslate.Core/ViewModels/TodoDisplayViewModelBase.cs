@@ -24,6 +24,35 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		}
 	}
 
+	public bool IsNotesPanelVisible => _isNotesPanelVisibleManual && IsNotesPanelVisibleBySize;
+	public string NotesPanelToggleText => IsNotesPanelVisible ? ">" : "<";
+	private bool _isNotesPanelVisibleBySize;
+	public bool IsNotesPanelVisibleBySize {
+		get => _isNotesPanelVisibleBySize;
+		set {
+			if (_isNotesPanelVisibleBySize == value) {
+				return;
+			}
+			_isNotesPanelVisibleBySize = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(IsNotesPanelVisible));
+			OnPropertyChanged(nameof(NotesPanelToggleText));
+		}
+	}
+	private bool _isNotesPanelVisibleManual = true;
+	public bool IsNotesPanelVisibleManual {
+		get => _isNotesPanelVisibleManual;
+		set {
+			if (_isNotesPanelVisibleManual == value) {
+				return;
+			}
+			_isNotesPanelVisibleManual = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(IsNotesPanelVisible));
+			OnPropertyChanged(nameof(NotesPanelToggleText));
+		}
+	}
+
 	private bool _showTodoItemEditorOnAdd;
 	public bool ShowTodoItemEditorOnAdd {
 		get => _showTodoItemEditorOnAdd;
@@ -234,6 +263,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			LookForNewTags(item);
 		}
 		OnPropertyChanged(nameof(CurrentVisibleTags));
+		OnPropertyChanged(nameof(CurrentVisibleTagsView));
 		if (!string.IsNullOrWhiteSpace(currentSortTag)) {
 			PrioritySortTag = currentSortTag;
 		}
@@ -771,13 +801,14 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public ICommand AddAndCompleteCommand => new RelayCommand(AddAndComplete);
 
 	public void AddAndComplete() {
+		View currentView = GetView();
 		TodoItem item = new TodoItem() {
 			Todo = NewTodoText,
 			Severity = NewTodoSeverity
 		};
 		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
-		if (CurrentFilter != "All") {
+		if (currentView == View.TodoList && CurrentFilter != "All") {
 			item.AddTag(CurrentFilter);
 		}
 		AddItemToMasterList(item);
@@ -785,6 +816,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		RefreshAll();
 		NewTodoText = "";
 	}
+	public abstract View GetView();
 	public ICommand RefreshAllCommand => new RelayCommand(RefreshAll);
 	public ICommand ChangeSeverityHotkeyCommand => new RelayCommand<string>(s => {
 		switch (s) {
@@ -816,6 +848,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			Log.Debug($"{item}");
 		}
 	});
+	public ICommand ToggleNotesPanelCommand => new RelayCommand(ToggleNotesPanel);
+	public void ToggleNotesPanel() {
+		IsNotesPanelVisibleManual = !IsNotesPanelVisibleManual;
+	}
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string name = null)

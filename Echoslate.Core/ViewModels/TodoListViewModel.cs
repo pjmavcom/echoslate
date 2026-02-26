@@ -5,6 +5,9 @@ using Echoslate.Core.Models;
 namespace Echoslate.Core.ViewModels;
 
 public class TodoListViewModel : TodoDisplayViewModelBase {
+	public override View GetView() {
+		return View.Kanban;
+	}
 	protected override void RefreshFilter() {
 		FilterList.Clear();
 

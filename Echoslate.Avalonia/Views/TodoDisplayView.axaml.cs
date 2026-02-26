@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -27,6 +25,14 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	private DataGridColumn? ColRank;
 	private DataGridColumn? ColTimer;
 
+	private ItemNotesPanelView? _notesPanel;
+	private Button? _notesPanelToggleButton;
+	private const double MinNotesPanelSize = 200;
+	private const double MaxNotesPanelSize = 600;
+	private const double PanelShrinkThreshold1 = 1200;
+	private const double PanelShrinkThreshold2 = 800;
+
+	private double _currentWidth;
 
 	public TodoDisplayView() {
 		InitializeComponent();
@@ -46,6 +52,9 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 		ColRank = todoListDataGrid.Columns[3];
 		ColTimer = todoListDataGrid.Columns[4];
 
+		_notesPanel = this.FindControl<ItemNotesPanelView>("NotesPanel");
+		_notesPanelToggleButton = this.FindControl<Button>("NotesPanelToggleButton");
+
 		SizeChanged += OnSizeChanged;
 
 		var addButton = this.FindControl<Button>("AddButton");
@@ -58,21 +67,45 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 		if (e.NewSize.Width <= 0) {
 			return;
 		}
+		Log.Print($"size: {e.NewSize.Width}");
 		UpdateColumnVisibility(e.NewSize.Width);
 	}
 	private void UpdateColumnVisibility(double width) {
-		ColTags.IsVisible = width < 1600 ? false : true;
-		ColDate.IsVisible = width < 1400 ? false : true;
-		ColTimer.IsVisible = width < 1200 ? false : true;
-		ColRank.IsVisible = width < 1000 ? false : true;
-		ColSev.IsVisible = width < 800 ? false : true;
+		_currentWidth = width;
+		double notesPanel = _notesPanel.IsVisible ? 0 : MinNotesPanelSize;
+		ColTags.IsVisible = width < (1800 - notesPanel) ? false : true;
+		ColDate.IsVisible = width < 1600 - notesPanel ? false : true;
+		ColTimer.IsVisible = width < 1400 - notesPanel ? false : true;
+		ColSev.IsVisible = width < 1200 - notesPanel ? false : true;
+		ColRank.IsVisible = width < 600 - notesPanel ? false : true;
+
+		if (width > PanelShrinkThreshold1) {
+			_notesPanel.Width = MaxNotesPanelSize;
+		} else if (width > PanelShrinkThreshold2) {
+			_notesPanel.Width = MaxNotesPanelSize - (PanelShrinkThreshold1 - width);
+		}
+		if (DataContext is TodoDisplayViewModelBase vm) {
+			if (width < PanelShrinkThreshold2) {
+				vm.IsNotesPanelVisibleBySize = false;
+				_notesPanelToggleButton.IsVisible = false;
+			} else {
+				vm.IsNotesPanelVisibleBySize = true;
+				_notesPanelToggleButton.IsVisible = true;
+			}
+		}
+	}
+	public void ToggleNotesPanel(object? sender, RoutedEventArgs e) {
+		if (DataContext is TodoDisplayViewModelBase vm) {
+			vm.ToggleNotesPanelCommand.Execute(null);
+		}
+		UpdateColumnVisibility(_currentWidth);
 	}
 	private void Add_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
 		if (DataContext is not TodoDisplayViewModelBase vm) {
 			return;
 		}
 		var point = e.GetCurrentPoint((Visual?)sender!);
-		
+
 		if (point.Properties.IsLeftButtonPressed && e.KeyModifiers.HasFlag(KeyModifiers.Control)) {
 			vm.ShowTodoItemEditorOnAdd = !vm.ShowTodoItemEditorOnAdd;
 			e.Handled = true;

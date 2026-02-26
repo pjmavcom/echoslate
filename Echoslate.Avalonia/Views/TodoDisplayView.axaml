@@ -77,8 +77,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <!--  Filter button bar  -->
@@ -87,6 +87,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
                     Background="{Binding CurrentSeverityBrush}"
@@ -119,12 +120,18 @@
                     </ContextMenu>
                 </ItemsControl.ContextMenu>
             </ItemsControl>
+            <Button Grid.Column="2"
+                    x:Name="NotesPanelToggleButton"
+                    Content="{Binding NotesPanelToggleText}"
+                    Click="ToggleNotesPanel" />
         </Grid>
 
         <!--  Items NotesPanel  -->
-        <views:ItemNotesPanelView Grid.Row="0"
+        <views:ItemNotesPanelView x:Name="NotesPanel"
+                                  Grid.Row="0"
                                   Grid.RowSpan="4"
                                   Grid.Column="1"
+                                  IsVisible="{Binding IsNotesPanelVisible}"
                                   NotesPanelCompleteRequested="NotesPanelCompleteRequested"
                                   NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
                                   SelectedItem="{Binding SelectedTodoItem}" />
@@ -181,10 +188,9 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Label Content="{Binding TagsSorted}" 
+                                    <Label Content="{Binding TagsSorted}"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           FontFamily="{StaticResource MonoFont}"
-                                           />
+                                           FontFamily="{StaticResource MonoFont}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -201,10 +207,9 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Label Content="{Binding DateTimeStarted, StringFormat=yyyy-MM-dd}" 
+                                    <Label Content="{Binding DateTimeStarted, StringFormat=yyyy-MM-dd}"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           FontFamily="{StaticResource MonoFont}"
-                                           />
+                                           FontFamily="{StaticResource MonoFont}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

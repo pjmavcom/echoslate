@@ -12,6 +12,9 @@ public class KanbanViewModel : TodoDisplayViewModelBase {
 		ReverseSort = false;
 		RefreshAll();
 	}
+	public override View GetView() {
+		return View.Kanban;
+	}
 	protected override void RefreshFilter() {
 		FilterList.Clear();
 
