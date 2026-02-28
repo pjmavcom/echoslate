@@ -10,10 +10,9 @@
 
 ### Why Echoslate?
 - **Blazing fast**: <3-second startup, instant save/load — .NET 8 (no Electron)
-- ## Platforms & UI
-  - **Windows** (10/11): WPF + .NET 8 – single-file exe, optimal native performance
-  - **macOS / Linux**: Avalonia port (in progress / beta) – same codebase, consistent XAML-based UI
-  - Future: Full Avalonia migration for unified cross-platform builds
+- **Platforms & UI
+  - **Windows** (10/11): Avalonia + .NET 8 – single-file exe, optimal native performance
+  - **macOS / Linux**: Avalonia port – same codebase, consistent XAML-based UI
 - **Keyboard-driven**: Full hotkeys (Alt+H/L tabs, Alt+J/K severity, Ctrl+Enter complete, etc.)
 - **Dev-focused features**:
   - Severity colors + per-filter ranking
