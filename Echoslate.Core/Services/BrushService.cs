@@ -20,6 +20,7 @@ public class BrushService : IBrushService {
 	public object AccentBrushHover => CreateBrush(ColorRgba.AccentHover);
 	public object AccentBrushPressed => CreateBrush(ColorRgba.AccentPressed);
 	public object DarkAccentBrush => CreateBrush(ColorRgba.DarkAccent);
+	public object DarkFadedAccentBrush => CreateBrush(ColorRgba.DarkFadedAccent);
 	
 	public object BorderBrush => CreateBrush(ColorRgba.Border);
 	public object BorderSilverBrush => CreateBrush(ColorRgba.BorderSilver);
@@ -31,14 +32,23 @@ public class BrushService : IBrushService {
 	public object ButtonHoverBackgroundBrush => CreateBrush(ColorRgba.ButtonHoverBackground);
 	public object ButtonPressedBackgroundBrush => CreateBrush(ColorRgba.ButtonPressedBackground);
 	
+	public object TabActiveBackgroundBrush => CreateBrush(ColorRgba.TabActiveBackground);
+	public object TabInactiveBackgroundBrush => CreateBrush(ColorRgba.TabInactiveBackground);
+	
 	public object SeverityNoneBrush => CreateBrush(ColorRgba.SeverityNone);
 	public object SeverityHighBrush => CreateBrush(ColorRgba.SeverityHigh);
 	public object SeverityLowBrush => CreateBrush(ColorRgba.SeverityLow);
 	public object SeverityMedBrush => CreateBrush(ColorRgba.SeverityMed);
 	
 	public object AccentBlueBrush => CreateBrush(ColorRgba.AccentBlue);
+	public object LightSuccessGreenBrush => CreateBrush(ColorRgba.LightSuccessGreen);
 	public object SuccessGreenBrush => CreateBrush(ColorRgba.SuccessGreen);
+	public object DarkSuccessGreenBrush => CreateBrush(ColorRgba.DarkSuccessGreen);
+	public object DisabledSuccessGreenBrush => CreateBrush(ColorRgba.DisabledSuccessGreen);
+	public object LightDangerRedBrush => CreateBrush(ColorRgba.LightDangerRed);
 	public object DangerRedBrush => CreateBrush(ColorRgba.DangerRed);
+	public object DarkDangerRedBrush => CreateBrush(ColorRgba.DarkDangerRed);
+	public object DarkerDangerRedBrush => CreateBrush(ColorRgba.DarkerDangerRed);
 	public object RefactorBlueBrush => CreateBrush(ColorRgba.RefactorBlue);
 	public object ChoreGrayBrush => CreateBrush(ColorRgba.ChoreGray);
 	public object DocsYellowBrush => CreateBrush(ColorRgba.DocsYellow);

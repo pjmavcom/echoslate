@@ -195,21 +195,11 @@
                     Margin="0,20,0,0"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal" >
-            <Button Width="140"
-                    Margin="0,0,15,0"
-                    FontSize="16"
-                    Background="{DynamicResource AccentBrush}"
-                    BorderBrush="{DynamicResource LightAccentBrush}"
+            <Button Classes="ok" 
                     Click="Ok_OnClick"
-                    Content="OK"
                     IsDefault="True" />
-            <Button Width="140"
-                    FontSize="16"
-                    Background="{DynamicResource DangerRedBrush}"
-                    BorderBrush="{DynamicResource DangerRedBrush}"
-                    Margin="0,0,15,0"
+            <Button Classes="cancel"
                     Click="Cancel_OnClick"
-                    Content="Cancel"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

@@ -25,6 +25,7 @@ public interface IBrushService {
 	object AccentBrushHover { get; }
 	object AccentBrushPressed { get; }
 	object DarkAccentBrush { get; }
+	object DarkFadedAccentBrush { get; }
 	
 	object BorderBrush { get; }
 	object BorderSilverBrush { get; }
@@ -36,14 +37,23 @@ public interface IBrushService {
 	object ButtonHoverBackgroundBrush { get; }
 	object ButtonPressedBackgroundBrush { get; }
 	
+	object TabActiveBackgroundBrush { get; }
+	object TabInactiveBackgroundBrush { get; }
+	
 	object SeverityNoneBrush { get; }
 	object SeverityHighBrush { get; }
 	object SeverityLowBrush { get; }
 	object SeverityMedBrush { get; }
 	
 	object AccentBlueBrush { get; }
+	object LightSuccessGreenBrush { get; }
 	object SuccessGreenBrush { get; }
+	object DarkSuccessGreenBrush { get; }
+	object DisabledSuccessGreenBrush { get; }
+	object LightDangerRedBrush { get; }
 	object DangerRedBrush { get; }
+	object DarkDangerRedBrush { get; }
+	object DarkerDangerRedBrush { get; }
 	object RefactorBlueBrush { get; }
 	object ChoreGrayBrush { get; }
 	object DocsYellowBrush { get; }

@@ -170,7 +170,7 @@
                     Classes="vertical-commit-button"
                     Command="{Binding CommitCommand}"
                     Content="Commit"
-                    IsEnabled="{Binding CanBeCommitted}"/>
+                    IsEnabled="{Binding CanBeCommitted}" />
 
             <!-- Editables -->
             <Grid Grid.Row="1"
@@ -327,6 +327,7 @@
             <Button Grid.Row="1"
                     Grid.Column="0"
                     Padding="10,5"
+                    Margin="0,0,8,0"
                     Classes="vertical"
                     Command="{Binding CopyCommitMessageCommand}"
                     Content="Copy" />
@@ -483,284 +484,288 @@
               Grid.Column="1"
               Margin="7"
               Background="{DynamicResource AppDarkBackgroundBrush}" >
-            <Grid x:Name="TodosHost"
-                  Margin="20" >
-                <!--  Horizontal Layout  -->
-                <Grid IsVisible="{Binding Bounds, ElementName=TodosHost, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
-                        <ColumnDefinition Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
-                        <ColumnDefinition Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0"
-                                Margin="10,0,0,0" >
-                        <TextBlock Margin="0,0,0,8"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}" />
-                        <Border Margin="7"
-                                Background="{DynamicResource ControlBackgroundBrush}"
-                                CornerRadius="7" >
-                            <ListBox HorizontalAlignment="Stretch"
-                                     Background="{DynamicResource TransparentBrush}"
-                                     BorderBrush="{DynamicResource TransparentBrush}"
-                                     ItemsSource="{Binding BugsCompleted}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4"
-                                                Padding="8,6"
-                                                Background="{DynamicResource RaisedBackgroundBrush}"
-                                                BorderBrush="{DynamicResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4" >
-                                            <Border.ContextMenu>
-                                                <ContextMenu x:CompileBindings="False" >
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Edit Todo" />
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Reactivate" />
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
+            <ScrollViewer Margin="20"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" >
+                <Grid x:Name="TodosHost"
+                      Margin="20" >
+                    <!--  Horizontal Layout  -->
+                    <Grid IsVisible="{Binding Bounds, ElementName=TodosHost, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.TrueString}}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                            <ColumnDefinition Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                            <ColumnDefinition Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=/3 -10}" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0"
+                                    Margin="10,0,0,0" >
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}" />
+                            <Border Margin="7"
+                                    Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7" >
+                                <ListBox HorizontalAlignment="Stretch"
+                                         Background="{DynamicResource TransparentBrush}"
+                                         BorderBrush="{DynamicResource TransparentBrush}"
+                                         ItemsSource="{Binding BugsCompleted}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                    Margin="4"
+                                                    Padding="8,6"
+                                                    Background="{DynamicResource RaisedBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" >
+                                                <Border.ContextMenu>
+                                                    <ContextMenu x:CompileBindings="False" >
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Edit Todo" />
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Reactivate" />
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
 
-                                            <TextBlock Margin="8,6"
-                                                       FontSize="14"
-                                                       Foreground="{DynamicResource ForegroundBrush}"
-                                                       Text="{Binding Todo}"
-                                                       TextWrapping="Wrap" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Border>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1"
-                                Margin="10,0,0,0" >
-                        <TextBlock Margin="0,0,0,8"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}" />
-                        <Border Margin="7"
-                                Background="{DynamicResource ControlBackgroundBrush}"
-                                CornerRadius="7" >
-                            <ListBox HorizontalAlignment="Stretch"
-                                     Background="{DynamicResource TransparentBrush}"
-                                     BorderBrush="{DynamicResource TransparentBrush}"
-                                     ItemsSource="{Binding FeaturesCompleted}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4"
-                                                Padding="8,6"
-                                                Background="{DynamicResource RaisedBackgroundBrush}"
-                                                BorderBrush="{DynamicResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4" >
-                                            <Border.ContextMenu>
-                                                <ContextMenu x:CompileBindings="False" >
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Edit Todo" />
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Reactivate" />
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-                                            <TextBlock Margin="8,6"
-                                                       FontSize="14"
-                                                       Foreground="{DynamicResource ForegroundBrush}"
-                                                       Text="{Binding Todo}"
-                                                       TextWrapping="Wrap" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Border>
-                    </StackPanel>
-                    <StackPanel Grid.Column="2" >
-                        <TextBlock Margin="0,0,0,8"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}" />
-                        <Border Margin="7"
-                                Background="{DynamicResource ControlBackgroundBrush}"
-                                CornerRadius="7" >
-                            <ListBox HorizontalAlignment="Stretch"
-                                     Background="{DynamicResource TransparentBrush}"
-                                     BorderBrush="{DynamicResource TransparentBrush}"
-                                     ItemsSource="{Binding OtherCompleted}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4"
-                                                Padding="8,6"
-                                                Background="{DynamicResource RaisedBackgroundBrush}"
-                                                BorderBrush="{DynamicResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4" >
-                                            <Border.ContextMenu>
-                                                <ContextMenu x:CompileBindings="False" >
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Edit Todo" />
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Reactivate" />
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-                                            <TextBlock Margin="8,6"
-                                                       Foreground="{DynamicResource ForegroundBrush}"
-                                                       Text="{Binding Todo}"
-                                                       TextWrapping="Wrap" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Border>
+                                                <TextBlock Margin="8,6"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource ForegroundBrush}"
+                                                           Text="{Binding Todo}"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1"
+                                    Margin="10,0,0,0" >
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}" />
+                            <Border Margin="7"
+                                    Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7" >
+                                <ListBox HorizontalAlignment="Stretch"
+                                         Background="{DynamicResource TransparentBrush}"
+                                         BorderBrush="{DynamicResource TransparentBrush}"
+                                         ItemsSource="{Binding FeaturesCompleted}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                    Margin="4"
+                                                    Padding="8,6"
+                                                    Background="{DynamicResource RaisedBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" >
+                                                <Border.ContextMenu>
+                                                    <ContextMenu x:CompileBindings="False" >
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Edit Todo" />
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Reactivate" />
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <TextBlock Margin="8,6"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource ForegroundBrush}"
+                                                           Text="{Binding Todo}"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" >
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}" />
+                            <Border Margin="7"
+                                    Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7" >
+                                <ListBox HorizontalAlignment="Stretch"
+                                         Background="{DynamicResource TransparentBrush}"
+                                         BorderBrush="{DynamicResource TransparentBrush}"
+                                         ItemsSource="{Binding OtherCompleted}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                    Margin="4"
+                                                    Padding="8,6"
+                                                    Background="{DynamicResource RaisedBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" >
+                                                <Border.ContextMenu>
+                                                    <ContextMenu x:CompileBindings="False" >
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Edit Todo" />
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Reactivate" />
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <TextBlock Margin="8,6"
+                                                           Foreground="{DynamicResource ForegroundBrush}"
+                                                           Text="{Binding Todo}"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <!--  Vertical Layout  -->
+                    <StackPanel IsVisible="{Binding Bounds, ElementName=TodosHost, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.FalseString}}" >
+                        <StackPanel Margin="10,0,0,0" >
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}" />
+                            <Border Margin="7"
+                                    Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7" >
+                                <ListBox Margin="0,0,0,10"
+                                         HorizontalAlignment="Stretch"
+                                         Background="{DynamicResource TransparentBrush}"
+                                         BorderBrush="{DynamicResource TransparentBrush}"
+                                         ItemsSource="{Binding BugsCompleted}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                    Margin="4,4,8,4"
+                                                    Padding="8,6"
+                                                    Background="{DynamicResource RaisedBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" >
+                                                <Border.ContextMenu>
+                                                    <ContextMenu x:CompileBindings="False" >
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Edit Todo" />
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Reactivate" />
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <TextBlock Margin="8,6"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource ForegroundBrush}"
+                                                           Text="{Binding Todo}"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0" >
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}" />
+                            <Border Margin="7"
+                                    Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7" >
+                                <ListBox Margin="0,0,0,10"
+                                         HorizontalAlignment="Stretch"
+                                         Background="{DynamicResource TransparentBrush}"
+                                         BorderBrush="{DynamicResource TransparentBrush}"
+                                         ItemsSource="{Binding FeaturesCompleted}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                    Margin="4,4,8,4"
+                                                    Padding="8,6"
+                                                    Background="{DynamicResource RaisedBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" >
+                                                <Border.ContextMenu>
+                                                    <ContextMenu x:CompileBindings="False" >
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Edit Todo" />
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Reactivate" />
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <TextBlock Margin="8,6"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource ForegroundBrush}"
+                                                           Text="{Binding Todo}"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0" >
+                            <TextBlock Margin="0,0,0,8"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}" />
+                            <Border Margin="7"
+                                    Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7" >
+                                <ListBox Margin="0,0,0,10"
+                                         HorizontalAlignment="Stretch"
+                                         Background="{DynamicResource TransparentBrush}"
+                                         BorderBrush="{DynamicResource TransparentBrush}"
+                                         ItemsSource="{Binding OtherCompleted}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
+                                                    Margin="4,4,8,4"
+                                                    Padding="8,6"
+                                                    Background="{DynamicResource RaisedBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4" >
+                                                <Border.ContextMenu>
+                                                    <ContextMenu x:CompileBindings="False" >
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Edit Todo" />
+                                                        <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
+                                                                  CommandParameter="{Binding}"
+                                                                  Header="Reactivate" />
+                                                    </ContextMenu>
+                                                </Border.ContextMenu>
+                                                <TextBlock Margin="8,6"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource ForegroundBrush}"
+                                                           Text="{Binding Todo}"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
-
-                <!--  Vertical Layout  -->
-                <StackPanel IsVisible="{Binding Bounds, ElementName=TodosHost, Converter={StaticResource WideConverter}, ConverterParameter={x:Static sys:Boolean.FalseString}}" >
-                    <StackPanel Margin="10,0,0,0" >
-                        <TextBlock Margin="0,0,0,8"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="{Binding BugsCount, StringFormat='Bugs Fixed ({0})'}" />
-                        <Border Margin="7"
-                                Background="{DynamicResource ControlBackgroundBrush}"
-                                CornerRadius="7" >
-                            <ListBox Margin="0,0,0,10"
-                                     HorizontalAlignment="Stretch"
-                                     Background="{DynamicResource TransparentBrush}"
-                                     BorderBrush="{DynamicResource TransparentBrush}"
-                                     ItemsSource="{Binding BugsCompleted}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4,4,8,4"
-                                                Padding="8,6"
-                                                Background="{DynamicResource RaisedBackgroundBrush}"
-                                                BorderBrush="{DynamicResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4" >
-                                            <Border.ContextMenu>
-                                                <ContextMenu x:CompileBindings="False" >
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Edit Todo" />
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Reactivate" />
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-                                            <TextBlock Margin="8,6"
-                                                       FontSize="14"
-                                                       Foreground="{DynamicResource ForegroundBrush}"
-                                                       Text="{Binding Todo}"
-                                                       TextWrapping="Wrap" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Border>
-                    </StackPanel>
-                    <StackPanel Margin="10,0,0,0" >
-                        <TextBlock Margin="0,0,0,8"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="{Binding FeaturesCount, StringFormat='Features Added ({0})'}" />
-                        <Border Margin="7"
-                                Background="{DynamicResource ControlBackgroundBrush}"
-                                CornerRadius="7" >
-                            <ListBox Margin="0,0,0,10"
-                                     HorizontalAlignment="Stretch"
-                                     Background="{DynamicResource TransparentBrush}"
-                                     BorderBrush="{DynamicResource TransparentBrush}"
-                                     ItemsSource="{Binding FeaturesCompleted}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4,4,8,4"
-                                                Padding="8,6"
-                                                Background="{DynamicResource RaisedBackgroundBrush}"
-                                                BorderBrush="{DynamicResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4" >
-                                            <Border.ContextMenu>
-                                                <ContextMenu x:CompileBindings="False" >
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Edit Todo" />
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Reactivate" />
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-                                            <TextBlock Margin="8,6"
-                                                       FontSize="14"
-                                                       Foreground="{DynamicResource ForegroundBrush}"
-                                                       Text="{Binding Todo}"
-                                                       TextWrapping="Wrap" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Border>
-                    </StackPanel>
-                    <StackPanel Margin="10,0,0,0" >
-                        <TextBlock Margin="0,0,0,8"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="{Binding OtherCount, StringFormat='Other Changes ({0})'}" />
-                        <Border Margin="7"
-                                Background="{DynamicResource ControlBackgroundBrush}"
-                                CornerRadius="7" >
-                            <ListBox Margin="0,0,0,10"
-                                     HorizontalAlignment="Stretch"
-                                     Background="{DynamicResource TransparentBrush}"
-                                     BorderBrush="{DynamicResource TransparentBrush}"
-                                     ItemsSource="{Binding OtherCompleted}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Math}, ConverterParameter=-30}"
-                                                Margin="4,4,8,4"
-                                                Padding="8,6"
-                                                Background="{DynamicResource RaisedBackgroundBrush}"
-                                                BorderBrush="{DynamicResource BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4" >
-                                            <Border.ContextMenu>
-                                                <ContextMenu x:CompileBindings="False" >
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.EditTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Edit Todo" />
-                                                    <MenuItem Command="{Binding $parent[ListBox].DataContext.ReactivateTodoCommand}"
-                                                              CommandParameter="{Binding}"
-                                                              Header="Reactivate" />
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-                                            <TextBlock Margin="8,6"
-                                                       FontSize="14"
-                                                       Foreground="{DynamicResource ForegroundBrush}"
-                                                       Text="{Binding Todo}"
-                                                       TextWrapping="Wrap" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Border>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

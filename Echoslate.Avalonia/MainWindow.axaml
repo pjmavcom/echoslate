@@ -144,16 +144,19 @@
                         Orientation="Horizontal" >
                 <Grid x:Name="PomoProgressBarGrid"
                       HorizontalAlignment="Stretch" >
-                    <ProgressBar Height="30"
+                    <ProgressBar 
                                  x:Name="PomoProgressBar"
-                                 Margin="10,5"
+                                 Margin="0"
+                                 Padding="0"
                                  HorizontalAlignment="Stretch"
-                                 Background="{DynamicResource AppDarkBackgroundBrush}"
+                                 VerticalAlignment="Stretch"
+                                 Background="{DynamicResource ChoreGrayBrush}"
                                  BorderBrush="{DynamicResource BorderBrush}"
                                  BorderThickness="2"
                                  Foreground="{Binding PomoState, Converter={StaticResource WorkBreakBrushConverter}}"
                                  Maximum="100"
                                  Minimum="0"
+                                 FlowDirection="RightToLeft"
                                  Value="{Binding PomoProgressBarValue}" >
                         <ProgressBar.Styles>
                             <Style Selector="ProgressBar" >
@@ -161,12 +164,12 @@
                                     <ControlTemplate TargetType="ProgressBar" >
                                         <Border Background="{TemplateBinding Background}"
                                                 BorderThickness="0"
-                                                CornerRadius="8" >
+                                                CornerRadius="14" >
                                             <Grid>
                                                 <Border x:Name="PART_Indicator"
                                                         HorizontalAlignment="Right"
                                                         Background="{TemplateBinding Foreground}"
-                                                        CornerRadius="8" >
+                                                        CornerRadius="14" >
                                                     <Border.Width>
                                                         <MultiBinding Converter="{StaticResource ProgressToWidthConverter}" >
                                                             <Binding Path="Bounds.Width"
@@ -188,6 +191,8 @@
                         </ProgressBar.Styles>
                     </ProgressBar>
                     <Button HorizontalAlignment="Stretch"
+                            Margin="0"
+                            Padding="0"
                             FontFamily="{StaticResource MonoFont}"
                             HorizontalContentAlignment="Center"
                             Background="{DynamicResource TransparentBrush}"
@@ -262,28 +267,17 @@
         </Grid>
         <TabControl Name="tabControl"
                     Grid.Row="1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
+                    Padding="0"
                     ClipToBounds="True" >
-
-            <TabItem Name="tabHistory"
-                     Header="History"
-                     KeyboardNavigation.IsTabStop="False" >
+            <TabItem Header="History" >
                 <views:HistoryView DataContext="{Binding HistoryVM}" />
             </TabItem>
-
-            <TabItem HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center"
-                     Header="Todo List" >
+            <TabItem Header="Todo List" >
                 <views:TodoDisplayView DataContext="{Binding TodoListVM}" />
             </TabItem>
-
-            <TabItem HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center"
-                     Header="Kanban" >
+            <TabItem Header="Kanban" >
                 <views:TodoDisplayView DataContext="{Binding KanbanVM}" />
             </TabItem>
-
         </TabControl>
     </Grid>
 </Window>

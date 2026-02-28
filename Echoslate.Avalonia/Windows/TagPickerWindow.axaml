@@ -59,7 +59,7 @@
                         </Style>
                         <Style Selector="ListBoxItem:selected" >
                             <Setter Property="Background"
-                                    Value="{DynamicResource AccentBrush}"/>
+                                    Value="{DynamicResource AccentBrush}" />
                         </Style>
                         <Style Selector="ListBoxItem:pointerover" >
                             <Setter Property="Background"
@@ -67,7 +67,7 @@
                         </Style>
                         <Style Selector="ListBoxItem:selected:pointerover" >
                             <Setter Property="Background"
-                                    Value="{DynamicResource AccentLightBrush}"/>
+                                    Value="{DynamicResource AccentLightBrush}" />
                         </Style>
                     </ListBox.Styles>
                     <ListBox.ItemTemplate>
@@ -91,11 +91,8 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
                     Margin="8,4,0,4"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
                     Click="NewTag_OnClick"
                     Content="New Tag"
-                    Foreground="{DynamicResource ForegroundBrush}"
-                    FontSize="16"
                     IsDefault="True" />
             <Border Grid.Column="1"
                     Margin="8,4"
@@ -126,25 +123,13 @@
 
         <!--  OK / Cancel Buttons  -->
         <StackPanel Grid.Row="2"
-                    Height="25"
-                    Margin="0,10,0,10"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal" >
-            <Button Width="120"
-                    Padding="12,10"
-                    FontSize="16"
-                    Background="{DynamicResource AccentBrush}"
-                    BorderBrush="{DynamicResource LightAccentBrush}"
+            <Button Classes="ok"
                     Click="Ok_OnClick"
-                    Content="OK"
-                    />
-            <Button Width="120"
-                    Padding="12,10"
-                    Click="Cancel_OnClick"
-                    FontSize="16"
-                    Background="{DynamicResource DangerRedBrush}"
-                    BorderBrush="{DynamicResource DangerRedBrush}"
-                    Content="Cancel"
+                    Content="Ok" />
+            <Button Click="Cancel_OnClick"
+                    Classes="cancel"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

@@ -121,6 +121,8 @@
                 </ItemsControl.ContextMenu>
             </ItemsControl>
             <Button Grid.Column="2"
+                    Padding="3"
+                    Margin="7,0"
                     x:Name="NotesPanelToggleButton"
                     Content="{Binding NotesPanelToggleText}"
                     Click="ToggleNotesPanel" />
@@ -266,16 +268,18 @@
                                                HorizontalAlignment="Center"
                                                Content="{Binding CurrentFilterRank}" />
                                         <Button Grid.Column="1"
+                                                Padding="0"
                                                 Command="{Binding $parent[DataGrid].DataContext.RankDownCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="▼"
-                                                FontSize="16"
+                                                FontSize="14"
                                                 FontWeight="Bold" />
                                         <Button Grid.Column="2"
+                                                Padding="0"
                                                 Command="{Binding $parent[DataGrid].DataContext.RankUpCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="▲"
-                                                FontSize="16"
+                                                FontSize="14"
                                                 FontWeight="Bold" />
                                     </Grid>
                                 </DataTemplate>
@@ -388,20 +392,14 @@
                         Background="{DynamicResource TransparentBrush}"
                         BorderThickness="2"
                         HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
                         CornerRadius="7"
                         Margin="4,0"
-                        VerticalAlignment="Stretch"
                         BorderBrush="{Binding ShowTodoItemEditorOnAdd, Converter={StaticResource EditingBrushConverter}}" >
                     <Button x:Name="AddButton"
                             Grid.Row="1"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            BorderThickness="0"
-                            Click="Add_OnClick"
                             Content="Add"
-                            CornerRadius="7"
+                            Click="Add_OnClick"
                             FontWeight="SemiBold"
                             ToolTip.Tip="[Control + Click] to toggle editor when adding"
                             KeyboardNavigation.TabIndex="3" />

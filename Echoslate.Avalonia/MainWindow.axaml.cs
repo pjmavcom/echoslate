@@ -25,6 +25,7 @@ public partial class MainWindow : Window {
 		InitializeComponent();
 
 #if DEBUG
+		// this.AttachDevTools();
 		mnuMain.Background = Brushes.Red;
 #endif
 

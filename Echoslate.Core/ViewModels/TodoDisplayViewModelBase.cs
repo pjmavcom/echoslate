@@ -25,7 +25,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	}
 
 	public bool IsNotesPanelVisible => _isNotesPanelVisibleManual && IsNotesPanelVisibleBySize;
-	public string NotesPanelToggleText => IsNotesPanelVisible ? ">" : "<";
+	public string NotesPanelToggleText => IsNotesPanelVisible ? "►" : "◄";
 	private bool _isNotesPanelVisibleBySize;
 	public bool IsNotesPanelVisibleBySize {
 		get => _isNotesPanelVisibleBySize;

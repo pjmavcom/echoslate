@@ -83,12 +83,8 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0"
-                    Margin="8,4,0,4"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
                     Command="{Binding NewTabCommand}"
                     Content="New Filter"
-                    FontSize="16"
-                    Foreground="{DynamicResource SubtleForegroundBrush}"
                     IsDefault="True" />
 
             <Border Grid.Column="1"
@@ -123,26 +119,16 @@
                     HorizontalAlignment="Center"
                     Orientation="Horizontal" >
             <Button Width="100"
-                    Padding="10,8"
-                    BorderBrush="{DynamicResource BorderSilverBrush}"
-                    FontSize="16"
                     Command="{Binding DeleteCommand}"
-                    Content="Delete"
-                    Foreground="{DynamicResource ForegroundBrush}" />
+                    Content="Delete" />
             <Button Width="60"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
                     Click="MoveUp_OnClick"
                     Content="▲"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource ForegroundBrush}" />
+                    FontSize="16" />
             <Button Width="60"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
                     Click="MoveDown_OnClick"
                     Content="▼"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource ForegroundBrush}" />
+                    FontSize="16" />
         </StackPanel>
 
         <!--  OK / Cancel  -->
@@ -150,20 +136,10 @@
                     Margin="0,10,0,10"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal" >
-            <Button Width="120"
-                    Padding="12,10"
-                    FontSize="16"
-                    Background="{DynamicResource AccentBrush}"
-                    BorderBrush="{DynamicResource LightAccentBrush}"
-                    Click="OK_OnClick"
-                    Content="OK" />
-            <Button Width="120"
-                    Padding="12,10"
-                    FontSize="16"
-                    Background="{DynamicResource DangerRedBrush}"
-                    BorderBrush="{DynamicResource DangerRedBrush}"
-                    Click="Cancel_OnClick"
-                    Content="Cancel"
+            <Button Classes="ok"
+                    Click="OK_OnClick" />
+            <Button Click="Cancel_OnClick"
+                    Classes="cancel"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

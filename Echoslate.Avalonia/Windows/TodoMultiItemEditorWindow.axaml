@@ -77,7 +77,6 @@
                                     BorderBrush="{DynamicResource BorderMidBrush}"
                                     BorderThickness="1" >
                                 <TextBlock Width="70"
-                                           Height="30"
                                            behaviors:MouseWheelNumericBehavior.Enabled="True"
                                            behaviors:MouseWheelNumericBehavior.Minimum="0"
                                            behaviors:MouseWheelNumericBehavior.TargetProperty="Rank"
@@ -85,13 +84,15 @@
                                            FontSize="16"
                                            Foreground="{DynamicResource ForegroundBrush}"
                                            FontWeight="SemiBold"
+                                           LineHeight="30"
                                            IsEnabled="{Binding IsRankEnabled}"
                                            Text="{Binding Rank}"
                                            TextAlignment="Center"
                                            ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
                             </Border>
                             <Button Width="40"
-                                    Margin="8,0,5,0"
+                                    Height="30"
+                                    Padding="0"
                                     Command="{Binding RankToTopCommand}"
                                     Content="▲▲"
                                     IsEnabled="{Binding IsRankEnabled}"
@@ -99,6 +100,8 @@
                                     Foreground="{DynamicResource ForegroundBrush}"
                                     ToolTip.Tip="Move to top" />
                             <Button Width="40"
+                                    Height="30"
+                                    Padding="0"
                                     Command="{Binding RankToBottomCommand}"
                                     Content="▼▼"
                                     IsEnabled="{Binding IsRankEnabled}"
@@ -161,8 +164,7 @@
 
         <!--  Tags  -->
         <Border Grid.Row="2"
-                Margin="7"
-                Background="{DynamicResource ControlBackgroundBrush}" >
+                Margin="7" >
             <Grid RowDefinitions="Auto,*" >
                 <Border Grid.Row="0"
                         Margin="1"
@@ -189,11 +191,13 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Top" >
-                            <Button Width="90"
-                                    Height="35"
+                            <Button Height="35"
+                                    Margin="3"
+                                    VerticalAlignment="Top"
                                     Command="{Binding AddTagCommand}"
-                                    Content="Add Tag"
-                                    FontSize="16" />
+                                    FontSize="16"
+                                    Foreground="{DynamicResource ForegroundBrush}"
+                                    Content="Add Tag" />
                             <CheckBox Margin="0,10,0,8"
                                       HorizontalAlignment="Left"
                                       Classes="toggle-switch"
@@ -204,35 +208,36 @@
 
                         <ListBox Grid.Column="1"
                                  Height="150"
+                                 Padding="7,0"
                                  Margin="0"
-                                 Background="{DynamicResource ControlBackgroundBrush}"
                                  ItemsSource="{Binding Tags}" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate x:CompileBindings="False" >
-                                    <Grid Height="36"
-                                          Background="{DynamicResource TransparentBrush}" >
+                                    <Grid Height="35"
+                                          Margin="7,0" >
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="40" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Button Width="30"
-                                                Height="24"
-                                                Background="{DynamicResource DangerRedBrush}"
+                                        <Button Background="{DynamicResource DangerRedBrush}"
                                                 Command="{Binding $parent[UserControl].DataContext.DeleteTagCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="X"
+                                                Padding="0"
+                                                Height="24"
                                                 FontSize="16"
                                                 Foreground="{DynamicResource ForegroundBrush}"
                                                 FontWeight="Bold" />
-                                        <TextBox Grid.Column="1"
-                                                 Height="24"
-                                                 MinWidth="140"
-                                                 Margin="8,0,0,0"
-                                                 Background="{DynamicResource ButtonBackgroundBrush}"
-                                                 BorderThickness="0,0,0,1"
-                                                 FontSize="16"
-                                                 Foreground="{DynamicResource ForegroundBrush}"
-                                                 Text="{Binding}" />
+                                        <Label Grid.Column="1"
+                                               Padding="7,0"
+                                               VerticalContentAlignment="Center"
+                                               MinWidth="140"
+                                               Margin="8,0,0,0"
+                                               Background="{DynamicResource ButtonBackgroundBrush}"
+                                               BorderThickness="0,0,0,1"
+                                               FontSize="16"
+                                               Foreground="{DynamicResource ForegroundBrush}"
+                                               Content="{Binding}" />
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -254,57 +259,14 @@
                       Foreground="{DynamicResource SubtleForegroundBrush}"
                       IsChecked="{Binding IsCompleteChangeable}" />
 
-            <Button Width="140"
-                    Margin="0,0,15,0"
+            <Button Classes="complete"
                     Click="Complete_OnClick"
-                    Content="{Binding CompleteButtonContent}"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Foreground="{DynamicResource ForegroundBrush}"
-                    IsEnabled="{Binding IsCompleteChangeable}" >
-                <Button.Styles>
-                    <Style Selector="Button" >
-                        <Setter Property="Background"
-                                Value="{DynamicResource SuccessGreenBrush}"/>
-                        <Setter Property="Template" >
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button" >
-                                    <Border Padding="12,8"
-                                            Background="{TemplateBinding Background}"
-                                            CornerRadius="7" >
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                          VerticalAlignment="Center"
-                                                          Content="{TemplateBinding Content}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          Foreground="{TemplateBinding Foreground}" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style Selector="^:disabled" >
-                            <Setter Property="Background"
-                                    Value="{DynamicResource SuccessGreenBrush}" />
-                            <Setter Property="Opacity"
-                                    Value="0.7" />
-                        </Style>
-                    </Style>
-                </Button.Styles>
-            </Button>
-            <Button Width="140"
-                    Margin="0,0,15,0"
-                    Background="{DynamicResource AccentBrush}"
-                    BorderBrush="{DynamicResource LightAccentBrush}"
+                    IsEnabled="{Binding IsCompleteChangeable}" />
+            <Button Classes="ok"
                     Click="Ok_OnClick"
-                    Content="Save"
-                    FontSize="16"
                     IsDefault="True" />
-            <Button Width="140"
-                    Margin="0,0,15,0"
-                    Background="{DynamicResource DangerRedBrush}"
-                    BorderBrush="{DynamicResource DangerRedBrush}"
+            <Button Classes="cancel"
                     Click="Cancel_OnClick"
-                    Content="Cancel"
-                    FontSize="16"
                     IsCancel="True" />
         </StackPanel>
     </Grid>

@@ -20,6 +20,7 @@ public static class BrushServiceResourceExporter {
 		resources["LightAccentBrush"] = (IBrush)brushService.LightAccentBrush;
 		resources["AccentBrush"] = (IBrush)brushService.AccentBrush;
 		resources["DarkAccentBrush"] = (IBrush)brushService.DarkAccentBrush;
+		resources["DarkFadedAccentBrush"] = (IBrush)brushService.DarkFadedAccentBrush;
 
 		resources["BorderBrush"] = (IBrush)brushService.BorderBrush;
 		resources["BorderSilverBrush"] = (IBrush)brushService.BorderSilverBrush;
@@ -31,14 +32,23 @@ public static class BrushServiceResourceExporter {
 		resources["ButtonHoverBackgroundBrush"] = (IBrush)brushService.ButtonHoverBackgroundBrush;
 		resources["ButtonPressedBackgroundBrush"] = (IBrush)brushService.ButtonPressedBackgroundBrush;
 
+		resources["TabActiveBackgroundBrush"] = (IBrush)brushService.TabActiveBackgroundBrush;
+		resources["TabInactiveBackgroundBrush"] = (IBrush)brushService.TabInactiveBackgroundBrush;
+
 		resources["SeverityNoneBrush"] = (IBrush)brushService.SeverityNoneBrush;
 		resources["SeverityLowBrush"] = (IBrush)brushService.SeverityLowBrush;
 		resources["SeverityMedBrush"] = (IBrush)brushService.SeverityMedBrush;
 		resources["SeverityHighBrush"] = (IBrush)brushService.SeverityHighBrush;
 		
 		resources["AccentBlueBrush"] = (IBrush)brushService.AccentBlueBrush;
+		resources["LightSuccessGreenBrush"] = (IBrush)brushService.LightSuccessGreenBrush;
 		resources["SuccessGreenBrush"] = (IBrush)brushService.SuccessGreenBrush;
+		resources["DarkSuccessGreenBrush"] = (IBrush)brushService.DarkSuccessGreenBrush;
+		resources["DisabledSuccessGreenBrush"] = (IBrush)brushService.DisabledSuccessGreenBrush;
+		resources["LightDangerRedBrush"] = (IBrush)brushService.LightDangerRedBrush;
 		resources["DangerRedBrush"] = (IBrush)brushService.DangerRedBrush;
+		resources["DarkDangerRedBrush"] = (IBrush)brushService.DarkDangerRedBrush;
+		resources["DarkerDangerRedBrush"] = (IBrush)brushService.DarkerDangerRedBrush;
 		resources["RefactorBlueBrush"] = (IBrush)brushService.RefactorBlueBrush;
 		resources["ChoreGrayBrush"] = (IBrush)brushService.ChoreGrayBrush;
 		resources["DocsYellowBrush"] = (IBrush)brushService.DocsYellowBrush;

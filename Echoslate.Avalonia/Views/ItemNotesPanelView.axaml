@@ -40,17 +40,6 @@
                     AcceptsReturn="False"
                     Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Todo, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
                     TextWrapping="WrapWithOverflow">
-                    <!--  x:Name="tbTodo"  -->
-                    <!-- <TextBox.InputBindings> -->
-                    <!--  <KeyBinding Key="Enter"  -->
-                    <!--  Command="{Binding CommitTitleEditCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"  -->
-                    <!--  CommandParameter="{Binding}" />  -->
-                    <!-- </TextBox.InputBindings> -->
-                    <!-- <b:Interaction.Triggers> -->
-                    <!-- <b:EventTrigger EventName="PropertyChanged"> -->
-                    <!-- <b:InvokeCommandAction Command="{Binding DataContext.RefreshAllCommand, RelativeSource={RelativeSource AncestorType={x:Type local:TodoDisplayView}}}" /> -->
-                    <!-- </b:EventTrigger> -->
-                    <!-- </b:Interaction.Triggers> -->
                 </TextBox>
             </Grid>
         </Border>
@@ -77,11 +66,6 @@
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Notes, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="WrapWithOverflow">
-                    <!-- <b:Interaction.Triggers> -->
-                    <!-- <b:EventTrigger EventName="PropertyChanged"> -->
-                    <!-- <b:InvokeCommandAction Command="{Binding DataContext.RefreshAllCommand, RelativeSource={RelativeSource AncestorType={x:Type local:TodoDisplayView}}}" /> -->
-                    <!-- </b:EventTrigger> -->
-                    <!-- </b:Interaction.Triggers> -->
                 </TextBox>
             </Grid>
         </Border>
@@ -109,11 +93,6 @@
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Problem, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="WrapWithOverflow">
-                    <!-- <b:Interaction.Triggers> -->
-                    <!-- <b:EventTrigger EventName="PropertyChanged"> -->
-                    <!-- <b:InvokeCommandAction Command="{Binding DataContext.RefreshAllCommand, RelativeSource={RelativeSource AncestorType={x:Type local:TodoDisplayView}}}" /> -->
-                    <!-- </b:EventTrigger> -->
-                    <!-- </b:Interaction.Triggers> -->
                 </TextBox>
             </Grid>
         </Border>
@@ -140,11 +119,6 @@
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Solution, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="WrapWithOverflow">
-                    <!-- <b:Interaction.Triggers> -->
-                    <!-- <b:EventTrigger EventName="PropertyChanged"> -->
-                    <!-- <b:InvokeCommandAction Command="{Binding DataContext.RefreshAllCommand, RelativeSource={RelativeSource AncestorType={x:Type local:TodoDisplayView}}}" /> -->
-                    <!-- </b:EventTrigger> -->
-                    <!-- </b:Interaction.Triggers> -->
                 </TextBox>
             </Grid>
         </Border>
@@ -153,8 +127,8 @@
                 Margin="2"
                 HorizontalAlignment="Right"
                 Content="Tags:" />
+                <!-- Width="Auto" -->
             <Button
-                Width="72"
                 Height="35"
                 Command="{Binding NotesPanelAddTagCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"
                 Content="Edit Tags"
@@ -164,12 +138,10 @@
             Grid.Row="9"
             Margin="3"
             ItemsSource="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Tags}" />
-        <!--  IsSynchronizedWithCurrentItem="True"  -->
         <Button
             Grid.Row="10"
-            Width="100"
+            Classes="complete"
             Command="{Binding NotesPanelCompleteCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"
-            Content="Complete"
             IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>
