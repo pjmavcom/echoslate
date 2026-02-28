@@ -56,7 +56,7 @@ public class AvaloniaDialogService : IDialogService {
 	public async Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames) {
 		EditTabsViewModel vm = new EditTabsViewModel(filterNames);
 		EditTabsWindow view = new EditTabsWindow(vm);
-		return await ShowDialogAsync<EditTabsViewModel>(view, "Edit Tabs");
+		return await ShowDialogAsync<EditTabsViewModel>(view, "Edit Filters");
 	}
 	public async Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null) {
 		ChooseDraftViewModel vm = new ChooseDraftViewModel(drafts, defaultDraft);
