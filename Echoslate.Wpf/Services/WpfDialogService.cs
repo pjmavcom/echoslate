@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
 using Echoslate.Core.ViewModels;
+using Echoslate.Windows;
 using Echoslate.Wpf.Windows;
 using DialogResult = Echoslate.Core.Services.DialogResult;
 using MessageBox = System.Windows.MessageBox;
@@ -193,4 +194,23 @@ public class WpfDialogService : IDialogService {
 		};
 	}
 
+	public async Task<DialogResult?> ShowAsync(string message, string title, DialogButton buttons, DialogIcon icon, object? owner = null) {
+		Window? windowOwner = owner as Window;
+		MessageWindowViewModel vm = new MessageWindowViewModel(message, title, buttons, icon);
+		MessageWindow view = new MessageWindow(vm);
+
+		Window window = new Window {
+			Content = view,
+			Title = title,
+			Owner = windowOwner,
+			WindowStartupLocation = WindowStartupLocation.CenterOwner,
+			SizeToContent = SizeToContent.WidthAndHeight,
+			ShowInTaskbar = false,
+			Focusable = true,
+			IsEnabled = true
+		};
+		
+		window.ShowDialog();
+		return vm.Result;
+	}
 }
