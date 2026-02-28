@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:windows="clr-namespace:Echoslate.Avalonia.Windows"
              x:DataType="windows:AboutWindow"
-             Background="{DynamicResource AppBackgroundBrush}"
+             Background="{DynamicResource AppDarkBackgroundBrush}"
              Foreground="{DynamicResource ForegroundBrush}" >
     <Grid Margin="30" >
         <Grid.RowDefinitions>
             <RowDefinition Height="256" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -23,7 +24,7 @@
                        HorizontalAlignment="Center"
                        FontSize="28"
                        FontWeight="Bold"
-                       Text="{Binding Version}" />
+                       Text="Echoslate" />
 
             <TextBlock FontSize="16"
                        Foreground="{DynamicResource ForegroundBrush}"
@@ -78,6 +79,9 @@
                        Foreground="{DynamicResource SubtleForegroundBrush}"
                        Text="Open source • MIT License" />
         </StackPanel>
+        <Label Grid.Row="2"
+               Content="{Binding Version}"
+               HorizontalAlignment="Right" />
         <Button Grid.Row="0"
                 Width="0"
                 Height="0"

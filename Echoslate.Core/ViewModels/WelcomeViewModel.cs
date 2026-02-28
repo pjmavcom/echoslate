@@ -7,6 +7,7 @@ namespace Echoslate.Core.ViewModels;
 
 public class WelcomeViewModel : INotifyPropertyChanged {
 	public event Action<bool>? RequestClose;
+	public string Version { get; set; }
 
 	public IBrushService BrushService => AppServices.BrushService;
 
@@ -22,7 +23,7 @@ public class WelcomeViewModel : INotifyPropertyChanged {
 				ShowWindowString1 = "Do not show this window again";
 				ShowWindowString2 = "(Always load last file)";
 			}
-			
+
 			OnPropertyChanged();
 			OnPropertyChanged(nameof(ShowWindowString1));
 			OnPropertyChanged(nameof(ShowWindowString2));
@@ -53,8 +54,9 @@ public class WelcomeViewModel : INotifyPropertyChanged {
 
 	public WelcomeViewModel() {
 		ShowAgain = AppSettings.Instance.ShowWelcomeWindow;
+		Version = AppServices.ApplicationService.GetVersion();
+		OnPropertyChanged(nameof(Version));
 	}
-
 	public void SavePreferences() {
 		AppSettings.Instance.ShowWelcomeWindow = ShowAgain;
 		Log.Print($"ShowWelcomeWindow: {AppSettings.Instance.ShowWelcomeWindow}");

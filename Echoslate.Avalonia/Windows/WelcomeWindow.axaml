@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  Title  -->
@@ -65,5 +66,8 @@
                        Foreground="{DynamicResource SubtleForegroundBrush}" />
             </StackPanel>
         </StackPanel>
+        <Label Grid.Row="3"
+               Content="{Binding Version}"
+               HorizontalAlignment="Right" />
     </Grid>
 </UserControl>

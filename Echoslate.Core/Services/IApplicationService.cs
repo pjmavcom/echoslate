@@ -7,4 +7,5 @@ public interface IApplicationService {
 	void Shutdown();
 	void Show();
 	object? GetWindow();
+	string GetVersion();
 }

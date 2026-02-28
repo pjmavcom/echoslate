@@ -327,19 +327,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(PomoIsWorkMode));
 	}
 	public void SetWindowTitle() {
-		CurrentWindowTitle = "Echoslate v" + GetAppFileVersion() + " - " + Data?.FileName;
-	}
-	public static string GetAppFileVersion() {
-		var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-		var fileVersionAttribute = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
-		if (fileVersionAttribute != null && !string.IsNullOrWhiteSpace(fileVersionAttribute.Version)) {
-			Log.Print($"FileVersion: {fileVersionAttribute.Version}");
-			return fileVersionAttribute.Version;
-		}
-
-		// Fallback to AssemblyVersion if FileVersion attribute missing
-		Log.Print($"FileVersion: {assembly.GetName().Version}");
-		return assembly.GetName().Version?.ToString() ?? "Unknown";
+		CurrentWindowTitle = "Echoslate v" + AppServices.ApplicationService.GetVersion() + " - " + Data?.FileName;
 	}
 	public void LoadCurrentData() {
 		Log.Print("Disabling AutoSave and AutoBackup");
@@ -726,7 +714,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		PomoTimer = TimeSpan.Zero;
 		PomoTimeLeft = TimeSpan.Zero;
 	});
-	public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync("Echoslate v" + GetAppFileVersion()); });
+	public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync("v" + AppServices.ApplicationService.GetVersion()); });
 	public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowHelpAsync(); });
 	public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
 	public void QuickLoad() {

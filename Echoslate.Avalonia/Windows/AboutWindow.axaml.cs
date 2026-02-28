@@ -27,7 +27,6 @@ public partial class AboutWindow : UserControl, INotifyPropertyChanged {
 		DataContext = this;
 		InitializeComponent();
 		Version = version;
-		Log.Debug($"Version: {Version}");
 	}
 	private void InitializeComponent() {
 		AvaloniaXamlLoader.Load(this);
