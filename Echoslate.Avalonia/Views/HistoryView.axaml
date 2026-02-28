@@ -433,23 +433,27 @@
 
                                 <!--  ~1~  Version  @1@  -->
                                 <DataGridTextColumn Width="100"
+                                                    IsReadOnly="True"
                                                     FontFamily="{StaticResource MonoFont}"
                                                     Binding="{Binding VersionString}"
                                                     Header="Version" />
 
                                 <!--  ~1~  Date  @1@  -->
                                 <DataGridTextColumn Width="200"
+                                                    IsReadOnly="True"
                                                     FontFamily="{StaticResource MonoFont}"
                                                     Binding="{Binding CommitDate, StringFormat=yyyy-MM-dd - HH:mm}"
                                                     Header="Date" />
 
                                 <!--  ~1~  Type  @1@  -->
                                 <DataGridTextColumn Width="80"
+                                                    IsReadOnly="True"
                                                     Binding="{Binding Type}"
                                                     Header="Type" />
 
                                 <!--  ~1~  Scope  @1@  -->
                                 <DataGridTextColumn Width="200"
+                                                    IsReadOnly="True"
                                                     Binding="{Binding Scope}"
                                                     Header="Scope" />
 

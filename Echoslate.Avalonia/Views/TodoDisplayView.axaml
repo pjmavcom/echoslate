@@ -157,6 +157,7 @@
                 <DataGrid x:Name="TodoListDataGrid"
                           Margin="0"
                           Padding="7,4"
+                          IsReadOnly="True"
                           behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedTodoItems}"
                           DoubleTapped="DataGrid_DoubleTapped"
                           ItemsSource="{Binding DisplayedItems}"
