@@ -250,6 +250,9 @@ public class HistoryItem : INotifyPropertyChanged {
 		FullCommitMessage = ToClipboard();
 	}
 	public string ToClipboard() {
+		if (Scope == null) {
+			Scope = "";
+		}
 		Scope = Scope.Replace(" ", "-");
 		string result = FullTitle + Environment.NewLine;
 		if (!string.IsNullOrWhiteSpace(Notes)) {
