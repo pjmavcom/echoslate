@@ -290,7 +290,7 @@ public class TodoItem : INotifyPropertyChanged {
 		_severity = 0;
 		_priority = 0;
 		_kanban = 0;
-		_kanbanRank = 0;
+		_kanbanRank = int.MaxValue;
 		_tags = [];
 		_rank = [];
 		_currentView = View.TodoList;

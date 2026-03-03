@@ -77,6 +77,8 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		if (CurrentFilter != "All" && CurrentFilter != "Other") {
 			item.AddTag(CurrentFilter);
 		}
+		item.CurrentFilter = CurrentFilter;
+		item.CurrentFilterRank = int.MaxValue;
 		AddItemToMasterList(item);
 		SelectedTodoItemId = item.Id;
 		CleanAllTodoHashRanks();
