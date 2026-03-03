@@ -145,7 +145,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 
 	// TODO: Change this to RANK after testing
 	// or make it an option
-	private string _currentSort = "severity";
+	private string _currentSort = "rank";
 	public string CurrentSort {
 		get => _currentSort;
 		set {
@@ -331,6 +331,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				CurrentSortMethod = ReverseSort
 					? items => items.OrderByDescending(i => i.DateTimeStarted).ThenBy(i => i.CurrentFilterRank)
 					: items => items.OrderBy(i => i.DateTimeStarted).ThenBy(i => i.CurrentFilterRank);
+				break;
+			case "priority":
+				CurrentSortMethod = ReverseSort
+					? items => items.OrderBy(i => i.Priority).ThenBy(i => i.CurrentFilterRank)
+					: items => items.OrderByDescending(i => i.Priority).ThenBy(i => i.CurrentFilterRank);
 				break;
 			case "rank":
 				CurrentSortMethod = ReverseSort
@@ -649,6 +654,9 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			if (vm.IsSeverityChangeable) {
 				item.Severity = vm.ResultSeverity;
 			}
+			if (vm.IsPriorityChangeable) {
+				item.Priority = vm.ResultPriority;
+			}
 			if (vm.IsTodoChangeable) {
 				item.Todo += " " + vm.ResultTodo;
 				Log.Print($"{item.Todo}");
@@ -723,6 +731,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			item.Severity = int.Parse(i);
 		}
 	});
+	public ICommand ContextMenuSetPriorityCommand => new RelayCommand<string>(i => {
+		foreach (TodoItem item in GetSelectedListBoxItems()) {
+			item.Priority = int.Parse(i);
+		}
+	});
 	public ICommand ContextMenuKanbanCommand => new RelayCommand<string>(i => {
 		foreach (TodoItem ih in GetSelectedListBoxHolders()) {
 			ih.Kanban = int.Parse(i);
@@ -787,6 +800,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	});
 	public ICommand ChangeSeverityCommand => new RelayCommand<TodoItem>(ih => {
 		if (ih != null) ih.Severity = (ih.Severity + 1) % 4;
+		RefreshAll();
+	});
+	public ICommand ChangePriorityCommand => new RelayCommand<TodoItem>(ih => {
+		if (ih != null) ih.Priority = (ih.Priority + 1) % 5;
 		RefreshAll();
 	});
 	public ICommand ToggleTimerCommand => new RelayCommand<TodoItem>(ih => {

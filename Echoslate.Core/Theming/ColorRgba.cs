@@ -28,10 +28,16 @@ public readonly struct ColorRgba(byte r, byte g, byte b, byte a = 255) {
 
 
 	public static readonly ColorRgba SeverityHigh = new(190, 0, 0);
-	public static readonly ColorRgba SeverityMed = new(200, 160, 0);
+	public static readonly ColorRgba SeverityMed = new(227, 116, 0);
 	public static readonly ColorRgba SeverityLow = new(0, 140, 0);
 	public static readonly ColorRgba SeverityNone = new(50, 50, 50);
 	public static readonly ColorRgba SeverityOff = new(25, 25, 25);
+
+	public static readonly ColorRgba PriorityCrit = new(190, 0, 0);
+	public static readonly ColorRgba PriorityHigh = new(227, 116, 0);
+	public static readonly ColorRgba PriorityMed = new(0, 140, 0);
+	public static readonly ColorRgba PriorityLow = new(0, 118, 153);
+	public static readonly ColorRgba PriorityNone = new(50, 50, 50);
 
 
 	// public static readonly ColorRgba AppBackground = new(43, 43, 43);

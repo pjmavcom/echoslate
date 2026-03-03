@@ -22,6 +22,7 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	private DataGridColumn? ColTags;
 	private DataGridColumn? ColDate;
 	private DataGridColumn? ColSev;
+	private DataGridColumn? ColPri;
 	private DataGridColumn? ColRank;
 	private DataGridColumn? ColTimer;
 
@@ -48,9 +49,10 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 		DataGrid? todoListDataGrid = this.FindControl<DataGrid>("TodoListDataGrid");
 		ColTags = todoListDataGrid.Columns[0];
 		ColDate = todoListDataGrid.Columns[1];
-		ColSev = todoListDataGrid.Columns[2];
-		ColRank = todoListDataGrid.Columns[3];
-		ColTimer = todoListDataGrid.Columns[4];
+		ColPri = todoListDataGrid.Columns[2];
+		ColSev = todoListDataGrid.Columns[3];
+		ColRank = todoListDataGrid.Columns[4];
+		ColTimer = todoListDataGrid.Columns[5];
 
 		_notesPanel = this.FindControl<ItemNotesPanelView>("NotesPanel");
 		_notesPanelToggleButton = this.FindControl<Button>("NotesPanelToggleButton");
@@ -73,11 +75,11 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	private void UpdateColumnVisibility(double width) {
 		_currentWidth = width;
 		double notesPanel = _notesPanel.IsVisible ? 0 : MinNotesPanelSize;
-		ColTags.IsVisible = width < (1800 - notesPanel) ? false : true;
-		ColDate.IsVisible = width < 1600 - notesPanel ? false : true;
-		ColTimer.IsVisible = width < 1400 - notesPanel ? false : true;
-		ColSev.IsVisible = width < 1200 - notesPanel ? false : true;
-		ColRank.IsVisible = width < 600 - notesPanel ? false : true;
+		ColTags.IsVisible = width < (1500 - notesPanel) ? false : true;
+		ColDate.IsVisible = width < 1400 - notesPanel ? false : true;
+		ColTimer.IsVisible = width < 1300 - notesPanel ? false : true;
+		// ColSev.IsVisible = width < 1200 - notesPanel ? false : true;
+		ColRank.IsVisible = width < 700 ? false : true;
 
 		if (width > PanelShrinkThreshold1) {
 			_notesPanel.Width = MaxNotesPanelSize;
@@ -207,6 +209,16 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	private void Severity_OnDoubleTapped(object? sender, TappedEventArgs e) {
 		if (DataContext is TodoDisplayViewModelBase vm && sender is Border border && border.DataContext is TodoItem item) {
 			vm.ChangeSeverityCommand.Execute(item);
+		}
+	}
+	private void Priority_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
+		if (DataContext is TodoDisplayViewModelBase vm && sender is Border border && border.DataContext is TodoItem item) {
+			vm.ChangePriorityCommand.Execute(item);
+		}
+	}
+	private void Priority_OnDoubleTapped(object? sender, TappedEventArgs e) {
+		if (DataContext is TodoDisplayViewModelBase vm && sender is Border border && border.DataContext is TodoItem item) {
+			vm.ChangePriorityCommand.Execute(item);
 		}
 	}
 

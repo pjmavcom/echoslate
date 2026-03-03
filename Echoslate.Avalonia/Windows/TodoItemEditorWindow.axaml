@@ -195,9 +195,9 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <!--  Severity Button  -->
                             <Grid Grid.Row="0"
                                   Grid.Column="0"
                                   Grid.ColumnSpan="2" >
@@ -208,6 +208,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
+                                
+                            <!--  Severity Button  -->
                                 <Button Grid.Row="0"
                                         Grid.Column="0"
                                         Width="120"
@@ -272,9 +274,30 @@
                                         Foreground="{DynamicResource ForegroundBrush}"
                                         ToolTip.Tip="Move to bottom" />
                             </Grid>
+                            <Grid Grid.Row="1"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="2" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <!--  Severity Button  -->
+                                <Button Grid.Row="0"
+                                        Grid.Column="0"
+                                        Width="120"
+                                        Height="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Background="{Binding PriorityButtonBackground}"
+                                        Classes="severity-button"
+                                        Command="{Binding CyclePriorityCommand}"
+                                        Content="Priority"
+                                        FontSize="16"
+                                        Foreground="{DynamicResource ForegroundBrush}" />
+                            </Grid>
 
                             <!--  Kanban  -->
-                            <Grid Grid.Row="1"
+                            <Grid Grid.Row="2"
                                   Grid.Column="0" >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -299,7 +322,7 @@
                             </Grid>
 
                             <!--  Time  -->
-                            <Grid Grid.Row="1"
+                            <Grid Grid.Row="2"
                                   Grid.Column="1"
                                   Width="200" >
                                 <Grid.ColumnDefinitions>

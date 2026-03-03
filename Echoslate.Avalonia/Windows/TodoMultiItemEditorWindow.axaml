@@ -46,7 +46,11 @@
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        
                         <CheckBox VerticalAlignment="Center"
                                   Classes="toggle-switch"
                                   IsChecked="{Binding IsSeverityChangeable}" />
@@ -59,6 +63,24 @@
                                 Classes="severity-button"
                                 Command="{Binding CycleSeverityCommand}"
                                 Content="Severity"
+                                FontSize="16"
+                                Foreground="{DynamicResource ForegroundBrush}" />
+
+                        <CheckBox Grid.Column="0"
+                                  Grid.Row="1"
+                                  VerticalAlignment="Center"
+                                  Classes="toggle-switch"
+                                  IsChecked="{Binding IsPriorityChangeable}" />
+                        <Button Grid.Column="1"
+                                Grid.Row="1"
+                                Width="120"
+                                Height="40"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="{Binding PriorityButtonBackground}"
+                                Classes="severity-button"
+                                Command="{Binding CyclePriorityCommand}"
+                                Content="Priority"
                                 FontSize="16"
                                 Foreground="{DynamicResource ForegroundBrush}" />
 

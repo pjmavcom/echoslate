@@ -23,6 +23,8 @@
                         ResourceKey="LightAccentBrush" />
         <StaticResource x:Key="MenuFlyoutSubItemBackgroundSubMenuOpened"
                         ResourceKey="LightAccentBrush" />
+        <StreamGeometry x:Key="ExclamationTriangleGeometry" >M12 2L1 21h22L12 2zm0 3.5L20.5 19H3.5L12 5.5zm0 5v5h-1v-5h1zm0 7h-1v-1h1v1z</StreamGeometry>
+        <StreamGeometry x:Key="PriorityFlagGeometry" >M 0 0 v -17 h 2 l 14 5 l -14 6 v 6 h -2 z</StreamGeometry>
     </Application.Resources>
     <Application.Styles>
         <SimpleTheme />
@@ -146,10 +148,10 @@
 
         <!-- OK Button -->
         <Style Selector="Button.ok" >
-                <Setter Property="Content"
-                        Value="Ok" />
+            <Setter Property="Content"
+                    Value="Ok" />
             <Setter Property="Background"
-                        Value="{DynamicResource AccentBrush}" />
+                    Value="{DynamicResource AccentBrush}" />
             <Setter Property="BorderBrush"
                     Value="{DynamicResource AccentBrush}" />
             <Setter Property="Width"
@@ -535,6 +537,45 @@
                         Value="{DynamicResource ButtonPressedBackgroundBrush}" />
             </Style>
         </Style>
+
+        <Style Selector="Button.severity-header-button" >
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Width"
+                    Value="32" />
+            <Setter Property="Content" >
+                <Setter.Value>
+                    <Template>
+                        <PathIcon Data="{StaticResource ExclamationTriangleGeometry}"
+                                  Width="24"
+                                  Height="24"
+                                  Foreground="{DynamicResource ForegroundBrush}" />
+                    </Template>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.priority-header-button" >
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Width"
+                    Value="32" />
+            <Setter Property="Content" >
+                <Setter.Value>
+                    <Template>
+                        <PathIcon Data="{StaticResource PriorityFlagGeometry}"
+                                  Width="24"
+                                  Height="24"
+                                  Foreground="{DynamicResource ForegroundBrush}" />
+                    </Template>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
 
         <!-- DataGrid -->
         <Style Selector="DataGridColumnHeader" >

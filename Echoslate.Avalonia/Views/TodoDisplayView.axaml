@@ -13,6 +13,7 @@
              x:DataType="local:TodoDisplayViewModelBase" >
     <UserControl.Resources>
         <converters:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
+        <converters:PriorityToBrushConverter x:Key="PriorityToBrushConverter" />
         <converters:BoolToLimeBrushConverter x:Key="BoolToLimeBrushConverter" />
         <converters:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
         <converters:BoolToBrushConverter x:Key="EditingBrushConverter"
@@ -29,31 +30,53 @@
             <MenuItem Command="{Binding DataContext.ContextMenuResetTimerCommand, ElementName=Root}"
                       Header="Reset Timer" />
             <Separator />
-            <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
-                      CommandParameter="3"
-                      Header="Set Severity: High" />
-            <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
-                      CommandParameter="2"
-                      Header="Set Severity: Mid" />
-            <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
-                      CommandParameter="1"
-                      Header="Set Severity: Low" />
-            <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
-                      CommandParameter="0"
-                      Header="Set Severity: None" />
+            <MenuItem Header="Set Priority" >
+                <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
+                          CommandParameter="4"
+                          Header="Critical" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
+                          CommandParameter="3"
+                          Header="High" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
+                          CommandParameter="2"
+                          Header="Mid" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
+                          CommandParameter="1"
+                          Header="Low" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
+                          CommandParameter="0"
+                          Header="None" />
+            </MenuItem>
             <Separator />
-            <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
-                      CommandParameter="3"
-                      Header="Set Kanban: Current" />
-            <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
-                      CommandParameter="2"
-                      Header="Set Kanban: Next" />
-            <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
-                      CommandParameter="1"
-                      Header="Set Kanban: Backlog" />
-            <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
-                      CommandParameter="0"
-                      Header="Set Kanban: None" />
+            <MenuItem Header="Set Severity" >
+                <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
+                          CommandParameter="3"
+                          Header="High" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
+                          CommandParameter="2"
+                          Header="Mid" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
+                          CommandParameter="1"
+                          Header="Low" />
+                <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
+                          CommandParameter="0"
+                          Header="None" />
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Set Kanban" >
+                <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
+                          CommandParameter="3"
+                          Header="Current" />
+                <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
+                          CommandParameter="2"
+                          Header="Next" />
+                <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
+                          CommandParameter="1"
+                          Header="Backlog" />
+                <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
+                          CommandParameter="0"
+                          Header="None" />
+            </MenuItem>
             <Separator />
             <MenuItem Command="{Binding DataContext.ContextMenuMoveToTopCommand, ElementName=Root}"
                       Header="Move to Top" />
@@ -218,13 +241,36 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~3~ Severity -->
-                        <DataGridTemplateColumn MinWidth="100"
+                        <!-- ~3~ Priority -->
+                        <DataGridTemplateColumn MinWidth="30"
                                                 CellStyleClasses="severity-cell" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate x:CompileBindings="False" >
-                                    <Button Classes="header-button"
-                                            Content="Severity"
+                                    <Button Classes="header-button, priority-header-button"
+                                            CommandParameter="priority"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border BorderThickness="1"
+                                            CornerRadius="12"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            Background="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            DoubleTapped="Priority_OnDoubleTapped"
+                                            PointerPressed="Priority_OnPointerPressed" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- ~4~ Severity -->
+                        <DataGridTemplateColumn MinWidth="30"
+                                                CellStyleClasses="severity-cell" >
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate x:CompileBindings="False" >
+                                    <Button Classes="header-button, severity-header-button"
                                             CommandParameter="severity"
                                             Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
                                 </DataTemplate>
@@ -243,7 +289,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~4~ Rank -->
+                        <!-- ~5~ Rank -->
                         <DataGridTemplateColumn MinWidth="110" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate x:CompileBindings="False" >
@@ -287,7 +333,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~5~ Timer -->
+                        <!-- ~6~ Timer -->
                         <DataGridTemplateColumn MinWidth="110" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate x:CompileBindings="False" >
@@ -311,7 +357,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~6~ To do -->
+                        <!-- ~7~ To do -->
                         <DataGridTemplateColumn Width="*"
                                                 MinWidth="300" >
                             <DataGridTemplateColumn.HeaderTemplate>

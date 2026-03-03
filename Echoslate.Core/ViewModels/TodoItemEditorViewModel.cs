@@ -36,7 +36,20 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(SeverityButtonBackground));
 		}
 	}
+	private int _currentPriority;
+	public int CurrentPriority {
+		get => _currentPriority;
+		set {
+			if (_currentPriority == value) {
+				return;
+			}
+			_currentPriority = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(PriorityButtonBackground));
+		}
+	}
 	public object SeverityButtonBackground => AppServices.BrushService.GetBrushForSeverity(CurrentSeverity);
+	public object PriorityButtonBackground => AppServices.BrushService.GetBrushForPriority(CurrentPriority);
 
 	private int _rank;
 	public int Rank {
@@ -143,6 +156,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		}
 
 		CurrentSeverity = _item.Severity;
+		CurrentPriority = _item.Priority;
 		KanbanId = _item.Kanban;
 		TodoText = _item.Todo;
 		Notes = _item.Notes;
@@ -159,6 +173,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	}
 	private void SetTodo() {
 		ResultTodoItem.Severity = CurrentSeverity;
+		ResultTodoItem.Priority = CurrentPriority;
 		switch (_item.CurrentView) {
 			case View.TodoList:
 				ResultTodoItem.Rank[_currentListHash] = Rank;
@@ -231,6 +246,10 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
 	public void CycleSeverity() {
 		CurrentSeverity++;
+	}
+	public ICommand CyclePriorityCommand => new RelayCommand(CyclePriority);
+	public void CyclePriority() {
+		CurrentPriority++;
 	}
 	public void OkCommand() {
 		Result = true;

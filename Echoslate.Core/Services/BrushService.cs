@@ -40,6 +40,12 @@ public class BrushService : IBrushService {
 	public object SeverityLowBrush => CreateBrush(ColorRgba.SeverityLow);
 	public object SeverityMedBrush => CreateBrush(ColorRgba.SeverityMed);
 	
+	public object PriorityCritBrush => CreateBrush(ColorRgba.PriorityCrit);
+	public object PriorityHighBrush => CreateBrush(ColorRgba.PriorityHigh);
+	public object PriorityMedBrush => CreateBrush(ColorRgba.PriorityMed);
+	public object PriorityLowBrush => CreateBrush(ColorRgba.PriorityLow);
+	public object PriorityNoneBrush => CreateBrush(ColorRgba.PriorityNone);
+	
 	public object AccentBlueBrush => CreateBrush(ColorRgba.AccentBlue);
 	public object LightSuccessGreenBrush => CreateBrush(ColorRgba.LightSuccessGreen);
 	public object SuccessGreenBrush => CreateBrush(ColorRgba.SuccessGreen);
@@ -90,6 +96,15 @@ public class BrushService : IBrushService {
 			1 => CreateBrush(ColorRgba.SeverityLow),
 			0 => CreateBrush(ColorRgba.SeverityNone),
 			_ => CreateBrush(ColorRgba.SeverityOff)
+		};
+	}
+	public object GetBrushForPriority(int priority) {
+		return priority switch {
+			4 => CreateBrush(ColorRgba.PriorityCrit),
+			3 => CreateBrush(ColorRgba.PriorityHigh),
+			2 => CreateBrush(ColorRgba.PriorityMed),
+			1 => CreateBrush(ColorRgba.PriorityLow),
+			_ => CreateBrush(ColorRgba.PriorityNone)
 		};
 	}
 }

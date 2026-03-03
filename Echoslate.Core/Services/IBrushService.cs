@@ -5,6 +5,7 @@ namespace Echoslate.Core.Services;
 public interface IBrushService {
 	static abstract object GetBrushForCommitType(string type);
 	object GetBrushForSeverity(int severity);
+	object GetBrushForPriority(int priority);
 
 	void SetBrushFactory(Func<ColorRgba, object> factory);
 	static abstract object CreateBrush(ColorRgba color);
@@ -44,6 +45,12 @@ public interface IBrushService {
 	object SeverityHighBrush { get; }
 	object SeverityLowBrush { get; }
 	object SeverityMedBrush { get; }
+	
+	object PriorityCritBrush { get; }
+	object PriorityHighBrush { get; }
+	object PriorityMedBrush { get; }
+	object PriorityLowBrush { get; }
+	object PriorityNoneBrush { get; }
 	
 	object AccentBlueBrush { get; }
 	object LightSuccessGreenBrush { get; }

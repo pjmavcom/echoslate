@@ -116,6 +116,17 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	private int _priority;
+	public int Priority {
+		get => _priority;
+		set {
+			if (_priority == value) {
+				return;
+			}
+			_priority = value;
+			OnPropertyChanged();
+		}
+	}
 
 	private int _kanban;
 	public int Kanban {
@@ -234,7 +245,7 @@ public class TodoItem : INotifyPropertyChanged {
 	public string NotesProblemsSolutions =>
 		"Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
 		Environment.NewLine + AddNewLines(Solution);
-	
+
 	[JsonIgnore]
 	private string TagsList {
 		get {
@@ -277,6 +288,7 @@ public class TodoItem : INotifyPropertyChanged {
 		_isTimerOn = false;
 		_isComplete = false;
 		_severity = 0;
+		_priority = 0;
 		_kanban = 0;
 		_kanbanRank = 0;
 		_tags = [];
@@ -298,6 +310,7 @@ public class TodoItem : INotifyPropertyChanged {
 			IsTimerOn = item.IsTimerOn,
 			IsComplete = item.IsComplete,
 			Severity = item.Severity,
+			Priority = item.Priority,
 			Kanban = item.Kanban,
 			KanbanRank = item.KanbanRank,
 			Rank = item.Rank,
@@ -316,7 +329,7 @@ public class TodoItem : INotifyPropertyChanged {
 			string key = kvp.Key.TrimStart('#').ToLower().CapitalizeFirstLetter();
 			if (kvp.Key != key) {
 				Log.Warn($"Changing {kvp.Key} on TodoItem: {Id}");
-			} 
+			}
 			int value = kvp.Value;
 			if (!newRank.ContainsKey(key)) {
 				newRank.Add(key, value);

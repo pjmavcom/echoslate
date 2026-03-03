@@ -13,6 +13,7 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 	public string ResultTodo;
 	public int ResultRank;
 	public int ResultSeverity;
+	public int ResultPriority;
 
 	private string _todo;
 	public string Todo {
@@ -27,6 +28,7 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 		}
 	}
 	public bool IsSeverityChangeable { get; set; }
+	public bool IsPriorityChangeable { get; set; }
 	public bool IsRankChangeable { get; set; }
 	private bool _isCompleteChangeable;
 	public bool IsCompleteChangeable {
@@ -75,7 +77,20 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(SeverityButtonBackground));
 		}
 	}
+	private int _currentPriority;
+	public int CurrentPriority {
+		get => _currentPriority;
+		set {
+			if (value > 4) {
+				value = 0;
+			}
+			_currentPriority = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(PriorityButtonBackground));
+		}
+	}
 	public object SeverityButtonBackground => AppServices.BrushService.GetBrushForSeverity(CurrentSeverity);
+	public object PriorityButtonBackground => AppServices.BrushService.GetBrushForPriority(CurrentPriority);
 
 	private readonly string _currentFilter;
 
@@ -98,6 +113,7 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 
 		_currentFilter = currentFilter;
 		_currentSeverity = items[0].Severity;
+		_currentPriority = items[0].Priority;
 		_rank = items[0].CurrentView switch {
 			View.Kanban => items[0].KanbanRank,
 			View.TodoList => items[0].CurrentFilterRank,
@@ -105,6 +121,7 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 		};
 
 		CurrentSeverity = _currentSeverity;
+		CurrentPriority = _currentPriority;
 		CompleteButtonContent = items[0].IsComplete ? "Reactivate" : "Complete";
 	}
 	private static List<string> GetCommonTags(List<TodoItem> items) {
@@ -121,6 +138,9 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 		}
 		if (IsSeverityChangeable) {
 			ResultSeverity = CurrentSeverity;
+		}
+		if (IsPriorityChangeable) {
+			ResultPriority = CurrentPriority;
 		}
 		if (IsRankChangeable) {
 			ResultRank = Rank;
@@ -174,6 +194,7 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 	public void CancelCommand() {
 		IsTagChangeable = false;
 		IsSeverityChangeable = false;
+		IsPriorityChangeable = false;
 		IsRankChangeable = false;
 		IsTodoChangeable = false;
 		IsCompleteChangeable = false;
@@ -183,8 +204,14 @@ public class TodoMultiItemEditorViewModel : INotifyPropertyChanged {
 		IsSeverityChangeable = true;
 		OnPropertyChanged(nameof(IsSeverityChangeable));
 	}
+	public void CyclePriority() {
+		CurrentPriority++;
+		IsPriorityChangeable = true;
+		OnPropertyChanged(nameof(IsPriorityChangeable));
+	}
 
 	public ICommand CycleSeverityCommand => new RelayCommand(CycleSeverity);
+	public ICommand CyclePriorityCommand => new RelayCommand(CyclePriority);
 	public ICommand RankToTopCommand => new RelayCommand(RankToTop);
 	private void RankToTop() {
 		Rank = 0;
