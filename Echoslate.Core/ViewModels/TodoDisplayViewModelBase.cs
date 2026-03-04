@@ -12,6 +12,8 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
+	public bool DebugMode { get; set; } = false;
+	
 	public AppData Data { get; set; }
 	public ObservableCollection<TodoItem> MasterList { get; set; }
 	public IEnumerable<TodoItem> DisplayedItems {
@@ -208,6 +210,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 
 
 	public virtual void Initialize(MainWindowViewModel mainWindowVM) {
+#if DEBUG
+		DebugMode = true;
+		OnPropertyChanged(nameof(DebugMode));
+#endif
+		
 		Data = mainWindowVM.Data;
 		MasterList = mainWindowVM.MasterTodoItemsList;
 		HistoryItems = mainWindowVM.MasterHistoryItemsList;
@@ -883,6 +890,10 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		foreach (TodoItem item in GetSelectedListBoxItems()) {
 			Log.Debug($"{item}");
 		}
+	});
+	public ICommand DebugGetTodoCommand => new RelayCommand(() => {
+		TodoItem? item = GetSelectedListBoxItems().FirstOrDefault();
+		Log.Test();
 	});
 	public ICommand ToggleNotesPanelCommand => new RelayCommand(ToggleNotesPanel);
 	public void ToggleNotesPanel() {

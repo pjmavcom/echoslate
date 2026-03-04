@@ -158,19 +158,21 @@ public class TodoItem : INotifyPropertyChanged {
 	[JsonIgnore]
 	public int CurrentFilterRank {
 		get {
+			string currentFilter = _currentFilter.TrimStart('#').ToLower().CapitalizeFirstLetter();
 			return CurrentView switch {
 				View.Kanban => KanbanRank,
-				View.TodoList when Rank.ContainsKey(_currentFilter) => Rank[_currentFilter],
+				View.TodoList when Rank.ContainsKey(currentFilter) => Rank[currentFilter],
 				_ => -1
 			};
 		}
 		set {
+			string currentFilter = _currentFilter.TrimStart('#').ToLower().CapitalizeFirstLetter();
 			switch (CurrentView) {
 				case View.Kanban:
 					KanbanRank = value;
 					break;
 				case View.TodoList:
-					Rank[_currentFilter] = value;
+					Rank[currentFilter] = value;
 					break;
 			}
 			OnPropertyChanged();
