@@ -11,10 +11,18 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVis" />
 
         <FontFamily x:Key="AppFont" >
-            avares://Echoslate.Core/Assets/Fonts/#Inter, sans-serif
+            avares://Echoslate.Core/Assets/Fonts/#Inter,
+            avares://Echoslate.Core/Assets/Fonts/#Noto Sans SC,
+            Segoe UI,
+            Microsoft YaHei,
+            SimSun,
+            sans-serif
         </FontFamily>
         <FontFamily x:Key="MonoFont" >
-            avares://Echoslate.Core/Assets/Fonts/#JetBrains Mono
+            avares://Echoslate.Core/Assets/Fonts/#JetBrains Mono,
+            Consolas,
+            Courier New,
+            monospace
         </FontFamily>
 
         <StaticResource x:Key="MenuFlyoutItemBackgroundPointerOver"
