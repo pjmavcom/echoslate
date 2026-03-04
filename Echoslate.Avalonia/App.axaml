@@ -862,6 +862,12 @@
         </Style>
 
 
+        <!-- Menu Separators -->
+        <Style Selector="Separator">
+                <Setter Property="Background" Value="{DynamicResource SubtleForegroundBrush}"/>
+                <Setter Property="Height" Value="2"/>
+        </Style>
+
         <!-- ContextMenu (simple override) -->
         <Style Selector="ContextMenu" >
             <Setter Property="Background"

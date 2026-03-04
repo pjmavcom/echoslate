@@ -85,10 +85,21 @@
             <Separator />
             <MenuItem Command="{Binding DataContext.ContextMenuCompleteCommand, ElementName=Root}"
                       Header="Complete" />
-            <Separator IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"/>
-            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}" Command="{Binding DataContext.DebugSearchGuidCommand, ElementName=Root}" Header="Find GUID" />
-            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}" Command="{Binding DataContext.DebugPrintTodoCommand, ElementName=Root}" Header="Debug Print To do" />
-            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}" Command="{Binding DataContext.DebugGetTodoCommand, ElementName=Root}" Header="Get Todo" />
+            
+            <Separator Background="{DynamicResource DarkDangerRedBrush}"
+                       IsVisible="{Binding DataContext.DebugMode, ElementName=Root}" />
+            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                      Background="{DynamicResource DarkDangerRedBrush}"
+                      Command="{Binding DataContext.DebugSearchGuidCommand, ElementName=Root}"
+                      Header="Find GUID" />
+            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                      Background="{DynamicResource DarkDangerRedBrush}"
+                      Command="{Binding DataContext.DebugPrintTodoCommand, ElementName=Root}"
+                      Header="Debug Print To do" />
+            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                      Background="{DynamicResource DarkDangerRedBrush}"
+                      Command="{Binding DataContext.DebugGetTodoCommand, ElementName=Root}"
+                      Header="Get Todo" />
         </ContextMenu>
 
     </UserControl.Resources>
