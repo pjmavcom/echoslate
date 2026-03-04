@@ -100,6 +100,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			if (_prioritySortTag == value) {
 				return;
 			}
+			_previousSort = null;
 			_prioritySortTag = value;
 			RefreshAll();
 			ApplyPriorityTagSorting();
@@ -152,6 +153,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		get => _currentSort;
 		set {
 			_currentSort = value;
+			PrioritySortTag = null;
 			RefreshDisplayedItems();
 			OnPropertyChanged();
 		}
