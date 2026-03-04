@@ -142,8 +142,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		set {
 			_commitScope = value;
 			OnPropertyChanged();
-			CurrentHistoryItem.Scope = _commitScope;
-			CurrentHistoryItem.GenerateCommitMessage();
+			if (!string.IsNullOrEmpty(_commitScope)) {
+				CurrentHistoryItem.Scope = _commitScope;
+				CurrentHistoryItem.GenerateCommitMessage();
+			}
 			OnPropertyChanged(nameof(CommitMessage));
 		}
 	}
@@ -153,8 +155,10 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		set {
 			_customScope = value;
 			OnPropertyChanged();
-			CurrentHistoryItem.Scope = _customScope;
-			CurrentHistoryItem.GenerateCommitMessage();
+			if (!string.IsNullOrEmpty(_customScope)) {
+				CurrentHistoryItem.Scope = _customScope;
+				CurrentHistoryItem.GenerateCommitMessage();
+			}
 			OnPropertyChanged(nameof(CommitMessage));
 			_commitScope = "";
 			OnPropertyChanged(nameof(CommitScope));
@@ -418,7 +422,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			CopyCommitMessage();
 			return;
 		}
-			
+
 		if (!string.IsNullOrWhiteSpace(CustomScope)) {
 			var newScope = CustomScope.Replace(" ", "-");
 			if (!CommitScopes.Contains(newScope)) {
@@ -507,7 +511,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			hItem.IsCommitted = false;
 			hItem.CommitDate = DateTime.MinValue;
 			hItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
-			
+
 			Log.Print($"Undoing commit for: {item.Title}");
 			OnPropertyChanged(nameof(IsCommitted));
 			OnPropertyChanged(nameof(CanBeCommitted));
