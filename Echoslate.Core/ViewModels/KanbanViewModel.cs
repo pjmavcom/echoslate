@@ -59,7 +59,7 @@ public class KanbanViewModel : TodoDisplayViewModelBase {
 			return;
 		}
 		TodoItem item = new TodoItem() { Todo = NewTodoText, Severity = NewTodoSeverity };
-		item.DateTimeStarted = DateTime.Now;
+		item.DateTimeStarted = DateTimeOffset.Now;
 		ExpandHashTags(item);
 		item.Kanban = CurrentFilter switch {
 			"None" => 0,

@@ -128,7 +128,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	public DateTime LastBackupAttempt { get; set; }
+	public DateTimeOffset LastBackupAttempt { get; set; }
 	private const double DebounceSeconds = 1.5;
 
 	private TimeSpan _backupTimer;
@@ -271,7 +271,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		AttemptAutoSave();
 	}
 	private void AttemptAutoSave() {
-		if ((DateTime.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
+		if ((DateTimeOffset.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
 			_ = AutoSaveAsync();
 			Log.Print("Autosaving");
 			IsPendingSave = false;
@@ -430,7 +430,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		try {
 			await SaveToMainFileAsync();
 			ClearChangedFlag();
-			LastBackupAttempt = DateTime.Now;
+			LastBackupAttempt = DateTimeOffset.Now;
 		} catch (Exception ex) {
 			Log.Error($"Auto save failed: {ex.Message}");
 		}

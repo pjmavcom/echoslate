@@ -122,7 +122,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	}
 	public bool CanBeCommitted => (SelectedHistoryItem.CompletedTodoItems.Count > 0 && !SelectedHistoryItem.IsCommitted);
 	public bool IsCommitted => SelectedHistoryItem.IsCommitted;
-	public DateTime CommitDate => SelectedHistoryItem.CommitDate;
+	public DateTimeOffset CommitDate => SelectedHistoryItem.CommitDate;
 	public string CommitMessage => SelectedHistoryItem.FullCommitMessage;
 
 	private string _commitType;
@@ -415,7 +415,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 	public void CommitCurrent() {
 		if (SelectedHistoryItem != _allHistoryItems[0] && !SelectedHistoryItem.IsCommitted) {
 			SelectedHistoryItem.IsCommitted = true;
-			SelectedHistoryItem.CommitDate = DateTime.Now;
+			SelectedHistoryItem.CommitDate = DateTimeOffset.Now;
 			SelectedHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
 			SelectedHistoryItem.GenerateCommitMessage();
 			OnPropertyChanged(nameof(CanBeCommitted));
@@ -435,7 +435,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		CurrentHistoryItem = _allHistoryItems[0];
 		CurrentHistoryItem.Type = CommitType;
 		CurrentHistoryItem.IsCommitted = true;
-		CurrentHistoryItem.CommitDate = DateTime.Now;
+		CurrentHistoryItem.CommitDate = DateTimeOffset.Now;
 		CurrentHistoryItem.CompletedTodoItems.CollectionChanged -= (s, e) => UpdateCategorizedLists();
 
 		CurrentHistoryItem.GenerateCommitMessage();
@@ -509,7 +509,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 				continue;
 			}
 			hItem.IsCommitted = false;
-			hItem.CommitDate = DateTime.MinValue;
+			hItem.CommitDate = DateTimeOffset.MinValue;
 			hItem.CompletedTodoItems.CollectionChanged += (s, e) => UpdateCategorizedLists();
 
 			Log.Print($"Undoing commit for: {item.Title}");

@@ -1,11 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Echoslate.Core.Converters;
 using Echoslate.Core.Services;
 
 namespace Echoslate.Core.Models;
 
 public class AppDataLoader {
 	private static readonly JsonSerializerOptions Options = new() {
+		Converters = { new LegacyDateTimeOffsetConverter() },
 		WriteIndented = true,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

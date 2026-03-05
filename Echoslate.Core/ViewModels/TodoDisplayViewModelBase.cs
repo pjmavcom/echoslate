@@ -851,7 +851,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			Todo = NewTodoText,
 			Severity = NewTodoSeverity
 		};
-		item.DateTimeStarted = DateTime.Now;
+		item.DateTimeStarted = DateTimeOffset.Now;
 		ExpandHashTags(item);
 		if (currentView == View.TodoList && CurrentFilter != "All") {
 			item.AddTag(CurrentFilter);

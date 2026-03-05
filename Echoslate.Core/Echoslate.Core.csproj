@@ -26,7 +26,6 @@
 
     <ItemGroup>
         <Folder Include="Assets\Fonts\"/>
-        <Folder Include="Converters\"/>
     </ItemGroup>
 
     <ItemGroup>

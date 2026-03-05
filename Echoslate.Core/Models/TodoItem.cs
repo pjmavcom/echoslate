@@ -62,16 +62,16 @@ public class TodoItem : INotifyPropertyChanged {
 		}
 	}
 
-	private DateTime _dateTimeStarted;
-	public DateTime DateTimeStarted {
+	private DateTimeOffset _dateTimeStarted;
+	public DateTimeOffset DateTimeStarted {
 		get => _dateTimeStarted;
 		set {
 			_dateTimeStarted = value;
 			OnPropertyChanged();
 		}
 	}
-	private DateTime _dateTimeCompleted;
-	public DateTime DateTimeCompleted {
+	private DateTimeOffset _dateTimeCompleted;
+	public DateTimeOffset DateTimeCompleted {
 		get => _dateTimeCompleted;
 		set {
 			_dateTimeCompleted = value;
@@ -103,7 +103,7 @@ public class TodoItem : INotifyPropertyChanged {
 		get => _isComplete;
 		set {
 			_isComplete = value;
-			DateTimeCompleted = IsComplete ? DateTime.Now : DateTime.MinValue;
+			DateTimeCompleted = IsComplete ? DateTimeOffset.Now : DateTimeOffset.MinValue;
 			OnPropertyChanged();
 		}
 	}
@@ -285,8 +285,8 @@ public class TodoItem : INotifyPropertyChanged {
 		_problem = string.Empty;
 		_solution = string.Empty;
 		_timeTaken = new TimeSpan();
-		_dateTimeStarted = DateTime.Now;
-		_dateTimeCompleted = DateTime.MaxValue;
+		_dateTimeStarted = DateTimeOffset.Now;
+		_dateTimeCompleted = DateTimeOffset.MaxValue;
 		_isTimerOn = false;
 		_isComplete = false;
 		_severity = 0;
