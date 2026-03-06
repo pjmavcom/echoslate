@@ -33,6 +33,7 @@
                         ResourceKey="LightAccentBrush" />
         <StreamGeometry x:Key="ExclamationTriangleGeometry" >M12 2L1 21h22L12 2zm0 3.5L20.5 19H3.5L12 5.5zm0 5v5h-1v-5h1zm0 7h-1v-1h1v1z</StreamGeometry>
         <StreamGeometry x:Key="PriorityFlagGeometry" >M 0 0 v -17 h 2 l 14 5 l -14 6 v 6 h -2 z</StreamGeometry>
+        <StreamGeometry x:Key="BellGeometry" >M 0 0 l 2 -3 v -4 l 2 -4 l 2 -1 l -1 -1 l 1 -1 h 1 l 1 1 l -1 1 l 2 1 l 2 4 v 4 l 2 3 h -6 l 1 1 l -1 1 l -1 0 l -1 -1 l 1 -1 z</StreamGeometry>
     </Application.Resources>
     <Application.Styles>
         <SimpleTheme />
@@ -563,6 +564,25 @@
                     </Template>
                 </Setter.Value>
             </Setter>
+        </Style>
+        
+        <Style Selector="Button.reminder-header-button" >
+                <Setter Property="HorizontalContentAlignment"
+                        Value="Center" />
+                <Setter Property="VerticalContentAlignment"
+                        Value="Center" />
+                <Setter Property="Width"
+                        Value="32" />
+                <Setter Property="Content" >
+                        <Setter.Value>
+                                <Template>
+                                        <PathIcon Data="{StaticResource BellGeometry}"
+                                                  Width="24"
+                                                  Height="24"
+                                                  Foreground="{DynamicResource ForegroundBrush}" />
+                                </Template>
+                        </Setter.Value>
+                </Setter>
         </Style>
 
         <Style Selector="Button.priority-header-button" >

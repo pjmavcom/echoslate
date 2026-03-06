@@ -37,6 +37,7 @@ public interface IDialogService {
 	Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags);
 	Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames);
 	Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null);
+	Task<ReminderEditorViewModel?> ShowReminderEditorAsync(List<TodoItem> items);
 
 	Task<bool> ShowDialogAsync(object view, string title);
 	Task<T?> ShowDialogAsync<T>(object view, string title);

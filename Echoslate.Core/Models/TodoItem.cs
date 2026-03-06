@@ -15,6 +15,26 @@ public enum View {
 
 [Serializable]
 public class TodoItem : INotifyPropertyChanged {
+	private ReminderInfo _reminder;
+	public ReminderInfo Reminder {
+		get => _reminder;
+		set {
+			if (_reminder == value) {
+				return;
+			}
+			_reminder = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(HasActiveReminder));
+			OnPropertyChanged(nameof(DueDate));
+		}
+	}
+	public bool HasActiveReminder {
+		get => Reminder.IsActive;
+	}
+	public string DueDate {
+		get => HasActiveReminder ? $"{Reminder.DueDate:yyy-MM-dd - HH:mm}" : "";
+	}
+
 	private Guid _id;
 	[JsonIgnore]
 	public Guid Id {
@@ -296,6 +316,7 @@ public class TodoItem : INotifyPropertyChanged {
 		_tags = [];
 		_rank = [];
 		_currentView = View.TodoList;
+		_reminder = new ReminderInfo();
 		NormalizeData();
 	}
 	public static TodoItem Copy(TodoItem item, bool createNewGuid = false) {
@@ -317,9 +338,17 @@ public class TodoItem : INotifyPropertyChanged {
 			KanbanRank = item.KanbanRank,
 			Rank = item.Rank,
 			CurrentView = item.CurrentView,
+			Reminder = item.Reminder,
 		};
 		newItem.NormalizeData();
 		return newItem;
+	}
+
+	public void SetReminder() {
+		
+	}
+	public void ClearReminder() {
+		Reminder.Clear();
 	}
 	public void NormalizeData() {
 		NormalizeRankKeys();

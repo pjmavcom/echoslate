@@ -1,0 +1,97 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.ReminderEditorWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+             x:DataType="viewModels:ReminderEditorViewModel"
+             Background="{DynamicResource AppDarkBackgroundBrush}"
+             Foreground="{DynamicResource ForegroundBrush}" >
+
+    <StackPanel Margin="20"
+                Spacing="16" >
+        <CheckBox IsChecked="{Binding HasReminder}"
+                  Content="Enable reminder" />
+
+        <Grid IsEnabled="{Binding HasReminder}"
+              ColumnDefinitions="*, Auto"
+              RowDefinitions="Auto,Auto" >
+            <CalendarDatePicker Grid.Row="0"
+                                Grid.Column="0"
+                                SelectedDate="{Binding DueDate}" />
+            <StackPanel Grid.Row="0"
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8" >
+                <TextBlock Width="60"
+                           FontFamily="{StaticResource MonoFont}"
+                           Foreground="{DynamicResource ForegroundBrush}"
+                           behaviors:MouseWheelNumericBehavior.Enabled="True"
+                           VerticalAlignment="Center"
+                           behaviors:MouseWheelNumericBehavior.Minimum="-1"
+                           behaviors:MouseWheelNumericBehavior.Maximum="24"
+                           behaviors:MouseWheelNumericBehavior.TargetProperty="DueHour"
+                           Background="{DynamicResource TransparentBrush}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Text="{Binding DueHour}"
+                           TextAlignment="Center"
+                           ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                <TextBlock Text=":"
+                           VerticalAlignment="Center" />
+                <TextBlock Width="60"
+                           FontFamily="{StaticResource MonoFont}"
+                           Foreground="{DynamicResource ForegroundBrush}"
+                           behaviors:MouseWheelNumericBehavior.Enabled="True"
+                           VerticalAlignment="Center"
+                           behaviors:MouseWheelNumericBehavior.Minimum="-15"
+                           behaviors:MouseWheelNumericBehavior.Maximum="60"
+                           behaviors:MouseWheelNumericBehavior.Snap="1"
+                           behaviors:MouseWheelNumericBehavior.TargetProperty="DueMinute"
+                           Background="{DynamicResource TransparentBrush}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Text="{Binding DueMinute}"
+                           TextAlignment="Center"
+                           ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+            </StackPanel>
+        </Grid>
+
+        <CheckBox IsChecked="{Binding IsRecurring}"
+                  Content="Recurring" />
+        <StackPanel IsVisible="{Binding IsRecurring}"
+                    Spacing="8" >
+            <ComboBox SelectedItem="{Binding Frequency}"
+                      ItemsSource="{Binding FrequencyOptions}"
+                      DisplayMemberBinding="{Binding Display}"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8" >
+            <TextBlock Text="Remind in advance:"
+                       VerticalAlignment="Center" />
+            <ComboBox SelectedIndex="{Binding AdvanceMinutes}"
+                      ItemsSource="{Binding AdvanceOptions}" />
+        </StackPanel>
+
+        <TextBox Text="{Binding Message}"
+                 AcceptsReturn="True"
+                 Height="80"
+                 Watermark="Custom message (optional)" />
+
+        <TextBlock Text="{Binding PreviewText}"
+                   FontStyle="Italic" />
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8" >
+            <Button Content="Cancel"
+                    IsCancel="True"
+                    Click="Cancel_Click" />
+            <Button Content="Save"
+                    IsDefault="True"
+                    Click="Save_Click" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

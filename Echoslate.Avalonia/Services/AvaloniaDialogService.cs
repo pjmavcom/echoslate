@@ -63,6 +63,11 @@ public class AvaloniaDialogService : IDialogService {
 		ChooseDraftWindow view = new ChooseDraftWindow(vm);
 		return await ShowDialogAsync<ChooseDraftViewModel>(view, "Append to which draft?");
 	}
+	public async Task<ReminderEditorViewModel?> ShowReminderEditorAsync(List<TodoItem> items) {
+		ReminderEditorViewModel vm = new ReminderEditorViewModel(items);
+		ReminderEditorWindow view = new ReminderEditorWindow(vm);
+		return await ShowDialogAsync<ReminderEditorViewModel>(view, "Reminder Editor");
+	}
 	public Task<bool> ShowDialogAsync(object view, string title) {
 		return ShowDialogAsync(view, title, _owner);
 	}

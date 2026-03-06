@@ -1,10 +1,10 @@
-<UserControl
-    x:Class="Echoslate.Avalonia.Views.ItemNotesPanelView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
-    x:DataType="views:ItemNotesPanelView">
-    <Grid Margin="10" DataContext="{Binding SelectedItem}">
+<UserControl x:Class="Echoslate.Avalonia.Views.ItemNotesPanelView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
+             x:DataType="views:ItemNotesPanelView" >
+    <Grid Margin="10"
+          DataContext="{Binding SelectedItem}" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="65" />
@@ -18,130 +18,115 @@
             <RowDefinition Height="5*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Content="Title:" />
-        <Border
-            Grid.Row="1"
-            Margin="8,4"
-            Background="{DynamicResource BorderDarkBrush}"
-            CornerRadius="7">
+        <Label Grid.Row="0"
+               Content="Title:" />
+        <Border Grid.Row="1"
+                Margin="8,4"
+                Background="{DynamicResource BorderDarkBrush}"
+                CornerRadius="7" >
             <Grid>
-                <Border
-                    BorderBrush="{DynamicResource BorderSilverBrush}"
-                    BorderThickness="7,7,0,0"
-                    CornerRadius="7" />
-                <Border
-                    Margin="-1"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="0,0,7,7"
-                    CornerRadius="7"
-                    IsHitTestVisible="False" />
-                <TextBox
-                    Margin="1"
-                    AcceptsReturn="False"
-                    Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Todo, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
-                    TextWrapping="WrapWithOverflow">
+                <Border BorderBrush="{DynamicResource BorderSilverBrush}"
+                        BorderThickness="7,7,0,0"
+                        CornerRadius="7" />
+                <Border Margin="-1"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="0,0,7,7"
+                        CornerRadius="7"
+                        IsHitTestVisible="False" />
+                <TextBox Margin="1"
+                         AcceptsReturn="False"
+                         Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Todo, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
+                         TextWrapping="WrapWithOverflow" >
                 </TextBox>
             </Grid>
         </Border>
-        <Label Grid.Row="2" Content="Notes:" />
-        <Border
-            Grid.Row="3"
-            Margin="8,4"
-            Background="{DynamicResource BorderDarkBrush}"
-            CornerRadius="7">
+        <Label Grid.Row="2"
+               Content="Notes:" />
+        <Border Grid.Row="3"
+                Margin="8,4"
+                Background="{DynamicResource BorderDarkBrush}"
+                CornerRadius="7" >
             <Grid>
-                <Border
-                    BorderBrush="{DynamicResource BorderSilverBrush}"
-                    BorderThickness="7,7,0,0"
-                    CornerRadius="7" />
-                <Border
-                    Margin="-1"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
-                    BorderThickness="0,0,7,7"
-                    CornerRadius="7"
-                    IsHitTestVisible="False" />
-                <TextBox
-                    Margin="1"
-                    AcceptsReturn="True"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Notes, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="WrapWithOverflow">
+                <Border BorderBrush="{DynamicResource BorderSilverBrush}"
+                        BorderThickness="7,7,0,0"
+                        CornerRadius="7" />
+                <Border Margin="-1"
+                        BorderBrush="{DynamicResource BorderMidBrush}"
+                        BorderThickness="0,0,7,7"
+                        CornerRadius="7"
+                        IsHitTestVisible="False" />
+                <TextBox Margin="1"
+                         AcceptsReturn="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Notes, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="WrapWithOverflow" >
                 </TextBox>
             </Grid>
         </Border>
-        <Label Grid.Row="4" Content="Problem:" />
-        <Border
-            Grid.Row="5"
-            Grid.Column="0"
-            Margin="8,4"
-            Background="{DynamicResource BorderDarkBrush}"
-            CornerRadius="7">
+        <Label Grid.Row="4"
+               Content="Problem:" />
+        <Border Grid.Row="5"
+                Grid.Column="0"
+                Margin="8,4"
+                Background="{DynamicResource BorderDarkBrush}"
+                CornerRadius="7" >
             <Grid>
-                <Border
-                    BorderBrush="{DynamicResource BorderSilverBrush}"
-                    BorderThickness="7,7,0,0"
-                    CornerRadius="7" />
-                <Border
-                    Margin="-1"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
-                    BorderThickness="0,0,7,7"
-                    CornerRadius="7"
-                    IsHitTestVisible="False" />
-                <TextBox
-                    Margin="1"
-                    AcceptsReturn="True"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Problem, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="WrapWithOverflow">
+                <Border BorderBrush="{DynamicResource BorderSilverBrush}"
+                        BorderThickness="7,7,0,0"
+                        CornerRadius="7" />
+                <Border Margin="-1"
+                        BorderBrush="{DynamicResource BorderMidBrush}"
+                        BorderThickness="0,0,7,7"
+                        CornerRadius="7"
+                        IsHitTestVisible="False" />
+                <TextBox Margin="1"
+                         AcceptsReturn="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Problem, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="WrapWithOverflow" >
                 </TextBox>
             </Grid>
         </Border>
-        <Label Grid.Row="6" Content="Solution:" />
-        <Border
-            Grid.Row="7"
-            Margin="8,4"
-            Background="{DynamicResource BorderDarkBrush}"
-            CornerRadius="7">
+        <Label Grid.Row="6"
+               Content="Solution:" />
+        <Border Grid.Row="7"
+                Margin="8,4"
+                Background="{DynamicResource BorderDarkBrush}"
+                CornerRadius="7" >
             <Grid>
-                <Border
-                    BorderBrush="{DynamicResource BorderSilverBrush}"
-                    BorderThickness="7,7,0,0"
-                    CornerRadius="7" />
-                <Border
-                    Margin="-1"
-                    BorderBrush="{DynamicResource BorderMidBrush}"
-                    BorderThickness="0,0,7,7"
-                    CornerRadius="7"
-                    IsHitTestVisible="False" />
-                <TextBox
-                    Margin="1"
-                    AcceptsReturn="True"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Solution, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="WrapWithOverflow">
+                <Border BorderBrush="{DynamicResource BorderSilverBrush}"
+                        BorderThickness="7,7,0,0"
+                        CornerRadius="7" />
+                <Border Margin="-1"
+                        BorderBrush="{DynamicResource BorderMidBrush}"
+                        BorderThickness="0,0,7,7"
+                        CornerRadius="7"
+                        IsHitTestVisible="False" />
+                <TextBox Margin="1"
+                         AcceptsReturn="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Text="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Solution, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="WrapWithOverflow" >
                 </TextBox>
             </Grid>
         </Border>
-        <StackPanel Grid.Row="8" Orientation="Horizontal">
-            <Label
-                Margin="2"
-                HorizontalAlignment="Right"
-                Content="Tags:" />
-                <!-- Width="Auto" -->
-            <Button
-                Height="35"
-                Command="{Binding NotesPanelAddTagCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"
-                Content="Edit Tags"
-                IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <StackPanel Grid.Row="8"
+                    Orientation="Horizontal" >
+            <Label Margin="2"
+                   HorizontalAlignment="Right"
+                   Content="Tags:" />
+            <!-- Width="Auto" -->
+            <Button Height="35"
+                    Command="{Binding NotesPanelAddTagCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"
+                    Content="Edit Tags"
+                    IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         </StackPanel>
-        <ListBox
-            Grid.Row="9"
-            Margin="3"
-            ItemsSource="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Tags}" />
-        <Button
-            Grid.Row="10"
-            Classes="complete"
-            Command="{Binding NotesPanelCompleteCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"
-            IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <ListBox Grid.Row="9"
+                 Margin="3"
+                 ItemsSource="{Binding $parent[views:ItemNotesPanelView].SelectedItem.Tags}" />
+        <Button Grid.Row="10"
+                Classes="complete"
+                Command="{Binding NotesPanelCompleteCommand, RelativeSource={RelativeSource AncestorType=views:ItemNotesPanelView}}"
+                IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

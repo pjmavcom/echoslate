@@ -22,6 +22,8 @@ public enum PomoActiveState {
 
 public class MainWindowViewModel : INotifyPropertyChanged {
 	private PeriodicTimer? _timer;
+	private int _reminderTimerTicks;
+	private int _reminderTimerTicksMax = 15;
 
 	public AppData Data;
 	public AppSettings AppSettings { get; set; }
@@ -254,7 +256,21 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 				UpdateTodoTimers();
 				UpdatePomoTimer();
 				UpdateAutoSaveTimer();
+				UpdateReminderTimer();
 			});
+		}
+	}
+	public async void UpdateReminderTimer() {
+		_reminderTimerTicks++;
+		if (_reminderTimerTicks >= _reminderTimerTicksMax) {
+			foreach (TodoItem item in MasterTodoItemsList) {
+				if (item.HasActiveReminder) {
+					if (item.Reminder.DueDate <= DateTimeOffset.Now) {
+						await AppServices.DialogService.ShowAsync("Time", "teimer", DialogButton.Ok, DialogIcon.Error, null);
+					}
+				}
+			}
+			_reminderTimerTicks = 0;
 		}
 	}
 	public void StopTimer() {

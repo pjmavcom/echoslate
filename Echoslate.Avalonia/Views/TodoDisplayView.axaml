@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
              xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
              xmlns:core="clr-namespace:Echoslate.Core.Models;assembly=Echoslate.Core"
-             x:Name="Root"
+             x:Name="Root"      
              d:DesignHeight="500"
              d:DesignWidth="1400"
              x:DataType="local:TodoDisplayViewModelBase" >
@@ -85,7 +85,7 @@
             <Separator />
             <MenuItem Command="{Binding DataContext.ContextMenuCompleteCommand, ElementName=Root}"
                       Header="Complete" />
-            
+
             <Separator Background="{DynamicResource DarkDangerRedBrush}"
                        IsVisible="{Binding DataContext.DebugMode, ElementName=Root}" />
             <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
@@ -239,7 +239,7 @@
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate x:CompileBindings="False" >
                                     <Button Classes="header-button"
-                                            Content="Date"
+                                            Content="Created"
                                             CommandParameter="date"
                                             Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
                                 </DataTemplate>
@@ -253,7 +253,46 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~3~ Priority -->
+                        <!-- ~3~ Has Reminder -->
+                        <DataGridTemplateColumn MinWidth="30" >
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate x:CompileBindings="False" >
+                                    <Button Classes="header-button, reminder-header-button"
+                                            CommandParameter="hasreminder"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:CompileBindings="False" >
+                                    <CheckBox IsChecked="{Binding HasActiveReminder, Mode=OneWay}"
+                                              Command="{Binding DataContext.SetReminderCommand, ElementName=Root}"
+                                              CommandParameter="{Binding}"
+                                              Foreground="{DynamicResource ForegroundBrush}"
+                                              FontFamily="{StaticResource MonoFont}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <!-- ~4~ Due Date -->
+                        <DataGridTemplateColumn MinWidth="170" >
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate x:CompileBindings="False" >
+                                    <Button Classes="header-button"
+                                            Content="Due Date"
+                                            CommandParameter="duedate"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding DueDate, StringFormat=yyyy-MM-dd - HH:mm}"
+                                           Foreground="{DynamicResource ForegroundBrush}"
+                                           FontFamily="{StaticResource MonoFont}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- ~5~ Priority -->
                         <DataGridTemplateColumn MinWidth="30"
                                                 CellStyleClasses="severity-cell" >
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -277,7 +316,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~4~ Severity -->
+                        <!-- ~6~ Severity -->
                         <DataGridTemplateColumn MinWidth="30"
                                                 CellStyleClasses="severity-cell" >
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -301,7 +340,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~5~ Rank -->
+                        <!-- ~7~ Rank -->
                         <DataGridTemplateColumn MinWidth="110" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate x:CompileBindings="False" >
@@ -345,7 +384,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~6~ Timer -->
+                        <!-- ~8~ Timer -->
                         <DataGridTemplateColumn MinWidth="110" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate x:CompileBindings="False" >
@@ -369,7 +408,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~7~ To do -->
+                        <!-- ~9~ To do -->
                         <DataGridTemplateColumn Width="*"
                                                 MinWidth="300" >
                             <DataGridTemplateColumn.HeaderTemplate>
