@@ -7,31 +7,59 @@ public enum RecurringFrequency {
 	None = 0,
 	Hourly = 1,
 	Daily = 24,
-	Weekly = 24*7,
-	Monthly = 24*30,
-	Yearly = 24*365
+	Weekly = 24 * 7,
+	Monthly = 24 * 30,
+	Yearly = 24 * 365
 }
 
 public class ReminderInfo : INotifyPropertyChanged {
-	private bool _isActive;
-	public bool IsActive {
-		get => _isActive;
+	private Guid _itemId;
+	public Guid ItemId {
+		get => _itemId;
 		set {
-			if (_isActive == value) {
+			if (_itemId == value) {
 				return;
 			}
-			_isActive = value;
+			_itemId = value;
 			OnPropertyChanged();
 		}
 	}
-	private DateTimeOffset _dueDate;
-	public DateTimeOffset DueDate {
+	private string _todo;
+	public string Todo {
+		get => _todo;
+		set {
+			if (_todo == value) {
+				return;
+			}
+			_todo = value;
+			OnPropertyChanged();
+		}
+	}
+	public bool HasDueDate {
+		get => DueDate != DateTime.MinValue;
+	}
+	private DateTime _dueDate;
+	public DateTime DueDate {
 		get => _dueDate;
 		set {
 			if (_dueDate == value) {
 				return;
 			}
 			_dueDate = value;
+			OnPropertyChanged();
+		}
+	}
+	public bool IsSnoozeActive {
+		get => SnoozeUntil != DateTime.MinValue;
+	}
+	private DateTime _snoozeUntil;
+	public DateTime SnoozeUntil {
+		get => _snoozeUntil;
+		set {
+			if (_snoozeUntil == value) {
+				return;
+			}
+			_snoozeUntil = value;
 			OnPropertyChanged();
 		}
 	}
@@ -46,25 +74,25 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private RecurringFrequency _frequency;
-	public RecurringFrequency Frequency {
-		get => _frequency;
+	private RecurringFrequency _recurringFrequency;
+	public RecurringFrequency RecurringFrequency {
+		get => _recurringFrequency;
 		set {
-			if (_frequency == value) {
+			if (_recurringFrequency == value) {
 				return;
 			}
-			_frequency = value;
+			_recurringFrequency = value;
 			OnPropertyChanged();
 		}
 	}
-	private int _advanceMinutes;
-	public int AdvanceMinutes {
-		get => _advanceMinutes;
+	private int _leadTimeMinutes;
+	public int LeadTimeMinutes {
+		get => _leadTimeMinutes;
 		set {
-			if (_advanceMinutes == value) {
+			if (_leadTimeMinutes == value) {
 				return;
 			}
-			_advanceMinutes = value;
+			_leadTimeMinutes = value;
 			OnPropertyChanged();
 		}
 	}
@@ -79,8 +107,8 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private DateTimeOffset _lastNotified;
-	public DateTimeOffset LastNotified {
+	private DateTime _lastNotified;
+	public DateTime LastNotified {
 		get => _lastNotified;
 		set {
 			if (_lastNotified == value) {
@@ -90,58 +118,60 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private bool _isSnoozeActive;
-	public bool IsSnoozeActive {
-		get => _isSnoozeActive;
-		set {
-			if (_isSnoozeActive == value) {
-				return;
+	public bool IsDueNow {
+		get {
+			if (!HasDueDate) {
+				return false;
 			}
-			_isSnoozeActive = value;
-			OnPropertyChanged();
+			if (DueDate - new TimeSpan(0, LeadTimeMinutes, 0)> DateTime.Now) {
+				return false;
+			}
+			return !IsSnoozeActive || SnoozeUntil < DateTime.Now;
 		}
 	}
-	private DateTimeOffset _snoozeUntil;
-	public DateTimeOffset SnoozeUntil {
-		get => _snoozeUntil;
-		set {
-			if (_snoozeUntil == value) {
-				return;
+	public bool IsActive => HasDueDate || IsSnoozeActive;
+	public string DueDateString {
+		get {
+			if (IsSnoozeActive) {
+				return $"{SnoozeUntil:yyyy-MM-dd - HH:mm}";
 			}
-			_snoozeUntil = value;
-			OnPropertyChanged();
+			if (HasDueDate) {
+				return $"{DueDate:yyy-MM-dd - HH:mm}";
+			}
+			return "";
 		}
 	}
 
-
-	public void Clear() {
-		IsActive = false;
-		IsSnoozeActive = false;
+	public ReminderInfo() {
+		DueDate = DateTime.MinValue;
+		SnoozeUntil = DateTime.MinValue;
+		ItemId = Guid.NewGuid();
 	}
 	public ReminderInfo Copy() {
 		ReminderInfo info = new() {
-			IsActive = IsActive,
-			IsSnoozeActive = IsSnoozeActive,
+			ItemId = ItemId,
 			DueDate = DueDate,
-			Frequency = Frequency,
-			AdvanceMinutes = AdvanceMinutes,
+			SnoozeUntil = SnoozeUntil,
+			RecurringFrequency = RecurringFrequency,
+			LeadTimeMinutes = LeadTimeMinutes,
 			Message = Message,
 			LastNotified = LastNotified,
-			SnoozeUntil = SnoozeUntil,
 			IsRecurring = IsRecurring,
-
 		};
 		return info;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void Clear() {
+		DueDate = DateTime.MinValue;
+		SnoozeUntil = DateTime.MinValue;
+	}
+	public void UpdateValues() {
+		OnPropertyChanged(nameof(DueDateString));
+	}
+	public void SetSnooze(TimeSpan snoozeTime) {
+		SnoozeUntil = DateTime.Now + snoozeTime;
+		OnPropertyChanged(nameof(IsSnoozeActive));
+	}
+
 	public event PropertyChangedEventHandler? PropertyChanged;
 	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

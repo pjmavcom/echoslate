@@ -16,6 +16,7 @@ public enum View {
 [Serializable]
 public class TodoItem : INotifyPropertyChanged {
 	private ReminderInfo _reminder;
+	[JsonIgnore]
 	public ReminderInfo Reminder {
 		get => _reminder;
 		set {
@@ -25,14 +26,38 @@ public class TodoItem : INotifyPropertyChanged {
 			_reminder = value;
 			OnPropertyChanged();
 			OnPropertyChanged(nameof(HasActiveReminder));
-			OnPropertyChanged(nameof(DueDate));
+			OnPropertyChanged(nameof(ReminderDueDateString));
+			OnPropertyChanged(nameof(IsReminderDueNow));
+			OnPropertyChanged(nameof(IsReminderSnoozing));
 		}
 	}
+	[JsonIgnore]
 	public bool HasActiveReminder {
-		get => Reminder.IsActive;
+		get => Reminder.HasDueDate;
 	}
-	public string DueDate {
-		get => HasActiveReminder ? $"{Reminder.DueDate:yyy-MM-dd - HH:mm}" : "";
+	[JsonIgnore]
+	public string ReminderDueDateString {
+		get {
+			if (IsReminderSnoozing) {
+				return $"{Reminder.SnoozeUntil:yyyy-MM-dd - HH:mm}";
+			}
+			if (HasActiveReminder) {
+				return $"{Reminder.DueDate:yyy-MM-dd - HH:mm}";
+			}
+			return "";
+		}
+	}
+	[JsonIgnore]
+	public bool IsReminderDueNow {
+		get => Reminder.IsDueNow;
+	}
+	[JsonIgnore]
+	public bool IsReminderSnoozing {
+		get => Reminder.IsSnoozeActive;
+	}
+	[JsonIgnore]
+	public bool IsReminderActive {
+		get => Reminder.IsActive;
 	}
 
 	private Guid _id;
@@ -54,6 +79,10 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	[JsonIgnore]
+	public DateTime ReminderDueDate => Reminder.DueDate;
+	[JsonIgnore]
+	public string ReminderMessage => Reminder.Message;
 
 	private string _notes;
 	public string Notes {
@@ -82,16 +111,16 @@ public class TodoItem : INotifyPropertyChanged {
 		}
 	}
 
-	private DateTimeOffset _dateTimeStarted;
-	public DateTimeOffset DateTimeStarted {
+	private DateTime _dateTimeStarted;
+	public DateTime DateTimeStarted {
 		get => _dateTimeStarted;
 		set {
 			_dateTimeStarted = value;
 			OnPropertyChanged();
 		}
 	}
-	private DateTimeOffset _dateTimeCompleted;
-	public DateTimeOffset DateTimeCompleted {
+	private DateTime _dateTimeCompleted;
+	public DateTime DateTimeCompleted {
 		get => _dateTimeCompleted;
 		set {
 			_dateTimeCompleted = value;
@@ -123,7 +152,7 @@ public class TodoItem : INotifyPropertyChanged {
 		get => _isComplete;
 		set {
 			_isComplete = value;
-			DateTimeCompleted = IsComplete ? DateTimeOffset.Now : DateTimeOffset.MinValue;
+			DateTimeCompleted = IsComplete ? DateTime.Now : DateTime.MinValue;
 			OnPropertyChanged();
 		}
 	}
@@ -305,8 +334,8 @@ public class TodoItem : INotifyPropertyChanged {
 		_problem = string.Empty;
 		_solution = string.Empty;
 		_timeTaken = new TimeSpan();
-		_dateTimeStarted = DateTimeOffset.Now;
-		_dateTimeCompleted = DateTimeOffset.MaxValue;
+		_dateTimeStarted = DateTime.Now;
+		_dateTimeCompleted = DateTime.MaxValue;
 		_isTimerOn = false;
 		_isComplete = false;
 		_severity = 0;
@@ -344,11 +373,16 @@ public class TodoItem : INotifyPropertyChanged {
 		return newItem;
 	}
 
-	public void SetReminder() {
-		
+	public void SetSnooze(TimeSpan snoozeTime) {
+		Reminder.SnoozeUntil = DateTime.Now + snoozeTime;
+		OnPropertyChanged(nameof(IsReminderSnoozing));
 	}
 	public void ClearReminder() {
 		Reminder.Clear();
+	}
+	public void UpdateReminder() {
+		// OnPropertyChanged(nameof(IsReminderSnoozing));
+		OnPropertyChanged(nameof(ReminderDueDateString));
 	}
 	public void NormalizeData() {
 		NormalizeRankKeys();

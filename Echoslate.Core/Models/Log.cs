@@ -32,7 +32,7 @@ public static class Log {
 				AppPaths.EnsureFolder(logsFolder);
 
 				if (File.Exists(fixedCurrent)) {
-					string timestamp = DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+					string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
 					string archiveName = isDebug
 						? $"Echoslate_DebugLog_{timestamp}.txt"
 						: $"Echoslate_Log_{timestamp}.txt";
@@ -112,7 +112,7 @@ public static class Log {
 								 [CallerMemberName] string member = "",
 								 [CallerFilePath] string file = "",
 								 [CallerLineNumber] int line = 0) {
-		string time = DateTimeOffset.Now.ToString("HH:mm:ss.fff");
+		string time = DateTime.Now.ToString("HH:mm:ss.fff");
 		string shortFile = System.IO.Path.GetFileName(file);
 		return $"[{time}] {level} {tag} [{shortFile}:{line} {member}]";
 	}

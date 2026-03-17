@@ -7,12 +7,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
         xmlns:vm="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
-        Title="{Binding CurrentWindowTitle}"
         x:Name="MainWindowInstance"
+        Title="{Binding CurrentWindowTitle}"
         d:DesignHeight="450"
         d:DesignWidth="800"
         x:DataType="vm:MainWindowViewModel"
-        mc:Ignorable="d" >
+        mc:Ignorable="d"
+        >
 
     <Window.Resources>
         <converters:ProgressToWidthConverter x:Key="ProgressToWidthConverter" />
@@ -20,132 +21,162 @@
     </Window.Resources>
 
     <Window.KeyBindings>
-        <KeyBinding Gesture="Ctrl+S"
-                    Command="{Binding SaveCommand}" />
-        <KeyBinding Gesture="Ctrl+L"
-                    Command="{Binding QuickLoadPreviousCommand}" />
-        <KeyBinding Gesture="Ctrl+P"
-                    Command="{Binding PomoTimerToggleCommand}" />
-        <KeyBinding Gesture="F1"
-                    Command="{Binding ShowAboutWindowCommand}" />
+        <KeyBinding Command="{Binding SaveCommand}"
+                    Gesture="Ctrl+S"
+                    />
+        <KeyBinding Command="{Binding QuickLoadPreviousCommand}"
+                    Gesture="Ctrl+L"
+                    />
+        <KeyBinding Command="{Binding PomoTimerToggleCommand}"
+                    Gesture="Ctrl+P"
+                    />
+        <KeyBinding Command="{Binding ShowAboutWindowCommand}"
+                    Gesture="F1"
+                    />
     </Window.KeyBindings>
 
     <Grid HorizontalAlignment="Stretch"
           ClipToBounds="True"
           TextElement.FontFamily="Source Code Pro"
-          TextElement.FontSize="16" >
+          TextElement.FontSize="16"
+          >
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" >
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="500" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Menu Name="mnuMain"
                   Grid.Column="0"
-                  Height="40" >
-                <MenuItem Header="_File" >
+                  Height="40"
+                  >
+                <MenuItem Header="_File">
                     <MenuItem Command="{Binding MenuNewCommand}"
-                              Header="New" />
+                              Header="New"
+                              />
                     <Separator />
                     <MenuItem Command="{Binding MenuLoadCommand}"
-                              Header="Open" />
+                              Header="Open"
+                              />
                     <Separator />
                     <MenuItem Command="{Binding MenuSaveCommand}"
-                              Header="Save" />
+                              Header="Save"
+                              />
                     <MenuItem Command="{Binding MenuSaveAsCommand}"
-                              Header="SaveAs" />
+                              Header="SaveAs"
+                              />
                     <Separator />
                     <MenuItem Command="{Binding MenuOptionsCommand}"
-                              Header="Options" />
+                              Header="Options"
+                              />
                     <Separator />
                     <MenuItem Command="{Binding MenuQuitCommand}"
-                              Header="Quit" />
+                              Header="Quit"
+                              />
                 </MenuItem>
                 <MenuItem x:CompileBindings="False"
                           Header="Recent Loads"
-                          ItemsSource="{Binding AppSettings.RecentFiles}" >
+                          ItemsSource="{Binding AppSettings.RecentFiles}"
+                          >
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" />
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
                     <MenuItem.ItemContainerTheme>
-                        <ControlTheme TargetType="MenuItem"
-                                      BasedOn="{StaticResource {x:Type MenuItem}}" >
-                            <Setter Property="Command"
-                                    Value="{Binding #MainWindowInstance.DataContext.MenuRecentFilesLoadCommand}" />
-                            <Setter Property="CommandParameter"
-                                    Value="{Binding}" />
-                            <Setter Property="Tag"
-                                    Value="{Binding}" />
-                            <Setter Property="StaysOpenOnClick"
-                                    Value="False" />
-                            <Setter Property="ContextMenu" >
-                                <ContextMenu DataContext="{Binding}" >
-                                    <MenuItem Header="Remove"
-                                              Command="{Binding #MainWindowInstance.DataContext.MenuRecentFilesRemoveCommand}"
-                                              CommandParameter="{Binding}" />
+                        <ControlTheme BasedOn="{StaticResource {x:Type MenuItem}}"
+                                      TargetType="MenuItem"
+                                      >
+                            <Setter Property="Command" Value="{Binding #MainWindowInstance.DataContext.MenuRecentFilesLoadCommand}" />
+                            <Setter Property="CommandParameter" Value="{Binding}" />
+                            <Setter Property="Tag" Value="{Binding}" />
+                            <Setter Property="StaysOpenOnClick" Value="False" />
+                            <Setter Property="ContextMenu">
+                                <ContextMenu DataContext="{Binding}">
+                                    <MenuItem Command="{Binding #MainWindowInstance.DataContext.MenuRecentFilesRemoveCommand}"
+                                              CommandParameter="{Binding}"
+                                              Header="Remove"
+                                              />
                                 </ContextMenu>
                             </Setter>
                         </ControlTheme>
                     </MenuItem.ItemContainerTheme>
                 </MenuItem>
-                <MenuItem Header="Help" >
+                <MenuItem Command="{Binding ShowReminderWindowCommand}"
+                          Header="Reminders"
+                          />
+
+                <MenuItem Header="Help">
                     <MenuItem Command="{Binding ShowHotkeysWindowCommand}"
-                              Header="Hotkeys" />
+                              Header="Hotkeys"
+                              />
                     <MenuItem Command="{Binding ShowAboutWindowCommand}"
-                              Header="About" />
+                              Header="About"
+                              />
                 </MenuItem>
                 <MenuItem Header="Debug"
-                          IsVisible="{Binding IsDebugMenuVisible}" >
+                          IsVisible="{Binding IsDebugMenuVisible}"
+                          >
                     <MenuItem Command="{Binding DebugStepIntoCommand}"
-                              Header="Step Into" />
-                    <MenuItem Header="Set Resolution" >
+                              Header="Step Into"
+                              />
+                    <MenuItem Header="Set Resolution">
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1920"
-                                  Header="1920x1080" />
+                                  Header="1920x1080"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1366"
-                                  Header="1366x768" />
+                                  Header="1366x768"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="2560"
-                                  Header="2560x1440" />
+                                  Header="2560x1440"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="3840"
-                                  Header="3840x2160" />
+                                  Header="3840x2160"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1024"
-                                  Header="1024x768" />
+                                  Header="1024x768"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1600"
-                                  Header="1600x900" />
+                                  Header="1600x900"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1280"
-                                  Header="1280x720" />
+                                  Header="1280x720"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1536"
-                                  Header="1536x864" />
+                                  Header="1536x864"
+                                  />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="1440"
-                                  Header="1440x900" />
+                                  Header="1440x900"
+                                  />
                         <Separator />
                         <MenuItem Command="{Binding DebugSetResolutionCommand}"
                                   CommandParameter="0"
-                                  Header="Reset" />
+                                  Header="Reset"
+                                  />
                     </MenuItem>
                 </MenuItem>
             </Menu>
-            <StackPanel Grid.Column="1"
-                        x:Name="PomoPanel"
+            <StackPanel x:Name="PomoPanel"
+                        Grid.Column="1"
                         HorizontalAlignment="Right"
-                        Orientation="Horizontal" >
+                        Orientation="Horizontal"
+                        >
                 <Grid x:Name="PomoProgressBarGrid"
-                      HorizontalAlignment="Stretch" >
-                    <ProgressBar 
-                                 x:Name="PomoProgressBar"
+                      HorizontalAlignment="Stretch"
+                      >
+                    <ProgressBar x:Name="PomoProgressBar"
                                  Margin="0"
                                  Padding="0"
                                  HorizontalAlignment="Stretch"
@@ -153,33 +184,40 @@
                                  Background="{DynamicResource ChoreGrayBrush}"
                                  BorderBrush="{DynamicResource BorderBrush}"
                                  BorderThickness="2"
+                                 FlowDirection="RightToLeft"
                                  Foreground="{Binding PomoState, Converter={StaticResource WorkBreakBrushConverter}}"
                                  Maximum="100"
                                  Minimum="0"
-                                 FlowDirection="RightToLeft"
-                                 Value="{Binding PomoProgressBarValue}" >
+                                 Value="{Binding PomoProgressBarValue}"
+                                 >
                         <ProgressBar.Styles>
-                            <Style Selector="ProgressBar" >
-                                <Setter Property="Template" >
-                                    <ControlTemplate TargetType="ProgressBar" >
+                            <Style Selector="ProgressBar">
+                                <Setter Property="Template">
+                                    <ControlTemplate TargetType="ProgressBar">
                                         <Border Background="{TemplateBinding Background}"
                                                 BorderThickness="0"
-                                                CornerRadius="14" >
+                                                CornerRadius="14"
+                                                >
                                             <Grid>
                                                 <Border x:Name="PART_Indicator"
                                                         HorizontalAlignment="Right"
                                                         Background="{TemplateBinding Foreground}"
-                                                        CornerRadius="14" >
+                                                        CornerRadius="14"
+                                                        >
                                                     <Border.Width>
-                                                        <MultiBinding Converter="{StaticResource ProgressToWidthConverter}" >
+                                                        <MultiBinding Converter="{StaticResource ProgressToWidthConverter}">
                                                             <Binding Path="Bounds.Width"
-                                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                                                     RelativeSource="{RelativeSource TemplatedParent}"
+                                                                     />
                                                             <Binding Path="Value"
-                                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                                                     RelativeSource="{RelativeSource TemplatedParent}"
+                                                                     />
                                                             <Binding Path="Maximum"
-                                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                                                     RelativeSource="{RelativeSource TemplatedParent}"
+                                                                     />
                                                             <Binding Path="Minimum"
-                                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                                                     RelativeSource="{RelativeSource TemplatedParent}"
+                                                                     />
                                                         </MultiBinding>
                                                     </Border.Width>
                                                 </Border>
@@ -190,77 +228,85 @@
                             </Style>
                         </ProgressBar.Styles>
                     </ProgressBar>
-                    <Button HorizontalAlignment="Stretch"
-                            Margin="0"
+                    <Button Margin="0"
                             Padding="0"
-                            FontFamily="{StaticResource MonoFont}"
+                            HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
                             Background="{DynamicResource TransparentBrush}"
                             Command="{Binding PomoTimerToggleCommand}"
                             Content="{Binding PomoLabelContent}"
+                            FontFamily="{StaticResource MonoFont}"
                             FontSize="20"
                             FontWeight="SemiBold"
-                            Foreground="{DynamicResource ControlBackgroundBrush}" />
+                            Foreground="{DynamicResource ControlBackgroundBrush}"
+                            />
                 </Grid>
                 <Grid x:Name="PomoControlsGrid"
-                      IsVisible="{Binding ArePomoControlsVisible}" >
+                      IsVisible="{Binding ArePomoControlsVisible}"
+                      >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Label Foreground="{DynamicResource ForegroundBrush}"
-                           HorizontalContentAlignment="Right"
-                           Grid.Column="0"
-                           VerticalAlignment="Center"
-                           FontSize="20"
+                    <Label Grid.Column="0"
                            Width="100"
-                           Content="Work: " />
-                    <Border BorderBrush="{DynamicResource BorderMidBrush}"
-                            Grid.Column="1"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           Content="Work: "
+                           FontSize="20"
+                           Foreground="{DynamicResource ForegroundBrush}"
+                           />
+                    <Border Grid.Column="1"
                             Background="{DynamicResource ControlBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderMidBrush}"
+                            BorderThickness="1"
                             CornerRadius="7"
-                            BorderThickness="1" >
+                            >
                         <TextBlock Width="80"
-                                   FontFamily="{StaticResource MonoFont}"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
                                    VerticalAlignment="Center"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
                                    behaviors:MouseWheelNumericBehavior.Minimum="1"
                                    behaviors:MouseWheelNumericBehavior.TargetProperty="PomoWorkTimeMinutes"
                                    Background="{DynamicResource TransparentBrush}"
+                                   FontFamily="{StaticResource MonoFont}"
                                    FontSize="20"
                                    FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
                                    Text="{Binding PomoWorkTimeMinutes}"
                                    TextAlignment="Center"
-                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                   />
                     </Border>
-                    <Label Width="100"
-                           Grid.Column="2"
-                           Foreground="{DynamicResource ForegroundBrush}"
-                           HorizontalContentAlignment="Right"
+                    <Label Grid.Column="2"
+                           Width="100"
                            VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           Content="Break: "
                            FontSize="20"
-                           Content="Break: " />
-                    <Border BorderBrush="{DynamicResource BorderMidBrush}"
-                            Grid.Column="3"
+                           Foreground="{DynamicResource ForegroundBrush}"
+                           />
+                    <Border Grid.Column="3"
                             Background="{DynamicResource ControlBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderMidBrush}"
+                            BorderThickness="1"
                             CornerRadius="7"
-                            BorderThickness="1" >
+                            >
                         <TextBlock Width="80"
-                                   FontFamily="{StaticResource MonoFont}"
                                    VerticalAlignment="Center"
-                                   Foreground="{DynamicResource ForegroundBrush}"
                                    behaviors:MouseWheelNumericBehavior.Enabled="True"
                                    behaviors:MouseWheelNumericBehavior.Minimum="1"
                                    behaviors:MouseWheelNumericBehavior.TargetProperty="PomoBreakTimeMinutes"
                                    Background="{DynamicResource TransparentBrush}"
+                                   FontFamily="{StaticResource MonoFont}"
                                    FontSize="20"
                                    FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
                                    Text="{Binding PomoBreakTimeMinutes}"
                                    TextAlignment="Center"
-                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                   />
                     </Border>
                 </Grid>
             </StackPanel>
@@ -268,14 +314,15 @@
         <TabControl Name="tabControl"
                     Grid.Row="1"
                     Padding="0"
-                    ClipToBounds="True" >
-            <TabItem Header="History" >
+                    ClipToBounds="True"
+                    >
+            <TabItem Header="History">
                 <views:HistoryView DataContext="{Binding HistoryVM}" />
             </TabItem>
-            <TabItem Header="Todo List" >
+            <TabItem Header="Todo List">
                 <views:TodoDisplayView DataContext="{Binding TodoListVM}" />
             </TabItem>
-            <TabItem Header="Kanban" >
+            <TabItem Header="Kanban">
                 <views:TodoDisplayView DataContext="{Binding KanbanVM}" />
             </TabItem>
         </TabControl>

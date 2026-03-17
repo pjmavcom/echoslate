@@ -7,6 +7,9 @@ using Echoslate.Core.ViewModels;
 namespace Echoslate.Avalonia.Windows;
 
 public partial class ReminderEditorWindow : UserControl {
+	public ReminderEditorWindow() {
+		InitializeComponent();
+	}
 	public ReminderEditorWindow(ReminderEditorViewModel vm) {
 		InitializeComponent();
 		DataContext = vm;
@@ -19,9 +22,15 @@ public partial class ReminderEditorWindow : UserControl {
 			window.Close(null);
 		}
 	}
-	private void Save_Click(object? sender, RoutedEventArgs e) {
+	private void Save_OnClick(object? sender, RoutedEventArgs e) {
 		if (DataContext is ReminderEditorViewModel vm && Parent is Window window) {
-			vm.OnOk();
+			vm.SaveChanges();
+			window.Close(vm);
+		}
+	}
+	private void Clear_Click(object? sender, RoutedEventArgs e) {
+		if (DataContext is ReminderEditorViewModel vm && Parent is Window window) {
+			vm.Clear();
 			window.Close(vm);
 		}
 	}
@@ -33,5 +42,8 @@ public partial class ReminderEditorWindow : UserControl {
 				vm.DueMinute = snapped;
 			}
 		}
+	}
+	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) {
+		
 	}
 }

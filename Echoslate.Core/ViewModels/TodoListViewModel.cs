@@ -72,7 +72,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 			Todo = NewTodoText,
 			Severity = NewTodoSeverity
 		};
-		item.DateTimeStarted = DateTimeOffset.Now;
+		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
 		if (CurrentFilter != "All" && CurrentFilter != "Other") {
 			item.AddTag(CurrentFilter);

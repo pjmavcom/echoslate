@@ -19,11 +19,11 @@ namespace Echoslate.Avalonia;
 
 public partial class App : Application {
 	private MainWindow MainWindow;
-	private DateTimeOffset _startupTime;
+	private DateTime _startupTime;
 	private TimeSpan _finishTime;
 
 	public override void Initialize() {
-		_startupTime = DateTimeOffset.Now;
+		_startupTime = DateTime.Now;
 		Log.Initialize();
 		
 		AppDomain.CurrentDomain.ProcessExit += (_, _) => Log.Shutdown();
@@ -81,7 +81,7 @@ public partial class App : Application {
 				Log.Print("Showing MainWindow...");
 				AppServices.ApplicationService.Show();
 
-				_finishTime = DateTimeOffset.Now - _startupTime;
+				_finishTime = DateTime.Now - _startupTime;
 				Log.Success($"Application ready for use. Startup Time: {_finishTime}");
 				return;
 			}

@@ -9,6 +9,7 @@ public class AppData {
 	public ObservableCollection<HistoryItem> HistoryList { get; set; }
 	public ObservableCollection<string> FiltersList { get; set; }
 	public ObservableCollection<string> CommitScopes { get; set; }
+	public ObservableCollection<ReminderInfo> Reminders { get; set; }
 
 	[JsonIgnore] public HashSet<string> AllTags { get; set; }
 	[JsonIgnore] public string CurrentFilePath;
@@ -39,6 +40,7 @@ public class AppData {
 		AllTags = [];
 		TodoList = [];
 		HistoryList = [];
+		Reminders = [];
 		FiltersList = ["All", "Other", "Bug", "Feature"];
 		CommitScopes = [];
 		_currentHistoryItem = null;

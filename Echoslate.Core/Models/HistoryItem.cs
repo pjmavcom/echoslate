@@ -151,8 +151,8 @@ public class HistoryItem : INotifyPropertyChanged {
 	}
 	public bool IsEditing => !IsCommitted;
 
-	private DateTimeOffset _commitDate;
-	public DateTimeOffset CommitDate {
+	private DateTime _commitDate;
+	public DateTime CommitDate {
 		get => _commitDate;
 		set {
 			_commitDate = value;
@@ -200,7 +200,7 @@ public class HistoryItem : INotifyPropertyChanged {
 		CompletedTodoItems = [];
 		_hasBeenCopied = false;
 		_isCommitted = false;
-		_commitDate = new DateTimeOffset();
+		_commitDate = new DateTime();
 		_scope = string.Empty;
 		_type = string.Empty;
 

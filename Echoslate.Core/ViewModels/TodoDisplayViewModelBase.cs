@@ -12,6 +12,7 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
+	public ObservableCollection<ReminderInfo> Reminders;
 	public bool DebugMode { get; set; } = false;
 	
 	public AppData Data { get; set; }
@@ -221,6 +222,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		MasterList = mainWindowVM.MasterTodoItemsList;
 		HistoryItems = mainWindowVM.MasterHistoryItemsList;
 		MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
+		Reminders = mainWindowVM.MasterReminders ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterReminders));
 
 		FilterButtons = [];
 		AllTags = [];
@@ -851,7 +853,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 			Todo = NewTodoText,
 			Severity = NewTodoSeverity
 		};
-		item.DateTimeStarted = DateTimeOffset.Now;
+		item.DateTimeStarted = DateTime.Now;
 		ExpandHashTags(item);
 		if (currentView == View.TodoList && CurrentFilter != "All") {
 			item.AddTag(CurrentFilter);
@@ -908,12 +910,12 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		if (items.Count == 0) {
 			items.Add(item);
 		}
-		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(items);
+		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(Reminders, item);
 		ReminderEditorViewModel vm = await vmTask;
 		if (vm == null) {
 			return;
 		}
-		item.Reminder = vm.Reminder;
+		// item.Reminder = vm.Reminder;
 		Log.Test();
 	}
 	public event PropertyChangedEventHandler PropertyChanged;

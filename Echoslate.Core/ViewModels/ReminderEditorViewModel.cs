@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 
 namespace Echoslate.Core.ViewModels;
@@ -11,54 +13,46 @@ public class EnumOption {
 }
 
 public class ReminderEditorViewModel : INotifyPropertyChanged {
-	private ReminderInfo _reminder;
-	public ReminderInfo Reminder {
-		get => _reminder;
+	private ObservableCollection<ReminderInfo> _reminders;
+	public ObservableCollection<ReminderInfo> Reminders {
+		get => _reminders;
 		set {
-			if (_reminder == value) {
+			if (_reminders == value) {
 				return;
 			}
-			_reminder = value;
+			_reminders = value;
 			OnPropertyChanged();
 		}
 	}
-	private TodoItem _item;
-	public TodoItem Item {
-		get => _item;
+	private ReminderInfo? _selectedReminder;
+	public ReminderInfo? SelectedReminder {
+		get => _selectedReminder;
 		set {
-			if (_item == value) {
+			if (_selectedReminder == value) {
 				return;
 			}
-			_item = value;
+			_selectedReminder = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(DueDate));
+			OnPropertyChanged(nameof(DueHour));
+			OnPropertyChanged(nameof(DueMinute));
 		}
 	}
-	public bool HasReminder {
-		get => Reminder.IsActive; //_hasReminder;
-		set {
-			if (Reminder.IsActive == value) {
-				return;
-			}
-			Reminder.IsActive = value;
-			OnPropertyChanged();
-		}
-	}
-	private DateTime _dueDate;
 	public DateTime DueDate {
-		get => _dueDate;
+		get => SelectedReminder == null ? DateTime.MinValue : new DateTime(SelectedReminder.DueDate.Ticks);
 		set {
-			if (_dueDate == value) {
-				return;
+			if (SelectedReminder != null) {
+				SelectedReminder.DueDate = value;
 			}
-			_dueDate = value;
 			OnPropertyChanged();
+			SelectedReminder.UpdateValues();
 		}
 	}
 	private int _dueHour;
 	public int DueHour {
-		get => _dueHour;
+		get => SelectedReminder == null ? 0 : SelectedReminder.DueDate.Hour;
 		set {
-			if (_dueHour == value) {
+			if (SelectedReminder == null || _dueHour == value) {
 				return;
 			}
 			_dueHour = value;
@@ -70,12 +64,14 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 				_dueHour = 23;
 				DueDate -= TimeSpan.FromHours(24);
 			}
+			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, _dueMinute, 0);
 			OnPropertyChanged();
+			SelectedReminder.UpdateValues();
 		}
 	}
 	private int _dueMinute;
 	public int DueMinute {
-		get => _dueMinute;
+		get => SelectedReminder == null ? 0 : SelectedReminder.DueDate.Minute;
 		set {
 			if (_dueMinute == value) {
 				return;
@@ -90,47 +86,9 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 				DueHour--;
 			}
 
+			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, _dueMinute, 0);
 			OnPropertyChanged();
-		}
-	}
-	public bool IsRecurring {
-		get => Reminder.IsRecurring;
-		set {
-			if (Reminder.IsRecurring == value) {
-				return;
-			}
-			Reminder.IsRecurring = value;
-			OnPropertyChanged();
-		}
-	}
-	public RecurringFrequency Frequency {
-		get => Reminder.Frequency;
-		set {
-			if (Reminder.Frequency == value) {
-				return;
-			}
-			Reminder.Frequency = value;
-			OnPropertyChanged();
-		}
-	}
-	public int AdvanceMinutes {
-		get => Reminder.AdvanceMinutes;
-		set {
-			if (Reminder.AdvanceMinutes == value) {
-				return;
-			}
-			Reminder.AdvanceMinutes = value;
-			OnPropertyChanged();
-		}
-	}
-	public string Message {
-		get => Reminder.Message;
-		set {
-			if (Reminder.Message == value) {
-				return;
-			}
-			Reminder.Message = value;
-			OnPropertyChanged();
+			SelectedReminder.UpdateValues();
 		}
 	}
 
@@ -149,17 +107,11 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 	public ObservableCollection<EnumOption> AdvanceOptions { get; set; }
 
 
-	public ReminderEditorViewModel(List<TodoItem> items) {
-		Item = items.First();
-		Reminder = Item.Reminder.Copy();
-		if (Reminder.DueDate == DateTimeOffset.MinValue) {
-			Reminder.DueDate = DateTimeOffset.Now;
-			DueHour = DueDate.Hour;
-			DueMinute = DueDate.Minute;
+	public ReminderEditorViewModel(ObservableCollection<ReminderInfo> reminders, TodoItem selectedItem) {
+		Reminders = new ObservableCollection<ReminderInfo>(reminders);
+		if (Reminders.Count > 0) {
+			SelectedReminder = Reminders[0];
 		}
-		DueDate = Reminder.DueDate.DateTime;
-		DueHour = (DueDate.TimeOfDay + new TimeSpan(0, 15, 0)).Hours;
-		DueMinute = ((DueDate.TimeOfDay + new TimeSpan(0, 15, 0)).Minutes) / 15 * 15;
 
 		FrequencyOptions = new ObservableCollection<EnumOption>();
 		foreach (RecurringFrequency freq in Enum.GetValues<RecurringFrequency>()) {
@@ -180,10 +132,31 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 		}
 		AdvanceOptions = new ObservableCollection<EnumOption>();
 	}
-	public void OnOk() {
-		DateOnly date = new DateOnly(DueDate.Year, DueDate.Month, DueDate.Day);
-		TimeOnly time = new TimeOnly(DueHour, DueMinute);
-		Reminder.DueDate = new DateTimeOffset(date, time, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+
+	public ICommand DeleteTaskCommand => new RelayCommand(DeleteTask);
+	public void DeleteTask() {
+		Reminders.Remove(SelectedReminder);
+	}
+	public ICommand SaveChangesCommand => new RelayCommand(SaveChanges);
+	public void SaveChanges() {
+	}
+	public ICommand AddNewTaskCommand => new RelayCommand(AddNewTask);
+	public void AddNewTask() {
+		ReminderInfo ri = new();
+		SetDueDateNow(ri);
+		Reminders.Add(ri);
+		SelectedReminder = ri;
+	}
+	public ICommand SetDueDateNowCommand => new RelayCommand(() => SetDueDateNow(SelectedReminder));
+	public void SetDueDateNow(ReminderInfo? reminder) {
+		if (reminder == null) {
+			return;
+		}
+		int dueHour = (DateTime.Now.TimeOfDay + new TimeSpan(0, 15, 0)).Hours;
+		int dueMinute = ((DateTime.Now.TimeOfDay + new TimeSpan(0, 15, 0)).Minutes) / 15 * 15;
+		TimeOnly time = new TimeOnly(dueHour, dueMinute);
+		DateOnly date = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+		reminder.DueDate = new DateTime(date, time);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -191,4 +164,7 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
+	public void Clear() {
+		// Reminder.Clear();
+	}
 }

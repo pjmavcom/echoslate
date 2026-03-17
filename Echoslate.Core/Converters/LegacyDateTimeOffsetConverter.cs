@@ -23,3 +23,25 @@ public class LegacyDateTimeOffsetConverter : JsonConverter<DateTimeOffset> {
 		writer.WriteStringValue(value.ToString("o"));
 	}
 }
+
+public class DateTimeConverter : JsonConverter<DateTime> {
+	public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+		if (reader.TokenType == JsonTokenType.String) {
+			string? value = reader.GetString();
+			if (string.IsNullOrEmpty(value)) {
+				return default;
+			}
+			if (DateTime.TryParse(value, out DateTime dt)) {
+				return dt;
+			}
+			if (DateTimeOffset.TryParse(value, out DateTimeOffset dto)) {
+				return dto.DateTime;
+			}
+		}
+		throw new JsonException($"Unable to convert \"{reader.GetString()}\" to DateTimeOffset");
+	}
+	public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options) {
+		var val = value.ToString();
+		writer.WriteStringValue(value.ToString("o"));
+	}
+}

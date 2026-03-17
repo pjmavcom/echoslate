@@ -6,7 +6,6 @@ namespace Echoslate.Core.Models;
 
 public class AppDataSaver {
 	private readonly JsonSerializerOptions _options = new() {
-		Converters = { new LegacyDateTimeOffsetConverter() },
 		WriteIndented = true,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull

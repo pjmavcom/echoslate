@@ -26,6 +26,7 @@ public class AvaloniaApplicationService : IApplicationService {
 		_mainWindow?.Show();
 	}
 	public object GetWindow() => _mainWindow;
+	public bool IsActive() => ((MainWindow)_mainWindow).IsMainWindowActive;
 	public string GetVersion() {
 		var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 		var fileVersionAttribute = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();

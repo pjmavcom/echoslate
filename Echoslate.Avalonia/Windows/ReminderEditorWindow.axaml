@@ -1,97 +1,372 @@
 <UserControl x:Class="Echoslate.Avalonia.Windows.ReminderEditorWindow"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
-             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
              x:DataType="viewModels:ReminderEditorViewModel"
              Background="{DynamicResource AppDarkBackgroundBrush}"
-             Foreground="{DynamicResource ForegroundBrush}" >
+             Foreground="{DynamicResource ForegroundBrush}"
+             >
 
-    <StackPanel Margin="20"
-                Spacing="16" >
-        <CheckBox IsChecked="{Binding HasReminder}"
-                  Content="Enable reminder" />
+    <Grid ColumnDefinitions="*, Auto">
 
-        <Grid IsEnabled="{Binding HasReminder}"
-              ColumnDefinitions="*, Auto"
-              RowDefinitions="Auto,Auto" >
-            <CalendarDatePicker Grid.Row="0"
-                                Grid.Column="0"
-                                SelectedDate="{Binding DueDate}" />
-            <StackPanel Grid.Row="0"
-                        Grid.Column="1"
-                        Orientation="Horizontal"
-                        Spacing="8" >
-                <TextBlock Width="60"
-                           FontFamily="{StaticResource MonoFont}"
-                           Foreground="{DynamicResource ForegroundBrush}"
-                           behaviors:MouseWheelNumericBehavior.Enabled="True"
-                           VerticalAlignment="Center"
-                           behaviors:MouseWheelNumericBehavior.Minimum="-1"
-                           behaviors:MouseWheelNumericBehavior.Maximum="24"
-                           behaviors:MouseWheelNumericBehavior.TargetProperty="DueHour"
-                           Background="{DynamicResource TransparentBrush}"
-                           FontSize="20"
-                           FontWeight="SemiBold"
-                           Text="{Binding DueHour}"
-                           TextAlignment="Center"
-                           ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
-                <TextBlock Text=":"
-                           VerticalAlignment="Center" />
-                <TextBlock Width="60"
-                           FontFamily="{StaticResource MonoFont}"
-                           Foreground="{DynamicResource ForegroundBrush}"
-                           behaviors:MouseWheelNumericBehavior.Enabled="True"
-                           VerticalAlignment="Center"
-                           behaviors:MouseWheelNumericBehavior.Minimum="-15"
-                           behaviors:MouseWheelNumericBehavior.Maximum="60"
-                           behaviors:MouseWheelNumericBehavior.Snap="1"
-                           behaviors:MouseWheelNumericBehavior.TargetProperty="DueMinute"
-                           Background="{DynamicResource TransparentBrush}"
-                           FontSize="20"
-                           FontWeight="SemiBold"
-                           Text="{Binding DueMinute}"
-                           TextAlignment="Center"
-                           ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+        <!--  Left Side: Active Reminders DataGrid  -->
+        <DockPanel Grid.Column="0"
+                   Margin="20"
+                   >
+            <TextBlock Margin="0,0,0,10"
+                       DockPanel.Dock="Top"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Text="Active Reminders"
+                       />
+
+            <!--  <TextBox Margin="0,0,0,20"  -->
+            <!--  DockPanel.Dock="Top"  -->
+            <!--  Watermark="Search active reminders..."  -->
+            <!--  />  -->
+
+            <DataGrid BorderBrush="{DynamicResource BorderBrush}"
+                      BorderThickness="1"
+                      GridLinesVisibility="All"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Reminders}"
+                      SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
+                      >
+                <DataGrid.Columns>
+                    <!--  ~1~ IsActive  -->
+                    <DataGridTemplateColumn MinWidth="30"
+                                            Header="A"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsActive}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  ~2~ IsDue  -->
+                    <DataGridTemplateColumn MinWidth="30"
+                                            Header="D"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsDueNow}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  ~3~ IsSnoozing  -->
+                    <DataGridTemplateColumn MinWidth="30"
+                                            Header="Z"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSnoozeActive}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  ~4~ Message  -->
+                    <DataGridTemplateColumn MinWidth="300"
+                                            Header="Message"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Message}"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       ToolTip.Tip="{Binding Message}"
+                                       />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  ~5~ Todo Message  -->
+                    <!--  <DataGridTemplateColumn MinWidth="300"  -->
+                    <!--  Header="Todo Message"  -->
+                    <!--  >  -->
+                    <!--     <DataGridTemplateColumn.CellTemplate> -->
+                    <!--         <DataTemplate> -->
+                    <!--  <Label Content="{Binding Todo}"  -->
+                    <!--  FontFamily="{StaticResource MonoFont}"  -->
+                    <!--  Foreground="{DynamicResource ForegroundBrush}"  -->
+                    <!--  ToolTip.Tip="{Binding Todo}"  -->
+                    <!--  />  -->
+                    <!--         </DataTemplate> -->
+                    <!--     </DataGridTemplateColumn.CellTemplate> -->
+                    <!-- </DataGridTemplateColumn> -->
+
+                    <!--  ~6~ Due Date  -->
+                    <DataGridTemplateColumn MinWidth="170"
+                                            Header="Due Date"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding DueDateString, StringFormat=yyyy-MM-dd}"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <!--  Right Side: Reminder Details Editor  -->
+        <ScrollViewer Grid.Column="1">
+            <!--  IsEnabled="{Binding IsEnabled}"  -->
+            <StackPanel Margin="20"
+                        Spacing="20"
+                        >
+                <StackPanel>
+                    <TextBlock FontSize="20"
+                               FontWeight="SemiBold"
+                               Text="Reminder Details"
+                               />
+                    <TextBlock FontSize="12"
+                               Foreground="{DynamicResource SubtleForegroundBrush}"
+                               Text="Edit the properties for the selected task"
+                               />
+                </StackPanel>
+
+                <!--  Date and Time  -->
+                <Grid ColumnDefinitions="*, *, *">
+                    <StackPanel Grid.Column="0"
+                                Margin="0,0,10,0"
+                                >
+                        <TextBlock Margin="0,0,0,5"
+                                   Text="Schedule Date"
+                                   />
+                        <CalendarDatePicker SelectedDate="{Binding DueDate}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Margin="0,0,0,5"
+                                   Text="Notification Time"
+                                   />
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    >
+                            <Border Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7"
+                                    >
+                                <TextBlock Width="60"
+                                           VerticalAlignment="Center"
+                                           behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                           behaviors:MouseWheelNumericBehavior.Maximum="24"
+                                           behaviors:MouseWheelNumericBehavior.Minimum="-1"
+                                           behaviors:MouseWheelNumericBehavior.TargetProperty="DueHour"
+                                           Background="{DynamicResource TransparentBrush}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}"
+                                           Text="{Binding DueHour}"
+                                           TextAlignment="Center"
+                                           ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                           />
+                            </Border>
+                            <TextBlock VerticalAlignment="Center"
+                                       Text=":"
+                                       />
+                            <Border Background="{DynamicResource ControlBackgroundBrush}"
+                                    CornerRadius="7"
+                                    >
+                                <TextBlock Width="60"
+                                           VerticalAlignment="Center"
+                                           behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                           behaviors:MouseWheelNumericBehavior.Maximum="60"
+                                           behaviors:MouseWheelNumericBehavior.Minimum="-15"
+                                           behaviors:MouseWheelNumericBehavior.Snap="15"
+                                           behaviors:MouseWheelNumericBehavior.TargetProperty="DueMinute"
+                                           Background="{DynamicResource TransparentBrush}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}"
+                                           Text="{Binding DueMinute}"
+                                           TextAlignment="Center"
+                                           ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                           />
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Grid.Column="2"
+                            Width="70"
+                            Height="27"
+                            Padding="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding SetDueDateNowCommand}"
+                            Content="Now"
+                            />
+                </Grid>
+
+                <!--  Lead Time  -->
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,5"
+                               Text="Early Reminder"
+                               />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="Remind me "
+                                   />
+                        <NumericUpDown Width="100"
+                                       Margin="10,0"
+                                       FormatString="0"
+                                       Increment="5"
+                                       Minimum="5"
+                                       Value="{Binding SelectedReminder.LeadTimeMinutes}"
+                                       />
+                        <TextBlock VerticalAlignment="Center"
+                                   Text=" minutes before"
+                                   />
+                    </StackPanel>
+                </StackPanel>
+
+                <!--  Recurring  -->
+                <Border Padding="15"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        >
+                    <StackPanel Spacing="10">
+                        <DockPanel>
+                            <TextBlock VerticalAlignment="Center"
+                                       FontWeight="Bold"
+                                       Text="Recurring Reminder"
+                                       />
+                            <ToggleSwitch HorizontalAlignment="Right"
+                                          IsChecked="{Binding SelectedReminder.IsRecurring}"
+                                          />
+                        </DockPanel>
+                        <TextBlock FontSize="12"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   Text="Repeat Frequency"
+                                   />
+                        <ComboBox HorizontalAlignment="Stretch"
+                                  DisplayMemberBinding="{Binding Display}"
+                                  ItemsSource="{Binding FrequencyOptions}"
+                                  SelectedIndex="0"
+                                  SelectedItem="{Binding SelectedReminder.RecurringFrequency}"
+                                  SelectedValueBinding="{Binding Value}"
+                                  >
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
+
+                <!--  Message  -->
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,5"
+                               Text="Reminder Message"
+                               />
+                    <TextBox Height="100"
+                             AcceptsReturn="True"
+                             Text="{Binding SelectedReminder.Message}"
+                             TextWrapping="Wrap"
+                             Watermark="Enter your reminder details..."
+                             />
+                </StackPanel>
+
+                <!--  Attachments  -->
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,5"
+                               Text="Linked Todo Items"
+                               />
+                    <ComboBox HorizontalAlignment="Stretch"
+                              PlaceholderText="Select attachment..."
+                              >
+                    </ComboBox>
+                </StackPanel>
+
+                <!--  Buttons  -->
+                <Grid Margin="0,20,0,0"
+                      ColumnDefinitions="Auto, Auto, Auto"
+                      >
+                    <Button Grid.Column="0"
+                            Classes="cancel"
+                            Command="{Binding DeleteTaskCommand}"
+                            Content="Delete Task"
+                            />
+                    <Button Grid.Column="1"
+                            Classes="ok"
+                            Click="Save_OnClick"
+                            Command="{Binding SaveChangesCommand}"
+                            Content="Save Changes"
+                            />
+                    <Button Grid.Column="2"
+                            Classes="complete"
+                            Command="{Binding AddNewTaskCommand}"
+                            Content="+ Add New"
+                            />
+                </Grid>
+
             </StackPanel>
-        </Grid>
+        </ScrollViewer>
+    </Grid>
 
-        <CheckBox IsChecked="{Binding IsRecurring}"
-                  Content="Recurring" />
-        <StackPanel IsVisible="{Binding IsRecurring}"
-                    Spacing="8" >
-            <ComboBox SelectedItem="{Binding Frequency}"
-                      ItemsSource="{Binding FrequencyOptions}"
-                      DisplayMemberBinding="{Binding Display}"/>
-        </StackPanel>
+    <!--  <Grid ColumnDefinitions="*, Auto"  -->
+    <!--  IsEnabled="{Binding HasDueDate}"  -->
+    <!--  RowDefinitions="Auto,Auto"  -->
+    <!--  >  -->
 
-        <StackPanel Orientation="Horizontal"
-                    Spacing="8" >
-            <TextBlock Text="Remind in advance:"
-                       VerticalAlignment="Center" />
-            <ComboBox SelectedIndex="{Binding AdvanceMinutes}"
-                      ItemsSource="{Binding AdvanceOptions}" />
-        </StackPanel>
-
-        <TextBox Text="{Binding Message}"
-                 AcceptsReturn="True"
-                 Height="80"
-                 Watermark="Custom message (optional)" />
-
-        <TextBlock Text="{Binding PreviewText}"
-                   FontStyle="Italic" />
-
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Spacing="8" >
-            <Button Content="Cancel"
-                    IsCancel="True"
-                    Click="Cancel_Click" />
-            <Button Content="Save"
-                    IsDefault="True"
-                    Click="Save_Click" />
-        </StackPanel>
-    </StackPanel>
+    <!--  <CheckBox Content="Recurring"  -->
+    <!--  IsChecked="{Binding IsRecurring}"  -->
+    <!--  />  -->
+    <!--  <StackPanel IsVisible="{Binding IsRecurring}"  -->
+    <!--  Spacing="8"  -->
+    <!--  >  -->
+    <!--  <ComboBox DisplayMemberBinding="{Binding Display}"  -->
+    <!--  ItemsSource="{Binding FrequencyOptions}"  -->
+    <!--  SelectedItem="{Binding Frequency}"  -->
+    <!--  />  -->
+    <!--         </StackPanel> -->
+    <!--    -->
+    <!--  <StackPanel Orientation="Horizontal"  -->
+    <!--  Spacing="8"  -->
+    <!--  >  -->
+    <!--  <TextBlock VerticalAlignment="Center"  -->
+    <!--  Text="Remind in advance:"  -->
+    <!--  />  -->
+    <!--  <ComboBox ItemsSource="{Binding AdvanceOptions}"  -->
+    <!--  SelectedIndex="{Binding AdvanceMinutes}"  -->
+    <!--  />  -->
+    <!--         </StackPanel> -->
+    <!--    -->
+    <!--  <TextBox Height="80"  -->
+    <!--  AcceptsReturn="True"  -->
+    <!--  Text="{Binding Message}"  -->
+    <!--  Watermark="Custom message (optional)"  -->
+    <!--  />  -->
+    <!--    -->
+    <!--  <TextBlock FontStyle="Italic"  -->
+    <!--  Text="{Binding PreviewText}"  -->
+    <!--  />  -->
+    <!--    -->
+    <!--  <StackPanel HorizontalAlignment="Right"  -->
+    <!--  Orientation="Horizontal"  -->
+    <!--  Spacing="8"  -->
+    <!--  >  -->
+    <!--  <Button Classes="cancel"  -->
+    <!--  Click="Cancel_Click"  -->
+    <!--  Content="Cancel"  -->
+    <!--  IsCancel="True"  -->
+    <!--  />  -->
+    <!--  <Button Classes="ok"  -->
+    <!--  Click="Save_Click"  -->
+    <!--  Content="Save"  -->
+    <!--  IsDefault="True"  -->
+    <!--  />  -->
+    <!--  <Button Classes="complete"  -->
+    <!--  Click="Clear_Click"  -->
+    <!--  Content="Clear"  -->
+    <!--  IsDefault="True"  -->
+    <!--  />  -->
+    <!--         </StackPanel> -->
+    <!--     </StackPanel> -->
+    <!-- </Grid> -->
 </UserControl>

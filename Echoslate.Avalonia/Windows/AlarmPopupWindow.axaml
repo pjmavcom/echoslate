@@ -1,0 +1,232 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.AlarmPopupWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+             x:Name="Root"
+             x:DataType="viewModels:AlarmPopupViewModel"
+             mc:Ignorable="d"
+             >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <DataGrid x:Name="TodoListDataGrid"
+                  Grid.Row="0"
+                  Grid.Column="0"
+                  Margin="0"
+                  Padding="7,4"
+                  Background="{DynamicResource ControlBackgroundBrush}"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding Reminders}"
+                  KeyboardNavigation.TabIndex="0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
+                  SelectionChanged="OnSelectionChanged"
+                  >
+            <!--  behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedReminderItems}"  -->
+            <!--  DoubleTapped="DataGrid_DoubleTapped"  -->
+            <!-- <DataGrid.Styles> -->
+            <!-- <Style Selector="DataGridRow" > -->
+            <!--  <Setter Property="ContextMenu"  -->
+            <!--  Value="{StaticResource TodoListContextMenu}" />  -->
+            <!-- </Style> -->
+            <!-- <Style Selector="DataGridCell" > -->
+            <!--  <Setter Property="ContextMenu"  -->
+            <!--  Value="{StaticResource TodoListContextMenu}" />  -->
+            <!-- </Style> -->
+            <!-- </DataGrid.Styles> -->
+
+            <DataGrid.Columns>
+                <!--  ~1~ IsActive  -->
+                <DataGridTemplateColumn MinWidth="30"
+                                        Header="A"
+                                        >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsActive}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~2~ IsDue  -->
+                <DataGridTemplateColumn MinWidth="30"
+                                        Header="D"
+                                        >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsDueNow}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~3~ IsSnoozing  -->
+                <DataGridTemplateColumn MinWidth="30"
+                                        Header="Z"
+                                        >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSnoozeActive}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~4~ Message  -->
+                <DataGridTemplateColumn MinWidth="300"
+                                        Header="Message"
+                                        >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Message}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   ToolTip.Tip="{Binding Message}"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~5~ Todo Message  -->
+                <DataGridTemplateColumn MinWidth="300"
+                                        Header="Todo Message"
+                                        >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Todo}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   ToolTip.Tip="{Binding Todo}"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~6~ Due Date  -->
+                <DataGridTemplateColumn MinWidth="170"
+                                        Header="Due Date"
+                                        >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding DueDateString, StringFormat=yyyy-MM-dd}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="0"
+              Grid.Column="1"
+              ColumnDefinitions="Auto,Auto"
+              RowDefinitions="Auto,Auto,Auto"
+              >
+            <StackPanel Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="3,2"
+                        HorizontalAlignment="Left"
+                        Orientation="Vertical"
+                        Spacing="3"
+                        >
+                <Button HorizontalAlignment="Left"
+                        Classes="snooze"
+                        Command="{Binding SetSnoozeCommand10}"
+                        CommandParameter="10"
+                        Content="+10 minutes"
+                        IsEnabled="{Binding HasSnoozableSelection}"
+                        />
+                <Button HorizontalAlignment="Left"
+                        Classes="snooze"
+                        Command="{Binding SetSnoozeCommand10}"
+                        CommandParameter="60"
+                        Content="+1 hour"
+                        IsEnabled="{Binding HasSnoozableSelection}"
+                        />
+                <Button HorizontalAlignment="Left"
+                        Classes="snooze"
+                        Command="{Binding SetSnoozeCommand10}"
+                        CommandParameter="1440"
+                        Content="+1 day"
+                        IsEnabled="{Binding HasSnoozableSelection}"
+                        />
+                <StackPanel Orientation="Horizontal">
+                    <Button Classes="snooze"
+                            Command="{Binding SetSnoozeCommand}"
+                            CommandParameter="{Binding SnoozeMinutes}"
+                            Content="Snooze for"
+                            IsEnabled="{Binding HasSnoozableSelection}"
+                            />
+                    <Border Background="{DynamicResource ControlBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="2"
+                            CornerRadius="7"
+                            >
+
+                        <TextBlock Width="60"
+                                   VerticalAlignment="Center"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                   behaviors:MouseWheelNumericBehavior.Minimum="5"
+                                   behaviors:MouseWheelNumericBehavior.Snap="5"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="SnoozeMinutes"
+                                   Background="{DynamicResource TransparentBrush}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   IsEnabled="{Binding HasSnoozableSelection}"
+                                   Text="{Binding SnoozeMinutes}"
+                                   TextAlignment="Center"
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                   />
+                    </Border>
+                    <Label VerticalContentAlignment="Center"
+                           Content="Minutes"
+                           />
+                </StackPanel>
+            </StackPanel>
+            <Button Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    VerticalAlignment="Bottom"
+                    Classes="complete"
+                    Command="{Binding DismissCommand}"
+                    Content="Dismiss"
+                    IsDefault="True"
+                    IsEnabled="{Binding HasSelection}"
+                    />
+        </Grid>
+        <StackPanel Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    >
+            <Button HorizontalAlignment="Center"
+                    Classes="cancel"
+                    Click="Close_OnClick"
+                    Content="Close"
+                    IsCancel="True"
+                    />
+            <Button HorizontalAlignment="Center"
+                    Classes="complete"
+                    Command="{Binding DismissAllCommand}"
+                    Content="Dismiss All"
+                    />
+            <Button HorizontalAlignment="Center"
+                    Classes="snooze"
+                    Command="{Binding SnoozeAllCommand}"
+                    Content="Snooze All"
+                    />
+        </StackPanel>
+    </Grid>
+</UserControl>
