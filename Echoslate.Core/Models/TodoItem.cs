@@ -15,57 +15,82 @@ public enum View {
 
 [Serializable]
 public class TodoItem : INotifyPropertyChanged {
-	private ReminderInfo _reminder;
-	[JsonIgnore]
-	public ReminderInfo Reminder {
-		get => _reminder;
+	private List<Guid> _reminderGuids;
+	public List<Guid> ReminderGuids {
+		get => _reminderGuids;
 		set {
-			if (_reminder == value) {
+			if (_reminderGuids == value) {
 				return;
 			}
-			_reminder = value;
+			_reminderGuids = value;
+			OnPropertyChanged();
+		}
+	}
+	private ObservableCollection<ReminderInfo> _reminders;
+	[JsonIgnore]
+	public ObservableCollection<ReminderInfo> Reminders {
+		get => _reminders;
+		set {
+			if (_reminders == value) {
+				return;
+			}
+			_reminders = value;
 			OnPropertyChanged();
 			OnPropertyChanged(nameof(HasActiveReminder));
 			OnPropertyChanged(nameof(ReminderDueDateString));
-			OnPropertyChanged(nameof(IsReminderDueNow));
-			OnPropertyChanged(nameof(IsReminderSnoozing));
+			// OnPropertyChanged(nameof(IsReminderDueNow));
+			// OnPropertyChanged(nameof(IsReminderSnoozing));
 		}
 	}
 	[JsonIgnore]
 	public bool HasActiveReminder {
-		get => Reminder.HasDueDate;
+		get => Reminders.Count > 0;
+	}
+	public ReminderInfo? GetNearestReminder() {
+		return Reminders
+		   .Where(r => r.DueDate >= DateTimeOffset.Now)
+		   .OrderBy(r => r.DueDate)
+		   .FirstOrDefault();
 	}
 	[JsonIgnore]
 	public string ReminderDueDateString {
 		get {
-			if (IsReminderSnoozing) {
-				return $"{Reminder.SnoozeUntil:yyyy-MM-dd - HH:mm}";
+			if (Reminders == null) {
+				return "";
 			}
-			if (HasActiveReminder) {
-				return $"{Reminder.DueDate:yyy-MM-dd - HH:mm}";
+			ReminderInfo? nearestReminder = GetNearestReminder();
+			if (nearestReminder == null) {
+				return "";
+			}
+			if (nearestReminder.IsSnoozeActive) {
+				return $"{nearestReminder.SnoozeUntil:yyyy-MM-dd - HH:mm}";
+			}
+			if (nearestReminder.IsActive) {
+				return $"{nearestReminder.DueDate:yyy-MM-dd - HH:mm}";
 			}
 			return "";
 		}
 	}
-	[JsonIgnore]
-	public bool IsReminderDueNow {
-		get => Reminder.IsDueNow;
-	}
-	[JsonIgnore]
-	public bool IsReminderSnoozing {
-		get => Reminder.IsSnoozeActive;
-	}
-	[JsonIgnore]
-	public bool IsReminderActive {
-		get => Reminder.IsActive;
-	}
+	// [JsonIgnore]
+	// public bool IsReminderDueNow {
+	// get => Reminders is { IsDueNow: true };
+	// }
+	// [JsonIgnore]
+	// public bool IsReminderSnoozing {
+	// get => Reminders is { IsSnoozeActive: true };
+	// }
+	// [JsonIgnore]
+	// public bool IsReminderActive {
+	// get => Reminders is { IsActive: true };
+	// }
+	// [JsonIgnore] public DateTime ReminderDueDate => Reminders.DueDate;
+	// [JsonIgnore] public string ReminderMessage => Reminders.Message;
 
-	private Guid _id;
-	[JsonIgnore]
-	public Guid Id {
-		get => _id;
+	private Guid _guid;
+	public Guid Guid {
+		get => _guid;
 		set {
-			_id = value;
+			_guid = value;
 			OnPropertyChanged();
 		}
 	}
@@ -79,10 +104,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	[JsonIgnore]
-	public DateTime ReminderDueDate => Reminder.DueDate;
-	[JsonIgnore]
-	public string ReminderMessage => Reminder.Message;
 
 	private string _notes;
 	public string Notes {
@@ -328,7 +349,9 @@ public class TodoItem : INotifyPropertyChanged {
 
 
 	public TodoItem() {
-		Id = Guid.NewGuid();
+		Guid = Guid.NewGuid();
+		_reminders = [];
+		_reminderGuids = [];
 		_todo = string.Empty;
 		_notes = string.Empty;
 		_problem = string.Empty;
@@ -345,12 +368,13 @@ public class TodoItem : INotifyPropertyChanged {
 		_tags = [];
 		_rank = [];
 		_currentView = View.TodoList;
-		_reminder = new ReminderInfo();
 		NormalizeData();
 	}
 	public static TodoItem Copy(TodoItem item, bool createNewGuid = false) {
 		TodoItem newItem = new TodoItem() {
-			Id = createNewGuid ? Guid.NewGuid() : item.Id,
+			Guid = createNewGuid ? Guid.NewGuid() : item.Guid,
+			ReminderGuids = item.ReminderGuids,
+			Reminders = item.Reminders,
 			Todo = item.Todo,
 			Notes = item.Notes,
 			Problem = item.Problem,
@@ -367,19 +391,18 @@ public class TodoItem : INotifyPropertyChanged {
 			KanbanRank = item.KanbanRank,
 			Rank = item.Rank,
 			CurrentView = item.CurrentView,
-			Reminder = item.Reminder,
 		};
 		newItem.NormalizeData();
 		return newItem;
 	}
 
-	public void SetSnooze(TimeSpan snoozeTime) {
-		Reminder.SnoozeUntil = DateTime.Now + snoozeTime;
-		OnPropertyChanged(nameof(IsReminderSnoozing));
-	}
-	public void ClearReminder() {
-		Reminder.Clear();
-	}
+	// public void SetSnooze(TimeSpan snoozeTime) {
+		// Reminders.SnoozeUntil = DateTime.Now + snoozeTime;
+		// OnPropertyChanged(nameof(IsReminderSnoozing));
+	// }
+	// public void ClearReminder() {
+		// Reminders.Clear();
+	// }
 	public void UpdateReminder() {
 		// OnPropertyChanged(nameof(IsReminderSnoozing));
 		OnPropertyChanged(nameof(ReminderDueDateString));
@@ -393,7 +416,7 @@ public class TodoItem : INotifyPropertyChanged {
 		foreach (KeyValuePair<string, int> kvp in Rank) {
 			string key = kvp.Key.TrimStart('#').ToLower().CapitalizeFirstLetter();
 			if (kvp.Key != key) {
-				Log.Warn($"Changing {kvp.Key} on TodoItem: {Id}");
+				Log.Warn($"Changing {kvp.Key} on TodoItem: {Guid}");
 			}
 			int value = kvp.Value;
 			if (!newRank.ContainsKey(key)) {
@@ -407,20 +430,17 @@ public class TodoItem : INotifyPropertyChanged {
 		foreach (string tag in Tags) {
 			string newTag = "#" + tag.TrimStart('#').ToUpper();
 			if (tag != newTag) {
-				Log.Warn($"Changing {tag} on TodoItem: {Id}");
+				Log.Warn($"Changing {tag} on TodoItem: {Guid}");
 			}
 			newTags.Add(newTag);
 		}
 		Tags = newTags;
 	}
-	public TodoItem? SearchById(Guid id) {
-		if (Id == id) {
-			return this;
-		}
-		return null;
+	public bool SearchByGuid(Guid id) {
+		return Guid == id;
 	}
 	public bool HasId(Guid id) {
-		return Id == id;
+		return Guid == id;
 	}
 	public bool HasTag(string tag) {
 		return Tags.Contains(tag);
@@ -745,6 +765,10 @@ public class TodoItem : INotifyPropertyChanged {
 			_tags.Add(tag);
 		}
 		ParseNewTags();
+	}
+	public void AddReminder(ReminderInfo ri) {
+		Reminders.Add(ri);
+		ReminderGuids.Add(ri.Guid);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

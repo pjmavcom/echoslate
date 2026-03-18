@@ -465,7 +465,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 			return;
 		}
 		TodoItem item = ih;
-		if (!SelectedHistoryItem.IsCommitted && SelectedHistoryItem.RemoveCompletedTodo(item.Id)) {
+		if (!SelectedHistoryItem.IsCommitted && SelectedHistoryItem.RemoveCompletedTodo(item.Guid)) {
 			item.IsComplete = false;
 			SelectedHistoryItem.SortCompletedTodoItems();
 			if (SelectedHistoryItem.CompletedTodoItems.Count == 0) {
@@ -487,7 +487,7 @@ public class HistoryViewModel : INotifyPropertyChanged {
 		TodoItemEditorViewModel? vm = await vmTask;
 		if (vm != null) {
 			TodoItem newItem = vm.ResultTodoItem;
-			CurrentHistoryItem.RemoveCompletedTodo(newItem.Id);
+			CurrentHistoryItem.RemoveCompletedTodo(newItem.Guid);
 			CurrentHistoryItem.CompletedTodoItems.Add(newItem);
 		}
 	}

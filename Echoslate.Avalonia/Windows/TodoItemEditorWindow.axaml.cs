@@ -7,6 +7,9 @@ using Echoslate.Core.ViewModels;
 namespace Echoslate.Avalonia.Windows;
 
 public partial class TodoItemEditorWindow : UserControl {
+	public TodoItemEditorWindow() {
+		InitializeComponent();
+	}
 	public TodoItemEditorWindow(TodoItemEditorViewModel vm) {
 		InitializeComponent();
 		DataContext = vm;

@@ -10,7 +10,7 @@
              Foreground="{DynamicResource ForegroundBrush}"
              >
 
-    <Grid ColumnDefinitions="*, Auto">
+    <Grid ColumnDefinitions="*, Auto, Auto">
 
         <!--  Left Side: Active Reminders DataGrid  -->
         <DockPanel Grid.Column="0"
@@ -28,7 +28,8 @@
             <!--  Watermark="Search active reminders..."  -->
             <!--  />  -->
 
-            <DataGrid BorderBrush="{DynamicResource BorderBrush}"
+            <DataGrid Height="550"
+                      BorderBrush="{DynamicResource BorderBrush}"
                       BorderThickness="1"
                       GridLinesVisibility="All"
                       IsReadOnly="True"
@@ -84,22 +85,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!--  ~5~ Todo Message  -->
-                    <!--  <DataGridTemplateColumn MinWidth="300"  -->
-                    <!--  Header="Todo Message"  -->
-                    <!--  >  -->
-                    <!--     <DataGridTemplateColumn.CellTemplate> -->
-                    <!--         <DataTemplate> -->
-                    <!--  <Label Content="{Binding Todo}"  -->
-                    <!--  FontFamily="{StaticResource MonoFont}"  -->
-                    <!--  Foreground="{DynamicResource ForegroundBrush}"  -->
-                    <!--  ToolTip.Tip="{Binding Todo}"  -->
-                    <!--  />  -->
-                    <!--         </DataTemplate> -->
-                    <!--     </DataGridTemplateColumn.CellTemplate> -->
-                    <!-- </DataGridTemplateColumn> -->
-
-                    <!--  ~6~ Due Date  -->
+                    <!--  ~5~ Due Date  -->
                     <DataGridTemplateColumn MinWidth="170"
                                             Header="Due Date"
                                             >
@@ -117,7 +103,7 @@
             </DataGrid>
         </DockPanel>
 
-        <!--  Right Side: Reminder Details Editor  -->
+        <!--  Middle: Reminder Details Editor  -->
         <ScrollViewer Grid.Column="1">
             <!--  IsEnabled="{Binding IsEnabled}"  -->
             <StackPanel Margin="20"
@@ -278,6 +264,8 @@
                                Text="Linked Todo Items"
                                />
                     <ComboBox HorizontalAlignment="Stretch"
+                              DisplayMemberBinding="{Binding Todo}"
+                              ItemsSource="{Binding SelectedReminder.Todos}"
                               PlaceholderText="Select attachment..."
                               >
                     </ComboBox>
@@ -307,6 +295,58 @@
 
             </StackPanel>
         </ScrollViewer>
+
+        <Grid Grid.Column="2"
+              ColumnDefinitions="120, Auto"
+              >
+            <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        >
+                <Button Margin="3,49,3,0"
+                        Command="{Binding AddSelectedTodoCommand}"
+                        Content="Add"
+                        />
+                <Button Margin="3"
+                        Content="Remove"
+                        />
+            </StackPanel>
+
+            <TabControl Grid.Column="1">
+                <TabItem Header="Todo Items">
+                    <DataGrid Height="550"
+                              VerticalAlignment="Top"
+                              BorderBrush="{DynamicResource BorderBrush}"
+                              BorderThickness="1"
+                              GridLinesVisibility="All"
+                              IsReadOnly="True"
+                              ItemsSource="{Binding Todos}"
+                              SelectedItem="{Binding SelectedTodo, Mode=TwoWay}"
+                              >
+                        <DataGrid.Columns>
+                            <!--  ~1~ Message  -->
+                            <DataGridTemplateColumn Width="450"
+                                                    CanUserSort="True"
+                                                    Header="Todo"
+                                                    >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Todo}"
+                                               FontFamily="{StaticResource MonoFont}"
+                                               Foreground="{DynamicResource ForegroundBrush}"
+                                               ToolTip.Tip="{Binding Todo}"
+                                               />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="Milestones">
+
+                </TabItem>
+            </TabControl>
+        </Grid>
+
     </Grid>
 
     <!--  <Grid ColumnDefinitions="*, Auto"  -->

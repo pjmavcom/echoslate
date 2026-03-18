@@ -233,6 +233,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		foreach (TodoItem item in MasterTodoItemsList) {
 			item.UpdateTags(Data.AllTags);
 		}
+		LinkRemindersToTodos();
 
 		SetWindowTitle();
 
@@ -243,10 +244,36 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 		StartTimer();
 	}
+	public void LinkRemindersToTodos() {
+		foreach (ReminderInfo ri in MasterReminders) {
+			if (ri.TodoGuids.Count == 0) {
+				continue;
+			}
+			foreach (Guid guid in ri.TodoGuids) {
+				TodoItem? item = FindTodoItemByGuid(guid);
+				if (item == null) {
+					continue;
+				}
+				ri.Todos.Add(item);
+				item.AddReminder(ri);
+			}
+		}
+	}
+
+	public TodoItem? FindTodoItemByGuid(Guid guid) {
+		foreach (TodoItem item in MasterTodoItemsList) {
+			if (item.SearchByGuid(guid)) {
+				return item;
+			}
+		}
+		return null;
+	}
+
 	private void SetPomoTimers() {
 		PomoWorkTime = AppSettings.PomoWorkTimerLength;
 		PomoBreakTime = AppSettings.PomoBreakTimerLength;
 	}
+
 	private async void StartTimer() {
 		if (_timer != null) {
 			return;
@@ -263,6 +290,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			});
 		}
 	}
+
 	public async void UpdateReminderTimer() {
 		if (!_alarmWindowOpen) {
 			_reminderTimerTicks++;
@@ -282,7 +310,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 					Task<AlarmPopupViewModel?> vmTask = AppServices.DialogService.ShowAlarmPopupAsync(dueItems);
 					AlarmPopupViewModel vm = await vmTask;
 					if (vm != null) {
-						UpdateRemindersFromDialog(vm.Reminders);
+						UpdateRemindersFromDialog(dueItems, vm.Reminders);
 					}
 					_alarmWindowOpen = false;
 				}
@@ -365,6 +393,29 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(PomoLabelContent));
 		OnPropertyChanged(nameof(PomoProgressBarValue));
 		OnPropertyChanged(nameof(PomoIsWorkMode));
+	}
+
+	private void UpdateRemindersFromDialog(ObservableCollection<ReminderInfo>? dueItems, ObservableCollection<ReminderInfo> reminders) {
+		if (dueItems != null) {
+			HashSet<Guid> guids = dueItems.Select(item => item.Guid).Distinct().ToHashSet();
+			foreach (Guid guid in guids) {
+				if (MasterReminders.Any(item => item.Guid == guid)) {
+					MasterReminders.Remove(MasterReminders.First(item => item.Guid == guid));
+				}
+			}
+		} else {
+			MasterReminders.Clear();
+		}
+		foreach (ReminderInfo reminder in reminders) {
+			if (reminder.IsActive) {
+				MasterReminders.Add(reminder);
+			}
+		}
+		foreach (ReminderInfo ri in MasterReminders) {
+			foreach (TodoItem item in ri.Todos) {
+				item.UpdateReminder();
+			}
+		}
 	}
 
 	public void SetWindowTitle() {
@@ -784,16 +835,19 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync("v" + AppServices.ApplicationService.GetVersion()); });
 	public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowHelpAsync(); });
 	public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
+
 	public void QuickLoad() {
 		if (AppSettings.RecentFiles.Count > 1) {
 			Load(AppSettings.RecentFiles[1]);
 		}
 	}
 	public ICommand DebugStepIntoCommand => new RelayCommand(DebugStepInto);
+
 	public void DebugStepInto() {
 		var data = Data;
 	}
 	public ICommand DebugSetResolutionCommand => new RelayCommand<string>(width => DebugSetResolution(width));
+
 	public void DebugSetResolution(string width) {
 		double windowWidth = 0;
 		double windowHeight = 0;
@@ -843,33 +897,14 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		SetWindowPosition(windowWidth, windowHeight);
 	}
 	public ICommand ShowReminderWindowCommand => new RelayCommand(ShowReminderWindow);
+
 	public async void ShowReminderWindow() {
-		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(MasterReminders);
+		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(MasterReminders, MasterTodoItemsList);
 		ReminderEditorViewModel vm = await vmTask;
 		if (vm == null) {
 			return;
 		}
-		UpdateRemindersFromDialog(vm.Reminders);
-	}
-	private void UpdateRemindersFromDialog(ObservableCollection<ReminderInfo> reminders) {
-		if (reminders.Count == 0) {
-			return;
-		}
-		
-		HashSet<Guid> newGuids = reminders
-		   .Select(ri => ri.Guid)
-		   .ToHashSet();
-		foreach (ReminderInfo ri in MasterReminders) {
-			if (!newGuids.Contains(ri.Guid)) {
-				reminders.Add(ri);
-			}
-		}
-		MasterReminders.Clear();
-		foreach (ReminderInfo reminder in reminders) {
-			if (reminder.IsActive) {
-				MasterReminders.Add(reminder);
-			}
-		}
+		UpdateRemindersFromDialog(null, vm.Reminders);
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {

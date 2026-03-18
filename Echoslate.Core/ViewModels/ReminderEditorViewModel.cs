@@ -13,6 +13,28 @@ public class EnumOption {
 }
 
 public class ReminderEditorViewModel : INotifyPropertyChanged {
+	private ObservableCollection<TodoItem> _todos;
+	public ObservableCollection<TodoItem> Todos {
+		get => _todos;
+		set {
+			if (_todos == value) {
+				return;
+			}
+			_todos = value;
+			OnPropertyChanged();
+		}
+	}
+	private TodoItem _selectedTodo;
+	public TodoItem SelectedTodo {
+		get => _selectedTodo;
+		set {
+			if (_selectedTodo == value) {
+				return;
+			}
+			_selectedTodo = value;
+			OnPropertyChanged();
+		}
+	}
 	private ObservableCollection<ReminderInfo> _reminders;
 	public ObservableCollection<ReminderInfo> Reminders {
 		get => _reminders;
@@ -107,8 +129,9 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 	public ObservableCollection<EnumOption> AdvanceOptions { get; set; }
 
 
-	public ReminderEditorViewModel(ObservableCollection<ReminderInfo> reminders, TodoItem selectedItem) {
+	public ReminderEditorViewModel(ObservableCollection<ReminderInfo> reminders, ObservableCollection<TodoItem> todos, TodoItem selectedItem) {
 		Reminders = new ObservableCollection<ReminderInfo>(reminders);
+		Todos = todos;
 		if (Reminders.Count > 0) {
 			SelectedReminder = Reminders[0];
 		}
@@ -155,6 +178,15 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 		TimeOnly time = new TimeOnly(dueHour, dueMinute);
 		DateOnly date = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 		reminder.DueDate = new DateTime(date, time);
+	}
+	public ICommand AddSelectedTodoCommand => new RelayCommand(AddSelectedTodo);
+	public void AddSelectedTodo() {
+		if (SelectedTodo != null && SelectedReminder != null) {
+			SelectedReminder.TodoGuids.Add(SelectedTodo.Guid);
+			SelectedReminder.Todos.Add(SelectedTodo);
+			SelectedTodo.AddReminder(SelectedReminder);
+			// SelectedTodo.ReminderGuid = SelectedReminder.Guid;
+		}
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

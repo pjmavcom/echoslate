@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace Echoslate.Core.Models;
 
@@ -25,19 +26,28 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private string _todo;
-	public string Todo {
-		get => _todo;
+	private List<Guid> _todoGuids;
+	public List<Guid> TodoGuids {
+		get => _todoGuids;
 		set {
-			if (_todo == value) {
+			if (_todoGuids == value) {
 				return;
 			}
-			_todo = value;
+			_todoGuids = value;
 			OnPropertyChanged();
 		}
 	}
-	public bool HasDueDate {
-		get => DueDate != DateTime.MinValue;
+	private ObservableCollection<TodoItem> _todos;
+	[JsonIgnore]
+	public ObservableCollection<TodoItem> Todos {
+		get => _todos;
+		set {
+			if (_todos == value) {
+				return;
+			}
+			_todos = value;
+			OnPropertyChanged();
+		}
 	}
 	private DateTime _dueDate;
 	public DateTime DueDate {
@@ -49,9 +59,6 @@ public class ReminderInfo : INotifyPropertyChanged {
 			_dueDate = value;
 			OnPropertyChanged();
 		}
-	}
-	public bool IsSnoozeActive {
-		get => SnoozeUntil != DateTime.MinValue;
 	}
 	private DateTime _snoozeUntil;
 	public DateTime SnoozeUntil {
@@ -130,6 +137,12 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	
+	[JsonIgnore]
+	public bool IsSnoozeActive {
+		get => SnoozeUntil != DateTime.MinValue;
+	}
+	[JsonIgnore]
 	public bool IsDueNow {
 		get {
 			if (!HasDueDate) {
@@ -141,7 +154,7 @@ public class ReminderInfo : INotifyPropertyChanged {
 			return !IsSnoozeActive || SnoozeUntil < DateTime.Now;
 		}
 	}
-	public bool IsActive => HasDueDate || IsSnoozeActive;
+	[JsonIgnore]
 	public string DueDateString {
 		get {
 			if (IsSnoozeActive) {
@@ -153,15 +166,40 @@ public class ReminderInfo : INotifyPropertyChanged {
 			return "";
 		}
 	}
+	
+	
+	[JsonIgnore]
+	public bool IsActive => HasDueDate || IsSnoozeActive;
+	[JsonIgnore]
+	public bool HasDueDate {
+		get => DueDate != DateTime.MinValue;
+	}
+	
+	private string _todo;
+	[JsonIgnore]
+	public string Todo {
+		get => _todo;
+		set {
+			if (_todo == value) {
+				return;
+			}
+			_todo = value;
+			OnPropertyChanged();
+		}
+	}
 
 	public ReminderInfo() {
 		DueDate = DateTime.MinValue;
 		SnoozeUntil = DateTime.MinValue;
 		Guid = Guid.NewGuid();
+		Todos = [];
+		TodoGuids = [];
 	}
 	public ReminderInfo Copy() {
 		ReminderInfo info = new() {
 			Guid = Guid,
+			Todos = Todos,
+			TodoGuids = TodoGuids,
 			DueDate = DueDate,
 			SnoozeUntil = SnoozeUntil,
 			RecurringFrequency = RecurringFrequency,
@@ -171,6 +209,12 @@ public class ReminderInfo : INotifyPropertyChanged {
 			IsRecurring = IsRecurring,
 		};
 		return info;
+	}
+	public ReminderInfo? Search(Guid guid) {
+		if (Guid == guid) {
+			return this;
+		}
+		return null;
 	}
 	public void Clear() {
 		if (IsRecurring) {

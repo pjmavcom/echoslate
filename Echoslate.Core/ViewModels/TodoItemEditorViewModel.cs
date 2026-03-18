@@ -15,6 +15,28 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		"Med",
 		"High"
 	};
+	private ObservableCollection<ReminderInfo> _reminders;
+	public ObservableCollection<ReminderInfo> Reminders {
+		get => _reminders;
+		set {
+			if (_reminders == value) {
+				return;
+			}
+			_reminders = value;
+			OnPropertyChanged();
+		}
+	}
+	private ReminderInfo _selectedReminder;
+	public ReminderInfo SelectedReminder {
+		get => _selectedReminder;
+		set {
+			if (_selectedReminder == value) {
+				return;
+			}
+			_selectedReminder = value;
+			OnPropertyChanged();
+		}
+	}
 	private Guid _guid;
 	public Guid Guid {
 		get => _guid;
@@ -138,9 +160,11 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 
 	public TodoItemEditorViewModel(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
 		_item = TodoItem.Copy(td);
+		_reminders = _item.Reminders;
+
 		_currentListHash = currentListHash ?? "All";
 
-		Guid = _item.Id;
+		Guid = _item.Guid;
 		AllAvailableTags = allAvailableTags;
 		IsRankEnabled = _item.CurrentView != View.History;
 
