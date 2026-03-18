@@ -86,7 +86,6 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 		}
 		if (isComplete) {
 			RaiseRequestClose();
-			Log.Test();
 		}
 	}
 
@@ -108,18 +107,20 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 	}
 	public ICommand DismissCommand => new RelayCommand(Dismiss);
 	public void Dismiss() {
-		SelectedReminder.Clear();
-		SelectedReminder.UpdateValues();
+		DismissReminder(SelectedReminder);
 		UpdateAlarmsList();
-		Log.Test();
 	}
-	public ICommand DismissAllCommand => new RelayCommand(DismissAll);
 	public void DismissAll() {
 		foreach (ReminderInfo reminder in Reminders) {
-			reminder.Clear();
-			reminder.UpdateValues();
+			DismissReminder(reminder);
 		}
 		UpdateAlarmsList();
+	}
+	public void DismissReminder(ReminderInfo reminder) {
+		reminder.Clear();
+		if (reminder.IsActive) {
+			reminder.UpdateValues();
+		}
 	}
 
 

@@ -17,8 +17,8 @@ public partial class AlarmPopupWindow : UserControl {
 		vm.RequestClose += (s, e) => Close();
 	}
 	public void Close() {
-		if (Parent is Window window) {
-			window.Close();
+		if (DataContext is AlarmPopupViewModel vm && Parent is Window window) {
+			window.Close(vm);
 		}
 	}
 
@@ -28,9 +28,18 @@ public partial class AlarmPopupWindow : UserControl {
 			window.Close(vm);
 		}
 	}
+	private void DismissAll_OnClick(object? sender, RoutedEventArgs e) {
+		if (DataContext is AlarmPopupViewModel vm && Parent is Window window) {
+			vm.DismissAll();
+			window.Close(vm);
+		}
+	}
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) {
 		if (DataContext is AlarmPopupViewModel vm) {
 			vm.SelectionChanged();
 		}
+	}
+	private void SnoozeAll_OnClick(object? sender, RoutedEventArgs e) {
+		
 	}
 }

@@ -252,7 +252,7 @@
                                   DisplayMemberBinding="{Binding Display}"
                                   ItemsSource="{Binding FrequencyOptions}"
                                   SelectedIndex="0"
-                                  SelectedItem="{Binding SelectedReminder.RecurringFrequency}"
+                                  SelectedValue="{Binding SelectedReminder.RecurringFrequency}"
                                   SelectedValueBinding="{Binding Value}"
                                   >
                         </ComboBox>

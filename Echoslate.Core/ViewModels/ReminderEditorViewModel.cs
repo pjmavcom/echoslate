@@ -115,12 +115,10 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 
 		FrequencyOptions = new ObservableCollection<EnumOption>();
 		foreach (RecurringFrequency freq in Enum.GetValues<RecurringFrequency>()) {
-			if (freq == RecurringFrequency.None) {
-				continue;
-			}
 			FrequencyOptions.Add(new EnumOption {
 				Value = freq,
 				Display = freq switch {
+					RecurringFrequency.None => "None",
 					RecurringFrequency.Hourly => "Every hour",
 					RecurringFrequency.Daily => "Every day",
 					RecurringFrequency.Weekly => "Every week",

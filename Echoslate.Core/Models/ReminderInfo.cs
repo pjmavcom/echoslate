@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -13,14 +14,14 @@ public enum RecurringFrequency {
 }
 
 public class ReminderInfo : INotifyPropertyChanged {
-	private Guid _itemId;
-	public Guid ItemId {
-		get => _itemId;
+	private Guid _guid;
+	public Guid Guid {
+		get => _guid;
 		set {
-			if (_itemId == value) {
+			if (_guid == value) {
 				return;
 			}
-			_itemId = value;
+			_guid = value;
 			OnPropertyChanged();
 		}
 	}
@@ -71,6 +72,12 @@ public class ReminderInfo : INotifyPropertyChanged {
 				return;
 			}
 			_isRecurring = value;
+			if (_isRecurring && RecurringFrequency == RecurringFrequency.None) {
+				RecurringFrequency = RecurringFrequency.Hourly;
+			}
+			if (!_isRecurring) {
+				RecurringFrequency = RecurringFrequency.None;
+			}
 			OnPropertyChanged();
 		}
 	}
@@ -82,6 +89,11 @@ public class ReminderInfo : INotifyPropertyChanged {
 				return;
 			}
 			_recurringFrequency = value;
+			if (_recurringFrequency == RecurringFrequency.None) {
+				IsRecurring = false;
+			} else {
+				IsRecurring = true;
+			}
 			OnPropertyChanged();
 		}
 	}
@@ -123,7 +135,7 @@ public class ReminderInfo : INotifyPropertyChanged {
 			if (!HasDueDate) {
 				return false;
 			}
-			if (DueDate - new TimeSpan(0, LeadTimeMinutes, 0)> DateTime.Now) {
+			if (DueDate - new TimeSpan(0, LeadTimeMinutes, 0) > DateTime.Now) {
 				return false;
 			}
 			return !IsSnoozeActive || SnoozeUntil < DateTime.Now;
@@ -146,10 +158,11 @@ public class ReminderInfo : INotifyPropertyChanged {
 		DueDate = DateTime.MinValue;
 		SnoozeUntil = DateTime.MinValue;
 		ItemId = Guid.NewGuid();
+		Guid = Guid.NewGuid();
 	}
 	public ReminderInfo Copy() {
 		ReminderInfo info = new() {
-			ItemId = ItemId,
+			Guid = Guid,
 			DueDate = DueDate,
 			SnoozeUntil = SnoozeUntil,
 			RecurringFrequency = RecurringFrequency,
@@ -161,8 +174,13 @@ public class ReminderInfo : INotifyPropertyChanged {
 		return info;
 	}
 	public void Clear() {
-		DueDate = DateTime.MinValue;
-		SnoozeUntil = DateTime.MinValue;
+		if (IsRecurring) {
+			var freq = (int)RecurringFrequency;
+			DueDate += new TimeSpan(freq, 0, 0);
+		} else {
+			DueDate = DateTime.MinValue;
+			SnoozeUntil = DateTime.MinValue;
+		}
 	}
 	public void UpdateValues() {
 		OnPropertyChanged(nameof(DueDateString));

@@ -219,12 +219,12 @@
                     />
             <Button HorizontalAlignment="Center"
                     Classes="complete"
-                    Command="{Binding DismissAllCommand}"
+                    Click="DismissAll_OnClick"
                     Content="Dismiss All"
                     />
             <Button HorizontalAlignment="Center"
                     Classes="snooze"
-                    Command="{Binding SnoozeAllCommand}"
+                    Click="SnoozeAll_OnClick"
                     Content="Snooze All"
                     />
         </StackPanel>

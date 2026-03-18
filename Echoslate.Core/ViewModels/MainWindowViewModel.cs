@@ -272,7 +272,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 				_showAlarmsWindow = false;
 				foreach (ReminderInfo reminder in MasterReminders) {
 					if (reminder.IsDueNow) {
-						dueItems.Add(reminder);
+						dueItems.Add(reminder.Copy());
 						_showAlarmsWindow = true;
 					}
 				}
@@ -281,6 +281,9 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 					_alarmWindowOpen = true;
 					Task<AlarmPopupViewModel?> vmTask = AppServices.DialogService.ShowAlarmPopupAsync(dueItems);
 					AlarmPopupViewModel vm = await vmTask;
+					if (vm != null) {
+						UpdateRemindersFromDialog(vm.Reminders);
+					}
 					_alarmWindowOpen = false;
 				}
 				_reminderTimerTicks = 0;
@@ -846,11 +849,27 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		if (vm == null) {
 			return;
 		}
-		MasterReminders.Clear();
-		foreach (ReminderInfo reminder in vm.Reminders) {
-			MasterReminders.Add(reminder);
+		UpdateRemindersFromDialog(vm.Reminders);
+	}
+	private void UpdateRemindersFromDialog(ObservableCollection<ReminderInfo> reminders) {
+		if (reminders.Count == 0) {
+			return;
 		}
 		
+		HashSet<Guid> newGuids = reminders
+		   .Select(ri => ri.Guid)
+		   .ToHashSet();
+		foreach (ReminderInfo ri in MasterReminders) {
+			if (!newGuids.Contains(ri.Guid)) {
+				reminders.Add(ri);
+			}
+		}
+		MasterReminders.Clear();
+		foreach (ReminderInfo reminder in reminders) {
+			if (reminder.IsActive) {
+				MasterReminders.Add(reminder);
+			}
+		}
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {
