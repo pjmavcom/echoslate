@@ -157,7 +157,6 @@ public class ReminderInfo : INotifyPropertyChanged {
 	public ReminderInfo() {
 		DueDate = DateTime.MinValue;
 		SnoozeUntil = DateTime.MinValue;
-		ItemId = Guid.NewGuid();
 		Guid = Guid.NewGuid();
 	}
 	public ReminderInfo Copy() {
