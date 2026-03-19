@@ -46,4 +46,9 @@ public partial class ReminderEditorWindow : UserControl {
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) {
 		
 	}
+	private void Cancel_OnClick(object? sender, RoutedEventArgs e) {
+		if (Parent is Window window) {
+			window.Close();
+		}
+	}
 }

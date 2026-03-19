@@ -18,48 +18,24 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="TodoListDataGrid"
-                  Grid.Row="0"
-                  Grid.Column="0"
-                  Margin="0"
-                  Padding="7,4"
+        <DataGrid Grid.Row="0"
                   Background="{DynamicResource ControlBackgroundBrush}"
+                  BorderBrush="{DynamicResource BorderBrush}"
+                  BorderThickness="1"
+                  GridLinesVisibility="All"
                   IsReadOnly="True"
                   ItemsSource="{Binding Reminders}"
-                  KeyboardNavigation.TabIndex="0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
-                  SelectionChanged="OnSelectionChanged"
                   >
-            <!--  behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedReminderItems}"  -->
-            <!--  DoubleTapped="DataGrid_DoubleTapped"  -->
-            <!-- <DataGrid.Styles> -->
-            <!-- <Style Selector="DataGridRow" > -->
-            <!--  <Setter Property="ContextMenu"  -->
-            <!--  Value="{StaticResource TodoListContextMenu}" />  -->
-            <!-- </Style> -->
-            <!-- <Style Selector="DataGridCell" > -->
-            <!--  <Setter Property="ContextMenu"  -->
-            <!--  Value="{StaticResource TodoListContextMenu}" />  -->
-            <!-- </Style> -->
-            <!-- </DataGrid.Styles> -->
-
             <DataGrid.Columns>
-                <!--  ~1~ IsActive  -->
-                <DataGridTemplateColumn MinWidth="30"
-                                        Header="A"
-                                        >
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsActive}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
 
-                <!--  ~2~ IsDue  -->
-                <DataGridTemplateColumn MinWidth="30"
-                                        Header="D"
-                                        >
+                <!--  ~1~ IsDue  -->
+                <DataGridTemplateColumn MinWidth="30">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label, reminder-label" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox IsChecked="{Binding IsDueNow}" />
@@ -67,10 +43,13 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!--  ~3~ IsSnoozing  -->
-                <DataGridTemplateColumn MinWidth="30"
-                                        Header="Z"
-                                        >
+                <!--  ~2~ IsSnoozing  -->
+                <DataGridTemplateColumn MinWidth="30">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label, snooze-label" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox IsChecked="{Binding IsSnoozeActive}" />
@@ -78,10 +57,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!--  ~4~ Message  -->
-                <DataGridTemplateColumn MinWidth="300"
-                                        Header="Message"
-                                        >
+                <!--  ~3~ Message  -->
+                <DataGridTemplateColumn Width="264">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label"
+                                   Content="Message"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Label Content="{Binding Message}"
@@ -93,25 +77,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!--  ~5~ Todo Message  -->
-                <DataGridTemplateColumn MinWidth="300"
-                                        Header="Todo Message"
-                                        >
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Label Content="{Binding Todo}"
-                                   FontFamily="{StaticResource MonoFont}"
-                                   Foreground="{DynamicResource ForegroundBrush}"
-                                   ToolTip.Tip="{Binding Todo}"
+                <!--  ~4~ Due Date  -->
+                <DataGridTemplateColumn MinWidth="170">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label"
+                                   Content="Due Date"
                                    />
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <!--  ~6~ Due Date  -->
-                <DataGridTemplateColumn MinWidth="170"
-                                        Header="Due Date"
-                                        >
+                    </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Label Content="{Binding DueDateString, StringFormat=yyyy-MM-dd}"
@@ -198,7 +172,7 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     VerticalAlignment="Bottom"
-                    Classes="complete"
+                    Classes="cancel"
                     Command="{Binding DismissCommand}"
                     Content="Dismiss"
                     IsDefault="True"
@@ -213,19 +187,14 @@
                     >
             <Button HorizontalAlignment="Center"
                     Classes="cancel"
-                    Click="Close_OnClick"
-                    Content="Close"
-                    IsCancel="True"
-                    />
-            <Button HorizontalAlignment="Center"
-                    Classes="complete"
-                    Click="DismissAll_OnClick"
+                    Command="{Binding DismissAllCommand}"
                     Content="Dismiss All"
                     />
             <Button HorizontalAlignment="Center"
-                    Classes="snooze"
-                    Click="SnoozeAll_OnClick"
+                    Classes="ok"
+                    Command="{Binding SnoozeAllCommand}"
                     Content="Snooze All"
+                    ToolTip.Tip="Snooze all for 10 minutes"
                     />
         </StackPanel>
     </Grid>

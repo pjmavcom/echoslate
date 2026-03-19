@@ -13,6 +13,16 @@ public class EnumOption {
 }
 
 public class ReminderEditorViewModel : INotifyPropertyChanged {
+	public bool IsEnabled {
+		get => SelectedReminder != null;
+	}
+	public bool IsAddTodoEnabled {
+		get => SelectedTodo != null;
+	}
+	public bool IsRemoveTodoEnabled {
+		get => SelectedAttachmentTodo != null;
+	}
+
 	private ObservableCollection<TodoItem> _todos;
 	public ObservableCollection<TodoItem> Todos {
 		get => _todos;
@@ -24,8 +34,8 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private TodoItem _selectedTodo;
-	public TodoItem SelectedTodo {
+	private TodoItem? _selectedTodo;
+	public TodoItem? SelectedTodo {
 		get => _selectedTodo;
 		set {
 			if (_selectedTodo == value) {
@@ -33,6 +43,7 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 			}
 			_selectedTodo = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(IsAddTodoEnabled));
 		}
 	}
 	private ObservableCollection<ReminderInfo> _reminders;
@@ -55,9 +66,22 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 			}
 			_selectedReminder = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(IsEnabled));
 			OnPropertyChanged(nameof(DueDate));
 			OnPropertyChanged(nameof(DueHour));
 			OnPropertyChanged(nameof(DueMinute));
+		}
+	}
+	private TodoItem? _selectedAttachmentTodo;
+	public TodoItem? SelectedAttachmentTodo {
+		get => _selectedAttachmentTodo;
+		set {
+			if (_selectedAttachmentTodo == value) {
+				return;
+			}
+			_selectedAttachmentTodo = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(IsRemoveTodoEnabled));
 		}
 	}
 	public DateTime DueDate {
@@ -187,6 +211,14 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 			SelectedReminder.Todos.Add(SelectedTodo);
 			SelectedTodo.AddReminder(SelectedReminder);
 			// SelectedTodo.ReminderGuid = SelectedReminder.Guid;
+		}
+	}
+	public ICommand RemoveSelectedTodoCommand => new RelayCommand(RemoveSelectedTodo);
+	public void RemoveSelectedTodo() {
+		if (SelectedAttachmentTodo != null && SelectedReminder != null) {
+			SelectedAttachmentTodo.ClearReminder(SelectedReminder.Guid);
+			SelectedReminder.TodoGuids.Remove(SelectedAttachmentTodo.Guid);
+			SelectedReminder.Todos.Remove(SelectedAttachmentTodo);
 		}
 	}
 

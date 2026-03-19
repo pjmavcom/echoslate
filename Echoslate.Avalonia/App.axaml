@@ -39,6 +39,7 @@
         <StreamGeometry x:Key="ExclamationTriangleGeometry">M12 2L1 21h22L12 2zm0 3.5L20.5 19H3.5L12 5.5zm0 5v5h-1v-5h1zm0 7h-1v-1h1v1z</StreamGeometry>
         <StreamGeometry x:Key="PriorityFlagGeometry">M 0 0 v -17 h 2 l 14 5 l -14 6 v 6 h -2 z</StreamGeometry>
         <StreamGeometry x:Key="BellGeometry">M 0 0 l 2 -3 v -4 l 2 -4 l 2 -1 l -1 -1 l 1 -1 h 1 l 1 1 l -1 1 l 2 1 l 2 4 v 4 l 2 3 h -6 l 1 1 l -1 1 l -1 0 l -1 -1 l 1 -1 z</StreamGeometry>
+        <StreamGeometry x:Key="SnoozeGeometry">M 1 -5 H 4 V -4 L 2 -1 H 4 V 0 H 1 V -1 L 3 -4 H 1 Z M 7 -2 L 4 -2 L 4 -3 L 6 -5 L 4 -5 L 4 -6 L 7 -6 L 7 -5 L 5 -3 L 7 -3 Z M 7 -4 L 7 -5 L 8 -6 L 7 -6 L 7 -7 L 9 -7 L 9 -6 L 8 -5 L 9 -5 L 9 -4 Z</StreamGeometry>
     </Application.Resources>
     <Application.Styles>
         <SimpleTheme />
@@ -77,6 +78,46 @@
             <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
             <Setter Property="Background" Value="{DynamicResource TransparentBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource SubtleForegroundBrush}" />
+        </Style>
+
+        <Style Selector="Label.header-label">
+            <Setter Property="Background" Value="{DynamicResource ControlBrushBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="20" />
+            <!-- <Setter Property="BorderThickness" Value="1" /> -->
+            <!-- <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" /> -->
+            <!-- <Setter Property="CornerRadius" Value="7" /> -->
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Label.reminder-label">
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Template>
+                        <PathIcon Width="24"
+                                  Height="24"
+                                  Background="{DynamicResource ControlBackgroundBrush}"
+                                  Data="{StaticResource BellGeometry}"
+                                  Foreground="{DynamicResource ForegroundBrush}"
+                                  />
+                    </Template>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style Selector="Label.snooze-label">
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Template>
+                        <PathIcon Width="24"
+                                  Height="24"
+                                  Background="{DynamicResource ControlBackgroundBrush}"
+                                  Data="{StaticResource SnoozeGeometry}"
+                                  Foreground="{DynamicResource ForegroundBrush}"
+                                  />
+                    </Template>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!--  Base Button  -->
@@ -516,6 +557,22 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style Selector="Button.snooze-header-button">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Template>
+                        <PathIcon Width="24"
+                                  Height="24"
+                                  Data="{StaticResource SnoozeGeometry}"
+                                  Foreground="{DynamicResource ForegroundBrush}"
+                                  />
+                    </Template>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style Selector="Button.priority-header-button">
             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -543,28 +600,35 @@
             <Setter Property="CornerRadius" Value="7" />
             <Setter Property="Foreground" Value="{DynamicResource SubtleForegroundBrush}" />
             <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource AppDarkBackgroundBrush}" />
-            <Setter Property="BorderThickness" Value="0,0,1,1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlBackgroundBrush}" />
+            <!-- <Setter Property="BorderThickness" Value="0,0,1,1" /> -->
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
         </Style>
 
         <Style Selector="DataGridRow">
             <Setter Property="Background" Value="{DynamicResource TransparentBrush}" />
         </Style>
-        <Style Selector="DataGridRow:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-        </Style>
-        <Style Selector="DataGridRow:selected">
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-        </Style>
+        <!-- <Style Selector="DataGridRow:pointerover"> -->
+        <!-- <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" /> -->
+        <!-- <Setter Property="Background" Value="{DynamicResource DangerRedBrush}" /> -->
+        <!-- <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" /> -->
+        <!-- </Style> -->
+        <!-- <Style Selector="DataGridRow:selected"> -->
+        <!-- <Setter Property="Background" Value="{DynamicResource AccentBrush}" /> -->
+        <!-- <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" /> -->
+        <!-- </Style> -->
         <Style Selector="DataGridRow:selected:focus">
             <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
         </Style>
         <Style Selector="DataGridRow:selected /template/ Border">
-            <Setter Property="Opacity" Value="0.85" />
+            <Setter Property="Opacity" Value="0.50" />
+            <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
+        </Style>
+        <Style Selector="DataGridRow:pointerover /template/ Border">
+            <Setter Property="Opacity" Value="0.50" />
+            <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
         </Style>
 
         <Style Selector="DataGridCell">
@@ -573,10 +637,10 @@
             <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
             <Setter Property="Padding" Value="6,2" />
         </Style>
-        <Style Selector="DataGridCell:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-        </Style>
+        <!-- <Style Selector="DataGridCell:pointerover"> -->
+        <!-- <Setter Property="Background" Value="{DynamicResource DarkAccentBrush}" /> -->
+        <!-- <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" /> -->
+        <!-- </Style> -->
 
         <Style Selector="DataGridColumnHeader &gt; ContentPresenter">
             <Setter Property="Margin" Value="0" />
@@ -637,15 +701,15 @@
         </Style>
         <Style Selector="ComboBoxItem:pointerover">
             <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource AccentDarkBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DarkAccentBrush}" />
         </Style>
         <Style Selector="ComboBoxItem:selected">
             <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource AccentDarkBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DarkAccentBrush}" />
         </Style>
         <Style Selector="ComboBoxItem:selected:focus">
             <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource AccentDarkBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DarkAccentBrush}" />
         </Style>
         <Style Selector="ComboBoxItem TextBlock">
             <Setter Property="Background" Value="{DynamicResource TransparentBrush}" />
@@ -818,7 +882,7 @@
         </Style>
 
 
-        <!--  DataGrid  -->
+        <!--  Scrollbars  -->
         <Style Selector="RepeatButton#PART_LineUpButton.repeat">
             <Setter Property="CornerRadius" Value="3" />
             <Setter Property="BorderThickness" Value="0" />

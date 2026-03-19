@@ -100,7 +100,7 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 	public ICommand SnoozeAllCommand => new RelayCommand(SnoozeAll);
 	public void SnoozeAll() {
 		foreach (ReminderInfo reminder in Reminders) {
-			reminder.SetSnooze(new TimeSpan(0, SnoozeMinutes, 0));
+			reminder.SetSnooze(new TimeSpan(0, 10, 0));
 			reminder.UpdateValues();
 		}
 		UpdateAlarmsList();
@@ -110,6 +110,7 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 		DismissReminder(SelectedReminder);
 		UpdateAlarmsList();
 	}
+	public ICommand DismissAllCommand => new RelayCommand(DismissAll);
 	public void DismissAll() {
 		foreach (ReminderInfo reminder in Reminders) {
 			DismissReminder(reminder);

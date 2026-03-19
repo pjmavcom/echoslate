@@ -45,19 +45,6 @@ public class TodoItem : INotifyPropertyChanged {
 	public bool HasActiveReminder {
 		get => Reminders.Count > 0;
 	}
-	public ReminderInfo? GetNearestReminder() {
-		ReminderInfo nearestReminder = new();
-		nearestReminder.DueDate = DateTime.MaxValue;
-		foreach (ReminderInfo ri in Reminders) {
-			if (ri.DueDate < nearestReminder.DueDate) {
-				nearestReminder = ri;
-			}
-		}
-		if (nearestReminder.DueDate == DateTime.MaxValue) {
-			return null;
-		}
-		return nearestReminder;
-	}
 	[JsonIgnore]
 	public string ReminderDueDateString {
 		get {
@@ -179,7 +166,11 @@ public class TodoItem : INotifyPropertyChanged {
 		get => _isComplete;
 		set {
 			_isComplete = value;
-			DateTimeCompleted = IsComplete ? DateTime.Now : DateTime.MinValue;
+			DateTimeCompleted = DateTime.MinValue;
+			if (_isComplete) {
+				DateTimeCompleted = DateTime.Now;
+				ClearReminders();
+			}
 			OnPropertyChanged();
 		}
 	}
@@ -401,7 +392,19 @@ public class TodoItem : INotifyPropertyChanged {
 		newItem.NormalizeData();
 		return newItem;
 	}
-
+	public ReminderInfo? GetNearestReminder() {
+		ReminderInfo nearestReminder = new();
+		nearestReminder.DueDate = DateTime.MaxValue;
+		foreach (ReminderInfo ri in Reminders) {
+			if (ri.DueDate < nearestReminder.DueDate) {
+				nearestReminder = ri;
+			}
+		}
+		if (nearestReminder.DueDate == DateTime.MaxValue) {
+			return null;
+		}
+		return nearestReminder;
+	}
 	// public void SetSnooze(TimeSpan snoozeTime) {
 		// Reminders.SnoozeUntil = DateTime.Now + snoozeTime;
 		// OnPropertyChanged(nameof(IsReminderSnoozing));
