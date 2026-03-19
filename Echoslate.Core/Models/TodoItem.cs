@@ -1,5 +1,4 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.ObjectModel;using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -15,8 +14,8 @@ public enum View {
 
 [Serializable]
 public class TodoItem : INotifyPropertyChanged {
-	private List<Guid> _reminderGuids;
-	public List<Guid> ReminderGuids {
+	private HashSet<Guid> _reminderGuids;
+	public HashSet<Guid> ReminderGuids {
 		get => _reminderGuids;
 		set {
 			if (_reminderGuids == value) {
@@ -47,10 +46,17 @@ public class TodoItem : INotifyPropertyChanged {
 		get => Reminders.Count > 0;
 	}
 	public ReminderInfo? GetNearestReminder() {
-		return Reminders
-		   .Where(r => r.DueDate >= DateTimeOffset.Now)
-		   .OrderBy(r => r.DueDate)
-		   .FirstOrDefault();
+		ReminderInfo nearestReminder = new();
+		nearestReminder.DueDate = DateTime.MaxValue;
+		foreach (ReminderInfo ri in Reminders) {
+			if (ri.DueDate < nearestReminder.DueDate) {
+				nearestReminder = ri;
+			}
+		}
+		if (nearestReminder.DueDate == DateTime.MaxValue) {
+			return null;
+		}
+		return nearestReminder;
 	}
 	[JsonIgnore]
 	public string ReminderDueDateString {
@@ -356,7 +362,7 @@ public class TodoItem : INotifyPropertyChanged {
 		_notes = string.Empty;
 		_problem = string.Empty;
 		_solution = string.Empty;
-		_timeTaken = new TimeSpan();
+		_timeTaken = TimeSpan.Zero;
 		_dateTimeStarted = DateTime.Now;
 		_dateTimeCompleted = DateTime.MaxValue;
 		_isTimerOn = false;
@@ -404,8 +410,22 @@ public class TodoItem : INotifyPropertyChanged {
 		// Reminders.Clear();
 	// }
 	public void UpdateReminder() {
-		// OnPropertyChanged(nameof(IsReminderSnoozing));
+		OnPropertyChanged(nameof(Reminders));
 		OnPropertyChanged(nameof(ReminderDueDateString));
+		OnPropertyChanged(nameof(HasActiveReminder));
+	}
+	public void ClearReminders() {
+		ReminderGuids.Clear();
+		Reminders.Clear();
+		UpdateReminder();
+	}
+	public void ClearReminder(Guid guid) {
+        ReminderGuids.Remove(guid);
+        ReminderInfo? toRemove = Reminders.FirstOrDefault(ri => ri.Guid == guid);
+		if (toRemove != null) {
+			Reminders.Remove(toRemove);
+		}
+		UpdateReminder();
 	}
 	public void NormalizeData() {
 		NormalizeRankKeys();

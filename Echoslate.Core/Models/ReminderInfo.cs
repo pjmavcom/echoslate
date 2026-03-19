@@ -26,8 +26,8 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private List<Guid> _todoGuids;
-	public List<Guid> TodoGuids {
+	private HashSet<Guid> _todoGuids;
+	public HashSet<Guid> TodoGuids {
 		get => _todoGuids;
 		set {
 			if (_todoGuids == value) {

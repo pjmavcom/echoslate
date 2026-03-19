@@ -38,25 +38,25 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 	}
 	// private ObservableCollection<ReminderInfo> _reminders;
 	// public ObservableCollection<ReminderInfo> Reminders {
-		// get => _reminders;
-		// set {
-			// if (_reminders == value) {
-				// return;
-			// }
-			// _reminders = value;
-			// OnPropertyChanged();
-		// }
+	// get => _reminders;
+	// set {
+	// if (_reminders == value) {
+	// return;
+	// }
+	// _reminders = value;
+	// OnPropertyChanged();
+	// }
 	// }
 	// private ReminderInfo _selectedReminder;
 	// public ReminderInfo SelectedReminder {
-		// get => _selectedReminder;
-		// set {
-			// if (_selectedReminder == value) {
-				// return;
-			// }
-			// _selectedReminder = value;
-			// OnPropertyChanged();
-		// }
+	// get => _selectedReminder;
+	// set {
+	// if (_selectedReminder == value) {
+	// return;
+	// }
+	// _selectedReminder = value;
+	// OnPropertyChanged();
+	// }
 	// }
 	private int _snoozeMinutes;
 	public int SnoozeMinutes {
@@ -120,6 +120,10 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 		reminder.Clear();
 		if (reminder.IsActive) {
 			reminder.UpdateValues();
+		} else {
+			foreach (TodoItem item in reminder.Todos) {
+				item.ClearReminder(reminder.Guid);
+			}
 		}
 	}
 

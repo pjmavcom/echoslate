@@ -74,9 +74,6 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 	public int DueHour {
 		get => SelectedReminder == null ? 0 : SelectedReminder.DueDate.Hour;
 		set {
-			if (SelectedReminder == null || _dueHour == value) {
-				return;
-			}
 			_dueHour = value;
 			if (_dueHour > 23) {
 				_dueHour = 0;
@@ -86,7 +83,7 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 				_dueHour = 23;
 				DueDate -= TimeSpan.FromHours(24);
 			}
-			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, _dueMinute, 0);
+			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, DueDate.Minute, 0);
 			OnPropertyChanged();
 			SelectedReminder.UpdateValues();
 		}
@@ -95,9 +92,6 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 	public int DueMinute {
 		get => SelectedReminder == null ? 0 : SelectedReminder.DueDate.Minute;
 		set {
-			if (_dueMinute == value) {
-				return;
-			}
 			_dueMinute = value;
 			if (_dueMinute > 45) {
 				_dueMinute = 0;
@@ -108,7 +102,7 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 				DueHour--;
 			}
 
-			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, _dueMinute, 0);
+			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, DueDate.Hour, _dueMinute, 0);
 			OnPropertyChanged();
 			SelectedReminder.UpdateValues();
 		}
@@ -156,6 +150,9 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 
 	public ICommand DeleteTaskCommand => new RelayCommand(DeleteTask);
 	public void DeleteTask() {
+		foreach (TodoItem item in Todos) {
+			item.ClearReminder(SelectedReminder.Guid);
+		}
 		Reminders.Remove(SelectedReminder);
 	}
 	public ICommand SaveChangesCommand => new RelayCommand(SaveChanges);
@@ -178,6 +175,10 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 		TimeOnly time = new TimeOnly(dueHour, dueMinute);
 		DateOnly date = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 		reminder.DueDate = new DateTime(date, time);
+		reminder.UpdateValues();
+		OnPropertyChanged(nameof(DueDate));
+		OnPropertyChanged(nameof(DueMinute));
+		OnPropertyChanged(nameof(DueHour));
 	}
 	public ICommand AddSelectedTodoCommand => new RelayCommand(AddSelectedTodo);
 	public void AddSelectedTodo() {
