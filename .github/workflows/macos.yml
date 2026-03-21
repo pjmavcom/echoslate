@@ -79,7 +79,7 @@ jobs:
           cp Echoslate.Avalonia/AppIcon.icns $APP_DIR/Contents/Resources/
 
           # Ensure executable is runnable
-          chmod +x $APP_DIR/Contents/MacOS/Echoslate
+          chmod +x $APP_DIR/Contents/MacOS/Echoslate.Avalonia
 
       - name: Zip macOS app
         if: runner.os == 'macOS'
