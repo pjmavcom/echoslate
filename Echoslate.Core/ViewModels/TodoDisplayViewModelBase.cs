@@ -902,21 +902,8 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public void ToggleNotesPanel() {
 		IsNotesPanelVisibleManual = !IsNotesPanelVisibleManual;
 	}
-	public ICommand SetReminderCommand => new RelayCommand<TodoItem>(item => SetReminder(item));
-	public async void SetReminder(TodoItem item) {
-		Log.Test();
-		List<TodoItem> items = GetSelectedListBoxItems().ToList();
-		if (items.Count == 0) {
-			items.Add(item);
-		}
-		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(Reminders, MasterList, item);
-		ReminderEditorViewModel vm = await vmTask;
-		if (vm == null) {
-			return;
-		}
-		// item.Reminder = vm.Reminder;
-		Log.Test();
-	}
+	
+	
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string name = null)

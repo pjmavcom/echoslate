@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
@@ -138,6 +139,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	}
 
 	private readonly TodoItem _item;
+	private readonly TodoItem _originalItem;
 	public TodoItem ResultTodoItem => _item;
 	public bool Result;
 
@@ -159,6 +161,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 
 
 	public TodoItemEditorViewModel(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
+		_originalItem = td;
 		_item = TodoItem.Copy(td);
 		_reminders = _item.Reminders;
 
@@ -283,6 +286,10 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		Result = true;
 		_item.IsComplete = true;
 		SetTodo();
+	}
+	public void RemindersDoubleTapped() {
+		MainWindowViewModel mwvm = AppServices.MainWindowVM;
+		mwvm.ShowReminderWindow(_originalItem);
 	}
 	public ICommand AddTagCommand => new RelayCommand(AddTag);
 	public async void AddTag() {

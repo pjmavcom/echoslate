@@ -306,9 +306,7 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:CompileBindings="False">
-                                    <CheckBox Command="{Binding DataContext.SetReminderCommand, ElementName=Root}"
-                                              CommandParameter="{Binding}"
-                                              FontFamily="{StaticResource MonoFont}"
+                                    <CheckBox FontFamily="{StaticResource MonoFont}"
                                               Foreground="{DynamicResource ForegroundBrush}"
                                               IsChecked="{Binding HasActiveReminder, Mode=OneWay}"
                                               />

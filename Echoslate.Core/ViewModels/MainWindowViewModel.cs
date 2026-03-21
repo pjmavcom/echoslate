@@ -896,10 +896,10 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 		SetWindowPosition(windowWidth, windowHeight);
 	}
-	public ICommand ShowReminderWindowCommand => new RelayCommand(ShowReminderWindow);
+	public ICommand ShowReminderWindowCommand => new RelayCommand(() => ShowReminderWindow());
 
-	public async void ShowReminderWindow() {
-		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(MasterReminders, MasterTodoItemsList);
+	public async void ShowReminderWindow(TodoItem item = null) {
+		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(MasterReminders, MasterTodoItemsList, item);
 		ReminderEditorViewModel vm = await vmTask;
 		if (vm == null) {
 			return;

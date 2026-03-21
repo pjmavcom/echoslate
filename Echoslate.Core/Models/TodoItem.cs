@@ -37,8 +37,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 			OnPropertyChanged(nameof(HasActiveReminder));
 			OnPropertyChanged(nameof(ReminderDueDateString));
-			// OnPropertyChanged(nameof(IsReminderDueNow));
-			// OnPropertyChanged(nameof(IsReminderSnoozing));
 		}
 	}
 	[JsonIgnore]
@@ -64,21 +62,6 @@ public class TodoItem : INotifyPropertyChanged {
 			return "";
 		}
 	}
-	// [JsonIgnore]
-	// public bool IsReminderDueNow {
-	// get => Reminders is { IsDueNow: true };
-	// }
-	// [JsonIgnore]
-	// public bool IsReminderSnoozing {
-	// get => Reminders is { IsSnoozeActive: true };
-	// }
-	// [JsonIgnore]
-	// public bool IsReminderActive {
-	// get => Reminders is { IsActive: true };
-	// }
-	// [JsonIgnore] public DateTime ReminderDueDate => Reminders.DueDate;
-	// [JsonIgnore] public string ReminderMessage => Reminders.Message;
-
 	private Guid _guid;
 	public Guid Guid {
 		get => _guid;
@@ -87,7 +70,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _todo;
 	public string Todo {
 		get => AddNewLines(_todo);
@@ -97,7 +79,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _notes;
 	public string Notes {
 		get => AddNewLines(_notes);
@@ -106,7 +87,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _problem;
 	public string Problem {
 		get => AddNewLines(_problem);
@@ -115,7 +95,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _solution;
 	public string Solution {
 		get => AddNewLines(_solution);
@@ -124,7 +103,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private DateTime _dateTimeStarted;
 	public DateTime DateTimeStarted {
 		get => _dateTimeStarted;
@@ -160,7 +138,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(TimeTaken));
 		}
 	}
-
 	private bool _isComplete;
 	public bool IsComplete {
 		get => _isComplete;
@@ -174,7 +151,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private int _severity;
 	public int Severity {
 		get => _severity;
@@ -194,7 +170,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private int _kanban;
 	public int Kanban {
 		get => _kanban;
@@ -212,7 +187,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private Dictionary<string, int> _rank;
 	public Dictionary<string, int> Rank {
 		get => _rank;
@@ -254,7 +228,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private View _currentView;
 	[JsonIgnore]
 	public View CurrentView {
@@ -264,7 +237,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private ObservableCollection<string> _tags;
 	public ObservableCollection<string> Tags {
 		get => _tags;
@@ -293,7 +265,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	[JsonIgnore]
 	private string TagsAndTodoToSave {
 		get {
@@ -314,7 +285,6 @@ public class TodoItem : INotifyPropertyChanged {
 	public string NotesProblemsSolutions =>
 		"Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
 		Environment.NewLine + AddNewLines(Solution);
-
 	[JsonIgnore]
 	private string TagsList {
 		get {
@@ -327,7 +297,6 @@ public class TodoItem : INotifyPropertyChanged {
 			return result;
 		}
 	}
-
 	[JsonIgnore]
 	public string TagsSorted {
 		get {
@@ -405,13 +374,6 @@ public class TodoItem : INotifyPropertyChanged {
 		}
 		return nearestReminder;
 	}
-	// public void SetSnooze(TimeSpan snoozeTime) {
-		// Reminders.SnoozeUntil = DateTime.Now + snoozeTime;
-		// OnPropertyChanged(nameof(IsReminderSnoozing));
-	// }
-	// public void ClearReminder() {
-		// Reminders.Clear();
-	// }
 	public void UpdateReminder() {
 		OnPropertyChanged(nameof(Reminders));
 		OnPropertyChanged(nameof(ReminderDueDateString));

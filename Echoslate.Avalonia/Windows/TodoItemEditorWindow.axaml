@@ -465,46 +465,14 @@
         <Grid Grid.Column="2">
             <DataGrid BorderBrush="{DynamicResource BorderBrush}"
                       BorderThickness="1"
+                      DoubleTapped="DataGrid_DoubleTapped"
                       GridLinesVisibility="All"
                       IsReadOnly="True"
                       ItemsSource="{Binding Reminders}"
                       SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
                       >
                 <DataGrid.Columns>
-                    <!--  ~1~ IsActive  -->
-                    <!--  <DataGridTemplateColumn MinWidth="30"  -->
-                    <!--  Header="A"  -->
-                    <!--  >  -->
-                    <!--     <DataGridTemplateColumn.CellTemplate> -->
-                    <!--         <DataTemplate> -->
-                    <!--             <CheckBox IsChecked="{Binding IsActive}" /> -->
-                    <!--         </DataTemplate> -->
-                    <!--     </DataGridTemplateColumn.CellTemplate> -->
-                    <!-- </DataGridTemplateColumn> -->
-
-                    <!--  ~2~ IsDue  -->
-                    <!--  <DataGridTemplateColumn MinWidth="30"  -->
-                    <!--  Header="D"  -->
-                    <!--  >  -->
-                    <!-- <DataGridTemplateColumn.CellTemplate> -->
-                    <!-- <DataTemplate> -->
-                    <!-- <CheckBox IsChecked="{Binding IsDueNow}" /> -->
-                    <!-- </DataTemplate> -->
-                    <!-- </DataGridTemplateColumn.CellTemplate> -->
-                    <!-- </DataGridTemplateColumn> -->
-
-                    <!--  ~3~ IsSnoozing  -->
-                    <!--  <DataGridTemplateColumn MinWidth="30"  -->
-                    <!--  Header="Z"  -->
-                    <!--  >  -->
-                    <!-- <DataGridTemplateColumn.CellTemplate> -->
-                    <!-- <DataTemplate> -->
-                    <!-- <CheckBox IsChecked="{Binding IsSnoozeActive}" /> -->
-                    <!-- </DataTemplate> -->
-                    <!-- </DataGridTemplateColumn.CellTemplate> -->
-                    <!-- </DataGridTemplateColumn> -->
-
-                    <!--  ~4~ Message  -->
+                    <!--  ~1~ Message  -->
                     <DataGridTemplateColumn MinWidth="300"
                                             Header="Message"
                                             >
@@ -519,7 +487,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!--  ~5~ Due Date  -->
+                    <!--  ~2~ Due Date  -->
                     <DataGridTemplateColumn MinWidth="170"
                                             Header="Due Date"
                                             >
@@ -536,6 +504,7 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
+
         <!--  Buttons  -->
         <StackPanel Grid.Row="1"
                     Grid.Column="0"

@@ -240,7 +240,7 @@ public class AvaloniaDialogService : IDialogService {
 			IsEnabled = true
 		};
 
-		window.Show();
+		window.ShowDialog((Window)AppServices.ApplicationService.GetWindow());
 		return vm.Result;
 	}
 	public async Task<DialogResult?> ShowAsync(string message, string title, DialogButton buttons, DialogIcon icon, object? owner = null) {

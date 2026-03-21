@@ -2,6 +2,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using Avalonia.Controls;
+using Echoslate.Core.Services;
 
 namespace Echoslate.Core.Models;
 
@@ -137,7 +139,7 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	
+
 	[JsonIgnore]
 	public bool IsSnoozeActive {
 		get => SnoozeUntil != DateTime.MinValue;
@@ -166,15 +168,14 @@ public class ReminderInfo : INotifyPropertyChanged {
 			return "";
 		}
 	}
-	
-	
-	[JsonIgnore]
-	public bool IsActive => HasDueDate || IsSnoozeActive;
+
+
+	[JsonIgnore] public bool IsActive => HasDueDate || IsSnoozeActive;
 	[JsonIgnore]
 	public bool HasDueDate {
 		get => DueDate != DateTime.MinValue;
 	}
-	
+
 	private string _todo;
 	[JsonIgnore]
 	public string Todo {
@@ -218,8 +219,16 @@ public class ReminderInfo : INotifyPropertyChanged {
 	}
 	public void Clear() {
 		if (IsRecurring) {
-			var freq = (int)RecurringFrequency;
-			DueDate += new TimeSpan(freq, 0, 0);
+			int freq = (int)RecurringFrequency;
+			SnoozeUntil = DateTime.MinValue;
+			int count = -1;
+			while (DueDate < DateTime.Now) {
+				DueDate += new TimeSpan(freq, 0, 0);
+				count++;
+			}
+			if (count > 0) {
+				AppServices.DialogService.Show($"The alarm has passed through {count} recurring overdue dates.", "Recurring dates overdue", DialogButton.Ok, DialogIcon.Warning);
+			}
 		} else {
 			DueDate = DateTime.MinValue;
 			SnoozeUntil = DateTime.MinValue;
@@ -227,6 +236,7 @@ public class ReminderInfo : INotifyPropertyChanged {
 	}
 	public void UpdateValues() {
 		OnPropertyChanged(nameof(DueDateString));
+		OnPropertyChanged(nameof(IsSnoozeActive));
 	}
 	public void SetSnooze(TimeSpan snoozeTime) {
 		SnoozeUntil = DateTime.Now + snoozeTime;

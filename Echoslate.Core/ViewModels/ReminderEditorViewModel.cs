@@ -108,6 +108,9 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 				DueDate -= TimeSpan.FromHours(24);
 			}
 			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, DueDate.Minute, 0);
+			if (DueDate >= SelectedReminder.SnoozeUntil) {
+				SelectedReminder.SnoozeUntil = DateTime.MinValue;
+			}
 			OnPropertyChanged();
 			SelectedReminder.UpdateValues();
 		}
@@ -127,6 +130,9 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 			}
 
 			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, DueDate.Hour, _dueMinute, 0);
+			if (DueDate >= SelectedReminder.SnoozeUntil) {
+				SelectedReminder.SnoozeUntil = DateTime.MinValue;
+			}
 			OnPropertyChanged();
 			SelectedReminder.UpdateValues();
 		}
@@ -170,6 +176,9 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 			});
 		}
 		AdvanceOptions = new ObservableCollection<EnumOption>();
+		if (selectedItem != null) {
+			SelectedReminder = Reminders.FirstOrDefault(reminder => reminder.Guid == selectedItem.ReminderGuids.FirstOrDefault());
+		}
 	}
 
 	public ICommand DeleteTaskCommand => new RelayCommand(DeleteTask);
