@@ -1,0 +1,105 @@
+name: Build Echoslate (Win / macOS / Linux)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.runtime }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            suffix: .exe
+
+          - os: windows-latest
+            runtime: win-arm64
+            suffix: .exe
+
+          - os: macos-latest
+            runtime: osx-x64
+            suffix: ''
+
+          - os: macos-latest
+            runtime: osx-arm64
+            suffix: ''
+
+          - os: ubuntu-latest
+            runtime: linux-x64
+            suffix: ''
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies (Avalonia project only)
+        run: dotnet restore Echoslate.Avalonia/Echoslate.Avalonia.csproj
+
+      - name: Publish ${{ matrix.runtime }}
+        shell: bash
+        run: |
+          dotnet publish Echoslate.Avalonia/Echoslate.Avalonia.csproj \
+          -c Release \
+          -r ${{ matrix.runtime }} \
+          --self-contained true \
+          -v normal \
+          -p:PublishSingleFile=false \
+          -p:IncludeNativeLibrariesForSelfExtract=true \
+          -o ./publish-${{ matrix.runtime }}
+
+      - name: Create .app bundle (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          APP_NAME=Echoslate
+          PUBLISH_DIR=publish-${{ matrix.runtime }}
+          APP_DIR=$PUBLISH_DIR/$APP_NAME.app
+
+          mkdir -p $APP_DIR/Contents/MacOS
+          mkdir -p $APP_DIR/Contents/Resources
+
+          # Copy executable + dependencies
+          cp -R $PUBLISH_DIR/* $APP_DIR/Contents/MacOS/
+
+          # Copy Info.plist
+          cp Echoslate.Avalonia/Info.plist $APP_DIR/Contents/Info.plist
+
+          # Copy icon
+          cp Echoslate.Avalonia/AppIcons.icns $APP_DIR/Contents/Resources/
+
+          # Ensure executable is runnable
+          chmod +x $APP_DIR/Contents/MacOS/Echoslate
+
+      - name: Zip macOS app
+        if: runner.os == 'macOS'
+        run: |
+          cd publish-${{ matrix.runtime }}
+          zip -r ../Echoslate-${{ matrix.runtime }}.zip Echoslate.app
+
+      - name: Zip artifact (non-Windows)
+        if: runner.os == 'Linux'
+        run: |
+          cd publish-${{ matrix.runtime }}
+          zip -r ../Echoslate-${{ matrix.runtime }}.zip .
+
+      - name: Zip artifact (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ./publish-${{ matrix.runtime }}/* -DestinationPath Echoslate-${{ matrix.runtime }}.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Echoslate-${{ matrix.runtime }}
+          path: Echoslate-${{ matrix.runtime }}.zip
+          if-no-files-found: error
