@@ -12,8 +12,9 @@ using Echoslate.Core.Services;
 namespace Echoslate.Core.ViewModels;
 
 public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
+	public ObservableCollection<ReminderInfo> Reminders;
 	public bool DebugMode { get; set; } = false;
-	
+
 	public AppData Data { get; set; }
 	public ObservableCollection<TodoItem> MasterList { get; set; }
 	public IEnumerable<TodoItem> DisplayedItems {
@@ -200,7 +201,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 				}
 				_selectedTodoItem = value;
 				if (_selectedTodoItem is TodoItem newItem) {
-					SelectedTodoItemId = newItem.Id;
+					SelectedTodoItemId = newItem.Guid;
 					Log.Debug($"{SelectedTodoItemId}");
 					newItem.PropertyChanged += TodoItem_PropertyChanged;
 				}
@@ -216,11 +217,12 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 		DebugMode = true;
 		OnPropertyChanged(nameof(DebugMode));
 #endif
-		
+
 		Data = mainWindowVM.Data;
 		MasterList = mainWindowVM.MasterTodoItemsList;
 		HistoryItems = mainWindowVM.MasterHistoryItemsList;
 		MasterFilterTags = mainWindowVM.MasterFilterTags ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterFilterTags));
+		Reminders = mainWindowVM.MasterReminders ?? throw new ArgumentNullException(nameof(mainWindowVM.MasterReminders));
 
 		FilterButtons = [];
 		AllTags = [];
@@ -882,8 +884,7 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public ICommand DebugSearchGuidCommand => new RelayCommand(() => {
 		Guid id = new Guid(NewTodoText);
 		foreach (TodoItem item in MasterList) {
-			var found = item.SearchById(id);
-			if (found != null) {
+			if (item.SearchByGuid(id)) {
 				Log.Print($"Found Todo: {item}");
 			}
 		}
@@ -901,6 +902,8 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public void ToggleNotesPanel() {
 		IsNotesPanelVisibleManual = !IsNotesPanelVisibleManual;
 	}
+	
+	
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string name = null)

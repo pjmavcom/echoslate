@@ -70,7 +70,7 @@ public class KanbanViewModel : TodoDisplayViewModelBase {
 		};
 
 		AddItemToMasterList(item);
-		SelectedTodoItemId = item.Id;
+		SelectedTodoItemId = item.Guid;
 		CleanAllTodoHashRanks();
 		RefreshAll();
 		NewTodoText = "";

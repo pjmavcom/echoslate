@@ -21,7 +21,12 @@ public enum PomoActiveState {
 }
 
 public class MainWindowViewModel : INotifyPropertyChanged {
+	public ObservableCollection<ReminderInfo> MasterReminders;
 	private PeriodicTimer? _timer;
+	private int _reminderTimerTicks;
+	private int _reminderTimerTicksMax = 1;
+	private bool _alarmWindowOpen = false;
+	private bool _showAlarmsWindow = false;
 
 	public AppData Data;
 	public AppSettings AppSettings { get; set; }
@@ -228,6 +233,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		foreach (TodoItem item in MasterTodoItemsList) {
 			item.UpdateTags(Data.AllTags);
 		}
+		LinkRemindersToTodos();
 
 		SetWindowTitle();
 
@@ -238,10 +244,36 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 		StartTimer();
 	}
+	public void LinkRemindersToTodos() {
+		foreach (ReminderInfo ri in MasterReminders) {
+			if (ri.TodoGuids.Count == 0) {
+				continue;
+			}
+			foreach (Guid guid in ri.TodoGuids) {
+				TodoItem? item = FindTodoItemByGuid(guid);
+				if (item == null) {
+					continue;
+				}
+				ri.Todos.Add(item);
+				item.AddReminder(ri);
+			}
+		}
+	}
+
+	public TodoItem? FindTodoItemByGuid(Guid guid) {
+		foreach (TodoItem item in MasterTodoItemsList) {
+			if (item.SearchByGuid(guid)) {
+				return item;
+			}
+		}
+		return null;
+	}
+
 	private void SetPomoTimers() {
 		PomoWorkTime = AppSettings.PomoWorkTimerLength;
 		PomoBreakTime = AppSettings.PomoBreakTimerLength;
 	}
+
 	private async void StartTimer() {
 		if (_timer != null) {
 			return;
@@ -254,13 +286,44 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 				UpdateTodoTimers();
 				UpdatePomoTimer();
 				UpdateAutoSaveTimer();
+				UpdateReminderTimer();
 			});
 		}
 	}
+
+	public async void UpdateReminderTimer() {
+		if (!_alarmWindowOpen) {
+			_reminderTimerTicks++;
+			if (_reminderTimerTicks >= _reminderTimerTicksMax) {
+				_reminderTimerTicksMax = 5;
+				ObservableCollection<ReminderInfo> dueItems = [];
+				_showAlarmsWindow = false;
+				foreach (ReminderInfo reminder in MasterReminders) {
+					if (reminder.IsDueNow) {
+						dueItems.Add(reminder.Copy());
+						_showAlarmsWindow = true;
+					}
+				}
+				bool isactive = AppServices.ApplicationService.IsActive();
+				if (isactive && _showAlarmsWindow) {
+					_alarmWindowOpen = true;
+					Task<AlarmPopupViewModel?> vmTask = AppServices.DialogService.ShowAlarmPopupAsync(dueItems);
+					AlarmPopupViewModel vm = await vmTask;
+					if (vm != null) {
+						UpdateRemindersFromDialog(dueItems, vm.Reminders);
+					}
+					_alarmWindowOpen = false;
+				}
+				_reminderTimerTicks = 0;
+			}
+		}
+	}
+
 	public void StopTimer() {
 		_timer?.Dispose();
 		_timer = null;
 	}
+
 	public void UpdateAutoSaveTimer() {
 		if (!Data.FileSettings.AutoSave) {
 			return;
@@ -270,6 +333,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 		AttemptAutoSave();
 	}
+
 	private void AttemptAutoSave() {
 		if ((DateTime.Now - LastBackupAttempt).TotalSeconds >= DebounceSeconds) {
 			_ = AutoSaveAsync();
@@ -277,6 +341,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			IsPendingSave = false;
 		}
 	}
+
 	public void UpdateBackupTimer() {
 		_backupTimer = _backupTimer.Subtract(new TimeSpan(0, 0, 1));
 		if (_backupTimer <= TimeSpan.Zero) {
@@ -289,6 +354,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			IsPendingBackup = false;
 		}
 	}
+
 	public void UpdateTodoTimers() {
 		foreach (TodoItem item in MasterTodoItemsList) {
 			if (item.IsTimerOn) {
@@ -296,6 +362,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			}
 		}
 	}
+
 	public void UpdatePomoTimer() {
 		if (_isPomoTimerOn) {
 			PomoTimer = PomoTimer.Add(new TimeSpan(0, 0, 1));
@@ -321,14 +388,40 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			_pomoLastActiveState = _pomoState;
 		}
 	}
+
 	private void UpdatePomoTimerUI() {
 		OnPropertyChanged(nameof(PomoLabelContent));
 		OnPropertyChanged(nameof(PomoProgressBarValue));
 		OnPropertyChanged(nameof(PomoIsWorkMode));
 	}
+
+	private void UpdateRemindersFromDialog(ObservableCollection<ReminderInfo>? dueItems, ObservableCollection<ReminderInfo> reminders) {
+		if (dueItems != null) {
+			HashSet<Guid> guids = dueItems.Select(item => item.Guid).Distinct().ToHashSet();
+			foreach (Guid guid in guids) {
+				if (MasterReminders.Any(item => item.Guid == guid)) {
+					MasterReminders.Remove(MasterReminders.First(item => item.Guid == guid));
+				}
+			}
+		} else {
+			MasterReminders.Clear();
+		}
+		foreach (ReminderInfo reminder in reminders) {
+			if (reminder.IsActive) {
+				MasterReminders.Add(reminder);
+			}
+		}
+		foreach (ReminderInfo ri in MasterReminders) {
+			foreach (TodoItem item in ri.Todos) {
+				item.UpdateReminder();
+			}
+		}
+	}
+
 	public void SetWindowTitle() {
 		CurrentWindowTitle = "Echoslate v" + AppServices.ApplicationService.GetVersion() + " - " + Data?.FileName;
 	}
+
 	public void LoadCurrentData() {
 		Log.Print("Disabling AutoSave and AutoBackup");
 		bool autoSave = Data.FileSettings.AutoSave;
@@ -343,6 +436,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		if (MasterHistoryItemsList.Count == 0) {
 			MasterHistoryItemsList.Add(new HistoryItem());
 		}
+		MasterReminders = Data.Reminders;
 		Log.Print("Getting all TodoItemTags");
 		foreach (TodoItem item in MasterTodoItemsList) {
 			foreach (string tag in item.Tags) {
@@ -357,6 +451,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		MasterTodoItemsList.CollectionChanged += OnCollectionChanged;
 		MasterHistoryItemsList.CollectionChanged += OnCollectionChanged;
 		MasterFilterTags.CollectionChanged += OnCollectionChanged;
+		MasterReminders.CollectionChanged += OnCollectionChanged;
 
 		Log.Print("Subscribing to PropertyChanged events for all items");
 		SubscribeToExistingItems();
@@ -378,6 +473,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
 		Log.Success("LoadCurrentData complete.");
 	}
+
 	private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 		if (e.NewItems != null) {
 			foreach (var item in e.NewItems) {
@@ -392,6 +488,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 		MarkAsChanged();
 	}
+
 	private void SubscribeToExistingItems() {
 		Log.Print("Subscribing to MasterTodoItems...");
 		foreach (var item in MasterTodoItemsList) {
@@ -405,27 +502,33 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			}
 		}
 	}
+
 	private void SubscribeToItem(object item) {
 		if (item is INotifyPropertyChanged notifyItem) {
 			notifyItem.PropertyChanged += OnItemPropertyChanged;
 		}
 	}
+
 	private void UnsubscribeFromItem(object item) {
 		if (item is INotifyPropertyChanged notifyItem) {
 			notifyItem.PropertyChanged -= OnItemPropertyChanged;
 		}
 	}
+
 	private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
 		MarkAsChanged();
 	}
+
 	private void MarkAsChanged() {
 		if (!IsChanged) {
 			IsChanged = true;
 		}
 	}
+
 	private void ClearChangedFlag() {
 		IsChanged = false;
 	}
+
 	private async Task AutoSaveAsync() {
 		try {
 			await SaveToMainFileAsync();
@@ -435,6 +538,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			Log.Error($"Auto save failed: {ex.Message}");
 		}
 	}
+
 	private async Task SaveToMainFileAsync() {
 #if DEBUG
 		string filePath = $"C:\\MyBinaries\\TestData\\{Data.FileName}{Data.FileExtension}";
@@ -444,6 +548,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		AppDataSaver saver = new AppDataSaver();
 		saver.Save(filePath, Data);
 	}
+
 	private void Save(string filePath) {
 #if DEBUG
 		Log.Debug("In DEBUG MODE. Saving to temp directory...");
@@ -455,18 +560,21 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		SetWindowTitle();
 		ClearChangedFlag();
 	}
+
 	private void Save() {
 		if (Data == null || !File.Exists(Data.CurrentFilePath)) {
 			return;
 		}
 		Save(Data.CurrentFilePath);
 	}
+
 	private void InitialBackup() {
 		string path = AppSettings.RecentFiles[0] + ".initialbak";
 		Log.Print($"Backing up to: {path}");
 		AppDataSaver saver = new AppDataSaver();
 		saver.BackupSave(path, Data);
 	}
+
 	private void BackupSave() {
 		if (!Data.FileSettings.AutoBackup) {
 			return;
@@ -484,6 +592,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Data.FileSettings.BackupIncrement++;
 		Data.FileSettings.BackupIncrement %= 10;
 	}
+
 	public async void Load(string? filePath) {
 		Log.Print("Loading AppData...");
 		Data = AppDataLoader.Load(filePath, Data);
@@ -521,6 +630,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Log.Print("Performing initial backup...");
 		InitialBackup();
 	}
+
 	public void CleanAndNormalizeData() {
 		foreach (TodoItem item in Data.TodoList) {
 			item.NormalizeData();
@@ -532,6 +642,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			}
 		}
 	}
+
 	public async void CreateNewFile() {
 		bool isDataAlreadyLoaded = false;
 		if (Data != null) {
@@ -571,6 +682,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			SetupApplicationState();
 		}
 	}
+
 	public async Task<bool> OpenFile() {
 		string basePath = Data == null ? "" : Data.BasePath;
 
@@ -584,6 +696,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Load(loadFile);
 		return true;
 	}
+
 	public async Task<bool> OpenFileAsync() {
 		try {
 			string? path = await AppServices.DialogService.OpenFile();
@@ -604,6 +717,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			return false;
 		}
 	}
+
 	public void SetWindowPosition(double width = 0, double height = 0) {
 		double windowWidth = width;
 		double windowHeight = height;
@@ -628,13 +742,12 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Log.Print($"Window position: {mainWindow.Position}");
 		Log.Print($"Window size: {mainWindow.Width}x{mainWindow.Height}");
 	}
-
-
 	public ICommand MenuNewCommand => new RelayCommand(CreateNewFile);
 	public ICommand MenuLoadCommand => new RelayCommand(() => OpenFile());
 	public ICommand SaveCommand => new RelayCommand(Save);
 	public ICommand MenuSaveCommand => new RelayCommand(Save);
 	public ICommand MenuSaveAsCommand => new RelayCommand(SaveAs);
+
 	public async void SaveAs() {
 		Log.Print("Saving file as...");
 
@@ -647,6 +760,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Save(saveFile);
 	}
 	public ICommand MenuOptionsCommand => new RelayCommand(MenuOptions);
+
 	private async void MenuOptions() {
 		Task<OptionsViewModel?> vmTask = AppServices.DialogService.ShowOptionsAsync(AppSettings, Data);
 		OptionsViewModel? vm = await vmTask;
@@ -672,6 +786,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 	}
 	public ICommand MenuQuitCommand => new RelayCommand(MenuQuit);
+
 	private void MenuQuit() {
 		Log.Print("Saving settings...");
 		Log.Print("Settings saved.");
@@ -684,15 +799,18 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		AppServices.ApplicationService.Shutdown();
 	}
 	public ICommand MenuHelpCommand => new RelayCommand(MenuHelp);
+
 	private void MenuHelp() {
 		AppServices.DialogService.ShowHelpAsync();
 	}
 	public ICommand MenuRecentFilesLoadCommand => new RelayCommand<string>(path => Load(path));
 	public ICommand MenuRecentFilesRemoveCommand => new RelayCommand<string>(path => RemoveRecentFile(path));
+
 	public void RemoveRecentFile(string path) {
 		AppSettings.RecentFiles.Remove(path);
 	}
 	public ICommand PomoTimerToggleCommand => new RelayCommand(PomoTimerToggle);
+
 	public void PomoTimerToggle() {
 		_isPomoTimerOn = !_isPomoTimerOn;
 		if (_isPomoTimerOn) {
@@ -717,17 +835,19 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 	public ICommand ShowAboutWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowAboutAsync("v" + AppServices.ApplicationService.GetVersion()); });
 	public ICommand ShowHotkeysWindowCommand => new RelayCommand(() => { AppServices.DialogService.ShowHelpAsync(); });
 	public ICommand QuickLoadPreviousCommand => new RelayCommand(QuickLoad);
+
 	public void QuickLoad() {
 		if (AppSettings.RecentFiles.Count > 1) {
 			Load(AppSettings.RecentFiles[1]);
 		}
 	}
-
 	public ICommand DebugStepIntoCommand => new RelayCommand(DebugStepInto);
+
 	public void DebugStepInto() {
 		var data = Data;
 	}
 	public ICommand DebugSetResolutionCommand => new RelayCommand<string>(width => DebugSetResolution(width));
+
 	public void DebugSetResolution(string width) {
 		double windowWidth = 0;
 		double windowHeight = 0;
@@ -776,6 +896,16 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		}
 		SetWindowPosition(windowWidth, windowHeight);
 	}
+	public ICommand ShowReminderWindowCommand => new RelayCommand(() => ShowReminderWindow());
+
+	public async void ShowReminderWindow(TodoItem item = null) {
+		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(MasterReminders, MasterTodoItemsList, item);
+		ReminderEditorViewModel vm = await vmTask;
+		if (vm == null) {
+			return;
+		}
+		UpdateRemindersFromDialog(null, vm.Reminders);
+	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {
 		if (Data != null && Data.HistoryList != null) {
@@ -790,9 +920,9 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		Log.Print($"All history items committed.");
 		Save();
 	}
-
-
 	public event PropertyChangedEventHandler? PropertyChanged;
+
 	private void OnPropertyChanged([CallerMemberName] string? name = null)
 		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
 }

@@ -1,12 +1,17 @@
 using System;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Echoslate.Core.Models;
 using Echoslate.Core.ViewModels;
 
 namespace Echoslate.Avalonia.Windows;
 
 public partial class TodoItemEditorWindow : UserControl {
+	public TodoItemEditorWindow() {
+		InitializeComponent();
+	}
 	public TodoItemEditorWindow(TodoItemEditorViewModel vm) {
 		InitializeComponent();
 		DataContext = vm;
@@ -32,5 +37,11 @@ public partial class TodoItemEditorWindow : UserControl {
 			vm.Result = false;
 			window.Close(null);
 		}
+	}
+	private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e) {
+		if (DataContext is not TodoItemEditorViewModel vm) {
+			return;
+		}
+		vm.RemindersDoubleTapped();
 	}
 }

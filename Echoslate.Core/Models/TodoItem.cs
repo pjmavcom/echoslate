@@ -1,5 +1,4 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.ObjectModel;using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -15,16 +14,62 @@ public enum View {
 
 [Serializable]
 public class TodoItem : INotifyPropertyChanged {
-	private Guid _id;
-	[JsonIgnore]
-	public Guid Id {
-		get => _id;
+	private HashSet<Guid> _reminderGuids;
+	public HashSet<Guid> ReminderGuids {
+		get => _reminderGuids;
 		set {
-			_id = value;
+			if (_reminderGuids == value) {
+				return;
+			}
+			_reminderGuids = value;
 			OnPropertyChanged();
 		}
 	}
-
+	private ObservableCollection<ReminderInfo> _reminders;
+	[JsonIgnore]
+	public ObservableCollection<ReminderInfo> Reminders {
+		get => _reminders;
+		set {
+			if (_reminders == value) {
+				return;
+			}
+			_reminders = value;
+			OnPropertyChanged();
+			OnPropertyChanged(nameof(HasActiveReminder));
+			OnPropertyChanged(nameof(ReminderDueDateString));
+		}
+	}
+	[JsonIgnore]
+	public bool HasActiveReminder {
+		get => Reminders.Count > 0;
+	}
+	[JsonIgnore]
+	public string ReminderDueDateString {
+		get {
+			if (Reminders == null) {
+				return "";
+			}
+			ReminderInfo? nearestReminder = GetNearestReminder();
+			if (nearestReminder == null) {
+				return "";
+			}
+			if (nearestReminder.IsSnoozeActive) {
+				return $"{nearestReminder.SnoozeUntil:yyyy-MM-dd - HH:mm}";
+			}
+			if (nearestReminder.IsActive) {
+				return $"{nearestReminder.DueDate:yyy-MM-dd - HH:mm}";
+			}
+			return "";
+		}
+	}
+	private Guid _guid;
+	public Guid Guid {
+		get => _guid;
+		set {
+			_guid = value;
+			OnPropertyChanged();
+		}
+	}
 	private string _todo;
 	public string Todo {
 		get => AddNewLines(_todo);
@@ -34,7 +79,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _notes;
 	public string Notes {
 		get => AddNewLines(_notes);
@@ -43,7 +87,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _problem;
 	public string Problem {
 		get => AddNewLines(_problem);
@@ -52,7 +95,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private string _solution;
 	public string Solution {
 		get => AddNewLines(_solution);
@@ -61,7 +103,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private DateTime _dateTimeStarted;
 	public DateTime DateTimeStarted {
 		get => _dateTimeStarted;
@@ -97,17 +138,19 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(TimeTaken));
 		}
 	}
-
 	private bool _isComplete;
 	public bool IsComplete {
 		get => _isComplete;
 		set {
 			_isComplete = value;
-			DateTimeCompleted = IsComplete ? DateTime.Now : DateTime.MinValue;
+			DateTimeCompleted = DateTime.MinValue;
+			if (_isComplete) {
+				DateTimeCompleted = DateTime.Now;
+				ClearReminders();
+			}
 			OnPropertyChanged();
 		}
 	}
-
 	private int _severity;
 	public int Severity {
 		get => _severity;
@@ -127,7 +170,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private int _kanban;
 	public int Kanban {
 		get => _kanban;
@@ -145,7 +187,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private Dictionary<string, int> _rank;
 	public Dictionary<string, int> Rank {
 		get => _rank;
@@ -187,7 +228,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private View _currentView;
 	[JsonIgnore]
 	public View CurrentView {
@@ -197,7 +237,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	private ObservableCollection<string> _tags;
 	public ObservableCollection<string> Tags {
 		get => _tags;
@@ -226,7 +265,6 @@ public class TodoItem : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-
 	[JsonIgnore]
 	private string TagsAndTodoToSave {
 		get {
@@ -247,7 +285,6 @@ public class TodoItem : INotifyPropertyChanged {
 	public string NotesProblemsSolutions =>
 		"Notes: " + Environment.NewLine + AddNewLines(Notes) + Environment.NewLine + "Problem: " + Environment.NewLine + AddNewLines(Problem) + Environment.NewLine + "Solution: " +
 		Environment.NewLine + AddNewLines(Solution);
-
 	[JsonIgnore]
 	private string TagsList {
 		get {
@@ -260,7 +297,6 @@ public class TodoItem : INotifyPropertyChanged {
 			return result;
 		}
 	}
-
 	[JsonIgnore]
 	public string TagsSorted {
 		get {
@@ -279,12 +315,14 @@ public class TodoItem : INotifyPropertyChanged {
 
 
 	public TodoItem() {
-		Id = Guid.NewGuid();
+		Guid = Guid.NewGuid();
+		_reminders = [];
+		_reminderGuids = [];
 		_todo = string.Empty;
 		_notes = string.Empty;
 		_problem = string.Empty;
 		_solution = string.Empty;
-		_timeTaken = new TimeSpan();
+		_timeTaken = TimeSpan.Zero;
 		_dateTimeStarted = DateTime.Now;
 		_dateTimeCompleted = DateTime.MaxValue;
 		_isTimerOn = false;
@@ -300,7 +338,9 @@ public class TodoItem : INotifyPropertyChanged {
 	}
 	public static TodoItem Copy(TodoItem item, bool createNewGuid = false) {
 		TodoItem newItem = new TodoItem() {
-			Id = createNewGuid ? Guid.NewGuid() : item.Id,
+			Guid = createNewGuid ? Guid.NewGuid() : item.Guid,
+			ReminderGuids = item.ReminderGuids,
+			Reminders = item.Reminders,
 			Todo = item.Todo,
 			Notes = item.Notes,
 			Problem = item.Problem,
@@ -321,6 +361,37 @@ public class TodoItem : INotifyPropertyChanged {
 		newItem.NormalizeData();
 		return newItem;
 	}
+	public ReminderInfo? GetNearestReminder() {
+		ReminderInfo nearestReminder = new();
+		nearestReminder.DueDate = DateTime.MaxValue;
+		foreach (ReminderInfo ri in Reminders) {
+			if (ri.DueDate < nearestReminder.DueDate) {
+				nearestReminder = ri;
+			}
+		}
+		if (nearestReminder.DueDate == DateTime.MaxValue) {
+			return null;
+		}
+		return nearestReminder;
+	}
+	public void UpdateReminder() {
+		OnPropertyChanged(nameof(Reminders));
+		OnPropertyChanged(nameof(ReminderDueDateString));
+		OnPropertyChanged(nameof(HasActiveReminder));
+	}
+	public void ClearReminders() {
+		ReminderGuids.Clear();
+		Reminders.Clear();
+		UpdateReminder();
+	}
+	public void ClearReminder(Guid guid) {
+        ReminderGuids.Remove(guid);
+        ReminderInfo? toRemove = Reminders.FirstOrDefault(ri => ri.Guid == guid);
+		if (toRemove != null) {
+			Reminders.Remove(toRemove);
+		}
+		UpdateReminder();
+	}
 	public void NormalizeData() {
 		NormalizeRankKeys();
 		NormalizeTags();
@@ -330,7 +401,7 @@ public class TodoItem : INotifyPropertyChanged {
 		foreach (KeyValuePair<string, int> kvp in Rank) {
 			string key = kvp.Key.TrimStart('#').ToLower().CapitalizeFirstLetter();
 			if (kvp.Key != key) {
-				Log.Warn($"Changing {kvp.Key} on TodoItem: {Id}");
+				Log.Warn($"Changing {kvp.Key} on TodoItem: {Guid}");
 			}
 			int value = kvp.Value;
 			if (!newRank.ContainsKey(key)) {
@@ -344,20 +415,17 @@ public class TodoItem : INotifyPropertyChanged {
 		foreach (string tag in Tags) {
 			string newTag = "#" + tag.TrimStart('#').ToUpper();
 			if (tag != newTag) {
-				Log.Warn($"Changing {tag} on TodoItem: {Id}");
+				Log.Warn($"Changing {tag} on TodoItem: {Guid}");
 			}
 			newTags.Add(newTag);
 		}
 		Tags = newTags;
 	}
-	public TodoItem? SearchById(Guid id) {
-		if (Id == id) {
-			return this;
-		}
-		return null;
+	public bool SearchByGuid(Guid id) {
+		return Guid == id;
 	}
 	public bool HasId(Guid id) {
-		return Id == id;
+		return Guid == id;
 	}
 	public bool HasTag(string tag) {
 		return Tags.Contains(tag);
@@ -682,6 +750,10 @@ public class TodoItem : INotifyPropertyChanged {
 			_tags.Add(tag);
 		}
 		ParseNewTags();
+	}
+	public void AddReminder(ReminderInfo ri) {
+		Reminders.Add(ri);
+		ReminderGuids.Add(ri.Guid);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

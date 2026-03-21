@@ -37,6 +37,8 @@ public interface IDialogService {
 	Task<TodoMultiItemEditorViewModel?> ShowTodoMultiItemEditorAsync(List<TodoItem> items, string currentFilter, ObservableCollection<string> allAvailableTags);
 	Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames);
 	Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null);
+	Task<ReminderEditorViewModel?> ShowReminderEditorAsync(ObservableCollection<ReminderInfo> items, ObservableCollection<TodoItem> todos, TodoItem selectedItem = null);
+	Task<AlarmPopupViewModel?> ShowAlarmPopupAsync(ObservableCollection<ReminderInfo> reminders);
 
 	Task<bool> ShowDialogAsync(object view, string title);
 	Task<T?> ShowDialogAsync<T>(object view, string title);
@@ -46,6 +48,6 @@ public interface IDialogService {
 	string? ChooseFolder(string initialDirectory = "", string description = "Select Folder");
 
 	DialogResult Show(string message, string title, DialogButton dialogButton, DialogIcon dialogIcon);
-	public Task<DialogResult?> ShowAsync(string message, string title, DialogButton dialogButton, DialogIcon dialogIcon, object? owner);
+	Task<DialogResult?> ShowAsync(string message, string title, DialogButton dialogButton, DialogIcon dialogIcon, object? owner);
 
 }

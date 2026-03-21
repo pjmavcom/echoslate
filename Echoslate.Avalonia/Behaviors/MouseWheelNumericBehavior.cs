@@ -20,6 +20,9 @@ public static class MouseWheelNumericBehavior {
 
 	public static readonly AttachedProperty<int> MaximumProperty =
 		AvaloniaProperty.RegisterAttached<Interactive, int>("Maximum", typeof(MouseWheelNumericBehavior), int.MaxValue);
+	
+	public static readonly AttachedProperty<int> SnapProperty =
+		AvaloniaProperty.RegisterAttached<Interactive, int>("Snap", typeof(MouseWheelNumericBehavior), 1);
 
 	public static readonly AttachedProperty<string> TargetPropertyProperty =
 		AvaloniaProperty.RegisterAttached<Interactive, string>("TargetProperty", typeof(MouseWheelNumericBehavior));
@@ -41,6 +44,9 @@ public static class MouseWheelNumericBehavior {
 
 	public static int GetMaximum(Control control) => control.GetValue(MaximumProperty);
 	public static void SetMaximum(Control control, int value) => control.SetValue(MaximumProperty, value);
+
+	public static int GetSnap(Control control) => control.GetValue(SnapProperty);
+	public static void SetSnap(Control control, int value) => control.SetValue(SnapProperty, value);
 
 	public static string GetTargetProperty(Control control) => control.GetValue(TargetPropertyProperty);
 	public static void SetTargetProperty(Control control, string value) => control.SetValue(TargetPropertyProperty, value);
@@ -87,7 +93,7 @@ public static class MouseWheelNumericBehavior {
 			delta *= 5;
 		}
 
-		int newValue = current + delta;
+		int newValue = current + delta * GetSnap(control);
 
 		int min = GetMinimum(control);
 		int max = GetMaximum(control);
@@ -95,9 +101,9 @@ public static class MouseWheelNumericBehavior {
 
 		prop.SetValue(vm, newValue);
 
-		if (control is TextBlock textBlock) {
-			textBlock.Text = newValue.ToString();
-		}
+		// if (control is TextBlock textBlock) {
+			// textBlock.Text = newValue.ToString();
+		// }
 
 		e.Handled = true;
 	}

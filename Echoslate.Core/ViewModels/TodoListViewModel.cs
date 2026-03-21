@@ -80,7 +80,7 @@ public class TodoListViewModel : TodoDisplayViewModelBase {
 		item.CurrentFilter = CurrentFilter;
 		item.CurrentFilterRank = int.MaxValue;
 		AddItemToMasterList(item);
-		SelectedTodoItemId = item.Id;
+		SelectedTodoItemId = item.Guid;
 		CleanAllTodoHashRanks();
 		RefreshAll();
 

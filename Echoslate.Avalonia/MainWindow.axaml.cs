@@ -11,6 +11,7 @@ using WindowState = Avalonia.Controls.WindowState;
 namespace Echoslate.Avalonia;
 
 public partial class MainWindow : Window {
+	public bool IsMainWindowActive { get; private set; } = true;
 	public int LastActiveTabIndex { get; set; }
 	private Menu? _mainMenu;
 	private StackPanel? _pomoPanel;
@@ -36,6 +37,9 @@ public partial class MainWindow : Window {
 		_pomoProgressBarGrid = this.FindControl<Grid>("PomoProgressBarGrid");
 		_pomoProgressBar = this.FindControl<ProgressBar>("PomoProgressBar");
 
+		Activated += (s, e) => IsMainWindowActive = true;
+		Deactivated += (s, e) => IsMainWindowActive = false;
+		IsMainWindowActive = IsActive;
 		KeyDown += OnKeyDown;
 		Closed += (s, e) => Window_OnClosed();
 		Loaded += (s, e) => Window_OnLoaded();

@@ -4,9 +4,9 @@
              xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
              xmlns:converters="clr-namespace:Echoslate.Avalonia.Converters"
              xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
-             Width="1000"
              x:DataType="viewModels:TodoItemEditorViewModel"
-             Background="{DynamicResource AppDarkBackgroundBrush}" >
+             Background="{DynamicResource AppDarkBackgroundBrush}"
+             >
     <UserControl.Resources>
         <converters:KanbanIndexToIDConverter x:Key="KanbanIndexToIdConverter" />
     </UserControl.Resources>
@@ -15,13 +15,15 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="486" />
             <ColumnDefinition Width="486" />
+            <ColumnDefinition Width="486" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid Margin="7"
-              Column="0" >
+              Column="0"
+              >
             <Grid.RowDefinitions>
                 <RowDefinition Height="180" />
                 <RowDefinition Height="Auto" />
@@ -31,19 +33,22 @@
             <!--  TO DO Text  -->
             <Border Grid.Row="0"
                     Grid.Column="0"
-                    Margin="7" >
-                <Grid RowDefinitions="Auto,*" >
+                    Margin="7"
+                    >
+                <Grid RowDefinitions="Auto,*">
                     <Border Grid.Row="0"
                             Margin="1"
                             Padding="10,0"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
-                        <TextBlock FontWeight="SemiBold"
-                                   FontSize="20"
+                            CornerRadius="3"
+                            >
+                        <TextBlock FontSize="20"
+                                   FontWeight="SemiBold"
                                    Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="Title" />
+                                   Text="Title"
+                                   />
                     </Border>
                     <TextBox Grid.Row="1"
                              Margin="1"
@@ -52,25 +57,29 @@
                              FontSize="16"
                              Foreground="{DynamicResource ForegroundBrush}"
                              Text="{Binding TodoText, UpdateSourceTrigger=PropertyChanged}"
-                             TextWrapping="Wrap" />
+                             TextWrapping="Wrap"
+                             />
                 </Grid>
             </Border>
 
             <!--  Notes  -->
             <Border Grid.Row="1"
                     Grid.Column="0"
-                    Margin="7" >
+                    Margin="7"
+                    >
                 <StackPanel>
                     <Border Margin="1"
                             Padding="10,0"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
+                            CornerRadius="3"
+                            >
                         <TextBlock FontSize="20"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="Notes" />
+                                   Text="Notes"
+                                   />
                     </Border>
 
                     <TextBox Height="180"
@@ -79,30 +88,35 @@
                              FontSize="16"
                              Foreground="{DynamicResource ForegroundBrush}"
                              Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
-                             TextWrapping="Wrap" />
+                             TextWrapping="Wrap"
+                             />
                 </StackPanel>
             </Border>
 
             <!--  Tags  -->
             <Border Grid.Row="2"
                     Grid.Column="0"
-                    Margin="7" >
+                    Margin="7"
+                    >
                 <StackPanel>
                     <Border Padding="10,0"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
+                            CornerRadius="3"
+                            >
                         <TextBlock FontSize="20"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="Tags" />
+                                   Text="Tags"
+                                   />
                     </Border>
                     <Border Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
-                        <Grid Margin="10,15" >
+                            CornerRadius="3"
+                            >
+                        <Grid Margin="10,15">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="*" />
@@ -111,42 +125,47 @@
                                     Margin="3"
                                     VerticalAlignment="Top"
                                     Command="{Binding AddTagCommand}"
+                                    Content="Add Tag"
                                     FontSize="16"
                                     Foreground="{DynamicResource ForegroundBrush}"
-                                    Content="Add Tag" />
+                                    />
                             <ListBox Grid.Column="1"
                                      Height="150"
-                                     Padding="7,0"
                                      Margin="0"
+                                     Padding="7,0"
                                      ItemsSource="{Binding Tags}"
-                                     SelectedItem="{Binding SelectedTag}" >
+                                     SelectedItem="{Binding SelectedTag}"
+                                     >
                                 <ListBox.ItemTemplate>
-                                    <DataTemplate x:CompileBindings="False" >
+                                    <DataTemplate x:CompileBindings="False">
                                         <Grid Height="35"
-                                              Margin="7,0" >
+                                              Margin="7,0"
+                                              >
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="40" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <Button Background="{DynamicResource DangerRedBrush}"
+                                            <Button Height="24"
+                                                    Padding="0"
+                                                    Background="{DynamicResource DangerRedBrush}"
                                                     Command="{Binding $parent[UserControl].DataContext.DeleteTagCommand}"
                                                     CommandParameter="{Binding}"
                                                     Content="X"
-                                                    Padding="0"
-                                                    Height="24"
                                                     FontSize="16"
+                                                    FontWeight="Bold"
                                                     Foreground="{DynamicResource ForegroundBrush}"
-                                                    FontWeight="Bold" />
+                                                    />
                                             <Label Grid.Column="1"
-                                                   Padding="7,0"
-                                                   VerticalContentAlignment="Center"
                                                    MinWidth="140"
                                                    Margin="8,0,0,0"
+                                                   Padding="7,0"
+                                                   VerticalContentAlignment="Center"
                                                    Background="{DynamicResource ButtonBackgroundBrush}"
                                                    BorderThickness="0,0,0,1"
+                                                   Content="{Binding}"
                                                    FontSize="16"
                                                    Foreground="{DynamicResource ForegroundBrush}"
-                                                   Content="{Binding}" />
+                                                   />
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -159,7 +178,8 @@
 
         <!--  Properties  -->
         <Grid Margin="7"
-              Column="1" >
+              Column="1"
+              >
             <Grid.RowDefinitions>
                 <RowDefinition Height="180" />
                 <RowDefinition Height="Auto" />
@@ -167,27 +187,32 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Border Grid.Row="0"
-                    Margin="7" >
-                <Grid RowDefinitions="Auto,*" >
+                    Margin="7"
+                    >
+                <Grid RowDefinitions="Auto,*">
 
                     <Border Padding="10,0"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
+                            CornerRadius="3"
+                            >
                         <TextBlock FontSize="20"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="Properties" />
+                                   Text="Properties"
+                                   />
                     </Border>
                     <Border Grid.Row="1"
                             VerticalAlignment="Stretch"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
+                            CornerRadius="3"
+                            >
                         <Grid Margin="10,15"
-                              VerticalAlignment="Center" >
+                              VerticalAlignment="Center"
+                              >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -200,7 +225,8 @@
 
                             <Grid Grid.Row="0"
                                   Grid.Column="0"
-                                  Grid.ColumnSpan="2" >
+                                  Grid.ColumnSpan="2"
+                                  >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="200" />
                                     <ColumnDefinition Width="Auto" />
@@ -208,8 +234,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                
-                            <!--  Severity Button  -->
+
+                                <!--  Severity Button  -->
                                 <Button Grid.Row="0"
                                         Grid.Column="0"
                                         Width="120"
@@ -221,7 +247,8 @@
                                         Command="{Binding CycleSeverityCommand}"
                                         Content="Severity"
                                         FontSize="16"
-                                        Foreground="{DynamicResource ForegroundBrush}" />
+                                        Foreground="{DynamicResource ForegroundBrush}"
+                                        />
 
                                 <!--  Rank  -->
                                 <TextBlock Grid.Row="0"
@@ -231,25 +258,28 @@
                                            VerticalAlignment="Center"
                                            FontSize="16"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           Text="Rank:" />
+                                           Text="Rank:"
+                                           />
                                 <Border Grid.Row="0"
                                         Grid.Column="2"
                                         Height="30"
                                         BorderBrush="{DynamicResource BorderMidBrush}"
-                                        BorderThickness="1" >
+                                        BorderThickness="1"
+                                        >
                                     <TextBlock Width="70"
                                                behaviors:MouseWheelNumericBehavior.Enabled="True"
                                                behaviors:MouseWheelNumericBehavior.Minimum="0"
                                                behaviors:MouseWheelNumericBehavior.TargetProperty="Rank"
                                                Background="{DynamicResource TransparentBrush}"
                                                FontSize="16"
-                                               Foreground="{DynamicResource ForegroundBrush}"
                                                FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ForegroundBrush}"
                                                IsEnabled="{Binding IsRankEnabled}"
                                                LineHeight="30"
                                                Text="{Binding Rank}"
                                                TextAlignment="Center"
-                                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                               />
                                 </Border>
                                 <Button Grid.Row="0"
                                         Grid.Column="3"
@@ -258,29 +288,32 @@
                                         Padding="0"
                                         Command="{Binding RankToTopCommand}"
                                         Content="▲▲"
-                                        IsEnabled="{Binding IsRankEnabled}"
                                         FontSize="16"
                                         Foreground="{DynamicResource ForegroundBrush}"
-                                        ToolTip.Tip="Move to top" />
+                                        IsEnabled="{Binding IsRankEnabled}"
+                                        ToolTip.Tip="Move to top"
+                                        />
                                 <Button Grid.Row="0"
                                         Grid.Column="4"
                                         Width="40"
-                                        Padding="0"
                                         Height="30"
+                                        Padding="0"
                                         Command="{Binding RankToBottomCommand}"
                                         Content="▼▼"
-                                        IsEnabled="{Binding IsRankEnabled}"
                                         FontSize="16"
                                         Foreground="{DynamicResource ForegroundBrush}"
-                                        ToolTip.Tip="Move to bottom" />
+                                        IsEnabled="{Binding IsRankEnabled}"
+                                        ToolTip.Tip="Move to bottom"
+                                        />
                             </Grid>
                             <Grid Grid.Row="1"
                                   Grid.Column="0"
-                                  Grid.ColumnSpan="2" >
+                                  Grid.ColumnSpan="2"
+                                  >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="200" />
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <!--  Severity Button  -->
                                 <Button Grid.Row="0"
                                         Grid.Column="0"
@@ -293,12 +326,14 @@
                                         Command="{Binding CyclePriorityCommand}"
                                         Content="Priority"
                                         FontSize="16"
-                                        Foreground="{DynamicResource ForegroundBrush}" />
+                                        Foreground="{DynamicResource ForegroundBrush}"
+                                        />
                             </Grid>
 
                             <!--  Kanban  -->
                             <Grid Grid.Row="2"
-                                  Grid.Column="0" >
+                                  Grid.Column="0"
+                                  >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
@@ -309,7 +344,8 @@
                                            VerticalAlignment="Center"
                                            FontSize="16"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           Text="Kanban:" />
+                                           Text="Kanban:"
+                                           />
                                 <Button Grid.Column="1"
                                         Width="120"
                                         Margin="3"
@@ -318,13 +354,15 @@
                                         Content="{Binding KanbanId, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource KanbanIndexToIdConverter}}"
                                         FontSize="16"
                                         Foreground="{DynamicResource ForegroundBrush}"
-                                        ToolTip.Tip="Kanban Status" />
+                                        ToolTip.Tip="Kanban Status"
+                                        />
                             </Grid>
 
                             <!--  Time  -->
                             <Grid Grid.Row="2"
                                   Grid.Column="1"
-                                  Width="200" >
+                                  Width="200"
+                                  >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="120" />
                                     <ColumnDefinition Width="Auto" />
@@ -336,24 +374,27 @@
                                            VerticalAlignment="Center"
                                            FontSize="16"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           Text="Time (min):" />
+                                           Text="Time (min):"
+                                           />
                                 <Border Grid.Row="0"
                                         Grid.Column="1"
                                         Height="30"
                                         BorderBrush="{DynamicResource BorderMidBrush}"
-                                        BorderThickness="1" >
+                                        BorderThickness="1"
+                                        >
                                     <TextBlock Width="70"
                                                behaviors:MouseWheelNumericBehavior.Enabled="True"
                                                behaviors:MouseWheelNumericBehavior.Minimum="0"
                                                behaviors:MouseWheelNumericBehavior.TargetProperty="TimeInMinutes"
                                                Background="{DynamicResource TransparentBrush}"
                                                FontSize="16"
-                                               Foreground="{DynamicResource ForegroundBrush}"
                                                FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ForegroundBrush}"
                                                LineHeight="30"
                                                Text="{Binding TimeInMinutes}"
                                                TextAlignment="Center"
-                                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5" />
+                                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                               />
                                 </Border>
                             </Grid>
                         </Grid>
@@ -363,18 +404,21 @@
 
             <!--  Problem  -->
             <Border Grid.Row="1"
-                    Margin="7" >
+                    Margin="7"
+                    >
                 <StackPanel>
                     <Border Margin="1"
                             Padding="10,0"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
+                            CornerRadius="3"
+                            >
                         <TextBlock FontSize="20"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="Problem" />
+                                   Text="Problem"
+                                   />
                     </Border>
                     <TextBox Height="180"
                              Margin="1"
@@ -382,24 +426,28 @@
                              FontSize="16"
                              Foreground="{DynamicResource ForegroundBrush}"
                              Text="{Binding Problem, UpdateSourceTrigger=PropertyChanged}"
-                             TextWrapping="Wrap" />
+                             TextWrapping="Wrap"
+                             />
                 </StackPanel>
             </Border>
 
             <!--  Solution  -->
             <Border Grid.Row="2"
-                    Margin="7" >
+                    Margin="7"
+                    >
                 <StackPanel>
                     <Border Margin="1"
                             Padding="10,0"
                             Background="{DynamicResource ControlBackgroundBrush}"
                             BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="1"
-                            CornerRadius="3" >
+                            CornerRadius="3"
+                            >
                         <TextBlock FontSize="20"
                                    FontWeight="SemiBold"
                                    Foreground="{DynamicResource ForegroundBrush}"
-                                   Text="Solution" />
+                                   Text="Solution"
+                                   />
                     </Border>
                     <TextBox Height="180"
                              Margin="1"
@@ -407,9 +455,54 @@
                              FontSize="16"
                              Foreground="{DynamicResource ForegroundBrush}"
                              Text="{Binding Solution, UpdateSourceTrigger=PropertyChanged}"
-                             TextWrapping="Wrap" />
+                             TextWrapping="Wrap"
+                             />
                 </StackPanel>
             </Border>
+        </Grid>
+
+        <!--  Reminders  -->
+        <Grid Grid.Column="2">
+            <DataGrid BorderBrush="{DynamicResource BorderBrush}"
+                      BorderThickness="1"
+                      DoubleTapped="DataGrid_DoubleTapped"
+                      GridLinesVisibility="All"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Reminders}"
+                      SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
+                      >
+                <DataGrid.Columns>
+                    <!--  ~1~ Message  -->
+                    <DataGridTemplateColumn MinWidth="300"
+                                            Header="Message"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Message}"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       ToolTip.Tip="{Binding Message}"
+                                       />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!--  ~2~ Due Date  -->
+                    <DataGridTemplateColumn MinWidth="170"
+                                            Header="Due Date"
+                                            >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding DueDateString, StringFormat=yyyy-MM-dd}"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       Foreground="{DynamicResource ForegroundBrush}"
+                                       />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
 
         <!--  Buttons  -->
@@ -418,22 +511,26 @@
                     Grid.ColumnSpan="2"
                     Margin="0,10,0,10"
                     HorizontalAlignment="Center"
-                    Orientation="Horizontal" >
+                    Orientation="Horizontal"
+                    >
             <Button Classes="ok"
                     Click="Ok_OnClick"
                     Content="Save"
-                    IsDefault="True" />
+                    IsDefault="True"
+                    />
             <Button Classes="cancel"
                     Click="Cancel_OnClick"
-                    IsCancel="True" />
+                    IsCancel="True"
+                    />
             <Label Width="500"
                    Height="30"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Bottom"
                    HorizontalContentAlignment="Right"
                    Content="{Binding Guid}"
+                   FontSize="12"
                    Foreground="{DynamicResource SubtleForegroundBrush}"
-                   FontSize="12" />
+                   />
         </StackPanel>
     </Grid>
 </UserControl>

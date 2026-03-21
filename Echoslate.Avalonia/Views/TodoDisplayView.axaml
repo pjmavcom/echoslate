@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
              xmlns:converters="clr-namespace:Echoslate.Avalonia.Converters"
+             xmlns:core="clr-namespace:Echoslate.Core.Models;assembly=Echoslate.Core"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
              xmlns:views="clr-namespace:Echoslate.Avalonia.Views"
-             xmlns:core="clr-namespace:Echoslate.Core.Models;assembly=Echoslate.Core"
              x:Name="Root"
              d:DesignHeight="500"
              d:DesignWidth="1400"
-             x:DataType="local:TodoDisplayViewModelBase" >
+             x:DataType="local:TodoDisplayViewModelBase"
+             >
     <UserControl.Resources>
         <converters:SeverityToBrushConverter x:Key="SeverityToBrushConverter" />
         <converters:PriorityToBrushConverter x:Key="PriorityToBrushConverter" />
@@ -18,93 +19,119 @@
         <converters:BoolToTimerTextConverter x:Key="BoolToTimerTextConverter" />
         <converters:BoolToBrushConverter x:Key="EditingBrushConverter"
                                          FalseBrush="{StaticResource TransparentBrush}"
-                                         TrueBrush="{StaticResource SuccessGreenBrush}" />
+                                         TrueBrush="{StaticResource SuccessGreenBrush}"
+                                         />
 
         <ContextMenu x:Key="TodoListContextMenu"
-                     x:CompileBindings="False" >
+                     x:CompileBindings="False"
+                     >
             <MenuItem Command="{Binding DataContext.ContextMenuEditCommand, ElementName=Root}"
-                      Header="Edit" />
+                      Header="Edit"
+                      />
             <MenuItem Command="{Binding DataContext.ContextMenuDeleteCommand, ElementName=Root}"
-                      Header="Delete" />
+                      Header="Delete"
+                      />
             <Separator />
             <MenuItem Command="{Binding DataContext.ContextMenuResetTimerCommand, ElementName=Root}"
-                      Header="Reset Timer" />
+                      Header="Reset Timer"
+                      />
             <Separator />
-            <MenuItem Header="Set Priority" >
+            <MenuItem Header="Set Priority">
                 <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
                           CommandParameter="4"
-                          Header="Critical" />
+                          Header="Critical"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
                           CommandParameter="3"
-                          Header="High" />
+                          Header="High"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
                           CommandParameter="2"
-                          Header="Mid" />
+                          Header="Mid"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
                           CommandParameter="1"
-                          Header="Low" />
+                          Header="Low"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetPriorityCommand, ElementName=Root}"
                           CommandParameter="0"
-                          Header="None" />
+                          Header="None"
+                          />
             </MenuItem>
             <Separator />
-            <MenuItem Header="Set Severity" >
+            <MenuItem Header="Set Severity">
                 <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
                           CommandParameter="3"
-                          Header="High" />
+                          Header="High"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
                           CommandParameter="2"
-                          Header="Mid" />
+                          Header="Mid"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
                           CommandParameter="1"
-                          Header="Low" />
+                          Header="Low"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuSetSeverityCommand, ElementName=Root}"
                           CommandParameter="0"
-                          Header="None" />
+                          Header="None"
+                          />
             </MenuItem>
             <Separator />
-            <MenuItem Header="Set Kanban" >
+            <MenuItem Header="Set Kanban">
                 <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
                           CommandParameter="3"
-                          Header="Current" />
+                          Header="Current"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
                           CommandParameter="2"
-                          Header="Next" />
+                          Header="Next"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
                           CommandParameter="1"
-                          Header="Backlog" />
+                          Header="Backlog"
+                          />
                 <MenuItem Command="{Binding DataContext.ContextMenuKanbanCommand, ElementName=Root}"
                           CommandParameter="0"
-                          Header="None" />
+                          Header="None"
+                          />
             </MenuItem>
             <Separator />
             <MenuItem Command="{Binding DataContext.ContextMenuMoveToTopCommand, ElementName=Root}"
-                      Header="Move to Top" />
+                      Header="Move to Top"
+                      />
             <MenuItem Command="{Binding DataContext.ContextMenuMoveToBottomCommand, ElementName=Root}"
-                      Header="Move to Bottom" />
+                      Header="Move to Bottom"
+                      />
             <Separator />
             <MenuItem Command="{Binding DataContext.ContextMenuCompleteCommand, ElementName=Root}"
-                      Header="Complete" />
-            
+                      Header="Complete"
+                      />
+
             <Separator Background="{DynamicResource DarkDangerRedBrush}"
-                       IsVisible="{Binding DataContext.DebugMode, ElementName=Root}" />
-            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
-                      Background="{DynamicResource DarkDangerRedBrush}"
+                       IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                       />
+            <MenuItem Background="{DynamicResource DarkDangerRedBrush}"
                       Command="{Binding DataContext.DebugSearchGuidCommand, ElementName=Root}"
-                      Header="Find GUID" />
-            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
-                      Background="{DynamicResource DarkDangerRedBrush}"
+                      Header="Find GUID"
+                      IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                      />
+            <MenuItem Background="{DynamicResource DarkDangerRedBrush}"
                       Command="{Binding DataContext.DebugPrintTodoCommand, ElementName=Root}"
-                      Header="Debug Print To do" />
-            <MenuItem IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
-                      Background="{DynamicResource DarkDangerRedBrush}"
+                      Header="Debug Print To do"
+                      IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                      />
+            <MenuItem Background="{DynamicResource DarkDangerRedBrush}"
                       Command="{Binding DataContext.DebugGetTodoCommand, ElementName=Root}"
-                      Header="Get Todo" />
+                      Header="Get Todo"
+                      IsVisible="{Binding DataContext.DebugMode, ElementName=Root}"
+                      />
         </ContextMenu>
 
     </UserControl.Resources>
     <Grid Background="{DynamicResource AppDarkBackgroundBrush}"
-          KeyDown="Window_KeyDown" >
+          KeyDown="Window_KeyDown"
+          >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -118,7 +145,8 @@
 
         <!--  Filter button bar  -->
         <Grid Grid.Row="0"
-              Background="{DynamicResource AppDarkBackgroundBrush}" >
+              Background="{DynamicResource AppDarkBackgroundBrush}"
+              >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -128,14 +156,17 @@
                     Background="{Binding CurrentSeverityBrush}"
                     Classes="severity-button"
                     Command="{Binding CycleSeverityFilterCommand}"
-                    Content="Severity" />
+                    Content="Severity"
+                    />
             <ItemsControl Grid.Column="1"
                           Margin="10,10,10,5"
-                          ItemsSource="{Binding FilterButtons}" >
+                          ItemsSource="{Binding FilterButtons}"
+                          >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel MinWidth="100"
-                                   Orientation="Horizontal" />
+                                   Orientation="Horizontal"
+                                   />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -145,22 +176,25 @@
                                 Classes.selected="{Binding IsSelected}"
                                 Command="{Binding SelectCommand}"
                                 CommandParameter="{Binding}"
-                                Content="{Binding DisplayTitle}" />
+                                Content="{Binding DisplayTitle}"
+                                />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding EditFilterBarCommand}"
-                                  Header="Edit filters..." />
+                                  Header="Edit filters..."
+                                  />
                     </ContextMenu>
                 </ItemsControl.ContextMenu>
             </ItemsControl>
-            <Button Grid.Column="2"
-                    Padding="3"
+            <Button x:Name="NotesPanelToggleButton"
+                    Grid.Column="2"
                     Margin="7,0"
-                    x:Name="NotesPanelToggleButton"
+                    Padding="3"
+                    Click="ToggleNotesPanel"
                     Content="{Binding NotesPanelToggleText}"
-                    Click="ToggleNotesPanel" />
+                    />
         </Grid>
 
         <!--  Items NotesPanel  -->
@@ -171,7 +205,8 @@
                                   IsVisible="{Binding IsNotesPanelVisible}"
                                   NotesPanelCompleteRequested="NotesPanelCompleteRequested"
                                   NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
-                                  SelectedItem="{Binding SelectedTodoItem}" />
+                                  SelectedItem="{Binding SelectedTodoItem}"
+                                  />
 
 
         <!--  Main TodoList view  -->
@@ -179,213 +214,275 @@
                 Grid.Column="0"
                 Margin="8,4"
                 Background="{DynamicResource BorderDarkBrush}"
-                CornerRadius="7" >
+                CornerRadius="7"
+                >
             <Grid>
                 <Border BorderBrush="{DynamicResource BorderSilverBrush}"
                         BorderThickness="7,7,0,0"
-                        CornerRadius="7" />
+                        CornerRadius="7"
+                        />
                 <Border Margin="-1"
                         BorderBrush="{DynamicResource BorderBrush}"
                         BorderThickness="0,0,7,7"
                         CornerRadius="7"
-                        IsHitTestVisible="False" />
+                        IsHitTestVisible="False"
+                        />
                 <DataGrid x:Name="TodoListDataGrid"
                           Margin="0"
                           Padding="7,4"
-                          IsReadOnly="True"
                           behaviors:DataGridSelectedItemsBehavior.SyncSelectedItems="{Binding SelectedTodoItems}"
-                          DoubleTapped="DataGrid_DoubleTapped"
-                          ItemsSource="{Binding DisplayedItems}"
                           Background="{DynamicResource ControlBackgroundBrush}"
+                          DoubleTapped="DataGrid_DoubleTapped"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding DisplayedItems}"
                           KeyboardNavigation.TabIndex="0"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                          SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}" >
+                          SelectedItem="{Binding SelectedTodoItem, Mode=TwoWay}"
+                          >
                     <DataGrid.Styles>
-                        <Style Selector="DataGridRow" >
-                            <Setter Property="ContextMenu"
-                                    Value="{StaticResource TodoListContextMenu}" />
+                        <Style Selector="DataGridRow">
+                            <Setter Property="ContextMenu" Value="{StaticResource TodoListContextMenu}" />
                         </Style>
-                        <Style Selector="DataGridCell" >
-                            <Setter Property="ContextMenu"
-                                    Value="{StaticResource TodoListContextMenu}" />
+                        <Style Selector="DataGridCell">
+                            <Setter Property="ContextMenu" Value="{StaticResource TodoListContextMenu}" />
                         </Style>
                     </DataGrid.Styles>
 
                     <DataGrid.Columns>
-                        <!-- ~1~ Tags -->
-                        <DataGridTemplateColumn MinWidth="300" >
+                        <!--  ~1~ Tags  -->
+                        <DataGridTemplateColumn MinWidth="300">
                             <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
-                                    <Grid HorizontalAlignment="Stretch" >
-                                        <ComboBox ItemsSource="{Binding DataContext.CurrentVisibleTagsView, ElementName=Root}"
-                                                  SelectedItem="{Binding DataContext.PrioritySortTag, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
-                                                  MaxDropDownHeight="360"
+                                <DataTemplate x:CompileBindings="False">
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <ComboBox VerticalAlignment="Center"
                                                   FontFamily="{StaticResource MonoFont}"
-                                                  VerticalAlignment="Center" />
+                                                  ItemsSource="{Binding DataContext.CurrentVisibleTagsView, ElementName=Root}"
+                                                  MaxDropDownHeight="360"
+                                                  SelectedItem="{Binding DataContext.PrioritySortTag, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
+                                                  />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Label Content="{Binding TagsSorted}"
+                                           FontFamily="{StaticResource MonoFont}"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           FontFamily="{StaticResource MonoFont}" />
+                                           />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~2~ Date -->
-                        <DataGridTemplateColumn MinWidth="170" >
+                        <!--  ~2~ Date  -->
+                        <DataGridTemplateColumn MinWidth="170">
                             <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
+                                <DataTemplate x:CompileBindings="False">
                                     <Button Classes="header-button"
-                                            Content="Date"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
                                             CommandParameter="date"
-                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                            Content="Created"
+                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Label Content="{Binding DateTimeStarted, StringFormat=yyyy-MM-dd}"
+                                           FontFamily="{StaticResource MonoFont}"
                                            Foreground="{DynamicResource ForegroundBrush}"
-                                           FontFamily="{StaticResource MonoFont}" />
+                                           />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~3~ Priority -->
-                        <DataGridTemplateColumn MinWidth="30"
-                                                CellStyleClasses="severity-cell" >
+                        <!--  ~3~ Has Reminder  -->
+                        <DataGridTemplateColumn MinWidth="30">
                             <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
-                                    <Button Classes="header-button, priority-header-button"
-                                            CommandParameter="priority"
-                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                <DataTemplate x:CompileBindings="False">
+                                    <Button Classes="header-button, reminder-header-button"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
+                                            CommandParameter="hasreminder"
+                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="1"
-                                            CornerRadius="12"
-                                            BorderBrush="{DynamicResource BorderBrush}"
-                                            Background="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Stretch"
-                                            DoubleTapped="Priority_OnDoubleTapped"
-                                            PointerPressed="Priority_OnPointerPressed" />
+                                <DataTemplate x:CompileBindings="False">
+                                    <CheckBox FontFamily="{StaticResource MonoFont}"
+                                              Foreground="{DynamicResource ForegroundBrush}"
+                                              IsChecked="{Binding HasActiveReminder, Mode=OneWay}"
+                                              />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~4~ Severity -->
-                        <DataGridTemplateColumn MinWidth="30"
-                                                CellStyleClasses="severity-cell" >
+                        <!--  ~4~ Due Date  -->
+                        <DataGridTemplateColumn MinWidth="170">
                             <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
-                                    <Button Classes="header-button, severity-header-button"
-                                            CommandParameter="severity"
-                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border BorderThickness="1"
-                                            CornerRadius="12"
-                                            BorderBrush="{DynamicResource BorderBrush}"
-                                            Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Stretch"
-                                            DoubleTapped="Severity_OnDoubleTapped"
-                                            PointerPressed="Severity_OnPointerPressed" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <!-- ~5~ Rank -->
-                        <DataGridTemplateColumn MinWidth="110" >
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
+                                <DataTemplate x:CompileBindings="False">
                                     <Button Classes="header-button"
-                                            Content="Rank"
-                                            CommandParameter="rank"
-                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
+                                            CommandParameter="duedate"
+                                            Content="Due Date"
+                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Grid x:CompileBindings="False" >
+                                    <Label Content="{Binding ReminderDueDateString, StringFormat=yyyy-MM-dd - HH:mm}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{DynamicResource ForegroundBrush}"
+                                           />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!--  ~5~ Priority  -->
+                        <DataGridTemplateColumn MinWidth="30"
+                                                CellStyleClasses="severity-cell"
+                                                >
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <Button Classes="header-button, priority-header-button"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
+                                            CommandParameter="priority"
+                                            />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Background="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            DoubleTapped="Priority_OnDoubleTapped"
+                                            PointerPressed="Priority_OnPointerPressed"
+                                            />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!--  ~6~ Severity  -->
+                        <DataGridTemplateColumn MinWidth="30"
+                                                CellStyleClasses="severity-cell"
+                                                >
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <Button Classes="header-button, severity-header-button"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
+                                            CommandParameter="severity"
+                                            />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Background="{Binding Severity, Converter={StaticResource SeverityToBrushConverter}}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            DoubleTapped="Severity_OnDoubleTapped"
+                                            PointerPressed="Severity_OnPointerPressed"
+                                            />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!--  ~7~ Rank  -->
+                        <DataGridTemplateColumn MinWidth="110">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <Button Classes="header-button"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
+                                            CommandParameter="rank"
+                                            Content="Rank"
+                                            />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid x:CompileBindings="False">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="50" />
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition Width="25" />
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0"
-                                               FontFamily="{StaticResource MonoFont}"
+                                               HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
+                                               Content="{Binding CurrentFilterRank}"
+                                               FontFamily="{StaticResource MonoFont}"
                                                FontSize="18"
                                                Foreground="{DynamicResource ForegroundBrush}"
-                                               HorizontalAlignment="Center"
-                                               Content="{Binding CurrentFilterRank}" />
+                                               />
                                         <Button Grid.Column="1"
                                                 Padding="0"
                                                 Command="{Binding $parent[DataGrid].DataContext.RankDownCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="▼"
                                                 FontSize="14"
-                                                FontWeight="Bold" />
+                                                FontWeight="Bold"
+                                                />
                                         <Button Grid.Column="2"
                                                 Padding="0"
                                                 Command="{Binding $parent[DataGrid].DataContext.RankUpCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="▲"
                                                 FontSize="14"
-                                                FontWeight="Bold" />
+                                                FontWeight="Bold"
+                                                />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~6~ Timer -->
-                        <DataGridTemplateColumn MinWidth="110" >
+                        <!--  ~8~ Timer  -->
+                        <DataGridTemplateColumn MinWidth="110">
                             <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
+                                <DataTemplate x:CompileBindings="False">
                                     <Button Classes="header-button"
-                                            Content="Timer"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
                                             CommandParameter="active"
-                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                            Content="Timer"
+                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:CompileBindings="False" >
+                                <DataTemplate x:CompileBindings="False">
                                     <Button Width="110"
-                                            FontFamily="{StaticResource MonoFont}"
                                             Background="{Binding IsTimerOn, Converter={StaticResource BoolToLimeBrushConverter}}"
                                             BorderThickness="0"
                                             Command="{Binding $parent[DataGrid].DataContext.ToggleTimerCommand}"
                                             CommandParameter="{Binding}"
                                             Content="{Binding TimeTaken, UpdateSourceTrigger=PropertyChanged}"
-                                            Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}" />
+                                            FontFamily="{StaticResource MonoFont}"
+                                            Foreground="{Binding IsTimerOn, Converter={StaticResource BoolToTimerTextConverter}}"
+                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- ~7~ To do -->
+                        <!--  ~9~ To do  -->
                         <DataGridTemplateColumn Width="*"
-                                                MinWidth="300" >
+                                                MinWidth="300"
+                                                >
                             <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate x:CompileBindings="False" >
+                                <DataTemplate x:CompileBindings="False">
                                     <Button Classes="header-button"
-                                            Content="Title"
+                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
                                             CommandParameter="title"
-                                            Command="{Binding DataContext.SelectSortCommand, ElementName=Root}" />
+                                            Content="Title"
+                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="10,0"
                                                Foreground="{DynamicResource ForegroundBrush}"
+                                               Text="{Binding Todo}"
                                                ToolTip.Tip="{Binding NotesProblemsSolutions}"
-                                               Text="{Binding Todo}" />
+                                               />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -396,10 +493,11 @@
         </Border>
 
 
-        <!-- New TODOItem Editor -->
+        <!--  New TODOItem Editor  -->
         <Grid Grid.Row="3"
               Grid.Column="0"
-              Background="{DynamicResource AppDarkBackgroundBrush}" >
+              Background="{DynamicResource AppDarkBackgroundBrush}"
+              >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="270" />
@@ -408,16 +506,19 @@
             <Border Grid.Column="0"
                     Margin="8,4"
                     Background="{DynamicResource BorderDarkBrush}"
-                    CornerRadius="7" >
+                    CornerRadius="7"
+                    >
                 <Grid>
                     <Border BorderBrush="{DynamicResource BorderSilverBrush}"
                             BorderThickness="7,7,0,0"
-                            CornerRadius="7" />
+                            CornerRadius="7"
+                            />
                     <Border Margin="-1"
                             BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="0,0,7,7"
                             CornerRadius="7"
-                            IsHitTestVisible="False" />
+                            IsHitTestVisible="False"
+                            />
                     <TextBox Grid.Column="0"
                              Margin="1"
                              Padding="7,4"
@@ -426,11 +527,12 @@
                              KeyboardNavigation.TabIndex="1"
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              Text="{Binding NewTodoText, UpdateSourceTrigger=PropertyChanged}"
-                             TextWrapping="Wrap" />
+                             TextWrapping="Wrap"
+                             />
                 </Grid>
             </Border>
 
-            <Grid Grid.Column="1" >
+            <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -446,22 +548,25 @@
                         Classes="severity-button"
                         Command="{Binding CycleNewTodoSeverityCommand}"
                         Content="Severity"
-                        Foreground="White" />
+                        Foreground="White"
+                        />
                 <Border Grid.Row="1"
-                        Background="{DynamicResource TransparentBrush}"
-                        BorderThickness="2"
+                        Margin="4,0"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
+                        Background="{DynamicResource TransparentBrush}"
+                        BorderBrush="{Binding ShowTodoItemEditorOnAdd, Converter={StaticResource EditingBrushConverter}}"
+                        BorderThickness="2"
                         CornerRadius="7"
-                        Margin="4,0"
-                        BorderBrush="{Binding ShowTodoItemEditorOnAdd, Converter={StaticResource EditingBrushConverter}}" >
+                        >
                     <Button x:Name="AddButton"
                             Grid.Row="1"
-                            Content="Add"
                             Click="Add_OnClick"
+                            Content="Add"
                             FontWeight="SemiBold"
+                            KeyboardNavigation.TabIndex="3"
                             ToolTip.Tip="[Control + Click] to toggle editor when adding"
-                            KeyboardNavigation.TabIndex="3" />
+                            />
                 </Border>
             </Grid>
         </Grid>

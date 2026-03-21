@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
 using Echoslate.Core.Services;
@@ -15,6 +16,28 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		"Med",
 		"High"
 	};
+	private ObservableCollection<ReminderInfo> _reminders;
+	public ObservableCollection<ReminderInfo> Reminders {
+		get => _reminders;
+		set {
+			if (_reminders == value) {
+				return;
+			}
+			_reminders = value;
+			OnPropertyChanged();
+		}
+	}
+	private ReminderInfo _selectedReminder;
+	public ReminderInfo SelectedReminder {
+		get => _selectedReminder;
+		set {
+			if (_selectedReminder == value) {
+				return;
+			}
+			_selectedReminder = value;
+			OnPropertyChanged();
+		}
+	}
 	private Guid _guid;
 	public Guid Guid {
 		get => _guid;
@@ -116,6 +139,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	}
 
 	private readonly TodoItem _item;
+	private readonly TodoItem _originalItem;
 	public TodoItem ResultTodoItem => _item;
 	public bool Result;
 
@@ -137,10 +161,13 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 
 
 	public TodoItemEditorViewModel(TodoItem td, string? currentListHash, ObservableCollection<string> allAvailableTags) {
+		_originalItem = td;
 		_item = TodoItem.Copy(td);
+		_reminders = _item.Reminders;
+
 		_currentListHash = currentListHash ?? "All";
 
-		Guid = _item.Id;
+		Guid = _item.Guid;
 		AllAvailableTags = allAvailableTags;
 		IsRankEnabled = _item.CurrentView != View.History;
 
@@ -259,6 +286,10 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		Result = true;
 		_item.IsComplete = true;
 		SetTodo();
+	}
+	public void RemindersDoubleTapped() {
+		MainWindowViewModel mwvm = AppServices.MainWindowVM;
+		mwvm.ShowReminderWindow(_originalItem);
 	}
 	public ICommand AddTagCommand => new RelayCommand(AddTag);
 	public async void AddTag() {

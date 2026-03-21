@@ -178,7 +178,7 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e) {
 		if (sender is DataGrid lb && lb.SelectedItem is TodoItem todoItem) {
 			if (DataContext is TodoDisplayViewModelBase vm) {
-				Log.Print($"Editing: {todoItem.Id}");
+				Log.Print($"Editing: {todoItem.Guid}");
 				vm.EditItem(todoItem);
 			}
 		}

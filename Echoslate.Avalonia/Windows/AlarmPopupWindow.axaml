@@ -1,0 +1,201 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.AlarmPopupWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Echoslate.Core.ViewModels;assembly=Echoslate.Core"
+             x:Name="Root"
+             x:DataType="viewModels:AlarmPopupViewModel"
+             mc:Ignorable="d"
+             >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <DataGrid Grid.Row="0"
+                  Background="{DynamicResource ControlBackgroundBrush}"
+                  BorderBrush="{DynamicResource BorderBrush}"
+                  BorderThickness="1"
+                  GridLinesVisibility="All"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding Reminders}"
+                  SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
+                  >
+            <DataGrid.Columns>
+
+                <!--  ~1~ IsDue  -->
+                <DataGridTemplateColumn MinWidth="30">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label, reminder-label" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsDueNow}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~2~ IsSnoozing  -->
+                <DataGridTemplateColumn MinWidth="30">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label, snooze-label" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSnoozeActive}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~3~ Message  -->
+                <DataGridTemplateColumn Width="264">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label"
+                                   Content="Message"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Message}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   ToolTip.Tip="{Binding Message}"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!--  ~4~ Due Date  -->
+                <DataGridTemplateColumn MinWidth="170">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate x:CompileBindings="False">
+                            <Label Classes="header-label"
+                                   Content="Due Date"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding DueDateString, StringFormat=yyyy-MM-dd}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="0"
+              Grid.Column="1"
+              ColumnDefinitions="Auto,Auto"
+              RowDefinitions="Auto,Auto,Auto"
+              >
+            <StackPanel Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="3,2"
+                        HorizontalAlignment="Left"
+                        Orientation="Vertical"
+                        Spacing="3"
+                        >
+                <Button HorizontalAlignment="Left"
+                        Classes="snooze"
+                        Command="{Binding SetSnoozeCommand10}"
+                        CommandParameter="10"
+                        Content="+10 minutes"
+                        IsEnabled="{Binding HasSnoozableSelection}"
+                        />
+                <Button HorizontalAlignment="Left"
+                        Classes="snooze"
+                        Command="{Binding SetSnoozeCommand10}"
+                        CommandParameter="60"
+                        Content="+1 hour"
+                        IsEnabled="{Binding HasSnoozableSelection}"
+                        />
+                <Button HorizontalAlignment="Left"
+                        Classes="snooze"
+                        Command="{Binding SetSnoozeCommand10}"
+                        CommandParameter="1440"
+                        Content="+1 day"
+                        IsEnabled="{Binding HasSnoozableSelection}"
+                        />
+                <StackPanel Orientation="Horizontal">
+                    <Button Classes="snooze"
+                            Command="{Binding SetSnoozeCommand}"
+                            CommandParameter="{Binding SnoozeMinutes}"
+                            Content="Snooze for"
+                            IsEnabled="{Binding HasSnoozableSelection}"
+                            />
+                    <Border Background="{DynamicResource ControlBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="2"
+                            CornerRadius="7"
+                            >
+
+                        <TextBlock Width="60"
+                                   VerticalAlignment="Center"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                   behaviors:MouseWheelNumericBehavior.Minimum="5"
+                                   behaviors:MouseWheelNumericBehavior.Snap="5"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="SnoozeMinutes"
+                                   Background="{DynamicResource TransparentBrush}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   IsEnabled="{Binding HasSnoozableSelection}"
+                                   Text="{Binding SnoozeMinutes}"
+                                   TextAlignment="Center"
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                   />
+                    </Border>
+                    <Label VerticalContentAlignment="Center"
+                           Content="Minutes"
+                           />
+                </StackPanel>
+            </StackPanel>
+            <Button Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    VerticalAlignment="Bottom"
+                    Classes="cancel"
+                    Command="{Binding DismissCommand}"
+                    Content="Dismiss"
+                    IsDefault="True"
+                    IsEnabled="{Binding HasSelection}"
+                    />
+        </Grid>
+        <StackPanel Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    >
+            <Button HorizontalAlignment="Center"
+                    Classes="cancel"
+                    Command="{Binding DismissAllCommand}"
+                    Content="Dismiss All"
+                    />
+            <Button HorizontalAlignment="Center"
+                    Classes="ok"
+                    Command="{Binding SnoozeAllCommand}"
+                    Content="Snooze All"
+                    ToolTip.Tip="Snooze all for 10 minutes"
+                    />
+        </StackPanel>
+    </Grid>
+</UserControl>
