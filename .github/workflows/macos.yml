@@ -76,7 +76,7 @@ jobs:
           cp Echoslate.Avalonia/Info.plist $APP_DIR/Contents/Info.plist
 
           # Copy icon
-          cp Echoslate.Avalonia/AppIcons.icns $APP_DIR/Contents/Resources/
+          cp Echoslate.Avalonia/AppIcon.icns $APP_DIR/Contents/Resources/
 
           # Ensure executable is runnable
           chmod +x $APP_DIR/Contents/MacOS/Echoslate
