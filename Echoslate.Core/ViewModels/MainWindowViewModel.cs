@@ -159,10 +159,20 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(PomoWorkTimeMinutes));
 		}
 	}
+	private int _pomoWorkTimeMinutes;
 	public int PomoWorkTimeMinutes {
-		get => _pomoWorkTime.Minutes;
+		get {
+			if (_pomoWorkTimeMinutes == 0) {
+				return (PomoWorkTime.Hours * 60 + PomoWorkTime.Minutes);
+			} else {
+				return _pomoWorkTimeMinutes;
+			}
+		}
 		set {
-			PomoWorkTime = new TimeSpan(0, value, 0);
+			_pomoWorkTimeMinutes = value;
+			int hours = _pomoWorkTimeMinutes / 60;
+			int minutes = _pomoWorkTimeMinutes % 60;
+			PomoWorkTime = new TimeSpan(hours, minutes, 0);
 			OnPropertyChanged();
 		}
 	}
@@ -185,14 +195,24 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(PomoBreakTimeMinutes));
 		}
 	}
+	private int _pomoBreakTimeMinutes;
 	public int PomoBreakTimeMinutes {
-		get => _pomoBreakTime.Minutes;
+		get {
+			if (_pomoBreakTimeMinutes == 0) {
+				return (PomoBreakTime.Hours * 60 + PomoBreakTime.Minutes);
+			} else {
+				return _pomoBreakTimeMinutes;
+			}
+		}
 		set {
-			PomoBreakTime = new TimeSpan(0, value, 0);
+			_pomoBreakTimeMinutes = value;
+			int hours = _pomoBreakTimeMinutes / 60;
+			int minutes = _pomoBreakTimeMinutes % 60;
+			PomoBreakTime = new TimeSpan(hours, minutes, 0);
 			OnPropertyChanged();
 		}
 	}
-	public string PomoLabelContent => $"{PomoTimeLeft.Minutes:00}:{PomoTimeLeft.Seconds:00}";
+	public string PomoLabelContent => $"{PomoTimeLeft.Hours:00}:{PomoTimeLeft.Minutes:00}:{PomoTimeLeft.Seconds:00}";
 
 	private PomoActiveState _pomoState;
 	public PomoActiveState PomoState {

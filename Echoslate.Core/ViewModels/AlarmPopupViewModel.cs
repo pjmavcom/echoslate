@@ -34,6 +34,7 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 			}
 			_selectedReminder = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(HasSnoozableSelection));
 		}
 	}
 	// private ObservableCollection<ReminderInfo> _reminders;

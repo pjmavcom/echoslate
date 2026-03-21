@@ -100,11 +100,11 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 		set {
 			_dueHour = value;
 			if (_dueHour > 23) {
-				_dueHour = 0;
+				_dueHour = _dueHour - 24;
 				DueDate += TimeSpan.FromHours(24);
 			}
 			if (_dueHour < 0) {
-				_dueHour = 23;
+				_dueHour = 24 + _dueHour;
 				DueDate -= TimeSpan.FromHours(24);
 			}
 			DueDate = new DateTime(DueDate.Year, DueDate.Month, DueDate.Day, _dueHour, DueDate.Minute, 0);
@@ -120,12 +120,12 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 		get => SelectedReminder == null ? 0 : SelectedReminder.DueDate.Minute;
 		set {
 			_dueMinute = value;
-			if (_dueMinute > 45) {
-				_dueMinute = 0;
+			if (_dueMinute >= 60) {
+				_dueMinute = _dueMinute - 60;
 				DueHour++;
 			}
 			if (_dueMinute < 0) {
-				_dueMinute = 45;
+				_dueMinute = 60 + _dueMinute;
 				DueHour--;
 			}
 
@@ -146,6 +146,16 @@ public class ReminderEditorViewModel : INotifyPropertyChanged {
 				return;
 			}
 			_previewText = value;
+			OnPropertyChanged();
+		}
+	}
+	public int LeadTimeMinutes {
+		get => SelectedReminder.LeadTimeMinutes;
+		set {
+			if (SelectedReminder.LeadTimeMinutes == value) {
+				return;
+			}
+			SelectedReminder.LeadTimeMinutes = value;
 			OnPropertyChanged();
 		}
 	}

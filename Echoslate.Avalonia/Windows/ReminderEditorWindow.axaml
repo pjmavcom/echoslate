@@ -7,7 +7,7 @@
              Background="{DynamicResource AppDarkBackgroundBrush}"
              Foreground="{DynamicResource ForegroundBrush}"
              >
-    <Grid RowDefinitions="570,Auto">
+    <Grid RowDefinitions="580,Auto">
         <Grid Grid.Row="0"
               ColumnDefinitions="550,Auto,550"
               >
@@ -135,7 +135,11 @@
                             <TextBlock Margin="0,0,0,5"
                                        Text="Schedule Date"
                                        />
-                            <CalendarDatePicker SelectedDate="{Binding DueDate}" />
+                            <CalendarDatePicker Height="42"
+                                                VerticalContentAlignment="Center"
+                                                FontSize="20"
+                                                SelectedDate="{Binding DueDate}"
+                                                />
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Margin="0,0,0,5"
@@ -147,21 +151,24 @@
                                 <Border Background="{DynamicResource ControlBackgroundBrush}"
                                         CornerRadius="7"
                                         >
-                                    <TextBlock Width="60"
-                                               VerticalAlignment="Center"
-                                               behaviors:MouseWheelNumericBehavior.Enabled="True"
-                                               behaviors:MouseWheelNumericBehavior.Maximum="24"
-                                               behaviors:MouseWheelNumericBehavior.Minimum="-1"
-                                               behaviors:MouseWheelNumericBehavior.TargetProperty="DueHour"
-                                               Background="{DynamicResource TransparentBrush}"
-                                               FontFamily="{StaticResource MonoFont}"
-                                               FontSize="20"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource ForegroundBrush}"
-                                               Text="{Binding DueHour}"
-                                               TextAlignment="Center"
-                                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
-                                               />
+                                    <NumericUpDown Width="80"
+                                                   VerticalAlignment="Center"
+                                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                                   behaviors:MouseWheelNumericBehavior.Maximum="24"
+                                                   behaviors:MouseWheelNumericBehavior.Minimum="-1"
+                                                   behaviors:MouseWheelNumericBehavior.TargetProperty="DueHour"
+                                                   Background="{DynamicResource TransparentBrush}"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource ForegroundBrush}"
+                                                   FormatString="0"
+                                                   Maximum="24"
+                                                   Minimum="-1"
+                                                   TextAlignment="Center"
+                                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                                   Value="{Binding DueHour}"
+                                                   />
                                 </Border>
                                 <TextBlock VerticalAlignment="Center"
                                            Text=":"
@@ -169,22 +176,25 @@
                                 <Border Background="{DynamicResource ControlBackgroundBrush}"
                                         CornerRadius="7"
                                         >
-                                    <TextBlock Width="60"
-                                               VerticalAlignment="Center"
-                                               behaviors:MouseWheelNumericBehavior.Enabled="True"
-                                               behaviors:MouseWheelNumericBehavior.Maximum="60"
-                                               behaviors:MouseWheelNumericBehavior.Minimum="-15"
-                                               behaviors:MouseWheelNumericBehavior.Snap="15"
-                                               behaviors:MouseWheelNumericBehavior.TargetProperty="DueMinute"
-                                               Background="{DynamicResource TransparentBrush}"
-                                               FontFamily="{StaticResource MonoFont}"
-                                               FontSize="20"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource ForegroundBrush}"
-                                               Text="{Binding DueMinute}"
-                                               TextAlignment="Center"
-                                               ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
-                                               />
+                                    <NumericUpDown Width="80"
+                                                   VerticalAlignment="Center"
+                                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                                   behaviors:MouseWheelNumericBehavior.Maximum="75"
+                                                   behaviors:MouseWheelNumericBehavior.Minimum="-15"
+                                                   behaviors:MouseWheelNumericBehavior.Snap="5"
+                                                   behaviors:MouseWheelNumericBehavior.TargetProperty="DueMinute"
+                                                   Background="{DynamicResource TransparentBrush}"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource ForegroundBrush}"
+                                                   FormatString="0"
+                                                   Maximum="60"
+                                                   Minimum="-1"
+                                                   TextAlignment="Center"
+                                                   ToolTip.Tip="Mouse wheel: ±5 | Shift+wheel: ±25"
+                                                   Value="{Binding DueMinute}"
+                                                   />
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -210,10 +220,19 @@
                                        />
                             <NumericUpDown Width="100"
                                            Margin="10,0"
+                                           behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                           behaviors:MouseWheelNumericBehavior.Minimum="5"
+                                           behaviors:MouseWheelNumericBehavior.Snap="5"
+                                           behaviors:MouseWheelNumericBehavior.TargetProperty="LeadTimeMinutes"
+                                           Background="{DynamicResource TransparentBrush}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}"
                                            FormatString="0"
-                                           Increment="5"
                                            Minimum="5"
-                                           Value="{Binding SelectedReminder.LeadTimeMinutes}"
+                                           TextAlignment="Center"
+                                           Value="{Binding LeadTimeMinutes}"
                                            />
                             <TextBlock VerticalAlignment="Center"
                                        Text=" minutes before"

@@ -85,7 +85,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cd publish-${{ matrix.runtime }}
-          zip -r ../Echoslate-${{ matrix.runtime }}.zip Echoslate.app
+          ditto -c -k --sequesterRsrc --keepParent Echoslate.app ../Echoslate-${{ matrix.runtime }}.zip
 
       - name: Zip artifact (non-Windows)
         if: runner.os == 'Linux'
