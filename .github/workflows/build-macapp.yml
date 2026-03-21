@@ -1,4 +1,4 @@
-name: Build Echoslate (Win / macOS / Linux)
+name: Build Echoslate for macOS
 
 on:
   workflow_dispatch:
