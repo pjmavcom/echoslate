@@ -1,3 +1,4 @@
+using Echoslate.Core.Models;
 using Echoslate.Core.Theming;
 
 namespace Echoslate.Core.Services;
@@ -6,6 +7,7 @@ public interface IBrushService {
 	static abstract object GetBrushForCommitType(string type);
 	object GetBrushForSeverity(int severity);
 	object GetBrushForPriority(int priority);
+	object GetBrushForDueDates(ReminderDueIn value);
 
 	void SetBrushFactory(Func<ColorRgba, object> factory);
 	static abstract object CreateBrush(ColorRgba color);

@@ -15,6 +15,13 @@ public enum RecurringFrequency {
 	Monthly = 24 * 30,
 	Yearly = 24 * 365
 }
+public enum ReminderDueIn {
+	FifteenMinutes,
+	ThirtyMinutes,
+	OneHour,
+	FourHours,
+	MoreThanFourHours
+}
 
 public class ReminderInfo : INotifyPropertyChanged {
 	private Guid _guid;

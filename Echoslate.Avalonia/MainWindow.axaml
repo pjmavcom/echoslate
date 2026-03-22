@@ -37,18 +37,15 @@
 
     <Grid HorizontalAlignment="Stretch"
           ClipToBounds="True"
+          RowDefinitions="40,*,40"
           TextElement.FontFamily="Source Code Pro"
           TextElement.FontSize="16"
           >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="500" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+
+        <!--  Main Menu and Pomo Controls  -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="500,*"
+              >
             <Menu Name="mnuMain"
                   Grid.Column="0"
                   Height="40"
@@ -105,13 +102,6 @@
                         </ControlTheme>
                     </MenuItem.ItemContainerTheme>
                 </MenuItem>
-                <MenuItem Command="{Binding ShowReminderWindowCommand}"
-                          Header="Reminders"
-                          />
-                <MenuItem Command="{Binding ShowQuickReminderWindowCommand}"
-                          Header="Quick Reminder"
-                          />
-
                 <MenuItem Header="Help">
                     <MenuItem Command="{Binding ShowHotkeysWindowCommand}"
                               Header="Hotkeys"
@@ -320,6 +310,8 @@
                 </Grid>
             </StackPanel>
         </Grid>
+
+        <!--  Tab Panels  -->
         <TabControl Name="tabControl"
                     Grid.Row="1"
                     Padding="0"
@@ -335,5 +327,45 @@
                 <views:TodoDisplayView DataContext="{Binding KanbanVM}" />
             </TabItem>
         </TabControl>
+
+        <!--  Status Bar  -->
+        <Grid Grid.Row="2"
+              Margin="7"
+              ColumnDefinitions="*,200,300,120,40"
+              >
+            <TextBlock Grid.Column="0"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Center"
+                       Text="{Binding StatusBarText}"
+                       />
+            <TextBlock Grid.Column="1"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Center"
+                       Text="{Binding ReminderStatusBarTextCount}"
+                       />
+            <TextBlock Grid.Column="2"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Center"
+                       Foreground="{Binding ReminderStatusBarTextColor}"
+                       Text="{Binding ReminderStatusBarTextDueDate}"
+                       />
+            <Button Grid.Column="3"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    Classes="ok"
+                    Command="{Binding ShowQuickReminderWindowCommand}"
+                    Content="Add Reminder"
+                    ToolTip.Tip="Add a new Reminder"
+                    />
+            <Button Grid.Column="4"
+                    Width="40"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    Classes="reminder-header-button"
+                    Command="{Binding ShowReminderWindowCommand}"
+                    ToolTip.Tip="Open full Reminders view"
+                    />
+
+        </Grid>
     </Grid>
 </Window>

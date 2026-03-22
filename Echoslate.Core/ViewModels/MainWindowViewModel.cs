@@ -21,10 +21,63 @@ public enum PomoActiveState {
 }
 
 public class MainWindowViewModel : INotifyPropertyChanged {
+	private string _statusBarText;
+	public string StatusBarText {
+		get => _statusBarText;
+		set {
+			if (_statusBarText == value) {
+				return;
+			}
+			_statusBarText = value;
+			OnPropertyChanged();
+		}
+	}
+
+	public string ReminderStatusBarTextCount {
+		get {
+			if (MasterReminders == null) {
+				return string.Empty;
+			}
+			int numReminders = MasterReminders.Count;
+			return $"{numReminders} Reminder" + (numReminders > 1 ? "s" : "") + " active";
+		}
+	}
+	public DateTime NextDue;
+	public string ReminderStatusBarTextDueDate {
+		get {
+			if (MasterReminders == null) {
+				return string.Empty;
+			}
+			NextDue = DateTime.MaxValue;
+			foreach (ReminderInfo ri in MasterReminders) {
+				if (ri.DueDate < NextDue) {
+					NextDue = ri.DueDate;
+				}
+			}
+			return $"Next Due: {NextDue}";
+		}
+	}
+	public ReminderDueIn ReminderStatusBarTextColorFlag {
+		get {
+			TimeSpan minutes = NextDue - DateTime.Now;
+			if (minutes < new TimeSpan(0, 15, 0)) {
+				return ReminderDueIn.FifteenMinutes;
+			} else if (minutes < new TimeSpan(0, 30, 0)) {
+				return ReminderDueIn.ThirtyMinutes;
+			} else if (minutes < new TimeSpan(1, 0, 0)) {
+				return ReminderDueIn.OneHour;
+			} else if (minutes < new TimeSpan(4, 0, 0)) {
+				return ReminderDueIn.FourHours;
+			}
+			return ReminderDueIn.MoreThanFourHours;
+		}
+	}
+	public object ReminderStatusBarTextColor => AppServices.BrushService.GetBrushForDueDates(ReminderStatusBarTextColorFlag);
+
 	public ObservableCollection<ReminderInfo> MasterReminders;
 	private PeriodicTimer? _timer;
 	private int _reminderTimerTicks;
-	private int _reminderTimerTicksMax = 1;
+	private int _reminderTimerTicksMax = 5;
 	private bool _alarmWindowOpen = false;
 	private bool _showAlarmsWindow = false;
 
@@ -248,12 +301,15 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		TodoListVM = new TodoListViewModel();
 		KanbanVM = new KanbanViewModel();
 		HistoryVM = new HistoryViewModel();
+		StatusBarText = "Welcome to Echoslate!";
 	}
 	private void SetupApplicationState() {
 		foreach (TodoItem item in MasterTodoItemsList) {
 			item.UpdateTags(Data.AllTags);
 		}
 		LinkRemindersToTodos();
+		OnPropertyChanged(nameof(ReminderStatusBarTextCount));
+		OnPropertyChanged(nameof(ReminderStatusBarTextDueDate));
 
 		SetWindowTitle();
 
@@ -315,7 +371,6 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		if (!_alarmWindowOpen) {
 			_reminderTimerTicks++;
 			if (_reminderTimerTicks >= _reminderTimerTicksMax) {
-				_reminderTimerTicksMax = 5;
 				ObservableCollection<ReminderInfo> dueItems = [];
 				_showAlarmsWindow = false;
 				foreach (ReminderInfo reminder in MasterReminders) {
@@ -335,6 +390,9 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 					_alarmWindowOpen = false;
 				}
 				_reminderTimerTicks = 0;
+				OnPropertyChanged(nameof(ReminderStatusBarTextCount));
+				OnPropertyChanged(nameof(ReminderStatusBarTextDueDate));
+				OnPropertyChanged(nameof(ReminderStatusBarTextColor));
 			}
 		}
 	}
@@ -429,6 +487,8 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		foreach (ReminderInfo reminder in reminders) {
 			if (reminder.IsActive) {
 				MasterReminders.Add(reminder);
+				OnPropertyChanged(nameof(ReminderStatusBarTextCount));
+				OnPropertyChanged(nameof(ReminderStatusBarTextDueDate));
 			}
 		}
 		foreach (ReminderInfo ri in MasterReminders) {
@@ -933,6 +993,8 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			return;
 		}
 		MasterReminders.Add(ri);
+		OnPropertyChanged(nameof(ReminderStatusBarTextCount));
+		OnPropertyChanged(nameof(ReminderStatusBarTextDueDate));
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {

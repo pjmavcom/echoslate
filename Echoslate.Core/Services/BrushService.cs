@@ -1,27 +1,28 @@
+using Echoslate.Core.Models;
 using Echoslate.Core.Theming;
 
 namespace Echoslate.Core.Services;
 
 public class BrushService : IBrushService {
 	static Func<ColorRgba, object>? _brushFactory { get; set; }
-	
+
 	public object TransparentBrush => CreateBrush(ColorRgba.Transparent);
 	public object AppBackgroundBrush => CreateBrush(ColorRgba.AppBackground);
 	public object AppDarkBackgroundBrush => CreateBrush(ColorRgba.AppDarkBackground);
 	public object ControlBackgroundBrush => CreateBrush(ColorRgba.ControlBackground);
 	public object EditorBackgroundBrush => CreateBrush(ColorRgba.EditorBackground);
 	public object RaisedBackgroundBrush => CreateBrush(ColorRgba.RaisedBackground);
-	
+
 	public object ForegroundBrush => CreateBrush(ColorRgba.Foreground);
 	public object SubtleForegroundBrush => CreateBrush(ColorRgba.SubtleForeground);
-	
+
 	public object LightAccentBrush => CreateBrush(ColorRgba.LightAccent);
 	public object AccentBrush => CreateBrush(ColorRgba.Accent);
 	public object AccentBrushHover => CreateBrush(ColorRgba.AccentHover);
 	public object AccentBrushPressed => CreateBrush(ColorRgba.AccentPressed);
 	public object DarkAccentBrush => CreateBrush(ColorRgba.DarkAccent);
 	public object DarkFadedAccentBrush => CreateBrush(ColorRgba.DarkFadedAccent);
-	
+
 	public object BorderBrush => CreateBrush(ColorRgba.Border);
 	public object BorderSilverBrush => CreateBrush(ColorRgba.BorderSilver);
 	public object BorderMidBrush => CreateBrush(ColorRgba.BorderMid);
@@ -31,21 +32,21 @@ public class BrushService : IBrushService {
 	public object ButtonBackgroundBrush => CreateBrush(ColorRgba.ButtonBackground);
 	public object ButtonHoverBackgroundBrush => CreateBrush(ColorRgba.ButtonHoverBackground);
 	public object ButtonPressedBackgroundBrush => CreateBrush(ColorRgba.ButtonPressedBackground);
-	
+
 	public object TabActiveBackgroundBrush => CreateBrush(ColorRgba.TabActiveBackground);
 	public object TabInactiveBackgroundBrush => CreateBrush(ColorRgba.TabInactiveBackground);
-	
+
 	public object SeverityNoneBrush => CreateBrush(ColorRgba.SeverityNone);
 	public object SeverityHighBrush => CreateBrush(ColorRgba.SeverityHigh);
 	public object SeverityLowBrush => CreateBrush(ColorRgba.SeverityLow);
 	public object SeverityMedBrush => CreateBrush(ColorRgba.SeverityMed);
-	
+
 	public object PriorityCritBrush => CreateBrush(ColorRgba.PriorityCrit);
 	public object PriorityHighBrush => CreateBrush(ColorRgba.PriorityHigh);
 	public object PriorityMedBrush => CreateBrush(ColorRgba.PriorityMed);
 	public object PriorityLowBrush => CreateBrush(ColorRgba.PriorityLow);
 	public object PriorityNoneBrush => CreateBrush(ColorRgba.PriorityNone);
-	
+
 	public object AccentBlueBrush => CreateBrush(ColorRgba.AccentBlue);
 	public object LightSuccessGreenBrush => CreateBrush(ColorRgba.LightSuccessGreen);
 	public object SuccessGreenBrush => CreateBrush(ColorRgba.SuccessGreen);
@@ -59,16 +60,22 @@ public class BrushService : IBrushService {
 	public object ChoreGrayBrush => CreateBrush(ColorRgba.ChoreGray);
 	public object DocsYellowBrush => CreateBrush(ColorRgba.DocsYellow);
 	public object EditingOrangeBrush => CreateBrush(ColorRgba.EditingOrange);
-	
+
 	public object WarningBrush => CreateBrush(ColorRgba.DangerRed);
 	public static object DefaultBrush => CreateBrush(ColorRgba.ChoreGray);
 
 	private static readonly Dictionary<string, ColorRgba> CommitTypeColors = new(StringComparer.OrdinalIgnoreCase) {
-		{ "feat", ColorRgba.SuccessGreen },
-		{ "fix", ColorRgba.DangerRed },
-		{ "refactor", ColorRgba.RefactorBlue },
-		{ "chore", ColorRgba.ChoreGray },
-		{ "docs", ColorRgba.DocsYellow },
+		{
+			"feat", ColorRgba.SuccessGreen
+		}, {
+			"fix", ColorRgba.DangerRed
+		}, {
+			"refactor", ColorRgba.RefactorBlue
+		}, {
+			"chore", ColorRgba.ChoreGray
+		}, {
+			"docs", ColorRgba.DocsYellow
+		},
 	};
 
 	public BrushService() {
@@ -105,6 +112,15 @@ public class BrushService : IBrushService {
 			2 => CreateBrush(ColorRgba.PriorityMed),
 			1 => CreateBrush(ColorRgba.PriorityLow),
 			_ => CreateBrush(ColorRgba.PriorityNone)
+		};
+	}
+	public object GetBrushForDueDates(ReminderDueIn value) {
+		return value switch {
+			ReminderDueIn.FifteenMinutes => CreateBrush(ColorRgba.DangerRed),
+			ReminderDueIn.ThirtyMinutes => CreateBrush(ColorRgba.EditingOrange),
+			ReminderDueIn.OneHour => CreateBrush(ColorRgba.DocsYellow),
+			ReminderDueIn.FourHours => CreateBrush(ColorRgba.SuccessGreen),
+			_ => CreateBrush(ColorRgba.ChoreGray)
 		};
 	}
 }
