@@ -234,6 +234,13 @@ public class ReminderInfo : INotifyPropertyChanged {
 			SnoozeUntil = DateTime.MinValue;
 		}
 	}
+	public void ClearTodo(TodoItem item) {
+		TodoGuids.Remove(item.Guid);
+		TodoItem? todo = Todos.FirstOrDefault(t => t.Guid == item.Guid);
+		if (todo != null) {
+			Todos.Remove(todo);
+		}
+	}
 	public void UpdateValues() {
 		OnPropertyChanged(nameof(DueDateString));
 		OnPropertyChanged(nameof(IsSnoozeActive));

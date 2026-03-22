@@ -68,6 +68,10 @@ public class AvaloniaDialogService : IDialogService {
 		ReminderEditorWindow view = new ReminderEditorWindow(vm);
 		return await ShowDialogAsync<ReminderEditorViewModel>(view, "Reminder Editor");
 	}
+	public async Task<ReminderInfo?> ShowQuickReminderAsync(TodoItem item = null) {
+		QuickReminderWindow view = new QuickReminderWindow(item);
+		return await ShowDialogAsync<ReminderInfo>(view, "Quick Reminder");
+	}
 	public async Task<AlarmPopupViewModel?> ShowAlarmPopupAsync(ObservableCollection<ReminderInfo> items) {
 		AlarmPopupViewModel vm = new AlarmPopupViewModel(items);
 		AlarmPopupWindow view = new AlarmPopupWindow(vm);

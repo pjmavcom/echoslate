@@ -38,6 +38,7 @@ public interface IDialogService {
 	Task<EditTabsViewModel?> ShowEditTabsAsync(IEnumerable<string> filterNames);
 	Task<ChooseDraftViewModel?> ShowChooseDraftAsync(IEnumerable<HistoryItem> drafts, HistoryItem defaultDraft = null);
 	Task<ReminderEditorViewModel?> ShowReminderEditorAsync(ObservableCollection<ReminderInfo> items, ObservableCollection<TodoItem> todos, TodoItem selectedItem = null);
+	Task<ReminderInfo?> ShowQuickReminderAsync(TodoItem item = null);
 	Task<AlarmPopupViewModel?> ShowAlarmPopupAsync(ObservableCollection<ReminderInfo> reminders);
 
 	Task<bool> ShowDialogAsync(object view, string title);

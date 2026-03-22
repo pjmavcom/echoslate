@@ -312,6 +312,8 @@ public class TodoItem : INotifyPropertyChanged {
 	}
 	[JsonIgnore] public bool HasTags => Tags.Count > 0;
 	[JsonIgnore] public string FirstTag => Tags.Count > 0 ? Tags[0] : "";
+	public string ReminderText => GetNearestReminder() != null ? GetNearestReminder().Message : "";
+	public long NearestDueDate => GetNearestReminder() != null ? GetNearestReminder().DueDate.Ticks : 0;
 
 
 	public TodoItem() {
@@ -378,6 +380,7 @@ public class TodoItem : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(Reminders));
 		OnPropertyChanged(nameof(ReminderDueDateString));
 		OnPropertyChanged(nameof(HasActiveReminder));
+		OnPropertyChanged(nameof(ReminderText));
 	}
 	public void ClearReminders() {
 		ReminderGuids.Clear();

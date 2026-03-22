@@ -917,7 +917,6 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 		SetWindowPosition(windowWidth, windowHeight);
 	}
 	public ICommand ShowReminderWindowCommand => new RelayCommand(() => ShowReminderWindow());
-
 	public async void ShowReminderWindow(TodoItem item = null) {
 		Task<ReminderEditorViewModel?> vmTask = AppServices.DialogService.ShowReminderEditorAsync(MasterReminders, MasterTodoItemsList, item);
 		ReminderEditorViewModel vm = await vmTask;
@@ -925,6 +924,15 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 			return;
 		}
 		UpdateRemindersFromDialog(null, vm.Reminders);
+	}
+	public ICommand ShowQuickReminderWindowCommand => new RelayCommand(() => ShowQuickReminderWindow());
+	public async void ShowQuickReminderWindow(TodoItem item = null) {
+		Task<ReminderInfo?> task = AppServices.DialogService.ShowQuickReminderAsync(item);
+		ReminderInfo? ri = await task;
+		if (ri == null) {
+			return;
+		}
+		MasterReminders.Add(ri);
 	}
 
 	public void OnClosing(object? sender, CancelEventArgs e) {

@@ -130,18 +130,10 @@
 
     </UserControl.Resources>
     <Grid Background="{DynamicResource AppDarkBackgroundBrush}"
+          ColumnDefinitions="*,Auto"
           KeyDown="Window_KeyDown"
+          RowDefinitions="Auto,Auto,7*,*"
           >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="7*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
 
         <!--  Filter button bar  -->
         <Grid Grid.Row="0"
@@ -207,7 +199,6 @@
                                   NotesPanelEditTagsRequested="NotesPanelEditTagsRequested"
                                   SelectedItem="{Binding SelectedTodoItem}"
                                   />
-
 
         <!--  Main TodoList view  -->
         <Border Grid.Row="2"
@@ -300,7 +291,7 @@
                                 <DataTemplate x:CompileBindings="False">
                                     <Button Classes="header-button, reminder-header-button"
                                             Command="{Binding DataContext.SelectSortCommand, ElementName=Root}"
-                                            CommandParameter="hasreminder"
+                                            CommandParameter="duedate"
                                             />
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -309,6 +300,8 @@
                                     <CheckBox FontFamily="{StaticResource MonoFont}"
                                               Foreground="{DynamicResource ForegroundBrush}"
                                               IsChecked="{Binding HasActiveReminder, Mode=OneWay}"
+                                              IsHitTestVisible="False"
+                                              ToolTip.Tip="{Binding ReminderText}"
                                               />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -330,6 +323,7 @@
                                     <Label Content="{Binding ReminderDueDateString, StringFormat=yyyy-MM-dd - HH:mm}"
                                            FontFamily="{StaticResource MonoFont}"
                                            Foreground="{DynamicResource ForegroundBrush}"
+                                           ToolTip.Tip="{Binding ReminderText}"
                                            />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

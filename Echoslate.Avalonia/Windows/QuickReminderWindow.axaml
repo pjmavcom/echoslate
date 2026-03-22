@@ -1,0 +1,115 @@
+<UserControl x:Class="Echoslate.Avalonia.Windows.QuickReminderWindow"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:Echoslate.Avalonia.Behaviors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:windows="clr-namespace:Echoslate.Avalonia.Windows"
+             x:DataType="windows:QuickReminderWindow"
+             mc:Ignorable="d"
+             >
+    <Grid RowDefinitions="Auto,Auto">
+        <StackPanel>
+            <Viewbox Width="300"
+                     Height="300"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Stretch="Uniform"
+                     >
+                <Calendar Margin="7"
+                          SelectedDate="{Binding SelectedDate}"
+                          SelectionMode="SingleDate"
+                          />
+            </Viewbox>
+            <StackPanel Margin="7"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        >
+                <Border Background="{DynamicResource ControlBackgroundBrush}"
+                        CornerRadius="7"
+                        >
+                    <NumericUpDown Width="80"
+                                   VerticalAlignment="Center"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                   behaviors:MouseWheelNumericBehavior.Maximum="24"
+                                   behaviors:MouseWheelNumericBehavior.Minimum="-1"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="DueHour"
+                                   Background="{DynamicResource TransparentBrush}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   FormatString="0"
+                                   Maximum="24"
+                                   Minimum="-1"
+                                   TextAlignment="Center"
+                                   ToolTip.Tip="Mouse wheel: ±1 | Shift+wheel: ±5"
+                                   Value="{Binding DueHour}"
+                                   />
+                </Border>
+                <TextBlock VerticalAlignment="Center"
+                           Text=":"
+                           />
+                <Border Background="{DynamicResource ControlBackgroundBrush}"
+                        CornerRadius="7"
+                        >
+                    <NumericUpDown Width="80"
+                                   VerticalAlignment="Center"
+                                   behaviors:MouseWheelNumericBehavior.Enabled="True"
+                                   behaviors:MouseWheelNumericBehavior.Maximum="75"
+                                   behaviors:MouseWheelNumericBehavior.Minimum="-15"
+                                   behaviors:MouseWheelNumericBehavior.Snap="5"
+                                   behaviors:MouseWheelNumericBehavior.TargetProperty="DueMinute"
+                                   Background="{DynamicResource TransparentBrush}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   FormatString="0"
+                                   Maximum="60"
+                                   Minimum="-1"
+                                   TextAlignment="Center"
+                                   ToolTip.Tip="Mouse wheel: ±5 | Shift+wheel: ±25"
+                                   Value="{Binding DueMinute}"
+                                   />
+                </Border>
+                <Button Width="70"
+                        Height="40"
+                        Padding="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Click="SetDueDateNow_OnClick"
+                        Content="Now"
+                        />
+            </StackPanel>
+            <TextBox Height="80"
+                     Margin="7"
+                     AcceptsReturn="False"
+                     FontSize="20"
+                     Text="{Binding Message}"
+                     Watermark="Enter your message..."
+                     />
+        </StackPanel>
+
+        <!--  Buttons  -->
+        <Grid Grid.Row="1">
+            <Grid Margin="0,20,0,0"
+                  HorizontalAlignment="Center"
+                  >
+                <StackPanel Margin="7"
+                            Orientation="Horizontal"
+                            >
+                    <Button Classes="ok"
+                            Click="SaveChanges_OnClick"
+                            Content="Save Changes"
+                            IsDefault="True"
+                            />
+                    <Button Classes="cancel"
+                            Click="Cancel_OnClick"
+                            IsCancel="True"
+                            />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

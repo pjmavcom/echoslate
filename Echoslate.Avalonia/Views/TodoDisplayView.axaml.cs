@@ -23,6 +23,8 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 	private DataGridColumn? ColDate;
 	private DataGridColumn? ColSev;
 	private DataGridColumn? ColPri;
+	private DataGridColumn? ColRem;
+	private DataGridColumn? ColDue;
 	private DataGridColumn? ColRank;
 	private DataGridColumn? ColTimer;
 
@@ -37,6 +39,7 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 
 	public TodoDisplayView() {
 		InitializeComponent();
+		Loaded += UpdateColumnVisibility;
 	}
 	protected override void OnDataContextChanged(EventArgs e) {
 		base.OnDataContextChanged(e);
@@ -49,10 +52,12 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 		DataGrid? todoListDataGrid = this.FindControl<DataGrid>("TodoListDataGrid");
 		ColTags = todoListDataGrid.Columns[0];
 		ColDate = todoListDataGrid.Columns[1];
-		ColPri = todoListDataGrid.Columns[2];
-		ColSev = todoListDataGrid.Columns[3];
-		ColRank = todoListDataGrid.Columns[4];
-		ColTimer = todoListDataGrid.Columns[5];
+		ColRem = todoListDataGrid.Columns[2];
+		ColDue = todoListDataGrid.Columns[3];
+		ColPri = todoListDataGrid.Columns[4];
+		ColSev = todoListDataGrid.Columns[5];
+		ColRank = todoListDataGrid.Columns[6];
+		ColTimer = todoListDataGrid.Columns[7];
 
 		_notesPanel = this.FindControl<ItemNotesPanelView>("NotesPanel");
 		_notesPanelToggleButton = this.FindControl<Button>("NotesPanelToggleButton");
@@ -70,24 +75,30 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 			return;
 		}
 		Log.Print($"size: {e.NewSize.Width}");
-		UpdateColumnVisibility(e.NewSize.Width);
+		_currentWidth = e.NewSize.Width;
+		UpdateColumnVisibility();
 	}
-	private void UpdateColumnVisibility(double width) {
-		_currentWidth = width;
-		double notesPanel = _notesPanel.IsVisible ? 0 : MinNotesPanelSize;
-		ColTags.IsVisible = width < (1500 - notesPanel) ? false : true;
-		ColDate.IsVisible = width < 1400 - notesPanel ? false : true;
-		ColTimer.IsVisible = width < 1300 - notesPanel ? false : true;
-		// ColSev.IsVisible = width < 1200 - notesPanel ? false : true;
-		ColRank.IsVisible = width < 700 ? false : true;
+	private void UpdateColumnVisibility(object? sender, RoutedEventArgs e) {
+		UpdateColumnVisibility();
+	}
+	private void UpdateColumnVisibility() {
+		double notesPanel = _notesPanel.IsVisible ? MinNotesPanelSize : 0;
+		double visibleWidth = _currentWidth - notesPanel;
 
-		if (width > PanelShrinkThreshold1) {
+		ColTags.IsVisible = visibleWidth < 1700 ? false : true;
+		ColDate.IsVisible = visibleWidth < 1550 ? false : true;
+		ColTimer.IsVisible = visibleWidth < 1450 ? false : true;
+		ColDue.IsVisible = visibleWidth < 1350 ? false : true;
+		// ColSev.IsVisible = visibleWidth < 1200 ? false : true;
+		ColRank.IsVisible = visibleWidth < 700 ? false : true;
+
+		if (_currentWidth > PanelShrinkThreshold1) {
 			_notesPanel.Width = MaxNotesPanelSize;
-		} else if (width > PanelShrinkThreshold2) {
-			_notesPanel.Width = MaxNotesPanelSize - (PanelShrinkThreshold1 - width);
+		} else if (_currentWidth > PanelShrinkThreshold2) {
+			_notesPanel.Width = MaxNotesPanelSize - (PanelShrinkThreshold1 - _currentWidth);
 		}
 		if (DataContext is TodoDisplayViewModelBase vm) {
-			if (width < PanelShrinkThreshold2) {
+			if (_currentWidth < PanelShrinkThreshold2) {
 				vm.IsNotesPanelVisibleBySize = false;
 				_notesPanelToggleButton.IsVisible = false;
 			} else {
@@ -100,7 +111,7 @@ public partial class TodoDisplayView : UserControl, INotifyPropertyChanged {
 		if (DataContext is TodoDisplayViewModelBase vm) {
 			vm.ToggleNotesPanelCommand.Execute(null);
 		}
-		UpdateColumnVisibility(_currentWidth);
+		UpdateColumnVisibility();
 	}
 	private void Add_OnPointerPressed(object? sender, PointerPressedEventArgs e) {
 		if (DataContext is not TodoDisplayViewModelBase vm) {

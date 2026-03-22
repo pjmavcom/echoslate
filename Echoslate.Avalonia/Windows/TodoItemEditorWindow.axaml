@@ -508,31 +508,50 @@
         </Grid>
 
         <!--  Buttons  -->
+        <Grid Grid.Row="1"
+              Grid.Column="0"
+              HorizontalAlignment="Center"
+              >
+            <StackPanel Margin="0,10,0,10"
+                        Orientation="Horizontal"
+                        >
+                <Button Classes="ok"
+                        Click="Ok_OnClick"
+                        Content="Save"
+                        IsDefault="True"
+                        />
+                <Button Classes="cancel"
+                        Click="Cancel_OnClick"
+                        IsCancel="True"
+                        />
+                <Label Width="500"
+                       Height="30"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       HorizontalContentAlignment="Right"
+                       Content="{Binding Guid}"
+                       FontSize="12"
+                       Foreground="{DynamicResource SubtleForegroundBrush}"
+                       />
+            </StackPanel>
+        </Grid>
         <StackPanel Grid.Row="1"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
+                    Grid.Column="2"
                     Margin="0,10,0,10"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal"
                     >
-            <Button Classes="ok"
-                    Click="Ok_OnClick"
-                    Content="Save"
-                    IsDefault="True"
+            <Button Height="30"
+                    Classes="complete"
+                    Command="{Binding AddQuickReminderCommand}"
+                    Content="Add"
                     />
-            <Button Classes="cancel"
-                    Click="Cancel_OnClick"
-                    IsCancel="True"
+            <Button Height="30"
+                    Classes="cancel"
+                    Command="{Binding RemoveReminderCommand}"
+                    Content="Remove"
+                    IsEnabled="{Binding IsRemoveActive}"
                     />
-            <Label Width="500"
-                   Height="30"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Bottom"
-                   HorizontalContentAlignment="Right"
-                   Content="{Binding Guid}"
-                   FontSize="12"
-                   Foreground="{DynamicResource SubtleForegroundBrush}"
-                   />
         </StackPanel>
     </Grid>
 </UserControl>

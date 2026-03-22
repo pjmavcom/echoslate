@@ -108,6 +108,9 @@
                 <MenuItem Command="{Binding ShowReminderWindowCommand}"
                           Header="Reminders"
                           />
+                <MenuItem Command="{Binding ShowQuickReminderWindowCommand}"
+                          Header="Quick Reminder"
+                          />
 
                 <MenuItem Header="Help">
                     <MenuItem Command="{Binding ShowHotkeysWindowCommand}"

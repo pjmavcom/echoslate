@@ -27,8 +27,8 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
-	private ReminderInfo _selectedReminder;
-	public ReminderInfo SelectedReminder {
+	private ReminderInfo? _selectedReminder;
+	public ReminderInfo? SelectedReminder {
 		get => _selectedReminder;
 		set {
 			if (_selectedReminder == value) {
@@ -36,8 +36,10 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 			}
 			_selectedReminder = value;
 			OnPropertyChanged();
+			OnPropertyChanged(nameof(IsRemoveActive));
 		}
 	}
+	public bool IsRemoveActive => SelectedReminder != null;
 	private Guid _guid;
 	public Guid Guid {
 		get => _guid;
@@ -230,6 +232,7 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 		ResultTodoItem.Todo = tempTags.Trim() + " " + tempTodo.Trim();
 		ResultTodoItem.Problem = Problem;
 		ResultTodoItem.Solution = Solution;
+		ResultTodoItem.ReminderGuids = _item.ReminderGuids;
 	}
 	public static string NormalizeTag(string? tag) {
 		var s = (tag ?? "").Trim();
@@ -324,6 +327,27 @@ public class TodoItemEditorViewModel : INotifyPropertyChanged {
 	public void CycleKanban() {
 		KanbanId++;
 		KanbanId %= 4;
+	}
+	
+	public ICommand AddQuickReminderCommand => new RelayCommand(AddQuickReminder);
+	public async void AddQuickReminder() {
+		AppServices.MainWindowVM.ShowQuickReminderWindow(_item);
+	}
+	public ICommand RemoveReminderCommand => new RelayCommand(RemoveReminder);
+	public async void RemoveReminder() {
+		if (SelectedReminder == null) {
+			return;
+		}
+		SelectedReminder.ClearTodo(_item);
+		Guid guid = SelectedReminder.Guid;
+		if (SelectedReminder.Todos.Count == 0) {
+			Window? owner = AppServices.ApplicationService.GetWindow() as Window;
+			DialogResult? task = await AppServices.DialogService.ShowAsync("Completely delete reminder?", "Confirm delete", DialogButton.YesNo, DialogIcon.Warning, owner);
+			if (task == DialogResult.Yes) {
+				AppServices.MainWindowVM.MasterReminders.Remove(SelectedReminder);
+			}
+		}
+		_item.ClearReminder(guid);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

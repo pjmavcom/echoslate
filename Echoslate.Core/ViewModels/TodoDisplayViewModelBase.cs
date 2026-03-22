@@ -368,6 +368,11 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 					? items => items.OrderByDescending(i => i.Todo).ThenBy(i => i.CurrentFilterRank)
 					: items => items.OrderBy(i => i.Todo).ThenBy(i => i.CurrentFilterRank);
 				break;
+			case "duedate":
+				CurrentSortMethod = ReverseSort
+					? items => items.OrderByDescending(i => i.HasActiveReminder).ThenByDescending(i => i.NearestDueDate).ThenBy(i => i.CurrentFilterRank)
+					: items => items.OrderByDescending(i => i.HasActiveReminder).ThenBy(i => i.NearestDueDate).ThenBy(i => i.CurrentFilterRank);
+				break;
 		}
 	}
 	private bool CombinedFilter(object item) {
@@ -902,8 +907,8 @@ public abstract class TodoDisplayViewModelBase : INotifyPropertyChanged {
 	public void ToggleNotesPanel() {
 		IsNotesPanelVisibleManual = !IsNotesPanelVisibleManual;
 	}
-	
-	
+
+
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string name = null)
