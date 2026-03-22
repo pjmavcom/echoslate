@@ -7,6 +7,9 @@ using Echoslate.Core.ViewModels;
 namespace Echoslate.Avalonia.Windows;
 
 public partial class EditTabsWindow : UserControl {
+	public EditTabsWindow() {
+		InitializeComponent();
+	}
 	public EditTabsWindow(EditTabsViewModel vm) {
 		InitializeComponent();
 		DataContext = vm;

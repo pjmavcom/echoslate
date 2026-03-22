@@ -15,6 +15,7 @@ public enum RecurringFrequency {
 	Monthly = 24 * 30,
 	Yearly = 24 * 365
 }
+
 public enum ReminderDueIn {
 	FifteenMinutes,
 	ThirtyMinutes,
@@ -46,6 +47,7 @@ public class ReminderInfo : INotifyPropertyChanged {
 			OnPropertyChanged();
 		}
 	}
+	[JsonIgnore] public bool HasAttachments => Todos.Count > 0;
 	private ObservableCollection<TodoItem> _todos;
 	[JsonIgnore]
 	public ObservableCollection<TodoItem> Todos {

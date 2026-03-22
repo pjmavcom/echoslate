@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Echoslate.Core.Models;
+using Echoslate.Core.Services;
 
 namespace Echoslate.Core.ViewModels;
 
@@ -37,28 +38,8 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 			OnPropertyChanged(nameof(HasSnoozableSelection));
 		}
 	}
-	// private ObservableCollection<ReminderInfo> _reminders;
-	// public ObservableCollection<ReminderInfo> Reminders {
-	// get => _reminders;
-	// set {
-	// if (_reminders == value) {
-	// return;
-	// }
-	// _reminders = value;
-	// OnPropertyChanged();
-	// }
-	// }
-	// private ReminderInfo _selectedReminder;
-	// public ReminderInfo SelectedReminder {
-	// get => _selectedReminder;
-	// set {
-	// if (_selectedReminder == value) {
-	// return;
-	// }
-	// _selectedReminder = value;
-	// OnPropertyChanged();
-	// }
-	// }
+	public bool HasAttachments => SelectedReminder != null && SelectedReminder.Todos.Count > 0;
+	
 	private int _snoozeMinutes;
 	public int SnoozeMinutes {
 		get => _snoozeMinutes;
@@ -127,6 +108,10 @@ public class AlarmPopupViewModel : INotifyPropertyChanged {
 				item.ClearReminder(reminder.Guid);
 			}
 		}
+	}
+	public ICommand OpenRemindersCommand => new RelayCommand(OpenReminders);
+	public void OpenReminders() {
+		AppServices.MainWindowVM.ShowReminderWindowCommand.Execute(null);
 	}
 
 

@@ -28,22 +28,27 @@
                   SelectedItem="{Binding SelectedReminder, Mode=TwoWay}"
                   >
             <DataGrid.Columns>
-
-                <!--  ~1~ IsDue  -->
+                <!--  Has Attachments  -->
                 <DataGridTemplateColumn MinWidth="30">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate x:CompileBindings="False">
-                            <Label Classes="header-label, reminder-label" />
+                            <Label Classes="header-label, attachment-label" />
                         </DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsDueNow}" />
+                        <DataTemplate x:CompileBindings="False">
+                            <Button Width="40"
+                                    Height="30"
+                                    Classes="attachment"
+                                    Command="{Binding DataContext.OpenRemindersCommand, ElementName=Root}"
+                                    Content=""
+                                    IsEnabled="{Binding HasAttachments}"
+                                    />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!--  ~2~ IsSnoozing  -->
+                <!--  ~1~ IsSnoozing  -->
                 <DataGridTemplateColumn MinWidth="30">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate x:CompileBindings="False">
@@ -52,12 +57,14 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSnoozeActive}" />
+                            <CheckBox IsChecked="{Binding IsSnoozeActive}"
+                                      IsHitTestVisible="False"
+                                      />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!--  ~3~ Message  -->
+                <!--  ~2~ Message  -->
                 <DataGridTemplateColumn Width="264">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate x:CompileBindings="False">
@@ -77,7 +84,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!--  ~4~ Due Date  -->
+                <!--  ~3~ Due Date  -->
                 <DataGridTemplateColumn MinWidth="170">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate x:CompileBindings="False">

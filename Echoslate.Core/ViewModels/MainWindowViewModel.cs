@@ -54,7 +54,8 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 					NextDue = ri.DueDate;
 				}
 			}
-			return $"Next Due: {NextDue}";
+			string message = NextDue == DateTime.MaxValue ? "" : NextDue.ToString();
+			return $"Next Due: {message}";
 		}
 	}
 	public ReminderDueIn ReminderStatusBarTextColorFlag {
